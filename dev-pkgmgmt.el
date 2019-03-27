@@ -1,0 +1,30 @@
+;;; dev-pkgmgmt.el -- package management
+
+;; package manager
+(require 'package)
+
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+;; package loader
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+
+;; use package settings
+(setq use-package-always-ensure t)
+(use-package auto-compile
+  :config (auto-compile-on-load-mode))
+
+(setq load-prefer-newer t)
+
+(provide 'dev-pkgmgmt)
+;;; dev-pkgmgmt.el ends here
