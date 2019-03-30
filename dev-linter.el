@@ -4,14 +4,14 @@
   :after evil
   :commands (flycheck-buffer flycheck-list-errors flycheck-mode)
   :config
-  (setq-default flycheck-check-syntax-automatically '(save mode-enable))
+  (setq-default flycheck-check-syntax-automatically '(save))
   (defun dev-linter--check ()
     (when flycheck-mode
       (ignore-errors (flycheck-buffer))
       nil))
   (add-hook 'evil-normal-state-entry-hook #'dev-linter--check)
-  (flycheck-add-next-checker 'python-flake8 'python-mypy)
-  (flycheck-add-next-checker 'python-flake8 'python-pylint))
+
+  (flycheck-add-next-checker 'python-flake8 '(warning . python-mypy)))
 
 (use-package flycheck-pos-tip
   :after flycheck
