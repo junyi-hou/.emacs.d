@@ -42,7 +42,11 @@
 ;; load everything
 
 (setq-default custom-safe-themes t)
-(set-frame-font "monospace 13")  ; font
+(set-face-attribute 'default nil
+                    :family "monospace"
+                    :height 130
+                    :weight 'normal
+                    :width 'normal)
 (add-to-list 'default-frame-alist '(alpha . (85 . 60)))  ; transparency
 (load-theme 'zenburn t)  ; theme
 (telephone-line-mode 1)  ; status line
