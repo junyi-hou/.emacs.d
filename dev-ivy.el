@@ -4,10 +4,8 @@
   :init
   (ivy-mode 1)
   :config
-  (setq ivy-height 10
-        ivy-do-completion-in-region nil
+  (setq ivy-do-completion-in-region nil
         ivy-wrap t
-        ivy-fixed-height-minibuffer t
         ivy-initial-inputs-alist nil ; do not use ^
         ivy-format-function #'ivy-format-function-line ; highlight til EOL
         ivy-magic-slash-non-match-action nil ; disable magic slash on nonmatch
@@ -20,6 +18,13 @@
    "M-k" 'ivy-previous-line
    "M-J" (lambda () (interactive) (ivy-next-line 3))
    "M-K" (lambda () (interactive) (ivy-previous-line 3))))
+
+(use-package ivy-posframe
+  :after ivy
+  :config
+  (setq ivy-display-function #'ivy-posframe-display-at-point
+        ivy-posframe-font "monospace")
+  (ivy-posframe-enable))
 
 (provide 'dev-ivy)
 ;;; dev-ivy.el ends here
