@@ -101,112 +101,82 @@
       (evil-search (buffer-substring (region-beginning) (region-end)) t)
     (evil-search (thing-at-point 'word t) t)))
 
-(defun dev-evil-set-leader-keymap (&key keymaps &optional states)
-  "Set the standard leader keymaps I use for KEYMAP and optionally STATE."
-  (general-define-key
-    :keymaps keymaps
-    :states states
-    "" nil
-    "SPC" nil)
+;; settings
 
-  (general-define-key
-    :keymaps keymaps
-    :states states
-    :prefix "SPC"
+;; leader: SPC
+(general-define-key
+ :keymaps '(motion normal visual)
+ "" nil
+ "SPC" nil)
 
-    ;; execute
-    "ee"  'execute-extended-command
-    "eE"  'evil-ex
-    "el"  'eval-last-sexp
+(general-define-key
+ :keymaps '(motion normal visual)
+ :prefix "SPC"
+ 
+ ;; execute
+ "ee"  'execute-extended-command
+ "eE"  'evil-ex
+ "el"  'eval-last-sexp
+ 
+ ;; helps
+ "hf" 'describe-function
+ "hw" 'where-is
+ "hk" 'describe-key
+ "hv" 'describe-variable
+ "hm" 'describe-mode
+ "hh" 'help-for-help
 
-    ;; repl runs
-    ;; need to be remapped for different languages
-    ;; "rr" 'dev-run-buffer-or-visual
-    ;; "rl" 'dev-run-line-or-visual
-    ;; "ro" 'dev-open-repl-or-switch-to-repl
-    ;; "rO" 'dev-open-remote-repl
+ ;; basic function
+ "w"  'evil-write
+ "k"  'delete-window
+ "q"  (lambda () (interactive) (kill-buffer (current-buffer)))
 
-    ;; helps
-    "hf" 'describe-function
-    "hw" 'where-is
-    "hk" 'describe-key
-    "hv" 'describe-variable
-    "hm" 'describe-mode
-    "hh" 'help-for-help
+ ;; buffer related
+ "n"  'dev-evil-next-user-buffer
+ "N"  'dev-evil-previous-user-buffer
 
-    ;; basic function
-    "w"  'evil-write
-    "k"  'delete-window
-    "q"  (lambda () (interactive) (kill-buffer (current-buffer)))
+ ;; split
+ "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
+ "|"   (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
+ "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
+ "_"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
 
-    ;; buffer related
-    "n"  'dev-evil-next-user-buffer
-    "N"  'dev-evil-previous-user-buffer
+ ;; open stuffs
+ "of" 'find-file
+ "ob" 'ivy-switch-buffer
+ "oo" 'projectile-find-file
+ "os" 'dev--eshell-here
+ "op" 'projectile-switch-project
 
-    ;; split
-    "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
-    "|"   (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
-    "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
-    "_"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
+ ;; search and replace
 
-    ;; open stuffs
-    "of" 'find-file
-    "ob" 'ivy-switch-buffer
-    "oo" 'projectile-find-file
-    "os" 'dev--eshell-here
-    "op" 'projectile-switch-project
+ ;; other uses
+ "t" 'evilnc-comment-or-uncomment-lines
+ "f" 'evil-toggle-fold)
 
-    ;; jump to
-    "jg" 'dumb-jump-go-other-window
-    "jG" 'dumb-jump-go
-    "jb" 'dumb-jump-back
-    "jj" 'dumb-jump-quick-look
+(general-define-key
+ :keymaps '(motion normal visual)
 
-    ;; search and replace
+ "j" 'evil-next-visual-line
+ "k" 'evil-previous-visual-line
 
-    ;; other uses
-    "t" 'evilnc-comment-or-uncomment-lines
-    "f" 'evil-toggle-fold
-    ))
+ "H" 'evil-first-non-blank-of-visual-line
+ "J" 'dev-evil-next-three-lines
+ "K" 'dev-evil-previous-three-lines
+ "L" 'evil-end-of-visual-line
 
-(defun dev-evil-cursor-movement-keymap (&key keymaps &optional states)
-  "Set standard movement keymaps I use for KEYMAP and optionally, STATES."
-  (general-define-key
-    :states states
-    :keymaps keymaps
+ "TAB" 'dev-evil-smart-tab
+ "<tab>" 'dev-evil-smart-tab)
 
-    "j" 'evil-next-visual-line
-    "k" 'evil-previous-visual-line
+(general-define-key
+ :keymaps '(motion normal visual emacs insert)
+ "C-h" 'evil-window-left
+ "C-j" 'evil-window-down
+ "C-k" 'evil-window-up
+ "C-l" 'evil-window-right
 
-    "H" 'evil-first-non-blank-of-visual-line
-    "J" 'dev-evil-next-three-lines
-    "K" 'dev-evil-previous-three-lines
-    "L" 'evil-end-of-visual-line
-
-    "TAB" 'dev-evil-smart-tab
-    "<tab>" 'dev-evil-smart-tab
-    ))
-
-(defun dev-evil-window-movement-keymap (&key keymaps &optional states)
-  "Set standard window movement key I use for KEYMAP and optionally, STATES." 
-  (general-define-key
-   :states states
-   :keymaps keymaps
-    "C-h" 'evil-window-left
-    "C-j" 'evil-window-down
-    "C-k" 'evil-window-up
-    "C-l" 'evil-window-right
-
-    "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
-    "C-y" (lambda () (interactive) (evil-scroll-line-up 5))))
-
-;;; set keymaps for most of the modes
-(dev-evil-set-leader-keymap
- :keymaps '(motion normal visual))
-(dev-evil-cursor-movement-keymap
- :keymaps '(motion normal visual))
-(dev-evil-window-movement-keymap
- :keymaps '(motion normal visual emacs insert))
+ "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
+ "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
 
 ;; help in the insert mode
 (general-define-key
@@ -214,6 +184,7 @@
  "C-1" 'describe-key
  )
 
-
 (provide 'dev-evil)
 ;;; dev-evil.el ends here
+
+; LocalWords:  SPC
