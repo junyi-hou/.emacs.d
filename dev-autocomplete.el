@@ -1,6 +1,5 @@
 ;;; dev-autocomplete.el -- autocomplete settings using company and yasnippets
 
-
 (use-package yasnippet
   :commands
   (yas-minor-mode yas-reload-all yas-expand yas-next-field yas-prev-field)
@@ -12,15 +11,17 @@
             "M-j" 'yas-next-field
             "M-k" 'yas-prev-field)
   :config
-  (defun jy/load-yas ()
+  (defun dev-autocomplete--load-yas ()
     (interactive)
-    (yas-minor-mode)
+    (yas-minor-mode 1)
     (yas-reload-all))
-  (add-hook 'company-mode-hook #'jy/load-yas))
+
+  (eval-after-load 'company
+    (add-hook 'company-mode-hook #'dev-autocomplete--load-yas)))
 
 (use-package company
   :commands
-  (company-mode company-complete company-complete-common company-manual-begin company-grab-line)
+  (company-mode company-complete company-complete-common)
   :general
   (:keymaps 'company-active-map
             "<tab>" 'company-complete-common
@@ -35,17 +36,14 @@
         company-dabbrev-ignore-case nil
         company-dabbrev-code-other-buffers t
         company-backends  ; set default backends
-        '((company-files company-keywords company-capf company-yasnippets)
-          (company-abbrev company-dabbrev))
-        company-frontends ; set frontends
-        '(company-pseudo-tooltip-frontend)))
+        '(company-files company-capf company-yasnippet)))
 
-(use-package company-quickhelp
+(use-package company-posframe
   :after company
   :config
-  (setq company-quickhelp-delay 1)
-  (add-hook 'company-mode-hook #'company-quickhelp-mode)
-  )
+  (company-posframe-mode))
+
+(use-package company-statistics :after company)
 
 (provide 'dev-autocomplete)
 ;;; dev-autocomplete.el ends here
