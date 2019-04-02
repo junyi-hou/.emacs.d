@@ -67,9 +67,5 @@
 ;; buffer containing that file so they can't get out of sync.
 (global-auto-revert-mode t)
 
-;; my group of customizables
-(defgroup development nil
-  "My group.")
-
 (provide 'dev-core)
 ;;; dev-core.el ends here
