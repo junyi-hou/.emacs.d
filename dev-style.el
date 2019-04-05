@@ -5,13 +5,12 @@
 ;;; Code:
 
 ;; spell checker
+(use-package flyspell-correct-ivy)
 
 (use-package flyspell-correct
   :commands flyspell-correct-wrapper
   :init
   (setq flyspell-correct-interface #'flyspell-correct-ivy)
-  :config
-  (require 'flyspell-correct-ivy)
   :general
   (:keymaps '(motion normal visual)
    :prefix "SPC"
