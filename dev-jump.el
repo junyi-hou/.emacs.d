@@ -1,4 +1,8 @@
-;;; dev-jump.el -- jump to definition
+;;; dev-jump.el -- jump to definition -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
 
 (use-package dumb-jump
   :commands (dumb-jump-mode dumb-jump-go dumb-jump-quick-look dumb-jump-go-other-window dumb-jump-back)

@@ -1,4 +1,8 @@
-;;; dev-ivy.el -- config for ivy
+;;; dev-ivy.el -- config for ivy -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
 
 (use-package ivy
   :init
@@ -22,8 +26,7 @@
 (use-package ivy-posframe
   :after ivy
   :config
-  (setq ivy-display-function #'ivy-posframe-display-at-point
-        ivy-posframe-font "monospace")
+  (setq ivy-display-function #'ivy-posframe-display-at-point)
   (ivy-posframe-enable))
 
 (provide 'dev-ivy)

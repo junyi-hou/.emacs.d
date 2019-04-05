@@ -1,4 +1,9 @@
-;;; dev-pkgmgmt.el -- package management
+;;; dev-pkgmgmt.el -- package management -*- lexical-binding: t; -*-
+
+
+;;; Commentary:
+
+;;; Code:
 
 ;; package manager
 (require 'package)

@@ -1,26 +1,31 @@
-;;; dev-linter.el -- provide on-the-fly linting
+;;; dev-linter.el -- provide on-the-fly linting -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
 
 (use-package flycheck
   :after evil
-  :commands (flycheck-buffer flycheck-list-errors flycheck-mode)
+  :commands
+  (flycheck-buffer flycheck-list-errors flycheck-mode flycheck-add-next-checker)
   :config
   (setq-default flycheck-check-syntax-automatically '(save))
-  (defun dev-linter--check ()
-    (when flycheck-mode
-      (ignore-errors (flycheck-buffer))
-      nil))
-  (add-hook 'evil-normal-state-entry-hook #'dev-linter--check)
-
   (flycheck-add-next-checker 'python-flake8 '(warning . python-mypy)))
 
-(use-package flycheck-pos-tip
+(use-package flycheck-posframe
   :after flycheck
-  :config
-  (setq flycheck-pos-tip-timeout 10
-        flycheck-display-errors-delay 0.5))
+  :commands flycheck-posframe-mode)
 
-(eval-after-load 'flycheck
-  (flycheck-pos-tip-mode))
+(defun dev-linter--check ()
+  "Check syntax when go back to normal state."
+  (when flycheck-mode
+    (ignore-errors (flycheck-buffer))
+    nil))
+
+;; setting
+
+(add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
+(add-hook 'evil-normal-state-entry-hook #'dev-linter--check)
 
 (provide 'dev-linter)
 ;;; dev-linter ends here

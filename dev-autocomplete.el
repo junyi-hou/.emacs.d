@@ -1,4 +1,8 @@
-;;; dev-autocomplete.el -- autocomplete settings using company and yasnippets
+;;; dev-autocomplete.el -- autocomplete settings using company and yasnippet -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
 
 (use-package yasnippet
   :commands
@@ -9,15 +13,7 @@
             "TAB" nil
             "M-f" 'yas-expand
             "M-j" 'yas-next-field
-            "M-k" 'yas-prev-field)
-  :config
-  (defun dev-autocomplete--load-yas ()
-    (interactive)
-    (yas-minor-mode 1)
-    (yas-reload-all))
-
-  (eval-after-load 'company
-    (add-hook 'company-mode-hook #'dev-autocomplete--load-yas)))
+            "M-k" 'yas-prev-field))
 
 (use-package company
   :commands
@@ -40,10 +36,17 @@
 
 (use-package company-posframe
   :after company
-  :config
-  (company-posframe-mode))
+  :commands company-posframe-mode)
 
 (use-package company-statistics :after company)
+
+(defun dev-autocomplete--load-yas ()
+  "Turn on `yas-minor-mode` and reload all snippets."
+  (interactive)
+  (yas-minor-mode 1))
+
+(add-hook 'company-mode-hook #'company-posframe-mode)
+(add-hook 'company-mode-hook #'dev-autocomplete--load-yas)
 
 (provide 'dev-autocomplete)
 ;;; dev-autocomplete.el ends here

@@ -1,4 +1,4 @@
-;;; dev-theme.el -- setting themes
+;;; dev-theme.el -- setting themes -*- lexical-binding: t; -*-
 
 
 ;; theme

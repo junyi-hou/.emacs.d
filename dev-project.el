@@ -1,4 +1,8 @@
-;;; dev-project.el -- config to jump to definitions
+;;; dev-project.el -- config to jump to definitions -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
 
 (use-package projectile
   :init
