@@ -1,4 +1,4 @@
-;;; dev-evil.el -- evil mode related settings
+;;; dev-evil.el -- evil mode related settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -27,6 +27,9 @@
 (use-package evil-nerd-commenter
   :after evil
   :commands evilnc-comment-or-uncomment-lines)
+
+(use-package expand-region
+  :commands (er/expand-region er/contract-region))
 
 ;; functions
 
@@ -109,6 +112,7 @@
  "" nil
  "SPC" nil)
 
+;; leader-relate keymaps
 (general-define-key
  :keymaps '(motion normal visual)
  :prefix "SPC"
@@ -154,6 +158,7 @@
  "t" 'evilnc-comment-or-uncomment-lines
  "f" 'evil-toggle-fold)
 
+;; movement keys
 (general-define-key
  :keymaps '(motion normal visual)
 
@@ -168,6 +173,7 @@
  "TAB" 'dev-evil-smart-tab
  "<tab>" 'dev-evil-smart-tab)
 
+;; combination key that should be active in all states
 (general-define-key
  :keymaps '(motion normal visual emacs insert)
  "C-h" 'evil-window-left
@@ -178,10 +184,11 @@
  "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
  "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
 
-;; help in the insert mode
+;; expand-region
 (general-define-key
- :keymaps 'insert
- "C-1" 'describe-key
+ :keymaps 'visual
+ "v" 'er/expand-region
+ "V" 'er/contract-region
  )
 
 (provide 'dev-evil)
