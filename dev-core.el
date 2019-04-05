@@ -1,4 +1,4 @@
-;;; dev-core.el -- settings that should be loaded for every buffer each time emacs starts
+;;; dev-core.el -- settings that should be loaded for every buffer each time emacs starts -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -13,8 +13,19 @@
               scroll-conservatively 10000
               auto-window-vscroll nil)
 
-(setq-default split-width-threshold 80
-              split-height-threshold 30)
+;; first try to split window side-by-side, if window width is < 90, split it top-and-down
+
+(defun dev-core--split-window (&optional window)
+  "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down."
+  (let ((window (or window (selected-window))))
+    (or (and (window-splittable-p window t)
+             (with-selected-window window
+               (split-window-right)))
+        (and (window-splittable-p window)
+             (with-selected-window window
+               (split-window-below))))))
+
+(setq-default split-window-preferred-function 'dev-core--split-window)
 
 ;; always use y-or-n-p
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -29,6 +40,7 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
+(tooltip-mode -1)
 
 ;; other minor modes I always want
 (show-paren-mode 1)          ; highlight matching paren
