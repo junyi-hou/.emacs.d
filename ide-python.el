@@ -143,9 +143,6 @@
    ;; setup linter
    (flycheck-mode 1)
 
-   ;; rainbow parentheses
-   (rainbow-delimiters-mode 1))
-
 ;; settings
 
 ;; key bindings
