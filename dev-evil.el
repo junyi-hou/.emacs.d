@@ -33,25 +33,6 @@
 
 ;; functions
 
-(defun dev--eshell-here ()
-  "Opens up a new shell in the directory associated with the current buffer's file.  The eshell is renamed to match that directory to make multiple eshell windows easier."
-  (interactive)
-  (let* ((parent (if (buffer-file-name)
-                     (file-name-directory (buffer-file-name))
-                   default-directory))
-         (height (/ (window-total-height) 3))
-         (name   (car (last (split-string parent "/" t)))))
-    (split-window-vertically (- height))
-    (evil-window-down 1)
-    (let* ((eshell-name (concat "*eshell: " name "*")))
-           (if (member eshell-name (mapcar 'buffer-name (buffer-list)))
-               (switch-to-buffer eshell-name)
-             (progn
-               (eshell "new")
-               (rename-buffer (concat "*eshell: " name "*"))
-               (insert (concat "ls"))
-               (eshell-send-input))))))
-
 (defun dev-evil--is-user-buffer ()
   "Determine whether the current buffer is a user-buffer by looking at the first char.  Return t if current buffer is not a dired tree or is a user-buffer (include *scratch* buffer)."
   (let ((name (buffer-name)))
@@ -63,20 +44,18 @@
 (defun dev-evil-next-user-buffer ()
   "Jump to the next user buffer."
   (interactive)
-  (let ((current (buffer-name)))
-    (next-buffer)
-    (if (not (dev-evil--is-user-buffer))
+  (next-buffer)
+  (if (not (dev-evil--is-user-buffer))
       (dev-evil-next-user-buffer)
-      )))
+    ))
 
 (defun dev-evil-previous-user-buffer ()
   "Jump to the previous user buffer."
   (interactive)
-  (let ((current (buffer-name)))
-    (previous-buffer)
-    (if (not (dev-evil--is-user-buffer))
+  (previous-buffer)
+  (if (not (dev-evil--is-user-buffer))
       (dev-evil-previous-user-buffer)
-      )))
+    ))
 
 (evil-define-motion dev-evil-next-three-lines ()
   (interactive)
@@ -96,13 +75,6 @@
   (if (and (evil-visual-state-p) (eq evil-visual-selection 'line))
       (indent-region (region-beginning) (region-end))
     (evil-jump-item)))
-
-(defun dev--search-point-or-region ()
-  "Search the word under the cursor if in normal mode, or search the region if in visual mode."
-  (interactive)
-  (if (evil-visual-state-p)
-      (evil-search (buffer-substring (region-beginning) (region-end)) t)
-    (evil-search (thing-at-point 'word t) t)))
 
 ;; settings
 
@@ -149,8 +121,17 @@
  "of" 'find-file
  "ob" 'ivy-switch-buffer
  "oo" 'projectile-find-file
- "os" 'dev--eshell-here
+ "os" 'dev-eshell-open-here
  "op" 'projectile-switch-project
+
+ ;; git-related
+ "gg" 'magit-status
+ "gc" 'dev-vcs-commit-current-file
+ "gC" 'magit-commit-create
+ "gd" 'magit-diff-buffer-file
+ "gl" 'magit-log-buffer-file
+ "go" 'magit-file-checkout
+ "gs" 'magit-stage-file
 
  ;; search and replace
 
@@ -190,6 +171,13 @@
  "v" 'er/expand-region
  "V" 'er/contract-region
  )
+
+;; help mode
+(general-define-key
+ :keymaps 'help-mode-map
+ :states 'motion
+ :prefix "SPC"
+ "q" 'kill-buffer-and-window)
 
 (provide 'dev-evil)
 ;;; dev-evil.el ends here
