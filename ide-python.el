@@ -3,8 +3,8 @@
 ;;; Commentary:
 ;; This module adds on top of the default python.el:
 ;; linting and autocompletion support using flycheck and company;
-;; REPL support using jupyter
-;; jump to definition using dumb-jump
+;; REPL support using jupyter;
+;; jump to definition using dumb-jump;
 ;; code formatting using py-papf
 
 ;;; Code:
@@ -13,7 +13,7 @@
 (require 'dev-autocomplete)
 (require 'dev-linter)
 (require 'dev-jump)
-(require 'dev-repl)
+(require 'dev-jupyter)
 
 (use-package company-jedi
   :after company
@@ -26,12 +26,10 @@
 
 (defcustom dev-python-default-venv "~/.virtualenv/nvimpy/"
   "Default virtual environment to use."
-  :type 'string)
+  :type 'string
+  :group 'development)
 
 ;; internal variables
-
-(defvar dev-python-repl nil
-  "Name of the python REPL buffer, nil means no such buffer.")
 
 (defvar dev-python-venv nil
   "Whether we are in a virtualenv.")
@@ -43,14 +41,31 @@
   "Save `eshell-path` variable when venv is deactivated.")
 
 ;; functions
+(defalias 'dev-python-open-or-switch-to-repl
+  (lambda () (interactive)
+    (dev-jupyter-open-or-switch-to-repl "python"))
+  "Open a jupyter repl for python interpreter.")
 
-(defalias 'dev-python--send-string
-  (lambda (string)
-    (dev-repl--send-string
-     dev-python-repl
-     (lambda (x) (insert (concat "exec(open('" x "').read())")))
-     string))
-  "Send STRING to python interpreter.")
+(defalias 'dev-python-open-remote-repl
+  (lambda () (interactive)
+    (dev-jupyter-open-remote-repl "python"))
+  "Open a remote jupyter repl for python interpreter")
+
+(defalias 'dev-python-send-line-or-region
+  (lambda () (interactive)
+    (dev-jupyter-send-line-or-region "python"))
+  "Send current line or visually selected region to python interpreter.")
+
+(defalias 'dev-python-send-buffer-or-region
+  (lambda () (interactive)
+    (dev-jupyter-send-buffer-or-region "python"))
+  "Send buffer or visually selected region to python interpreter.")
+
+(defalias 'dev-python-attach-buffer
+  (lambda () (interactive)
+    (dev-jupyter--attach-buffer "python"))
+  "Attach current code buffer to an existing python REPL")
+
 
 (defun dev-python--disable-venv ()
   "Disable virtualenv if it is loaded."
@@ -66,82 +81,24 @@
   (dev-python--disable-venv)
   (let* ((venv (or venv dev-python-default-venv))
          (bin (expand-file-name "bin/" (file-name-as-directory venv))))
-    ;; set dev-python-venv variable
-    (setq dev-python-venv
-          (file-name-nondirectory (directory-file-name venv)))
     ;; save current variables
     (setq dev-python-exec-path-no-venv (getenv "PATH")
           dev-python-eshell-path-no-venv exec-path)
     ;; set environment variables
     (setenv "PATH" (concat bin path-separator (getenv "PATH")))
     (push bin exec-path))
-  (message "entering python venv"))
-
-(defun dev-python--open-remote-repl ()
-  "Open a REPL using jupyter kernel in a remote server."
-  (interactive)
-  (dev-repl-open-repl "python3")
-  (setq dev-python-repl "*REPL[python3]*"))
-
-(defun dev-python--open-repl-or-switch-to-repl ()
-  "Open a REPL using jupyter kernel.  If there is already a python REPL opened, switch to that REPL."
-  (interactive)
-  (if dev-python-repl
-      (switch-to-buffer-other-window dev-python-repl)
-    ;; else if the repl does not exists
-    (progn
-      (dev-repl-open-repl "python3")
-      (setq dev-python-repl "*REPL[python3]*"))))
-
-(defun dev-python--run-line-or-visual ()
-  "Send current line or visually selected region to interpreter."
-  (interactive)
-  (if (evil-visual-state-p)
-      (dev-python--send-string
-       (buffer-substring (region-beginning) (region-end)))
-    ;; else: send current line
-    (dev-python--send-string (thing-at-point 'line t))))
-
-(defun dev-python--get-pos (l c)
-  "Return the buffer position at line L and column C."
-  (save-excursion
-    (goto-char (point-min))
-    (goto-line l)
-    (move-to-column c)
-    (point)))
-
-(defun dev-python--get-vline ()
-  "Return visually selected region, expended to include all of the lines."
-  (interactive)
-  (let* ((begin-line (line-number-at-pos (region-beginning)))
-         (end-line   (line-number-at-pos (region-end))))
-    (deactivate-mark)
-    (let* ((begin-pos (dev-python--get-pos begin-line 0))
-           (end-pos (dev-python--get-pos end-line (window-body-width))))
-      (buffer-substring begin-pos end-pos))))
-
-(defun dev-python--run-buffer-or-visual-line ()
-  "Send buffer or visually selected region to interpreter."
-  (interactive)
-  (if (evil-visual-state-p)
-      (progn
-        (dev-python--send-string (dev-python--get-vline))
-        (deactivate-mark))
-    ;; else: send the whole buffer
-    (dev-python--send-string (buffer-string))))
+  (message "Entering python virtual environment"))
 
 (defun dev-python--hook ()
   "Initiate venv, autocomplete and linters."
-
    ;; load venv
    (dev-python--enable-venv)
-
    ;; setup auto complete
-   (add-to-list (make-local-variable 'company-backends) 'company-jedi)
+   (make-local-variable 'company-backends)
+   (setq company-backends '((company-files company-capf company-yasnippet company-jedi)))
    (company-mode 1)
-
    ;; setup linter
-   (flycheck-mode 1)
+   (flycheck-mode 1))
 
 ;; settings
 
@@ -150,10 +107,12 @@
  :states '(motion normal visual)
  :keymaps 'python-mode-map
  :prefix "SPC"
- "rr" 'dev-python--run-buffer-or-visual-line
- "rl" 'dev-python--run-line-or-visual
- "ro" 'dev-python--open-repl-or-switch-to-repl
- "rO" 'dev-python--open-remote-repl)
+ "rr" 'dev-python-send-buffer-or-region
+ "rl" 'dev-python-send-line-or-region
+ "ro" 'dev-python-open-or-switch-to-repl
+ "rO" 'dev-python-open-remote-repl
+ "rc" 'dev-python-attach-buffer
+ "rh" 'jupyter-inspect-at-point)
 
 (add-hook 'python-mode-hook #'dev-python--hook)
 (add-hook 'python-mode-hook #'py-yapf-enable-on-save)
@@ -161,4 +120,4 @@
 (provide 'ide-python)
 ;;; ide-python ends here
 
-; LocalWords:  venv linter keymaps SPC
+; LocalWords:  venv linter keymaps SPC virtualenv
