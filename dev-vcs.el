@@ -11,6 +11,7 @@
   (evil-set-initial-state 'git-commit-mode 'insert)
   (setq magit-log-auto-more t  ; auto load logs if hit bottom
         )
+
   :general
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal)
@@ -21,7 +22,7 @@
    "TAB" 'magit-section-toggle
    "?" 'magit-dispatch
    "RET" 'dev-vcs-visit-file-at-point)
-  
+
   (:keymaps 'magit-log-mode-map
    :states '(normal motion)
    "d" (lambda () (interactive)
