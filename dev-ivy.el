@@ -14,7 +14,6 @@
         ivy-format-function #'ivy-format-function-line ; highlight til EOL
         ivy-magic-slash-non-match-action nil ; disable magic slash on nonmatch
         projectile-completion-system 'ivy  ; use projectile
-        ivy-use-virtual-buffers t  ; add recent files and bookmarks to blist
         )
   :general
   (:keymaps 'ivy-minibuffer-map
@@ -28,6 +27,29 @@
   :config
   (setq ivy-display-function #'ivy-posframe-display-at-point)
   (ivy-posframe-enable))
+
+;; functions
+
+(defun dev-ivy-open-remote-shell (&optional remote)
+  "Open a ivy menu with a list of REMOTE location.  Open a eshell at the chosen location."
+  (interactive)
+  (let* ((remote (or remote dev-default-remote-machine)))
+    (ivy-read "Where to?"
+              '("home/junyi/Documents/"
+                "home/junyi/Documents/Research/"
+                "home/junyi/Downloads/data/")
+              :action (lambda (x)
+                        (let* ((height (/ (window-total-height) 3)))
+                          (split-window-vertically (- height))
+                          (evil-window-down 1)
+                          (dev-eshell--open (concat remote x)))))))
+
+;; settings
+(general-define-key
+ :keymaps '(normal visual motion)
+ :prefix "SPC"
+ "or" 'dev-ivy-open-remote-shell)
+
 
 (provide 'dev-ivy)
 ;;; dev-ivy.el ends here
