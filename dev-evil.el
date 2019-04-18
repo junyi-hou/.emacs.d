@@ -106,6 +106,7 @@
  "w"  'evil-write
  "k"  'delete-window
  "q"  (lambda () (interactive) (kill-buffer (current-buffer)))
+ "b" 'balance-windows
 
  ;; buffer related
  "n"  'dev-evil-next-user-buffer
@@ -127,11 +128,8 @@
  ;; git-related
  "gg" 'magit-status
  "gc" 'dev-vcs-commit-current-file
- "gC" 'magit-commit-create
  "gd" 'magit-diff-buffer-file
  "gl" 'magit-log-buffer-file
- "go" 'magit-file-checkout
- "gs" 'magit-stage-file
 
  ;; search and replace
 
@@ -178,6 +176,7 @@
  :states 'motion
  :prefix "SPC"
  "q" 'kill-buffer-and-window)
+
 
 (provide 'dev-evil)
 ;;; dev-evil.el ends here
