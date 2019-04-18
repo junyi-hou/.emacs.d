@@ -8,6 +8,10 @@
 (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror)
 
+;; tramp uses ssh
+(require 'tramp)
+(setq tramp-default-method "ssh")
+
 ;; smooth scroll
 (setq-default scroll-step 1
               scroll-conservatively 10000
@@ -21,9 +25,7 @@
     (or (and (window-splittable-p window t)
              (with-selected-window window
                (split-window-right)))
-        (and (window-splittable-p window)
-             (with-selected-window window
-               (split-window-below))))))
+        (split-window-below))))
 
 (setq-default split-window-preferred-function 'dev-core--split-window)
 
@@ -47,13 +49,16 @@
 (global-visual-line-mode 1)  ; word wrapping
 (add-hook 'prog-mode-hook #'hs-minor-mode) ; enable folding for all prog modes
 
+;; some major modes
+(use-package csv-mode)
+
 ;; line numbers
 (setq-default display-line-numbers-type 'visual
               display-line-numbers-current-absolute t
               display-line-numbers-width 4
               display-line-numbers-widen t)
 
-(global-display-line-numbers-mode)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
@@ -78,6 +83,11 @@
 ;; When something changes a file, automatically refresh the
 ;; buffer containing that file so they can't get out of sync.
 (global-auto-revert-mode t)
+
+(defgroup development nil
+  "Group for customizing development group."
+  :prefix "dev-"
+  :group 'emacs)
 
 (provide 'dev-core)
 ;;; dev-core.el ends here
