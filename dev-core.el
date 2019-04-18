@@ -84,10 +84,18 @@
 ;; buffer containing that file so they can't get out of sync.
 (global-auto-revert-mode t)
 
+
+;; define my groups
 (defgroup development nil
   "Group for customizing development group."
   :prefix "dev-"
   :group 'emacs)
+
+(defcustom dev-default-remote-machine
+  "/ssh:remote:/"
+  "The remote machine."
+  :type 'string
+  :group 'development)
 
 (provide 'dev-core)
 ;;; dev-core.el ends here
