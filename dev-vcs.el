@@ -19,8 +19,9 @@
    "K" 'magit-section-backward-sibling
    "<tab>" 'magit-section-toggle
    "TAB" 'magit-section-toggle
-   "?" 'magit-dispatch)
-
+   "?" 'magit-dispatch
+   "RET" 'dev-vcs-visit-file-at-point)
+  
   (:keymaps 'magit-log-mode-map
    :states '(normal motion)
    "d" (lambda () (interactive)
@@ -43,6 +44,15 @@
     (error "There are other files in the staging area, abort action"))
   (magit-stage-file (buffer-file-name))
   (magit-commit-create))
+
+(defun dev-vcs-visit-file-at-point (&optional file)
+  "Show FILE or file at point in magit buffer using `magit-file-at-point' function in the previous window."
+  (interactive)
+  (let ((file (or file (expand-file-name (magit-file-at-point)))))
+    (unless file
+      (error "No file at point"))
+  (other-window -1)
+  (find-file file)))
 
 
 ;; settings
