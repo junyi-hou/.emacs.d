@@ -97,5 +97,19 @@
   :type 'string
   :group 'development)
 
+(defcustom dev-default-pairs
+  (let ((hash (make-hash-table :test 'equal)))
+        (puthash "\"" "\"" hash)
+        (puthash "\'" "\'" hash)
+        (puthash "(" ")" hash)
+        (puthash "\{" "\}" hash)
+        (puthash "[" "]" hash)
+        (puthash "\`" "\'" hash)
+        hash)
+  "My auto pair system."
+  :group 'development
+  :type 'hash-table)
+
+
 (provide 'dev-core)
 ;;; dev-core.el ends here

@@ -76,6 +76,14 @@
       (indent-region (region-beginning) (region-end))
     (evil-jump-item)))
 
+(defun dev-evil-insert-pair (pair-begin)
+  "Insert a pair defined by PAIR-BEGIN.  Pairs are stored in `dev-default-pairs'.  One can overwrite them in different major modes."
+  (interactive)
+  (let* ((pair-end (gethash pair-begin dev-default-pairs)))
+    (when pair-end
+      (insert (concat pair-begin pair-end))
+      (left-char 1))))
+
 ;; settings
 
 ;; leader: SPC
@@ -159,6 +167,13 @@
  "C-j" 'evil-window-down
  "C-k" 'evil-window-up
  "C-l" 'evil-window-right
+
+ "M-(" (lambda () (interactive) (dev-evil-insert-pair "("))
+ "M-{" (lambda () (interactive) (dev-evil-insert-pair "\{"))
+ "M-[" (lambda () (interactive) (dev-evil-insert-pair "["))
+ "M-'" (lambda () (interactive) (dev-evil-insert-pair "\'"))
+ "M-\"" (lambda () (interactive) (dev-evil-insert-pair "\""))
+ "M-`" (lambda () (interactive) (dev-evil-insert-pair "\`"))
 
  "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
  "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
