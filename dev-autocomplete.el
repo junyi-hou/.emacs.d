@@ -32,6 +32,7 @@
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         company-dabbrev-code-other-buffers t
+        company-minimum-prefix-length 2
         company-backends  ; set default backends
         '((company-files company-capf company-yasnippet))))
 

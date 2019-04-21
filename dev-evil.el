@@ -174,6 +174,8 @@
  "M-'" (lambda () (interactive) (dev-evil-insert-pair "\'"))
  "M-\"" (lambda () (interactive) (dev-evil-insert-pair "\""))
  "M-`" (lambda () (interactive) (dev-evil-insert-pair "\`"))
+ "M-l" 'right-char
+ "M-h" 'left-char
 
  "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
  "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
