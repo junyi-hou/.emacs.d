@@ -47,7 +47,7 @@
                     :height 130
                     :weight 'normal
                     :width 'normal)
-(add-to-list 'default-frame-alist '(alpha . (85 . 60)))  ; transparency
+(add-to-list 'default-frame-alist '(alpha . (100 . 85)))  ; transparency
 (load-theme 'zenburn t)  ; theme
 (telephone-line-mode 1)  ; status line
 (add-hook 'prog-mode-hook 'highlight-indentation-mode)  ; enable indentation hint for all programing works
