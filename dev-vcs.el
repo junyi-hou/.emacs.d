@@ -23,6 +23,14 @@
    "?" 'magit-dispatch
    "RET" 'dev-vcs-visit-file-at-point)
 
+  (:keymaps 'magit-status-mode-map
+   :state '(motion normal)
+   "d" 'magit-discard
+   "c" 'magit-commit
+   "p" 'magit-push
+   "f" 'magit-fetch
+   "F" 'magit-pull)
+
   (:keymaps 'magit-log-mode-map
    :states '(normal motion)
    "d" (lambda () (interactive)
