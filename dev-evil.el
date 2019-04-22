@@ -39,6 +39,7 @@
     (cond ((string-equal "*scratch*" name) t)
           ((string-equal "*" (substring name 0 1)) nil)
           ((string-equal major-mode "dired-mode") nil)
+          ((string-equal "magit-" (substring name 0 6)) nil)
           (t t))))
 
 (defun dev-evil-next-user-buffer ()
