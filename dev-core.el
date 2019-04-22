@@ -72,7 +72,7 @@
 ;; garbage collection. This means GC runs less often, which speeds
 ;; up some operations.
 (setq-default large-file-warning-threshold nil
-              gc-cons-threshold 20000000)
+              gc-cons-threshold 40000000)
 
 ;; direct backup files to /tmp
 (setq-default backup-directory-alist
