@@ -94,6 +94,8 @@
   "Send STRING to the KERNEL repl in BUFFER.  Go back to current buffer."
   (let* ((repl-buffer dev-jupyter-repl)
          (code-buffer (current-buffer)))
+    (unless dev-jupyter-repl
+      (dev-jupyter--attach-buffer kernel))
     (switch-to-buffer-other-window repl-buffer)
     (goto-char (point-max))
     (insert string)
