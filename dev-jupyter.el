@@ -76,6 +76,7 @@
       (rename-buffer (concat "*eshell[remote-" kernel "-backend]*"))
       (insert (concat "./jupyter kernel --kernel=" kernel))
       (eshell-send-input)
+      (evil-normal-state)
       (sit-for 1)
       (let* ((beg (search-backward-regexp "\/run/user\/.*?"))
              (end (line-end-position))
