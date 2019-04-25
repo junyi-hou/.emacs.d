@@ -1,8 +1,10 @@
-;;; dev-ivy.el -- config for ivy -*- lexical-binding: t; -*-
+;;; bc-ivy.el -- config for ivy -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
 ;;; Code:
+
+(require 'bc-core)
 
 (use-package ivy
   :init
@@ -30,10 +32,10 @@
 
 ;; functions
 
-(defun dev-ivy-open-remote-shell (&optional remote)
+(defun bc-ivy-open-remote-shell (&optional remote)
   "Open a ivy menu with a list of REMOTE location.  Open a eshell at the chosen location."
   (interactive)
-  (let* ((remote (or remote dev-default-remote-machine)))
+  (let* ((remote (or remote bc-default-remote)))
     (ivy-read "Where to?"
               '("home/junyi/Documents/"
                 "home/junyi/Documents/Research/"
@@ -42,14 +44,14 @@
                         (let* ((height (/ (window-total-height) 3)))
                           (split-window-vertically (- height))
                           (evil-window-down 1)
-                          (dev-eshell--open (concat remote x)))))))
+                          (bc-eshell--open (concat remote x)))))))
 
 ;; settings
 (general-define-key
  :keymaps '(normal visual motion)
  :prefix "SPC"
- "or" 'dev-ivy-open-remote-shell)
+ "or" 'bc-ivy-open-remote-shell)
 
 
-(provide 'dev-ivy)
-;;; dev-ivy.el ends here
+(provide 'bc-ivy)
+;;; bc-ivy.el ends here

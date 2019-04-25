@@ -92,7 +92,7 @@
   :prefix "bc-"
   :group 'emacs)
 
-(defcustom bc-default-remote-machine
+(defcustom bc-default-remote
   "/ssh:remote:/"
   "The remote machine."
   :type 'string
