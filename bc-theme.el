@@ -16,8 +16,8 @@
                        telephone-line-erc-modified-channels-segment))
           (nil      . (telephone-line-buffer-segment))))
   (setq telephone-line-rhs
-        '((evil      . (telephone-line-misc-info-segment
-                       telephone-line-major-mode-segment)))))
+        '((nil      . (telephone-line-misc-info-segment))
+          (evil     . (telephone-line-major-mode-segment)))))
 
 ;; indentation guide
 (use-package highlight-indentation)
