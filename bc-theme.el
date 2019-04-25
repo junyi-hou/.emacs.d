@@ -1,5 +1,8 @@
-;;; dev-theme.el -- setting themes -*- lexical-binding: t; -*-
+;;; bc-theme.el -- setting themes -*- lexical-binding: t; -*-
 
+;;; Commentary:
+
+;;; Code:
 
 ;; theme
 (use-package zenburn-theme)
@@ -13,14 +16,13 @@
                        telephone-line-erc-modified-channels-segment))
           (nil      . (telephone-line-buffer-segment))))
   (setq telephone-line-rhs
-        '((nil      . (telephone-line-misc-info-segment
-                       telephone-line-major-mode-segment))
-          (evil     . (telephone-line-airline-position-segment)))))
+        '((evil      . (telephone-line-misc-info-segment
+                       telephone-line-major-mode-segment)))))
 
 ;; indentation guide
 (use-package highlight-indentation)
 
-(defun dev-set-highlight-stipple ()
+(defun bc-theme--set-highlight-stipple ()
   "Define custom stipple for highlight-indentation.  See https://github.com/antonj/Highlight-Indentation-for-Emacs/issues/16."
   (let* ((char-width (frame-char-width (selected-frame)))
         (hl-stipple (if (> char-width 8)
@@ -35,9 +37,10 @@
                         :foreground "yellow")))
 
 ;; Patch highlight-indentation-mode to set/update a stipple attribute
-(defadvice highlight-indentation-mode (before set-highlight-indentation-stipple activate)
-"Set the stipple used by indentation highlighting."
-  (dev-set-highlight-stipple))
+(defadvice highlight-indentation-mode
+    (before set-highlight-indentation-stipple activate)
+  "Set the stipple used by indentation highlighting."
+  (bc-theme--set-highlight-stipple))
 
 ;; load everything
 
@@ -50,7 +53,7 @@
 (add-to-list 'default-frame-alist '(alpha . (100 . 85)))  ; transparency
 (load-theme 'zenburn t)  ; theme
 (telephone-line-mode 1)  ; status line
-(add-hook 'prog-mode-hook 'highlight-indentation-mode)  ; enable indentation hint for all programing works
+(add-hook 'prog-mode-hook 'highlight-indentation-mode)  ; enable indentation hint for all programming modes
 
-(provide 'dev-theme)
-;;; dev-theme.el ends here
+(provide 'bc-theme)
+;;; bc-theme.el ends here
