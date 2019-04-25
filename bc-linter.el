@@ -1,4 +1,4 @@
-;;; dev-linter.el -- provide on-the-fly linting -*- lexical-binding: t; -*-
+;;; bc-linter.el -- provide on-the-fly linting -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -20,5 +20,5 @@
 
 (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
 
-(provide 'dev-linter)
-;;; dev-linter ends here
+(provide 'bc-linter)
+;;; bc-linter ends here
