@@ -126,7 +126,7 @@
  "N"  'bc-evil-previous-user-buffer
 
  ;; split
- "|"   (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
+ "\\"   (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
  "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
 
  ;; open stuffs
