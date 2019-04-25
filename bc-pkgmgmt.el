@@ -1,4 +1,4 @@
-;;; dev-pkgmgmt.el -- package management -*- lexical-binding: t; -*-
+;;; bc-pkgmgmt.el -- package management -*- lexical-binding: t; -*-
 
 
 ;;; Commentary:
@@ -31,5 +31,5 @@
 
 (setq load-prefer-newer t)
 
-(provide 'dev-pkgmgmt)
-;;; dev-pkgmgmt.el ends here
+(provide 'bc-pkgmgmt)
+;;; bc-pkgmgmt.el ends here
