@@ -1,4 +1,4 @@
-;;; dev-vcs.el -- version control software settings: mainly magit
+;;; bc-vcs.el -- version control software settings: mainly magit
 
 ;;; Commentary:
 
@@ -9,8 +9,7 @@
   (dolist (mode '(magit-status-mode magit-diff-mode magit-log-mode))
     (evil-set-initial-state mode 'motion))
   (evil-set-initial-state 'git-commit-mode 'insert)
-  (setq magit-log-auto-more t  ; auto load logs if hit bottom
-        )
+  (setq magit-log-auto-more t)
 
   :general
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
@@ -21,7 +20,7 @@
    "<tab>" 'magit-section-toggle
    "TAB" 'magit-section-toggle
    "?" 'magit-dispatch
-   "RET" 'dev-vcs-visit-file-at-point)
+   "RET" 'bc-vcs-visit-file-at-point)
 
   (:keymaps 'magit-status-mode-map
    :state '(motion normal)
@@ -29,7 +28,8 @@
    "c" 'magit-commit
    "p" 'magit-push
    "f" 'magit-fetch
-   "F" 'magit-pull)
+   "F" 'magit-pull
+   "b" 'magit-branch)
 
   (:keymaps 'magit-log-mode-map
    :states '(normal motion)
@@ -44,7 +44,7 @@
    "r" (lambda () (interactive) (magit-refresh-buffer))))
 
 
-(defun dev-vcs-commit-current-file ()
+(defun bc-vcs-commit-current-file ()
   "Open a `git-commit-mode' window, prompt for commit message and commit the current file.  If there are other staged but uncommitted files, error out."
   (interactive)
   (when (-remove (lambda (x)
@@ -54,7 +54,7 @@
   (magit-stage-file (buffer-file-name))
   (magit-commit-create))
 
-(defun dev-vcs-visit-file-at-point (&optional file)
+(defun bc-vcs-visit-file-at-point (&optional file)
   "Show FILE or file at point in magit buffer using `magit-file-at-point' function in the previous window."
   (interactive)
   (let ((file (or file (expand-file-name (magit-file-at-point)))))
@@ -66,5 +66,5 @@
 
 ;; settings
 
-(provide 'dev-vcs)
-;;; dev-vcs.el ends here
+(provide 'bc-vcs)
+;;; bc-vcs.el ends here
