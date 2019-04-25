@@ -106,6 +106,7 @@
         (puthash "\{" "\}" hash)
         (puthash "[" "]" hash)
         (puthash "\`" "\'" hash)
+        (puthash "<" ">" hash)
         hash)
   "My auto pair system."
   :group 'baby-carrots
