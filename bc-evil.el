@@ -73,13 +73,13 @@
   "Assign tab key to:
     `indent-region' if in visual line mode;
     `er/expand-region' if in visual mode;
-    `evil-shift-right-line' if in insert mode
+    `indent-region' of the current line if in insert mode;
     `evil-jump-item' otherwise \(i.e., in the normal state\)"
   (interactive)
   (cond ((and (evil-visual-state-p) (eq evil-visual-selection 'line))
          (indent-region (region-beginning) (region-end)))
-        ((evil-visual-state-p) (er/expand-region))
-        ((evil-insert-state-p) (evil-shift-right-line))
+        ((evil-visual-state-p) (er/expand-region 1))
+        ((evil-insert-state-p) (indent-region (line-beginning-position) (point)))
         (t (evil-jump-item))))
 
 (defun bc-evil-insert-pair (pair-begin)
@@ -89,6 +89,7 @@
     (when pair-end
       (insert (concat pair-begin pair-end))
       (left-char 1))))
+
 ;; settings
 
 ;; leader: SPC
@@ -158,10 +159,8 @@
  "H" 'evil-first-non-blank-of-visual-line
  "J" 'bc-evil-next-three-lines
  "K" 'bc-evil-previous-three-lines
- "L" 'evil-end-of-visual-line
+ "L" 'evil-end-of-visual-line)
 
- "TAB" 'bc-evil-smart-tab
- "<tab>" 'bc-evil-smart-tab)
 
 ;; combination key that should be active in all states
 (general-define-key
@@ -179,6 +178,12 @@
  "M-`" (lambda () (interactive) (bc-evil-insert-pair "\`"))
  "M-l" 'right-char
  "M-h" 'left-char
+ "M-<DEL>" (lambda () (interactive)
+             (backward-delete-char-untabify 1)
+             (delete-char 1))
+
+ "TAB" 'bc-evil-smart-tab
+ "<tab>" 'bc-evil-smart-tab
 
  "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
  "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
