@@ -12,8 +12,8 @@
 (require 'hl-defined)
 
 (custom-set-faces
- '(hdefd-functions ((t (:inherit font-lock-function-name-face))))
- '(hdefd-variables ((t (:inherit font-lock-constant-face))))
+ '(hdefd-functions ((t (:inherit font-lock-builtin-face))))
+ '(hdefd-variables ((t (:inherit font-lock-variable-name-face))))
  )
 
 (eval-after-load 'dash '(dash-enable-font-lock)) ; syntax highlight for dash
