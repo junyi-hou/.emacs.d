@@ -1,4 +1,4 @@
-;;; dev-jump.el -- jump to definition -*- lexical-binding: t; -*-
+;;; bc-jump.el -- jump to definition -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -18,5 +18,5 @@
    "jb" 'dumb-jump-back
    "jj" 'dumb-jump-quick-look))
 
-(provide 'dev-jump)
-;;; dev-jump.el ends here
+(provide 'bc-jump)
+;;; bc-jump.el ends here
