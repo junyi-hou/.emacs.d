@@ -16,6 +16,7 @@
   :after company
   :commands (company-shell company-shell-env))
 
+(require 'bc-core)
 (require 'bc-autocomplete)
 
 (defun bc-eshell--format-path-name (path)
