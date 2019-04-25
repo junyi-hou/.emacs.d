@@ -17,12 +17,6 @@
         evil-want-C-d-scroll t)
   (evil-mode 1))
 
-(use-package evilmi
-  :after evil
-  :commands 'evilmi-jumpit
-  :config
-  (evilmi-mode 1))
-
 (use-package evil-surround
   :after evil
   :config
@@ -78,22 +72,21 @@
 (defun bc-evil-smart-tab ()
   "Assign tab key to:
     `indent-region' if in visual line mode;
-    `evilmi-jumpit' if in visual or normal mode.
-    `yas-expand-snippet' if in insert mode
-    `yas-next-field' if in a yas-field"
+    `bc-autocomplete-yas-expand-regexp' if in insert mode and looking at a snippet
+    `indent-line' if in insert mode and not looking at a snippet"
   (interactive)
-  (if (and (evil-visual-state-p) (eq evil-visual-selection 'line))
-      (indent-region (region-beginning) (region-end))
-    (evil-jump-item)))
+  (cond ((and (evil-visual-state-p) (eq evil-visual-selection 'line))
+         (indent-region (region-beginning) (region-end)))
+        ((evil-insert-state-p) (bc-autocomplete-yas-expand-regexp))
+        (t (evil-jump-item))))
 
 (defun bc-evil-insert-pair (pair-begin)
-  "Insert a pair defined by PAIR-BEGIN.  Pairs are stored in `dev-default-pairs'.  One can overwrite them in different major modes."
+  "Insert a pair defined by PAIR-BEGIN.  Pairs are stored in `bc-default-pairs'.  One can overwrite them in different major modes."
   (interactive)
-  (let* ((pair-end (gethash pair-begin dev-default-pairs)))
+  (let* ((pair-end (gethash pair-begin bc-default-pairs)))
     (when pair-end
       (insert (concat pair-begin pair-end))
       (left-char 1))))
-
 ;; settings
 
 ;; leader: SPC
@@ -192,8 +185,7 @@
 (general-define-key
  :keymaps 'visual
  "v" 'er/expand-region
- "V" 'er/contract-region
- )
+ "V" 'er/contract-region)
 
 ;; help mode
 (general-define-key
