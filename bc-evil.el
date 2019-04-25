@@ -45,7 +45,7 @@
           ((string-equal "magit-" (substring name 0 6)) nil)
           (t t))))
 
-(defun be-evil-next-user-buffer ()
+(defun bc-evil-next-user-buffer ()
   "Jump to the next user buffer."
   (interactive)
   (next-buffer)
