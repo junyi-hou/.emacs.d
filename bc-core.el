@@ -1,4 +1,4 @@
-;;; dev-core.el -- settings that should be loaded for every buffer each time emacs starts -*- lexical-binding: t; -*-
+;;; bc-core.el -- settings that should be loaded for every buffer each time emacs starts -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -19,7 +19,7 @@
 
 ;; first try to split window side-by-side, if window width is < 90, split it top-and-down
 
-(defun dev-core--split-window (&optional window)
+(defun bc-core--split-window (&optional window)
   "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down."
   (let ((window (or window (selected-window))))
     (or (and (window-splittable-p window t)
@@ -27,7 +27,7 @@
                (split-window-right)))
         (split-window-below))))
 
-(setq-default split-window-preferred-function 'dev-core--split-window)
+(setq-default split-window-preferred-function 'bc-core--split-window)
 
 ;; always use y-or-n-p
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -49,13 +49,10 @@
 (global-visual-line-mode 1)  ; word wrapping
 (add-hook 'prog-mode-hook #'hs-minor-mode) ; enable folding for all prog modes
 
-;; some major modes
-(use-package csv-mode)
-
 ;; line numbers
 (setq-default display-line-numbers-type 'visual
               display-line-numbers-current-absolute t
-              display-line-numbers-width 4
+              display-line-numbers-width 3
               display-line-numbers-widen t)
 
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
@@ -66,13 +63,18 @@
               python-indent-offset 4
               electric-indent-inhibit t  ; don't change indentation for me
               indicate-empty-lines nil)
-(setq backward-delete-char-untabify-method 'hungry)  ; bs kill whole tab
 
-;; Allow 20MB of memory (instead of 0.76MB) before calling
-;; garbage collection. This means GC runs less often, which speeds
-;; up some operations.
+(setq-default backward-delete-char-untabify-method 'hungry)  ; bs kill whole tab
+
+;; gc only when idling for longer than 5 seconds
 (setq-default large-file-warning-threshold nil
-              gc-cons-threshold 40000000)
+              gc-cons-threshold most-positive-fixnum)
+
+(defun bc-core--gc ()
+  "Start garbage collection."
+  (setq gc-cons-threshold 400000))
+
+(run-with-idle-timer 5 nil #'bc-core--gc)
 
 ;; direct backup files to /tmp
 (setq-default backup-directory-alist
@@ -84,20 +86,19 @@
 ;; buffer containing that file so they can't get out of sync.
 (global-auto-revert-mode t)
 
-
 ;; define my groups
-(defgroup development nil
-  "Group for customizing development group."
-  :prefix "dev-"
+(defgroup baby-carrots nil
+  "My settings"
+  :prefix "bc-"
   :group 'emacs)
 
-(defcustom dev-default-remote-machine
+(defcustom bc-default-remote-machine
   "/ssh:remote:/"
   "The remote machine."
   :type 'string
-  :group 'development)
+  :group 'baby-carrots)
 
-(defcustom dev-default-pairs
+(defcustom bc-default-pairs
   (let ((hash (make-hash-table :test 'equal)))
         (puthash "\"" "\"" hash)
         (puthash "\'" "\'" hash)
@@ -107,9 +108,9 @@
         (puthash "\`" "\'" hash)
         hash)
   "My auto pair system."
-  :group 'development
+  :group 'baby-carrots
   :type 'hash-table)
 
 
-(provide 'dev-core)
-;;; dev-core.el ends here
+(provide 'bc-core)
+;;; bc-core.el ends here
