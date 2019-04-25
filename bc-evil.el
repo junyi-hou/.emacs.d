@@ -1,4 +1,4 @@
-;;; dev-evil.el -- evil mode related settings -*- lexical-binding: t; -*-
+;;; bc-evil.el -- evil mode related settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -17,6 +17,12 @@
         evil-want-C-d-scroll t)
   (evil-mode 1))
 
+(use-package evilmi
+  :after evil
+  :commands 'evilmi-jumpit
+  :config
+  (evilmi-mode 1))
+
 (use-package evil-surround
   :after evil
   :config
@@ -31,9 +37,12 @@
 (use-package expand-region
   :commands (er/expand-region er/contract-region))
 
+(require 'bc-pkgmgmt)
+(require 'bc-core)
+
 ;; functions
 
-(defun dev-evil--is-user-buffer ()
+(defun bc-evil--is-user-buffer ()
   "Determine whether the current buffer is a user-buffer by looking at the first char.  Return t if current buffer is not a dired tree or is a user-buffer (include *scratch* buffer)."
   (let ((name (buffer-name)))
     (cond ((string-equal "*scratch*" name) t)
@@ -42,42 +51,42 @@
           ((string-equal "magit-" (substring name 0 6)) nil)
           (t t))))
 
-(defun dev-evil-next-user-buffer ()
+(defun be-evil-next-user-buffer ()
   "Jump to the next user buffer."
   (interactive)
   (next-buffer)
-  (if (not (dev-evil--is-user-buffer))
-      (dev-evil-next-user-buffer)
-    ))
+  (if (not (bc-evil--is-user-buffer))
+      (bc-evil-next-user-buffer)))
 
-(defun dev-evil-previous-user-buffer ()
+(defun bc-evil-previous-user-buffer ()
   "Jump to the previous user buffer."
   (interactive)
   (previous-buffer)
-  (if (not (dev-evil--is-user-buffer))
-      (dev-evil-previous-user-buffer)
-    ))
+  (if (not (bc-evil--is-user-buffer))
+      (bc-evil-previous-user-buffer)))
 
-(evil-define-motion dev-evil-next-three-lines ()
+(evil-define-motion bc-evil-next-three-lines ()
   (interactive)
   (evil-next-visual-line 3)
   )
 
-(evil-define-motion dev-evil-previous-three-lines ()
+(evil-define-motion bc-evil-previous-three-lines ()
   (interactive)
   (evil-previous-visual-line 3)
   )
 
-(defun dev-evil-smart-tab ()
+(defun bc-evil-smart-tab ()
   "Assign tab key to:
-`indent-region` if in visual line mode;
-`evil-jump-items` if in visual or normal mode."
+    `indent-region' if in visual line mode;
+    `evilmi-jumpit' if in visual or normal mode.
+    `yas-expand-snippet' if in insert mode
+    `yas-next-field' if in a yas-field"
   (interactive)
   (if (and (evil-visual-state-p) (eq evil-visual-selection 'line))
       (indent-region (region-beginning) (region-end))
     (evil-jump-item)))
 
-(defun dev-evil-insert-pair (pair-begin)
+(defun bc-evil-insert-pair (pair-begin)
   "Insert a pair defined by PAIR-BEGIN.  Pairs are stored in `dev-default-pairs'.  One can overwrite them in different major modes."
   (interactive)
   (let* ((pair-end (gethash pair-begin dev-default-pairs)))
@@ -118,25 +127,23 @@
  "b" 'balance-windows
 
  ;; buffer related
- "n"  'dev-evil-next-user-buffer
- "N"  'dev-evil-previous-user-buffer
+ "n"  'bc-evil-next-user-buffer
+ "N"  'bc-evil-previous-user-buffer
 
  ;; split
- "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
  "|"   (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
  "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
- "_"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
 
  ;; open stuffs
  "of" 'find-file
  "ob" 'ivy-switch-buffer
  "oo" 'projectile-find-file
- "os" 'dev-eshell-open-here
+ "os" 'bc-eshell-open-here
  "op" 'projectile-switch-project
 
  ;; git-related
  "gg" 'magit-status
- "gc" 'dev-vcs-commit-current-file
+ "gc" 'bc-vcs-commit-current-file
  "gd" 'magit-diff-buffer-file
  "gl" 'magit-log-buffer-file
 
@@ -154,12 +161,12 @@
  "k" 'evil-previous-visual-line
 
  "H" 'evil-first-non-blank-of-visual-line
- "J" 'dev-evil-next-three-lines
- "K" 'dev-evil-previous-three-lines
+ "J" 'bc-evil-next-three-lines
+ "K" 'bc-evil-previous-three-lines
  "L" 'evil-end-of-visual-line
 
- "TAB" 'dev-evil-smart-tab
- "<tab>" 'dev-evil-smart-tab)
+ "TAB" 'bc-evil-smart-tab
+ "<tab>" 'bc-evil-smart-tab)
 
 ;; combination key that should be active in all states
 (general-define-key
@@ -169,12 +176,12 @@
  "C-k" 'evil-window-up
  "C-l" 'evil-window-right
 
- "M-(" (lambda () (interactive) (dev-evil-insert-pair "("))
- "M-{" (lambda () (interactive) (dev-evil-insert-pair "\{"))
- "M-[" (lambda () (interactive) (dev-evil-insert-pair "["))
- "M-'" (lambda () (interactive) (dev-evil-insert-pair "\'"))
- "M-\"" (lambda () (interactive) (dev-evil-insert-pair "\""))
- "M-`" (lambda () (interactive) (dev-evil-insert-pair "\`"))
+ "M-(" (lambda () (interactive) (bc-evil-insert-pair "("))
+ "M-{" (lambda () (interactive) (bc-evil-insert-pair "\{"))
+ "M-[" (lambda () (interactive) (bc-evil-insert-pair "["))
+ "M-'" (lambda () (interactive) (bc-evil-insert-pair "\'"))
+ "M-\"" (lambda () (interactive) (bc-evil-insert-pair "\""))
+ "M-`" (lambda () (interactive) (bc-evil-insert-pair "\`"))
  "M-l" 'right-char
  "M-h" 'left-char
 
@@ -196,7 +203,5 @@
  "q" 'kill-buffer-and-window)
 
 
-(provide 'dev-evil)
-;;; dev-evil.el ends here
-
-; LocalWords:  SPC
+(provide 'bc-evil)
+;;; bc-evil.el ends here
