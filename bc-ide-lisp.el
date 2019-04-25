@@ -9,20 +9,12 @@
 (require 'bc-jump)
 
 ;; load stuffs
-(require 'hl-defined)
-
-(custom-set-faces
- '(hdefd-functions ((t (:inherit font-lock-builtin-face))))
- '(hdefd-variables ((t (:inherit font-lock-variable-name-face))))
- )
-
 (eval-after-load 'dash '(dash-enable-font-lock)) ; syntax highlight for dash
 
 (add-hook 'emacs-lisp-mode-hook (lambda ()
                                   (company-mode 1)
                                   (dumb-jump-mode 1)
-                                  (flycheck-mode 1)
-                                  (hdefd-highlight-mode 1)))
+                                  (flycheck-mode 1)))
 
 
 (provide 'bc-ide-lisp)
