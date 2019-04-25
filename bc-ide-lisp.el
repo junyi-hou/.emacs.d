@@ -19,6 +19,5 @@
                                   (flycheck-mode 1)))
 
 
-
 (provide 'bc-ide-lisp)
 ;;; bc-ide-lisp.el ends here

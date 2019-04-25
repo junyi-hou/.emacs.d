@@ -106,10 +106,10 @@ return the formatted path name."
 ;; hook
 
 ;; alias
-(eshell/alias "ff" "bc-eshell-open-file-in-parent-buffer $1")
-(eshell/alias "cls" "bc-eshell-clear-buffer")
-(eshell/alias "l" "ls -AlohG --color=always")
-(eshell/alias "cd" "bc-eshell-cd $1")
+;; (eshell/alias "ff" "bc-eshell-open-file-in-parent-buffer $1")
+;; (eshell/alias "cls" "bc-eshell-clear-buffer")
+;; (eshell/alias "l" "ls -AlohG --color=always")
+;; (eshell/alias "cd" "bc-eshell-cd $1")
 
 (defun bc-eshell--keymaps ()
   "Define keymap for eshell."
@@ -122,9 +122,7 @@ return the formatted path name."
    :states 'normal
    :keymaps 'eshell-mode-map
    :prefix "SPC"
-   "q" (lambda () (interactive)
-         (kill-buffer)
-         (evil-quit))))
+   "q" 'kill-buffer-and-window))
 
 (defun bc-eshell--autocomplete ()
   "Enable `company-mode' for `eshell-mode'."

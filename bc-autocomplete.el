@@ -6,7 +6,7 @@
 
 (use-package yasnippet
   :commands
-  (yas-minor-mode yas-reload-all yas-maybe-expand yas-next-field yas-prev-field
+  (yas-minor-mode yas-reload-all yas-expand yas-next-field yas-prev-field
    yas-expand-snippet yas-lookup-snippet)
   :general
   (:keymaps 'yas-minor-mode-map
@@ -99,7 +99,7 @@ aa    => (defun aa ())
             (insert (car group))
             (yas-next-field)
             (setq group (cdr group))))
-      (yas-maybe-expand))))
+      (yas-expand))))
 
 ;; settings
 
