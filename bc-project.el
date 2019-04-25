@@ -1,4 +1,4 @@
-;;; dev-project.el -- config to jump to definitions -*- lexical-binding: t; -*-
+;;; bc-project.el -- config to jump to definitions -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -13,5 +13,5 @@
   :config
   (projectile-mode 1))
 
-(provide 'dev-project)
-;;; dev-project.el ends here
+(provide 'bc-project)
+;;; bc-project.el ends here
