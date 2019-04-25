@@ -86,7 +86,7 @@
 ;; buffer containing that file so they can't get out of sync.
 (global-auto-revert-mode t)
 
-;; define my groups
+;; define my groups, code name baby-carrots
 (defgroup baby-carrots nil
   "My settings"
   :prefix "bc-"
