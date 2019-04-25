@@ -72,12 +72,14 @@
 (defun bc-evil-smart-tab ()
   "Assign tab key to:
     `indent-region' if in visual line mode;
-    `bc-autocomplete-yas-expand-regexp' if in insert mode and looking at a snippet
-    `indent-line' if in insert mode and not looking at a snippet"
+    `er/expand-region' if in visual mode;
+    `evil-shift-right-line' if in insert mode
+    `evil-jump-item' otherwise \(i.e., in the normal state\)"
   (interactive)
   (cond ((and (evil-visual-state-p) (eq evil-visual-selection 'line))
          (indent-region (region-beginning) (region-end)))
-        ((evil-insert-state-p) (bc-autocomplete-yas-expand-regexp))
+        ((evil-visual-state-p) (er/expand-region))
+        ((evil-insert-state-p) (evil-shift-right-line))
         (t (evil-jump-item))))
 
 (defun bc-evil-insert-pair (pair-begin)
