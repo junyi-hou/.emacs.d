@@ -1,4 +1,4 @@
-;;; dev-style.el -- sytle guide: spell and grammar check -*- lexical-binding: t; -*-
+;;; bc-style.el -- sytle guide: spell and grammar check -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -20,5 +20,5 @@
 (add-hook 'text-mode-hook (lambda () (flyspell-mode)))
 (add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode)))
 
-(provide 'dev-style)
-;;; dev-style.el ends here
+(provide 'bc-style)
+;;; bc-style.el ends here
