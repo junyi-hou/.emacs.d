@@ -87,7 +87,7 @@ If REMOTE is given, use it, otherwise use `bc-default-remote' instead."
 (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
   "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
   (interactive)
-  (unless jupyter-current-client
+  (unless (boundp 'jupyter-current-client)
     (let* ((connection-file (when remote
                                 (bc-jupyter--start-remote-kernel kernel))))
       (bc-jupyter--start-repl kernel remote)))
