@@ -55,14 +55,15 @@
     (push bin exec-path))
   (message "Entering python virtual environment"))
 
-(defun bc-jupyter-start-repl (kernel &optional remote)
+(defun bc-jupyter--start-repl (kernel &optional remote)
   "Initiate a REPL for KERNEL and attach it to the current buffer.
 If REMOTE is provided, start an remote kernel and connect to it."
   (bc-jupyter--enable-venv)
   (if remote
-      (jupyter-connect-repl (bc-jupyter--start-remote-kernel kernel remote)
-                            kernel
-                            (current-buffer))
+      (let ((connection-file (bc-jupyter--start-remote-kernel kernel remote)))
+        (jupyter-connect-repl connection-file
+                              kernel
+                              (current-buffer)))
     (jupyter-run-repl kernel kernel (current-buffer))))
 
 (defun bc-jupyter--start-remote-kernel (kernel &optional remote)
@@ -71,7 +72,7 @@ If REMOTE is given, use it, otherwise use `bc-default-remote' instead."
   (interactive)
   (let* ((code-buffer (current-buffer))
          (remote (or remote bc-default-remote)))
-    (bc-eshell--open (remote "home/junyi/.virtualenv/nvimpy/bin/"))
+    (bc-eshell--open (concat remote "home/junyi/.virtualenv/nvimpy/bin/"))
     (insert
      (concat
       "jupyter kernel --kernel="
@@ -82,6 +83,16 @@ If REMOTE is given, use it, otherwise use `bc-default-remote' instead."
     (eshell-send-input)
     (switch-to-buffer code-buffer)
     (concat remote "home/junyi/" kernel ".json")))
+
+(defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
+  "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
+  (interactive)
+  (unless jupyter-current-client
+    (let* ((connection-file (when remote
+                                (bc-jupyter--start-remote-kernel kernel))))
+      (bc-jupyter--start-repl kernel remote)))
+  (jupyter-repl-pop-to-buffer))
+
 
 (defun bc-jupyter--send (string &optional process-string)
   "Send STRING to associated REPL.  If PROCESS-STRING is not nil, apply it to the STRING first."
