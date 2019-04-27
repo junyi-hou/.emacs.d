@@ -15,11 +15,50 @@
 
 ;; customizable variables
 
+(defcustom bc-jupyter-default-venv "~/.virtualenv/nvimpy/"
+  "Default virtual environment to use."
+  :type 'string
+  :group 'baby-carrots)
+
+;; internal variables
+
+(defvar bc-jupyter-venv nil
+  "Whether we are in a virtualenv.")
+
+(defvar bc-jupyter-exec-path-no-venv nil
+  "Save PATH variable when venv is deactivated.")
+
+(defvar bc-jupyter-eshell-path-no-venv nil
+  "Save `eshell-path` variable when venv is deactivated.")
+
 ;; functions
+
+(defun bc-jupyter--disable-venv ()
+  "Disable virtualenv if it is loaded."
+  (when bc-jupyter-venv
+    (setenv "PATH" bc-jupyter-exec-path-no-venv)
+    (setq exec-path bc-jupyter-eshell-path-no-venv
+          bc-jupyter-exec-path-no-venv nil
+          bc-jupyter-eshell-path-no-venv nil)))
+
+(defun bc-jupyter--enable-venv (&optional venv)
+  "Enable virtualenv.  If no VENV is given, value in `dev-python-default-venv` will be used."
+  (interactive)
+  (bc-jupyter--disable-venv)
+  (let* ((venv (or venv bc-jupyter-default-venv))
+         (bin (expand-file-name "bin/" (file-name-as-directory venv))))
+    ;; save current variables
+    (setq bc-jupyter-exec-path-no-venv (getenv "PATH")
+          bc-jupyter-eshell-path-no-venv exec-path)
+    ;; set environment variables
+    (setenv "PATH" (concat bin path-separator (getenv "PATH")))
+    (push bin exec-path))
+  (message "Entering python virtual environment"))
 
 (defun bc-jupyter-start-repl (kernel &optional remote)
   "Initiate a REPL for KERNEL and attach it to the current buffer.
 If REMOTE is provided, start an remote kernel and connect to it."
+  (bc-jupyter--enable-venv)
   (if remote
       (jupyter-connect-repl (bc-jupyter--start-remote-kernel kernel remote)
                             kernel
