@@ -10,7 +10,9 @@
 (require 'bc-eshell)
 
 (use-package jupyter
-  :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next))
+  :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next)
+  :config
+  (setq-default jupyter-eval-short-result-max-lines 0))
 
 
 ;; customizable variables
@@ -75,7 +77,7 @@ If REMOTE is given, use it, otherwise use `bc-default-remote' instead."
     (bc-eshell--open (concat remote "home/junyi/.virtualenv/nvimpy/bin/"))
     (insert
      (concat
-      "jupyter kernel --kernel="
+      "./jupyter kernel --kernel="
       kernel
       " --KernelManager.connection_file=\"/home/junyi/"
       kernel
@@ -94,14 +96,29 @@ If REMOTE is given, use it, otherwise use `bc-default-remote' instead."
   (jupyter-repl-pop-to-buffer))
 
 
-(defun bc-jupyter--send (string &optional process-string)
-  "Send STRING to associated REPL.  If PROCESS-STRING is not nil, apply it to the STRING first."
-  (let* ((process-string (or process-string (lambda (x) x)))
-         (string (funcall process-string string)))
-    (jupyter-repl-pop-to-buffer)
-    (insert string)
-    (jupyter-repl-ret)))
+(defun bc-jupyter--send (string)
+  "Send STRING to associated REPL."
+  (let* ((buffer (current-buffer))
+         (pos (if (evil-visual-state-p)
+                  (region-end)
+                (point))))
+    (if jupyter-current-client
+        (jupyter-with-repl-buffer jupyter-current-client
+          (goto-char (point-max))
+          (insert string)
+          (jupyter-repl-ret))
+      (error "No REPL associated with current buffer"))
+    (switch-to-buffer buffer)
+    (when (evil-visual-state-p)
+      (deactivate-mark))
+    (goto-char pos)))
 
+(defun bc-jupyter-eval-buffer-or-region ()
+  "If in visual state, evaluate the current region; otherwise evaluate the current buffer."
+  (interactive)
+  (if (evil-visual-state-p)
+      (jupyter-eval-region (region-beginning) (region-end))
+    (jupyter-eval-buffer (current-buffer))))
 
 ;; settings
 

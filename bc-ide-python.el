@@ -49,11 +49,11 @@
                            (concat
                             (substring-no-properties s end-indent) "\n"))
                          s-list)
-                      s-list)))
+                      (mapcar (lambda (s) (concat s "\n")) s-list))))
           (seq-reduce #'concat out-list ""))))
 
 (defalias 'bc-python--send
-  (lambda (string) (bc-jupyter--send string bc-python--dedent))
+  (lambda (string) (bc-jupyter--send (bc-python--dedent string)))
   "Send string using `bc-jupyter--send' with `bc-python--dedent' to processing STRING first.")
 
 (defun bc-python-send-string ()
@@ -82,11 +82,7 @@
  :states '(motion normal visual)
  :keymaps 'python-mode-map
  :prefix "SPC"
- "rr" (lambda ()
-        (interactive)
-        (if (evil-visual-state-p)
-            (jupyter-eval-region)
-          (jupyter-eval-buffer)))
+ "rr" 'bc-jupyter-eval-buffer-or-region
 
  "rl" 'jupyter-eval-line-or-region
  "re" 'bc-python-send-string
