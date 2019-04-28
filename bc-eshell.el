@@ -55,22 +55,23 @@ return the formatted path name."
       path)))  ;; Otherwise, we just return the PATH
 
 (defun bc-eshell--open (dir)
-  "Open an eshell in directory DIR."
+  "Open an eshell in directory DIR.  If there is already a eshell buffer open for dir, switch to that buffer."
   (let* ((default-directory dir)
          (name (bc-eshell--format-path-name dir)))
-    (eshell)
-    (rename-buffer (concat "*" name "*"))))
+    (if (get-buffer (concat "*" name "*"))
+        (switch-to-buffer (concat "*" name "*"))
+      (progn
+        (eshell)
+        (rename-buffer (concat "*" name "*"))))))
 
 (defun bc-eshell-open-here ()
-  "Open a new shell in the pwd of the current buffer.  If there is already a eshell buffer open for the pwd, switch to that buffer."
+  "Open a new shell in the pwd of the current buffer.  If there is already a eshell buffer open for that directory, switch to that buffer."
   (interactive)
   (let* ((dir (file-name-directory (or (buffer-file-name) default-directory)))
          (height (/ (window-total-height) 3)))
     (split-window-vertically (- height))
     (evil-window-down 1)
-    (if (get-buffer (concat "*" (bc-eshell--format-path-name dir) "*"))
-        (switch-to-buffer (concat "*" (bc-eshell--format-path-name dir) "*"))
-      (bc-eshell--open dir))))
+    (bc-eshell--open)))
 
 (defun bc-eshell-open-file-in-parent-buffer (file)
   "Open FILE from eshell in the window above the current eshell buffer."
