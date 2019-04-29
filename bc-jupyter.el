@@ -134,7 +134,8 @@ If REMOTE is provided, start an remote kernel and connect to it."
 ;; Advising `jupyter-eval-region' so it quits visual mode automatically.
 (advice-add 'jupyter-eval-region :after (lambda (beg end)
                                           (deactivate-mark)
-                                          (switch-to-buffer-other-window "*jupyter-output*")))
+                                          (ignore-errors
+                                            (switch-to-buffer-other-window "*jupyter-output*"))))
 
 ;; settings
 
