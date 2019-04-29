@@ -19,8 +19,8 @@
   :after company
   :commands company-jedi)
 
-(use-package py-yapf
-  :commands py-yapf-enable-on-save)
+(use-package yapfify
+  :commands yapf-mode)
 
 ;; customizable variables
 
@@ -92,7 +92,7 @@
  "rh" 'jupyter-inspect-at-point)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
-(add-hook 'python-mode-hook #'py-yapf-enable-on-save)
+(add-hook 'python-mode-hook #'yapf-mode)
 
 (provide 'bc-ide-python)
 ;;; bc-ide-python ends here
