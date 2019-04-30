@@ -14,7 +14,13 @@
   :general
   (:keymaps '(motion normal visual)
    :prefix "SPC"
-   "sp" 'flyspell-correct-wrapper))
+   "sp" 'bc-style-correct))
+
+(defun bc-style-correct (arg)
+"Advising `flyspell-correct-wrapper' to go to previous cursor position."
+  (interactive "P")
+  (save-excursion
+    (flyspell-correct-wrapper arg)))
 
 
 (add-hook 'text-mode-hook (lambda () (flyspell-mode)))
