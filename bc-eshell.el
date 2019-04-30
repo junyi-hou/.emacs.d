@@ -56,8 +56,7 @@ return the formatted path name."
 
 (defun bc-eshell--open (dir)
   "Open an eshell in directory DIR.  If there is already a eshell buffer open for dir, switch to that buffer."
-  (let* ((default-directory dir)
-         (name (bc-eshell--format-path-name dir)))
+  (let* ((name (bc-eshell--format-path-name dir)))
     (if (get-buffer (concat "*" name "*"))
         (switch-to-buffer (concat "*" name "*"))
       (progn
@@ -71,7 +70,7 @@ return the formatted path name."
          (height (/ (window-total-height) 3)))
     (split-window-vertically (- height))
     (evil-window-down 1)
-    (bc-eshell--open)))
+    (bc-eshell--open dir)))
 
 (defun bc-eshell-open-file-in-parent-buffer (file)
   "Open FILE from eshell in the window above the current eshell buffer."
@@ -94,12 +93,11 @@ return the formatted path name."
   "Change directory to DIR.  Modify the eshell buffer name accordingly."
   (interactive)
   (let ((dir (if (or (file-name-absolute-p dir)
-                     (string-equal (substring dir 0 1) "-")
                      (string-equal (substring dir 0 1) "."))
                  dir
                (expand-file-name dir))))
    (eshell/cd dir)
-   (rename-buffer (concat "*" (bc-eshell--format-path-name dir) "*"))))
+   (rename-buffer (concat "*" (bc-eshell--format-path-name default-directory) "*"))))
 
 
 ;; settings
