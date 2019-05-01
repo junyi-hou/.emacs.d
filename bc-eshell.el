@@ -61,6 +61,8 @@ return the formatted path name."
         (switch-to-buffer (concat "*" name "*"))
       (progn
         (eshell)
+        (insert "cd " dir)
+        (eshell-send-input)
         (rename-buffer (concat "*" name "*"))))))
 
 (defun bc-eshell-open-here ()
