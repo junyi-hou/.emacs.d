@@ -10,9 +10,7 @@
 (require 'bc-eshell)
 
 (use-package jupyter
-  :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next)
-  :config
-  (setq-default jupyter-eval-short-result-max-lines 0))
+  :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next))
 
 
 ;; customizable variables
@@ -68,12 +66,12 @@ If REMOTE is provided, start an remote kernel and connect to it."
                               (current-buffer)))
     (jupyter-run-repl kernel kernel (current-buffer))))
 
-(defun bc-jupyter--start-remote-kernel (kernel &optional remote)
-  "Start a remote KERNEL, save the connection file to a default location.  If REMOTE is given, use it, otherwise use `bc-default-remote' instead."
+(defun bc-jupyter--start-remote-kernel (kernel &optional location)
+  "Start a remote KERNEL, save the connection file to a default location.  If LOCATION is given, use it, otherwise use `bc-default-remote' instead."
   (interactive)
   (let* ((code-buffer (current-buffer))
-         (remote (or (when (stringp remote) remote) bc-default-remote)))
-    (bc-eshell--open (concat remote "home/junyi/.virtualenv/nvimpy/bin/"))
+         (location (or (when (stringp location) location) bc-default-remote)))
+    (bc-eshell--open (concat location "home/junyi/.virtualenv/nvimpy/bin/"))
     (insert
      (concat
       "./jupyter-console --kernel="
@@ -81,12 +79,12 @@ If REMOTE is provided, start an remote kernel and connect to it."
       " -f=/home/junyi/" kernel ".json"))
     (eshell-send-input)
     (switch-to-buffer code-buffer)
-    (concat remote "home/junyi/" kernel ".json")))
+    (concat location "home/junyi/" kernel ".json")))
 
 (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
   "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
   (interactive)
-  (if (boundp 'jupyter-current-client)
+  (if jupyter-current-client
       (jupyter-repl-pop-to-buffer)
     (let* ((code-buffer (current-buffer)))
       (bc-jupyter--start-repl kernel remote)
@@ -118,6 +116,8 @@ If REMOTE is provided, start an remote kernel and connect to it."
       (jupyter-eval-region (region-beginning) (region-end))
     (jupyter-eval-buffer (current-buffer))))
 
+(advice-add 'jupyter-eval-region :after #'deactivate-mark)
+
 (defun bc-jupyter-reconnect (kernel)
   "Try to reconnect to the KERNEL.  For a local kernel, use built-in `jupyter-repl-restart-kernel', for a remote kernel, close the current REPL and start a new one using the connection file."
   (interactive)
@@ -131,11 +131,11 @@ If REMOTE is provided, start an remote kernel and connect to it."
               (setq-local jupyter-current-client nil)
               (jupyter-connect-repl connection-file kernel (current-buffer))))))))
 
-;; Advising `jupyter-eval-region' so it quits visual mode automatically.
-(advice-add 'jupyter-eval-region :after (lambda (beg end)
-                                          (deactivate-mark)
-                                          (ignore-errors
-                                            (switch-to-buffer-other-window "*jupyter-output*"))))
+(defun bc-jupyter-disconnect ()
+  "Set `jupyter-current-client' to nil in the current buffer."
+  (interactive)
+  (setq-local jupyter-current-client nil))
+
 
 ;; settings
 
