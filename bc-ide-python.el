@@ -22,9 +22,6 @@
 (use-package yapfify
   :commands yapf-mode)
 
-;; customizable variables
-
-
 
 ;; functions
 
@@ -32,6 +29,10 @@
   (lambda () (interactive)
     (bc-jupyter-start-or-switch-to-repl "python"))
   "Open a jupyter repl for python interpreter.")
+
+(defalias 'bc-python-reconnect
+  (lambda () (interactive) (bc-jupyter-reconnect "python"))
+  "Reconnect to the current REPL.")
 
 (defalias 'bc-python-remote-repl
   (lambda () (interactive)
@@ -89,7 +90,9 @@
  "ro" 'bc-python-local-repl
  "rO" 'bc-python-remote-repl
  "rc" 'jupyter-repl-associate-buffer
- "rh" 'jupyter-inspect-at-point)
+ "rh" 'jupyter-inspect-at-point
+ "rs" 'bc-jupyter-disconnect
+ "rz" 'bc-python-reconnect)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
 (add-hook 'python-mode-hook #'yapf-mode)
