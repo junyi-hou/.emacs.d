@@ -84,20 +84,18 @@ If REMOTE is provided, start an remote kernel and connect to it."
 (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
   "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
   (interactive)
-  (if jupyter-current-client
+  (condition-case nil
       (jupyter-repl-pop-to-buffer)
-    (let* ((code-buffer (current-buffer)))
-      (bc-jupyter--start-repl kernel remote)
-      (jupyter-repl-pop-to-buffer)
-      (switch-to-buffer-other-window code-buffer))))
+    (error (let* ((code-buffer (current-buffer)))
+             (setq-local jupyter-current-client nil)
+             (bc-jupyter--start-repl kernel remote)
+             (jupyter-repl-pop-to-buffer)
+             (switch-to-buffer-other-window code-buffer)))))
 
 
 (defun bc-jupyter--send (string)
   "Send STRING to associated REPL."
-  (let* ((buffer (current-buffer))
-         (pos (if (evil-visual-state-p)
-                  (region-end)
-                (point))))
+  (let* ((buffer (current-buffer)))
     (if jupyter-current-client
         (jupyter-with-repl-buffer jupyter-current-client
           (goto-char (point-max))
@@ -106,8 +104,7 @@ If REMOTE is provided, start an remote kernel and connect to it."
       (error "No REPL associated with current buffer"))
     (switch-to-buffer buffer)
     (when (evil-visual-state-p)
-      (deactivate-mark))
-    (goto-char pos)))
+      (deactivate-mark))))
 
 (defun bc-jupyter-eval-buffer-or-region ()
   "If in visual state, evaluate the current region; otherwise evaluate the current buffer."
@@ -134,11 +131,6 @@ If REMOTE is provided, start an remote kernel and connect to it."
                kernel
                (current-buffer))))))))
 
-(defun bc-jupyter-disconnect ()
-  "Set `jupyter-current-client' to nil in the current buffer."
-  (interactive)
-  (setq-local jupyter-current-client nil))
-
 
 ;; settings
 
@@ -157,7 +149,14 @@ If REMOTE is provided, start an remote kernel and connect to it."
        (goto-char (point-max))
        (evil-insert 1))
  "G" 'jupyter-repl-forward-cell
- "gg" 'jupyter-repl-backward-cell)
+ "gg" 'jupyter-repl-backward-cell
+ "SPC" nil)
+
+(general-define-key
+ :keymaps 'jupyter-repl-mode-map
+ :states '(normal visual motion)
+ :prefix "SPC"
+ "q" 'kill-buffer-and-window)
 
 
 (add-hook 'jupyter-repl-mode-hook #'company-mode)
