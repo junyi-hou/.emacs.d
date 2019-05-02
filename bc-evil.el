@@ -79,7 +79,9 @@
   (cond ((and (evil-visual-state-p) (eq evil-visual-selection 'line))
          (indent-region (region-beginning) (region-end)))
         ((evil-visual-state-p) (er/expand-region 1))
-        ((evil-insert-state-p) (progn
+        ((evil-insert-state-p) (if (= 0 (current-column))
+                                   (dotimes (n tab-width)
+                                     (insert " "))
                                  (save-excursion
                                    (beginning-of-line)
                                    (dotimes (n tab-width)
