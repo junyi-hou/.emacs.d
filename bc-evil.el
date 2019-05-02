@@ -73,13 +73,17 @@
   "Assign tab key to:
     `indent-region' if in visual line mode;
     `er/expand-region' if in visual mode;
-    `indent-region' of the current line if in insert mode;
+    insert `tab-width' number of spaces in front of the current line if in insert mode;
     `evil-jump-item' otherwise \(i.e., in the normal state\)"
   (interactive)
   (cond ((and (evil-visual-state-p) (eq evil-visual-selection 'line))
          (indent-region (region-beginning) (region-end)))
         ((evil-visual-state-p) (er/expand-region 1))
-        ((evil-insert-state-p) (indent-region (line-beginning-position) (point)))
+        ((evil-insert-state-p) (progn
+                                 (save-excursion
+                                   (beginning-of-line)
+                                   (dotimes (n tab-width)
+                                     (insert " ")))))
         (t (evil-jump-item))))
 
 (defun bc-evil-insert-pair (pair-begin)
