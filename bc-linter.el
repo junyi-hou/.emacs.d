@@ -16,6 +16,19 @@
   :after flycheck
   :commands flycheck-posframe-mode)
 
+(use-package hl-todo
+  :config
+  (setq hl-todo-keyword-faces
+        '(("TODO" . "#cc9393")
+          ("OKAY" . "#7cb8bb")
+          ("FAIL" . "#8c5353")
+          ("NOTE"   . "#d0bf8f")
+          ("HACK"   . "#d0bf8f")
+          ("TEMP"   . "#d0bf8f")
+          ("FIXME"  . "#cc9393")
+          ("\\?\\?\\?+" . "#cc9393")))
+  (add-hook 'prog-mode-hook #'hl-todo-mode))
+
 ;; setting
 
 (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode)
