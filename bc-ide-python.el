@@ -74,7 +74,10 @@
    (setq company-backends '((company-files company-capf company-yasnippet company-jedi)))
    (company-mode 1)
    ;; setup linter
-   (flycheck-mode 1))
+   (flycheck-mode 1)
+   ;; set tab-width
+   (setq tab-width 4))
+
 
 ;; settings
 
