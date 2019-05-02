@@ -129,7 +129,10 @@ If REMOTE is provided, start an remote kernel and connect to it."
               (jupyter-with-client-buffer jupyter-current-client
                 (kill-buffer-and-window))
               (setq-local jupyter-current-client nil)
-              (jupyter-connect-repl connection-file kernel (current-buffer))))))))
+              (jupyter-connect-repl
+               connection-file
+               kernel
+               (current-buffer))))))))
 
 (defun bc-jupyter-disconnect ()
   "Set `jupyter-current-client' to nil in the current buffer."
