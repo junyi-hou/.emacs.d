@@ -125,7 +125,7 @@
  ;; basic function
  "w"  'evil-write
  "k"  'delete-window
- "q"  (lambda () (interactive) (kill-buffer (current-buffer)))
+ "q"  'kill-current-buffer
  "b" 'balance-windows
 
  ;; buffer related
