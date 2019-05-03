@@ -71,7 +71,7 @@
    (bc-jupyter--enable-venv)
    ;; setup auto complete
    (make-local-variable 'company-backends)
-   (setq company-backends '((company-files company-capf company-yasnippet company-jedi)))
+   (setq company-backends (list (push 'company-jedi (car company-backends))))
    (company-mode 1)
    ;; setup linter
    (flycheck-mode 1)

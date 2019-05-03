@@ -12,7 +12,7 @@
   (:keymaps 'yas-minor-mode-map
             "<tab>" nil
             "TAB" nil
-            "M-f" 'bc-autocomplete-yas-expand-regexp
+            "M-f" 'yas-expand
             "M-j" 'yas-next-field
             "M-k" 'yas-prev-field))
 
@@ -33,7 +33,7 @@
         company-dabbrev-ignore-case nil
         company-dabbrev-code-other-buffers t
         company-minimum-prefix-length 2
-        company-backends '((company-files company-capf company-yasnippet))))
+        company-backends '((company-files company-capf company-yasnippet company-dabbrev company-dabbrev-code))))
 
 (use-package company-posframe
   :after company
