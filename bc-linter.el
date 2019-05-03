@@ -9,7 +9,7 @@
   :commands
   (flycheck-buffer flycheck-list-errors flycheck-mode flycheck-add-next-checker)
   :config
-  (setq-default flycheck-check-syntax-automatically '(save))
+  (setq-default flycheck-check-syntax-automatically '(save mode-enabled))
   (flycheck-add-next-checker 'python-flake8 '(warning . python-mypy)))
 
 (use-package flycheck-posframe
