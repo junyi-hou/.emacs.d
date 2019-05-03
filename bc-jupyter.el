@@ -78,6 +78,7 @@ If REMOTE is provided, start an remote kernel and connect to it."
       kernel
       " -f=/home/junyi/" kernel ".json"))
     (eshell-send-input)
+    (rename-buffer (concat "*jupyter-remote-" kernel "-kernel*" ))
     (switch-to-buffer code-buffer)
     (concat location "home/junyi/" kernel ".json")))
 
@@ -111,9 +112,13 @@ If REMOTE is provided, start an remote kernel and connect to it."
   (interactive)
   (if (evil-visual-state-p)
       (jupyter-eval-region (region-beginning) (region-end))
-    (jupyter-eval-buffer (current-buffer))))
+    (jupyter-eval-buffer (current-buffer)))
+  (deactivate-mark))
 
-(advice-add 'jupyter-eval-region :after #'deactivate-mark)
+(defalias 'jupyter-eval-line-or-region
+  (lambda () (interactive) (jupyter-eval-line-or-region) (deactivate-mark))
+  "Exit visual state after run `jupyter-eval-line-or-region'.")
+
 
 (defun bc-jupyter-reconnect (kernel)
   "Try to reconnect to the KERNEL.  For a local kernel, use built-in `jupyter-repl-restart-kernel', for a remote kernel, close the current REPL and start a new one using the connection file."
