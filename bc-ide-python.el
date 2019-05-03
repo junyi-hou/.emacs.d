@@ -94,7 +94,6 @@
  "rO" 'bc-python-remote-repl
  "rc" 'jupyter-repl-associate-buffer
  "rh" 'jupyter-inspect-at-point
- "rs" 'bc-jupyter-disconnect
  "rz" 'bc-python-reconnect)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
