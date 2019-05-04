@@ -64,14 +64,5 @@
   (find-file file)))
 
 
-;; settings
-
-(general-define-key
- :keymaps 'text-mode-map
- :states '(motion visual normal)
- [remap evil-write] 'with-editor-finish
- [remap kill-current-buffer] 'with-editor-cancel)
-
-
 (provide 'bc-vcs)
 ;;; bc-vcs.el ends here
