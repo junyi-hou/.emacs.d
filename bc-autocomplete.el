@@ -42,7 +42,10 @@
                             company-capf
                             company-yasnippet)
                            (company-dabbrev
-                            company-abbrev))))
+                            company-abbrev)))
+
+  (add-hook 'company-mode-hook #'company-posframe-mode)
+  (add-hook 'company-mode-hook #'yas-minor-mode))
 
 (use-package company-posframe
   :after company
@@ -128,8 +131,6 @@ aa    => (defun aa ())
 
 ;; settings
 
-(add-hook 'company-mode-hook #'company-posframe-mode)
-(add-hook 'company-mode-hook #'yas-minor-mode)
 
 (provide 'bc-autocomplete)
 ;;; bc-autocomplete.el ends here
