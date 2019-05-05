@@ -17,9 +17,11 @@
 
 (use-package company-jedi
   :after company
+  :defer t
   :commands company-jedi)
 
 (use-package yapfify
+  :defer t
   :commands yapf-mode)
 
 

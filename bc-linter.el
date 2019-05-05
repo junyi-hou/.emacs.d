@@ -6,6 +6,7 @@
 
 (use-package flycheck
   :after evil
+  :defer t
   :commands
   (flycheck-buffer flycheck-list-errors flycheck-mode flycheck-add-next-checker)
   :config
@@ -14,10 +15,12 @@
 
 (use-package flycheck-posframe
   :after flycheck
+  :defer t
   :commands flycheck-posframe-mode)
 
 (use-package hl-todo
   :config
+  :defer t
   (setq hl-todo-keyword-faces
         '(("TODO" . "#cc9393")
           ("OKAY" . "#7cb8bb")

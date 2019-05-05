@@ -10,6 +10,7 @@
 (require 'bc-eshell)
 
 (use-package jupyter
+  :defer t
   :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next))
 
 
