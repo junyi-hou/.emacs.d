@@ -42,6 +42,14 @@
   "Set the stipple used by indentation highlighting."
   (bc-theme--set-highlight-stipple))
 
+;; line numbers
+(setq-default display-line-numbers-type 'visual
+              display-line-numbers-current-absolute t
+              display-line-numbers-width 3
+              display-line-numbers-widen t)
+
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
 ;; load everything
 
 (setq-default custom-safe-themes t)

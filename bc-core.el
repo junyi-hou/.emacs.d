@@ -9,8 +9,7 @@
 (load custom-file 'noerror)
 
 ;; tramp uses ssh
-(require 'tramp)
-(setq tramp-default-method "ssh")
+(setq-default tramp-default-method "ssh")
 
 ;; smooth scroll
 (setq-default scroll-step 1
@@ -47,15 +46,6 @@
 ;; other minor modes I always want
 (show-paren-mode 1)          ; highlight matching paren
 (global-visual-line-mode 1)  ; word wrapping
-(add-hook 'prog-mode-hook #'hs-minor-mode) ; enable folding for all prog modes
-
-;; line numbers
-(setq-default display-line-numbers-type 'visual
-              display-line-numbers-current-absolute t
-              display-line-numbers-width 3
-              display-line-numbers-widen t)
-
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
@@ -84,7 +74,7 @@
 
 ;; When something changes a file, automatically refresh the
 ;; buffer containing that file so they can't get out of sync.
-(global-auto-revert-mode t)
+(global-auto-revert-mode 1)
 
 ;; define my groups, code name baby-carrots
 (defgroup baby-carrots nil
@@ -107,6 +97,7 @@
         (puthash "[" "]" hash)
         (puthash "\`" "\'" hash)
         (puthash "<" ">" hash)
+        (puthash "$" "$" hash)
         hash)
   "My auto pair system."
   :group 'baby-carrots
