@@ -21,10 +21,11 @@
   (company-mode company-complete company-complete-common)
   :general
   (:keymaps 'company-active-map
-            "<tab>" 'company-complete-common
-            "TAB" 'company-complete-common
+            "<tab>" 'bc-autocomplete--company-complete
+            "TAB" 'bc-autocomplete--company-complete
             "M-j" 'company-select-next
-            "M-k" 'company-select-previous-or-abort)
+            "M-k" 'company-select-previous-or-abort
+            "RET" 'company-abort)
 
   :config
   (setq company-idle-delay 0
@@ -33,8 +34,15 @@
         company-dabbrev-ignore-case nil
         company-dabbrev-code-other-buffers t
         company-minimum-prefix-length 2
-        company-backends '((company-files company-capf company-yasnippet)
-                           (company-dabbrev company-dabbrev-code))))
+        company-show-numbers t
+        company-tooltip-limit 20
+        company-selection-wrap-around t
+        company-backends '((company-files
+                            company-keywords
+                            company-capf
+                            company-yasnippet)
+                           (company-dabbrev
+                            company-abbrev))))
 
 (use-package company-posframe
   :after company
@@ -43,6 +51,22 @@
 (use-package company-statistics :after company)
 
 ;; function:
+
+;; taken from RSW at https://gist.github.com/rswgnu/85ca5c69bb26551f3f27500855893dbe
+(defun bc-autocomplete--company-complete ()
+  "Insert the common part of all candidates or the current selection.
+The first time this is called, the common part is inserted, the second
+time, or when the selection has been changed, the selected candidate is
+inserted."
+  (interactive)
+  (if company-mode
+      (when (company-manual-begin)
+        (if (or company-selection-changed
+                (eq last-command 'company-complete-common))
+            (call-interactively 'company-complete-selection)
+          (call-interactively 'company-complete-common)
+          (setq this-command 'company-complete-common)))
+    (completion-at-point)))
 
 (defun bc-autocomplete--yas-match-regexp (hash-table str)
   "Attempt to translate STR to a `yas-snippet' name through the HASH-TABLE.

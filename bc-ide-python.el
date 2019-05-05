@@ -71,9 +71,7 @@
    (bc-jupyter--enable-venv)
    ;; setup auto complete
    (make-local-variable 'company-backends)
-   (setq company-backends (cons
-                           (push 'company-jedi (car company-backends))
-                           (cdr company-backends)))
+   (setq company-backends (cons 'company-jedi company-backends))
    (company-mode 1)
    ;; setup linter
    (flycheck-mode 1)
