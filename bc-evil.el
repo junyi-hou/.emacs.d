@@ -6,8 +6,10 @@
 
 ;; load pkgs
 
-(use-package general
-  :commands general-define-key)
+(require 'bc-pkgmgmt)
+(require 'bc-core)
+
+(use-package general)
 
 (use-package evil-surround
   :after evil
@@ -21,15 +23,12 @@
   :commands evilnc-comment-or-uncomment-lines)
 
 (use-package expand-region
+  :after evil
   :commands (er/expand-region er/contract-region)
   :general
   (:keymaps 'visual
    "v" 'er/expand-region
    "V" 'er/contract-region))
-
-(require 'bc-pkgmgmt)
-(require 'bc-core)
-
 
 (use-package evil
   :config
@@ -39,7 +38,6 @@
         evil-want-C-d-scroll t)
   (evil-mode 1)
   :general
-
   ;; leader: SPC
   (:keymaps '(motion normal visual)
    "j" 'evil-next-visual-line
@@ -103,7 +101,7 @@
   ;; other uses
   "t" 'evilnc-comment-or-uncomment-lines)
 
-;; combination key that should be active in all states
+  ;; combination key that should be active in all states
   (:keymaps '(motion normal visual emacs insert)
    "C-h" 'evil-window-left
    "C-j" 'evil-window-down
