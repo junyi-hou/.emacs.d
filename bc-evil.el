@@ -9,14 +9,6 @@
 (use-package general
   :commands general-define-key)
 
-(use-package evil
-  :config
-  (setq evil-normal-state-modes (append evil-emacs-state-modes evil-normal-state-modes))
-  :init
-  (setq evil-want-C-u-scroll t
-        evil-want-C-d-scroll t)
-  (evil-mode 1))
-
 (use-package evil-surround
   :after evil
   :config
@@ -29,10 +21,118 @@
   :commands evilnc-comment-or-uncomment-lines)
 
 (use-package expand-region
-  :commands (er/expand-region er/contract-region))
+  :commands (er/expand-region er/contract-region)
+  :general
+  (:keymaps 'visual
+   "v" 'er/expand-region
+   "V" 'er/contract-region))
 
 (require 'bc-pkgmgmt)
 (require 'bc-core)
+
+
+(use-package evil
+  :config
+  (setq evil-normal-state-modes (append evil-emacs-state-modes evil-normal-state-modes))
+  :init
+  (setq evil-want-C-u-scroll t
+        evil-want-C-d-scroll t)
+  (evil-mode 1)
+  :general
+
+  ;; leader: SPC
+  (:keymaps '(motion normal visual)
+   "j" 'evil-next-visual-line
+   "k" 'evil-previous-visual-line
+
+   "H" 'evil-first-non-blank-of-visual-line
+   "J" 'bc-evil-next-three-lines
+   "K" 'bc-evil-previous-three-lines
+   "L" 'evil-end-of-visual-line
+   "" nil
+   "SPC" nil)
+
+  (:keymaps '(motion normal visual)
+  :prefix "SPC"
+            
+  ;; execute
+  "ee"  'execute-extended-command
+  "eE"  'evil-ex
+  "el"  'eval-last-sexp
+            
+  ;; helps
+  "hf" 'describe-function
+  "hw" 'where-is
+  "hk" 'describe-key
+  "hv" 'describe-variable
+  "hm" 'describe-mode
+  "hh" 'help-for-help
+
+  ;; basic function
+  "w"  'evil-write
+  "k"  'delete-window
+  "q"  'kill-current-buffer
+  "b" 'balance-windows
+
+  ;; buffer related
+  "n"  'bc-evil-next-user-buffer
+  "N"  'bc-evil-previous-user-buffer
+
+  ;; split
+  "\\"   (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
+  "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
+
+  ;; open stuffs
+  "of" 'find-file
+  "ob" 'ivy-switch-buffer
+  "oo" 'projectile-find-file
+  "os" 'bc-eshell-open-here
+  "op" 'projectile-switch-project
+
+  ;; git-related
+  "gg" 'magit-status
+  "gc" 'bc-vcs-commit-current-file
+  "gd" 'magit-diff-buffer-file
+  "gl" 'magit-log-buffer-file
+
+  ;; search and replace
+
+  ;; change files
+  "mr" 'bc-evil-rename-file-and-buffer
+
+  ;; other uses
+  "t" 'evilnc-comment-or-uncomment-lines)
+
+;; combination key that should be active in all states
+  (:keymaps '(motion normal visual emacs insert)
+   "C-h" 'evil-window-left
+   "C-j" 'evil-window-down
+   "C-k" 'evil-window-up
+   "C-l" 'evil-window-right
+
+   "M-(" (lambda () (interactive) (bc-evil-insert-pair "("))
+   "M-{" (lambda () (interactive) (bc-evil-insert-pair "\{"))
+   "M-[" (lambda () (interactive) (bc-evil-insert-pair "["))
+   "M-'" (lambda () (interactive) (bc-evil-insert-pair "\'"))
+   "M-\"" (lambda () (interactive) (bc-evil-insert-pair "\""))
+   "M-`" (lambda () (interactive) (bc-evil-insert-pair "\`"))
+   "M-$" (lambda () (interactive) (bc-evil-insert-pair "$"))
+   "M-l" 'right-char
+   "M-h" 'left-char
+   "M-<DEL>" (lambda () (interactive)
+               (backward-delete-char-untabify 1)
+               (delete-char 1))
+
+   "TAB" 'bc-evil-smart-tab
+   "<tab>" 'bc-evil-smart-tab
+
+   "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
+   "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
+
+  (:keymaps 'help-mode-map
+   :states 'motion
+   :prefix "SPC"
+   "q" 'delete-window))
 
 ;; functions
 
@@ -87,10 +187,10 @@
 
 (defun bc-evil-smart-tab ()
   "Assign tab key to:
-    `indent-region' if in visual line mode;
-    `er/expand-region' if in visual mode;
-    insert `tab-width' number of spaces in front of the current line if in insert mode;
-    `evil-jump-item' otherwise \(i.e., in the normal state\)"
+`indent-region' if in visual line mode;
+`er/expand-region' if in visual mode;
+insert `tab-width' number of spaces in front of the current line if in insert mode;
+`evil-jump-item' otherwise \(i.e., in the normal state\)"
   (interactive)
   (cond ((and (evil-visual-state-p) (eq evil-visual-selection 'line))
          (indent-region (region-beginning) (region-end)))
@@ -111,121 +211,6 @@
     (when pair-end
       (insert (concat pair-begin pair-end))
       (left-char 1))))
-
-;; settings
-
-;; leader: SPC
-(general-define-key
- :keymaps '(motion normal visual)
- "" nil
- "SPC" nil)
-
-;; leader-relate keymaps
-(general-define-key
- :keymaps '(motion normal visual)
- :prefix "SPC"
- 
- ;; execute
- "ee"  'execute-extended-command
- "eE"  'evil-ex
- "el"  'eval-last-sexp
- 
- ;; helps
- "hf" 'describe-function
- "hw" 'where-is
- "hk" 'describe-key
- "hv" 'describe-variable
- "hm" 'describe-mode
- "hh" 'help-for-help
-
- ;; basic function
- "w"  'evil-write
- "k"  'delete-window
- "q"  'kill-current-buffer
- "b" 'balance-windows
-
- ;; buffer related
- "n"  'bc-evil-next-user-buffer
- "N"  'bc-evil-previous-user-buffer
-
- ;; split
- "\\"   (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
- "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
-
- ;; open stuffs
- "of" 'find-file
- "ob" 'ivy-switch-buffer
- "oo" 'projectile-find-file
- "os" 'bc-eshell-open-here
- "op" 'projectile-switch-project
-
- ;; git-related
- "gg" 'magit-status
- "gc" 'bc-vcs-commit-current-file
- "gd" 'magit-diff-buffer-file
- "gl" 'magit-log-buffer-file
-
- ;; search and replace
-
- ;; change files
- "mr" 'bc-evil-rename-file-and-buffer
-
- ;; other uses
- "t" 'evilnc-comment-or-uncomment-lines
- "f" 'evil-toggle-fold)
-
-;; movement keys
-(general-define-key
- :keymaps '(motion normal visual)
-
- "j" 'evil-next-visual-line
- "k" 'evil-previous-visual-line
-
- "H" 'evil-first-non-blank-of-visual-line
- "J" 'bc-evil-next-three-lines
- "K" 'bc-evil-previous-three-lines
- "L" 'evil-end-of-visual-line)
-
-
-;; combination key that should be active in all states
-(general-define-key
- :keymaps '(motion normal visual emacs insert)
- "C-h" 'evil-window-left
- "C-j" 'evil-window-down
- "C-k" 'evil-window-up
- "C-l" 'evil-window-right
-
- "M-(" (lambda () (interactive) (bc-evil-insert-pair "("))
- "M-{" (lambda () (interactive) (bc-evil-insert-pair "\{"))
- "M-[" (lambda () (interactive) (bc-evil-insert-pair "["))
- "M-'" (lambda () (interactive) (bc-evil-insert-pair "\'"))
- "M-\"" (lambda () (interactive) (bc-evil-insert-pair "\""))
- "M-`" (lambda () (interactive) (bc-evil-insert-pair "\`"))
- "M-$" (lambda () (interactive) (bc-evil-insert-pair "$"))
- "M-l" 'right-char
- "M-h" 'left-char
- "M-<DEL>" (lambda () (interactive)
-             (backward-delete-char-untabify 1)
-             (delete-char 1))
-
- "TAB" 'bc-evil-smart-tab
- "<tab>" 'bc-evil-smart-tab
-
- "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
- "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
-
-;; expand-region
-(general-define-key
- :keymaps 'visual
- "v" 'er/expand-region
- "V" 'er/contract-region)
-
-;; help mode
-(general-define-key
- :keymaps 'help-mode-map
- :states 'motion
- :prefix "SPC"
- "q" 'kill-buffer-and-window)
 
 
 (provide 'bc-evil)
