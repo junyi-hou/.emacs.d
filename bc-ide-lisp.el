@@ -12,6 +12,7 @@
 (eval-after-load 'dash '(dash-enable-font-lock)) ; syntax highlight for dash
 
 (add-hook 'emacs-lisp-mode-hook (lambda ()
+                                  (setq tab-width 2)
                                   (company-mode 1)
                                   (dumb-jump-mode 1)
                                   (flycheck-mode 1)))
