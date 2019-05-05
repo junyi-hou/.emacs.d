@@ -201,6 +201,7 @@
  "M-'" (lambda () (interactive) (bc-evil-insert-pair "\'"))
  "M-\"" (lambda () (interactive) (bc-evil-insert-pair "\""))
  "M-`" (lambda () (interactive) (bc-evil-insert-pair "\`"))
+ "M-$" (lambda () (interactive) (bc-evil-insert-pair "$"))
  "M-l" 'right-char
  "M-h" 'left-char
  "M-<DEL>" (lambda () (interactive)
