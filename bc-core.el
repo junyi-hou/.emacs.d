@@ -64,7 +64,7 @@
   "Start garbage collection."
   (setq gc-cons-threshold 400000))
 
-(run-with-idle-timer 5 nil #'bc-core--gc)
+(run-with-idle-timer 10 t #'bc-core--gc)
 
 ;; direct backup files to /tmp
 (setq-default backup-directory-alist
