@@ -31,14 +31,15 @@
    "V" 'er/contract-region))
 
 (use-package evil
+  :init
+  (evil-mode 1)
   :config
   (setq evil-normal-state-modes (append evil-emacs-state-modes
                                         evil-normal-state-modes)
         evil-want-C-u-scroll t
         evil-want-C-d-scroll t)
-  (evil-mode 1)
+
   :general
-  ;; leader: SPC
   (:keymaps '(motion normal visual)
    "j" 'evil-next-visual-line
    "k" 'evil-previous-visual-line
@@ -124,6 +125,7 @@
    :states 'motion
    :prefix "SPC"
    "q" 'delete-window)
+
   (:keymaps 'insert
    "<return>" 'bc-evil-better-newline
    "RET" 'bc-evil-better-newline))
@@ -136,7 +138,7 @@
                             (?\< . ?\>)))
 
 
-;; functions
+;; functions:
 
 (defun bc-evil--is-user-buffer ()
   "Determine whether the current buffer is a user-buffer by looking at the first char.  Return t if current buffer is not a dired tree or is a user-buffer (include *scratch* buffer)."
