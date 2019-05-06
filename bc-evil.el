@@ -32,9 +32,9 @@
 
 (use-package evil
   :config
-  (setq evil-normal-state-modes (append evil-emacs-state-modes evil-normal-state-modes))
-  :init
-  (setq evil-want-C-u-scroll t
+  (setq evil-normal-state-modes (append evil-emacs-state-modes
+                                        evil-normal-state-modes)
+        evil-want-C-u-scroll t
         evil-want-C-d-scroll t)
   (evil-mode 1)
   :general
