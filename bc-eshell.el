@@ -12,12 +12,8 @@
         eshell-prefer-lisp-functions nil
         eshell-destroy-buffer-when-process-dies t))
 
-(use-package company-shell
-  :after company
-  :commands (company-shell company-shell-env))
-
 (require 'bc-core)
-(require 'bc-autocomplete)
+(require 'bc-lsp)
 
 (defun bc-eshell--format-path-name (path)
   "Formatting a given PATH.
@@ -125,16 +121,7 @@ return the formatted path name."
    :prefix "SPC"
    "q" 'kill-buffer-and-window))
 
-(defun bc-eshell--autocomplete ()
-  "Enable `company-mode' for `eshell-mode'."
-  (interactive)
-   (make-local-variable 'company-backends)
-   (setq company-backends '((company-files company-capf company-yasnippet company-shell company-shell-env)))
-   (company-mode 1))
-
-
 (add-hook 'eshell-mode-hook #'bc-eshell--keymaps)
-(add-hook 'eshell-mode-hook #'bc-eshell--autocomplete)
 
 
 (provide 'bc-eshell)

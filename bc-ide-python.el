@@ -10,20 +10,8 @@
 ;;; Code:
 
 ;;load pkgs
-(require 'bc-autocomplete)
-(require 'bc-linter)
-(require 'bc-jump)
+(require 'bc-lsp)
 (require 'bc-jupyter)
-
-(use-package company-jedi
-  :after company
-  :defer t
-  :commands company-jedi)
-
-(use-package yapfify
-  :defer t
-  :commands yapf-mode)
-
 
 ;; functions
 
@@ -71,15 +59,11 @@
   "Initiate venv, autocomplete and linters."
    ;; load venv
    (bc-jupyter--enable-venv)
-   ;; setup auto complete
-   (make-local-variable 'company-backends)
-   (setq company-backends (cons 'company-jedi company-backends))
+   ;; load lsp
    (company-mode 1)
-   ;; setup linter
-   (flycheck-mode 1)
+   (eglot 1)
    ;; set tab-width
    (setq tab-width 4))
-
 
 ;; settings
 
@@ -95,11 +79,9 @@
  "ro" 'bc-python-local-repl
  "rO" 'bc-python-remote-repl
  "rc" 'jupyter-repl-associate-buffer
- "rh" 'jupyter-inspect-at-point
  "rz" 'bc-python-reconnect)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
-(add-hook 'python-mode-hook #'yapf-mode)
 
 (provide 'bc-ide-python)
 ;;; bc-ide-python ends here

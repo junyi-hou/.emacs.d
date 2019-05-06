@@ -4,9 +4,7 @@
 
 ;;; Code:
 
-(require 'bc-autocomplete)
-(require 'bc-linter)
-(require 'bc-jump)
+(require 'bc-lsp)
 
 (use-package tex-site
   :ensure auctex
@@ -30,8 +28,8 @@
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
 
-  (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
-  (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+  (add-hook 'LaTeX-mode-hook #'TeX-PDF-mode)
+  (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook #'bc-latex-ivy-bibtex-load-bib-file)
 
   :general
@@ -64,7 +62,7 @@
    "i" 'reftex-reference))
 
 (use-package ivy-bibtex
-  :after '(tex-site ivy)
+  :after tex-site
   :defer t
   :config
   (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
@@ -72,9 +70,7 @@
         ivy-bibtex-default-action 'ivy-bibtex-insert-citation
         bibtex-completion-cite-commands '("citep" "citet" "citep*" "citet*")
         bibtex-completion-cite-default-command "citep"
-        bibtex-completion-cite-prompt-for-optional-arguments nil
-        )
-  
+        bibtex-completion-cite-prompt-for-optional-arguments nil)
   :general
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
