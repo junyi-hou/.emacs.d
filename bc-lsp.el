@@ -23,7 +23,6 @@
 (use-package company
   :commands company-mode
   :general
-
   (:keymaps 'company-active-map
    "<tab>" 'bc-autocomplete--company-complete
    "TAB" 'bc-autocomplete--company-complete
@@ -33,6 +32,7 @@
    "<return>" 'company-abort)
 
   :config
+  (add-hook 'company-mode-hook #'yas-minor-mode)
   (setq company-idle-delay nil
         company-require-match 'never
         company-dabbrev-downcase nil
@@ -40,7 +40,7 @@
         company-dabbrev-code-other-buffers t
         company-minimum-prefix-length 2
         company-show-numbers t
-        company-tooltip-limit 20
+        company-tooltip-limit 10
         company-selection-wrap-around t
         company-backends '((company-files
                             company-capf
@@ -62,12 +62,10 @@ The first time this is called, the common part is inserted, the second
 time, or when the selection has been changed, the selected candidate is
 inserted."
   (interactive)
-      (when (company-manual-begin)
-        (if (or company-selection-changed
-                (eq last-command 'company-complete-common))
-            (call-interactively 'company-complete-selection)
-          (call-interactively 'company-complete-common)
-          (setq this-command 'company-complete-common))))
+  (when (company-manual-begin)
+    (if (or company-selection-changed company-common)
+        (call-interactively 'company-complete-selection)
+      (call-interactively 'company-complete-common))))
 
 
 (provide 'bc-lsp)
