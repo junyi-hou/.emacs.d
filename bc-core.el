@@ -91,21 +91,5 @@
   :type 'string
   :group 'baby-carrots)
 
-(defcustom bc-default-pairs
-  (let ((hash (make-hash-table :test 'equal)))
-        (puthash "\"" "\"" hash)
-        (puthash "\'" "\'" hash)
-        (puthash "(" ")" hash)
-        (puthash "\{" "\}" hash)
-        (puthash "[" "]" hash)
-        (puthash "\`" "\'" hash)
-        (puthash "<" ">" hash)
-        (puthash "$" "$" hash)
-        hash)
-  "My auto pair system."
-  :group 'baby-carrots
-  :type 'hash-table)
-
-
 (provide 'bc-core)
 ;;; bc-core.el ends here

@@ -108,13 +108,6 @@
    "C-k" 'evil-window-up
    "C-l" 'evil-window-right
 
-   "M-(" (lambda () (interactive) (bc-evil-insert-pair "("))
-   "M-{" (lambda () (interactive) (bc-evil-insert-pair "\{"))
-   "M-[" (lambda () (interactive) (bc-evil-insert-pair "["))
-   "M-'" (lambda () (interactive) (bc-evil-insert-pair "\'"))
-   "M-\"" (lambda () (interactive) (bc-evil-insert-pair "\""))
-   "M-`" (lambda () (interactive) (bc-evil-insert-pair "\`"))
-   "M-$" (lambda () (interactive) (bc-evil-insert-pair "$"))
    "M-l" 'right-char
    "M-h" 'left-char
    "M-<DEL>" (lambda () (interactive)
@@ -127,10 +120,18 @@
    "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
    "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
 
-  (:keymaps 'help-mode-map
+  (:keymaps '(help-mode-map message-mode-map)
    :states 'motion
    :prefix "SPC"
    "q" 'delete-window))
+
+(electric-pair-mode 1)
+(setq electric-pair-pairs '((?\" . ?\")
+                            (?\{ . ?\})
+                            (?\` . ?\')
+                            (?\$ . ?\$)
+                            (?\< . ?\>)))
+
 
 ;; functions
 
@@ -184,31 +185,27 @@
   )
 
 (defun bc-evil-smart-tab ()
-  "Assign tab key to:
-`indent-region' if in visual line mode;
-`er/expand-region' if in visual mode;
-insert `tab-width' number of spaces in front of the current line if in insert mode;
-`evil-jump-item' otherwise \(i.e., in the normal state\)"
+  "Smart tab key.
+
+In normal mode, call `evil-jump-item';
+In visual-line mode, call `indent-region';
+In visual mode, call `er/expand-region';
+In insert more, first try `company-manual-begin'.  If there is no snippet available at point, indent the current line by `tab-width' length."
   (interactive)
   (cond ((and (evil-visual-state-p) (eq evil-visual-selection 'line))
          (indent-region (region-beginning) (region-end)))
         ((evil-visual-state-p) (er/expand-region 1))
-        ((evil-insert-state-p) (if (= 0 (current-column))
-                                   (dotimes (n tab-width)
-                                     (insert " "))
-                                 (save-excursion
-                                   (beginning-of-line)
-                                   (dotimes (n tab-width)
-                                     (insert " ")))))
+        ((evil-insert-state-p) (progn
+                                 (company-manual-begin)
+                                 (unless company-candidates
+                                   (if (= 0 (current-column))
+                                       (dotimes (n tab-width)
+                                         (insert " "))
+                                     (save-excursion
+                                       (beginning-of-line)
+                                       (dotimes (n tab-width)
+                                         (insert " ")))))))
         (t (evil-jump-item))))
-
-(defun bc-evil-insert-pair (pair-begin)
-  "Insert a pair defined by PAIR-BEGIN.  Pairs are stored in `bc-default-pairs'.  One can overwrite them in different major modes."
-  (interactive)
-  (let* ((pair-end (gethash pair-begin bc-default-pairs)))
-    (when pair-end
-      (insert (concat pair-begin pair-end))
-      (left-char 1))))
 
 
 (provide 'bc-evil)
