@@ -53,16 +53,16 @@
 
 ;; highlight keywords
 (use-package hl-todo
-  :defer t
   :config
   (setq hl-todo-keyword-faces
         '(("TODO" . "#cc9393")
           ("NOTE"   . "#d0bf8f")
           ("HACK"   . "#d0bf8f")
           ("TEMP"   . "#d0bf8f")
+          ("DONE"   . "#afd8af")
           ("FIXME"  . "#cc9393")
           ("\\?\\?\\?+" . "#cc9393")))
-  (add-hook 'prog-mode-hook #'hl-todo-mode))
+  (global-hl-todo-mode))
 
 ;; load everything
 
