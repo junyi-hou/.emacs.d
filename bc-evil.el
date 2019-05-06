@@ -123,7 +123,10 @@
   (:keymaps '(help-mode-map message-mode-map)
    :states 'motion
    :prefix "SPC"
-   "q" 'delete-window))
+   "q" 'delete-window)
+  (:keymaps 'insert
+   "<return>" 'bc-evil-better-newline
+   "RET" 'bc-evil-better-newline))
 
 (electric-pair-mode 1)
 (setq electric-pair-pairs '((?\" . ?\")
@@ -206,6 +209,18 @@ In insert more, first try `company-manual-begin'.  If there is no snippet availa
                                        (dotimes (n tab-width)
                                          (insert " ")))))))
         (t (evil-jump-item))))
+
+(defun bc-evil-better-newline ()
+  "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline'.  Otherwise call `newline' as default."
+  (interactive)
+  (let* ((test-str (thing-at-point 'line t))
+         (output-end (if (string-match
+                          (concat "^[\t ]*" comment-start-skip) test-str)
+                         (match-end 0)
+                       0))
+         (output-str (substring test-str 0 output-end)))
+    (newline)
+    (insert output-str)))
 
 
 (provide 'bc-evil)
