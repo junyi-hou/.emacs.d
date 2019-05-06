@@ -43,12 +43,26 @@
   (bc-theme--set-highlight-stipple))
 
 ;; line numbers
-(setq-default display-line-numbers-type 'visual
-              display-line-numbers-current-absolute t
-              display-line-numbers-width 3
-              display-line-numbers-widen t)
+(use-package display-line-numbers
+  :hook (prog-mode . display-line-numbers-mode)
+  :config
+  (setq-default display-line-numbers-type 'visual
+                display-line-numbers-current-absolute t
+                display-line-numbers-width 3
+                display-line-numbers-widen t))
 
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+;; highlight keywords
+(use-package hl-todo
+  :defer t
+  :config
+  (setq hl-todo-keyword-faces
+        '(("TODO" . "#cc9393")
+          ("NOTE"   . "#d0bf8f")
+          ("HACK"   . "#d0bf8f")
+          ("TEMP"   . "#d0bf8f")
+          ("FIXME"  . "#cc9393")
+          ("\\?\\?\\?+" . "#cc9393")))
+  (add-hook 'prog-mode-hook #'hl-todo-mode))
 
 ;; load everything
 
