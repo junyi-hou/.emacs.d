@@ -181,13 +181,11 @@
 
 (evil-define-motion bc-evil-next-three-lines ()
   (interactive)
-  (evil-next-visual-line 3)
-  )
+  (evil-next-visual-line 3))
 
 (evil-define-motion bc-evil-previous-three-lines ()
   (interactive)
-  (evil-previous-visual-line 3)
-  )
+  (evil-previous-visual-line 3))
 
 (defun bc-evil-smart-tab ()
   "Smart tab key.
@@ -233,16 +231,23 @@ Optional arguments ARG and INTERACTIVE are included to satisfied `newline'."
 
 (defun bc-evil--search-visually-selected-text (forward)
   "Search visually selected test.  If FORWARD is t, search forward, otherwise search backward."
-  (let* ((search-str (buffer-substring-no-properties (region-beginning) (region-end)))
+  (let* ((beg (region-beginning))
+         (end (region-end))
+         (search-str (buffer-substring-no-properties beg end))
          (search-str-length (length search-str))
          (search-ring-str (car-safe regexp-search-ring)))
     (evil-exit-visual-state)
+    ;; if search backwards, need to move point to region beginning
+    ;; likewise, if search forward, move point to region end
+    (if forward
+        (goto-char end)
+      (goto-char beg))
     (evil-search search-str forward)
     (unless (equal (car-safe evil-ex-search-history) search-str)
       (push search-str evil-ex-search-history))
     (evil-push-search-history search-str forward)
     (evil-visual-state)
-    (evil-forward-char (- search-str-length 1))))
+    (evil-forward-char search-str-length)))
 
 (evil-define-motion bc-evil-search-visually-forward ()
   "Search forward for the visual selected text."
