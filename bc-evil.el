@@ -121,6 +121,10 @@
    "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
    "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
 
+  (:keymaps 'visual
+   "*" 'bc-evil-search-visually-forward
+   "#" 'bc-evil-search-visually-backward)
+
   (:keymaps '(help-mode-map message-mode-map)
    :states 'motion
    :prefix "SPC"
@@ -211,7 +215,7 @@ In insert more, first try `company-manual-begin'.  If there is no snippet availa
 (defun bc-evil-better-newline (&optional arg interactive)
   "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline'.  Otherwise call `newline' as default.
 
-optional arguments ARG and INTERACTIVE are included to satisfied `newline'."
+Optional arguments ARG and INTERACTIVE are included to satisfied `newline'."
   (let ((output-str ""))
     (save-excursion
       (line-move -1)
@@ -225,6 +229,35 @@ optional arguments ARG and INTERACTIVE are included to satisfied `newline'."
     (insert output-str)))
 
 (advice-add 'newline :after #'bc-evil-better-newline)
+
+
+(defun bc-evil--search-visually-selected-text (forward)
+  "Search visually selected test.  If FORWARD is t, search forward, otherwise search backward."
+  (let* ((search-str (buffer-substring-no-properties (region-beginning) (region-end)))
+         (search-str-length (length search-str))
+         (search-ring-str (car-safe regexp-search-ring)))
+    (evil-exit-visual-state)
+    (evil-search search-str forward)
+    (unless (equal (car-safe evil-ex-search-history) search-str)
+      (push search-str evil-ex-search-history))
+    (evil-push-search-history search-str forward)
+    (evil-visual-state)
+    (evil-forward-char (- search-str-length 1))))
+
+(evil-define-motion bc-evil-search-visually-forward ()
+  "Search forward for the visual selected text."
+  :jump t
+  :repeat nil
+  (interactive)
+  (bc-evil--search-visually-selected-text t))
+
+(evil-define-motion bc-evil-search-visually-backward ()
+  "Search backward for the visual selected text."
+  :jump t
+  :repeat nil
+  (interactive)
+  (bc-evil--search-visually-selected-text nil))
+
 
 (provide 'bc-evil)
 ;;; bc-evil.el ends here
