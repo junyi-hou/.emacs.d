@@ -3,6 +3,10 @@
 ;;; Commentary:
 
 ;;; Code:
+
+(require 'bc-core)
+(require 'bc-lsp)
+
 (use-package eshell
   :init
   (setq eshell-scroll-to-bottom-on-input 'all
@@ -11,9 +15,6 @@
         eshell-save-history-on-exit t
         eshell-prefer-lisp-functions nil
         eshell-destroy-buffer-when-process-dies t))
-
-(require 'bc-core)
-(require 'bc-lsp)
 
 (defun bc-eshell--format-path-name (path)
   "Formatting a given PATH.

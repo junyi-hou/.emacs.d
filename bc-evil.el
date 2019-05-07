@@ -124,11 +124,7 @@
   (:keymaps '(help-mode-map message-mode-map)
    :states 'motion
    :prefix "SPC"
-   "q" 'delete-window)
-
-  (:keymaps 'insert
-   "<return>" 'bc-evil-better-newline
-   "RET" 'bc-evil-better-newline))
+   "q" 'delete-window))
 
 (electric-pair-mode 1)
 (setq electric-pair-pairs '((?\" . ?\")
@@ -212,18 +208,23 @@ In insert more, first try `company-manual-begin'.  If there is no snippet availa
                                          (insert " ")))))))
         (t (evil-jump-item))))
 
-(defun bc-evil-better-newline ()
-  "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline'.  Otherwise call `newline' as default."
-  (interactive)
-  (let* ((test-str (thing-at-point 'line t))
-         (output-end (if (string-match
-                          (concat "^[\t ]*" comment-start-skip) test-str)
-                         (match-end 0)
-                       0))
-         (output-str (substring test-str 0 output-end)))
-    (newline)
+(defun bc-evil-better-newline (&optional arg interactive)
+  "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline'.  Otherwise call `newline' as default.
+
+optional arguments ARG and INTERACTIVE are included to satisfied `newline'."
+  (let ((output-str ""))
+    (save-excursion
+      (line-move -1)
+      (let* ((test-str (thing-at-point 'line t)))
+        (setq output-str (if (string-match
+                              (concat "\\(^[\t ]*\\)\\("
+                                      comment-start-skip "\\)")
+                              test-str)
+                             (match-string 2 test-str)
+                           ""))))
     (insert output-str)))
 
+(advice-add 'newline :after #'bc-evil-better-newline)
 
 (provide 'bc-evil)
 ;;; bc-evil.el ends here
