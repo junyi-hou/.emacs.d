@@ -28,6 +28,8 @@
    "TAB" 'bc-lsp--complete
    "M-j" 'company-select-next
    "M-k" 'company-select-previous-or-abort
+   "M-J" 'company-next-page
+   "M-K" 'company-previous-page
    "RET" 'company-abort
    "<return>" 'company-abort)
 
@@ -55,12 +57,11 @@
 
 (defun bc-lsp--complete ()
   (interactive)
-  (if (or company-selection-changed
-          (eq last-command 'company-complete-common))
-      (call-interactively 'company-complete-selection)
-    (call-interactively 'company-complete-common)
-    (when company-candidates
-      (setq this-command 'company-complete-common))))
+    (if (or company-selection-changed
+            (member last-command '(company-complete-common
+                                   bc-lsp--complete)))
+        (call-interactively 'company-complete-selection)
+      (call-interactively 'company-complete-common)))
 
 (provide 'bc-lsp)
 ;;; bc-lsp.el ends here
