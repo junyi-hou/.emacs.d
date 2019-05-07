@@ -29,6 +29,12 @@
 (use-package auto-compile
   :config (auto-compile-on-load-mode))
 
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-prompt-before-update t
+        auto-package-update-delete-old-versions t)
+  (auto-package-update-maybe))
+
 (setq load-prefer-newer t)
 
 (provide 'bc-pkgmgmt)
