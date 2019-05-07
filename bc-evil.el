@@ -33,11 +33,8 @@
 (use-package evil
   :init
   (evil-mode 1)
-  :config
   (setq evil-normal-state-modes (append evil-emacs-state-modes
-                                        evil-normal-state-modes)
-        evil-want-C-u-scroll t
-        evil-want-C-d-scroll t)
+                                        evil-normal-state-modes))
 
   :general
   (:keymaps '(motion normal visual)
@@ -108,6 +105,9 @@
    "C-j" 'evil-window-down
    "C-k" 'evil-window-up
    "C-l" 'evil-window-right
+
+   "C-u" 'evil-scroll-up
+   "C-d" 'evil-scroll-down
 
    "M-l" 'right-char
    "M-h" 'left-char
