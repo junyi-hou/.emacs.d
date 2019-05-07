@@ -24,8 +24,8 @@
   :commands company-mode
   :general
   (:keymaps 'company-active-map
-   "<tab>" 'bc-autocomplete--company-complete
-   "TAB" 'bc-autocomplete--company-complete
+   "<tab>" 'bc-lsp--complete
+   "TAB" 'bc-lsp--complete
    "M-j" 'company-select-next
    "M-k" 'company-select-previous-or-abort
    "RET" 'company-abort
@@ -53,20 +53,14 @@
   :commands company-posframe-mode
   :hook (company-mode . company-posframe-mode))
 
-;; function:
-
-;; taken from RSW at https://gist.github.com/rswgnu/85ca5c69bb26551f3f27500855893dbe
-(defun bc-autocomplete--company-complete ()
-  "Insert the common part of all candidates or the current selection.
-The first time this is called, the common part is inserted, the second
-time, or when the selection has been changed, the selected candidate is
-inserted."
+(defun bc-lsp--complete ()
   (interactive)
-  (when (company-manual-begin)
-    (if (or company-selection-changed company-common)
-        (call-interactively 'company-complete-selection)
-      (call-interactively 'company-complete-common))))
-
+  (if (or company-selection-changed
+          (eq last-command 'company-complete-common))
+      (call-interactively 'company-complete-selection)
+    (call-interactively 'company-complete-common)
+    (when company-candidates
+      (setq this-command 'company-complete-common))))
 
 (provide 'bc-lsp)
 ;;; bc-lsp.el ends here
