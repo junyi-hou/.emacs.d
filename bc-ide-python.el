@@ -57,11 +57,17 @@
 
 (defun bc-python--hook ()
   "Initiate venv, autocomplete and linters."
+
    ;; load venv
    (bc-jupyter--enable-venv)
+
    ;; load lsp
    (company-mode 1)
    (eglot 1)
+
+   ;; hook to reformat buffer
+   (add-hook 'before-save-hook #'eglot-format)
+   
    ;; set tab-width
    (setq tab-width 4))
 
@@ -79,7 +85,9 @@
  "ro" 'bc-python-local-repl
  "rO" 'bc-python-remote-repl
  "rc" 'jupyter-repl-associate-buffer
- "rz" 'bc-python-reconnect)
+ "rz" 'bc-python-reconnect
+ "rh" 'eglot-help-at-point
+ "rm" 'eglot-rename)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
 

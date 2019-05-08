@@ -10,12 +10,13 @@
 (use-package eglot
   :commands eglot)
 
-(use-package flymake)
+(use-package flymake
+  :config
+  (use-package flymake-posframe
+    :after posframe
+    :load-path "~/Documents/projects/flymake-posframe"
+    :hook (flymake-mode . flymake-posframe-mode)))
 
-(use-package flymake-posframe
-  :after posframe
-  :load-path "~/Documents/projects/flymake-posframe"
-  :hook (flymake-mode . flymake-posframe-mode))
 
 (use-package yasnippet
   :commands yas-minor-mode
