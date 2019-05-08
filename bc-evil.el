@@ -201,13 +201,14 @@ In insert more, first try `company-manual-begin'.  If there is no snippet availa
         ((evil-insert-state-p) (progn
                                  (company-manual-begin)
                                  (unless company-candidates
-                                   (if (= 0 (current-column))
+                                   (if (string-match-p
+                                        "^[ \t]*\n$"
+                                        (thing-at-point 'line t))
                                        (dotimes (n tab-width)
                                          (insert " "))
-                                     (save-excursion
-                                       (beginning-of-line)
-                                       (dotimes (n tab-width)
-                                         (insert " ")))))))
+                                     (indent-region
+                                      (line-beginning-position)
+                                      (line-end-position))))))
         (t (evil-jump-item))))
 
 (defun bc-evil-better-newline (&optional arg interactive)
