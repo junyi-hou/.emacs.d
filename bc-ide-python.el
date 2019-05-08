@@ -87,7 +87,9 @@
  "rc" 'jupyter-repl-associate-buffer
  "rz" 'bc-python-reconnect
  "rh" 'eglot-help-at-point
- "rm" 'eglot-rename)
+ "rm" 'eglot-rename
+ "jj" 'xref-find-definitions-other-window
+ "jr" 'xref-find-references)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
 
