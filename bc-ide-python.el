@@ -63,10 +63,10 @@
 
    ;; load lsp
    (company-mode 1)
-   (eglot 1)
+   (eglot-ensure)
 
    ;; hook to reformat buffer
-   (add-hook 'before-save-hook #'eglot-format)
+   (add-hook 'before-save-hook 'eglot-format)
    
    ;; set tab-width
    (setq tab-width 4))

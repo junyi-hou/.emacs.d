@@ -8,7 +8,7 @@
 ;;; Code:
 
 (use-package eglot
-  :commands eglot)
+  :commands eglot-ensure)
 
 (use-package flymake
   :config
@@ -65,11 +65,13 @@
 
 (defun bc-lsp--complete ()
   (interactive)
+  (when (company-manual-begin)
     (if (or company-selection-changed
             (member last-command '(company-complete-common
                                    bc-lsp--complete)))
         (call-interactively 'company-complete-selection)
       (call-interactively 'company-complete-common)))
+  (completion-at-point))
 
 (provide 'bc-lsp)
 ;;; bc-lsp.el ends here
