@@ -234,8 +234,7 @@ Optional arguments ARG and INTERACTIVE are included to satisfied `newline'."
   (let* ((beg (region-beginning))
          (end (region-end))
          (search-str (buffer-substring-no-properties beg end))
-         (search-str-length (length search-str))
-         (search-ring-str (car-safe regexp-search-ring)))
+         (search-str-length (length search-str)))
     (evil-exit-visual-state)
     ;; if search backwards, need to move point to region beginning
     ;; likewise, if search forward, move point to region end
