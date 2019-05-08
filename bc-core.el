@@ -5,7 +5,7 @@
 ;;; Code:
 
 ;; enable debug mode
-(toggle-debug-on-error)
+;; (toggle-debug-on-error)
 
 ;; put custom files in a separate location
 (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))
