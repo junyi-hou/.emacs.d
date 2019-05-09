@@ -6,7 +6,15 @@
 
 (require 'bc-lsp)
 
-;; load stuffs
+;; elisp does not have a lsp
+;; only thing, for now, that I miss is jumping to other places
+(use-package dumb-jump
+  :general
+  (:keymaps 'emacs-lisp-mode-map
+   :states '(normal visual motion)
+   :prefix "SPC"
+   "jd" 'dumb-jump-jump))
+
 (eval-after-load 'dash '(dash-enable-font-lock)) ; syntax highlight for dash
 
 (add-hook 'emacs-lisp-mode-hook (lambda ()
