@@ -30,6 +30,12 @@
   (setq ivy-display-function #'ivy-posframe-display-at-point)
   (ivy-posframe-enable))
 
+(use-package ivy-xref
+  :after (ivy lsp-mode)
+  :init
+  (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
+
+
 ;; functions
 
 (defun bc-ivy-open-remote-shell (&optional remote)

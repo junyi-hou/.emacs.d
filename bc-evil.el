@@ -53,7 +53,6 @@
             
   ;; execute
   "ee"  'execute-extended-command
-  "eE"  'evil-ex
   "el"  'eval-last-sexp
             
   ;; helps

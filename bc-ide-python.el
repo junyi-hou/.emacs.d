@@ -61,12 +61,11 @@
    ;; load venv
    (bc-jupyter--enable-venv)
 
-   ;; load lsp
+   ;; load autocompletion
    (company-mode 1)
-   (eglot-ensure)
 
    ;; hook to reformat buffer
-   (add-hook 'before-save-hook 'eglot-format)
+   (add-hook 'before-save-hook 'lsp-format-buffer nil t)
    
    ;; set tab-width
    (setq tab-width 4))
@@ -78,18 +77,14 @@
  :states '(motion normal visual)
  :keymaps 'python-mode-map
  :prefix "SPC"
- "rr" 'bc-jupyter-eval-buffer-or-region
+ "eb" 'bc-jupyter-eval-buffer-or-region
+ "er" 'bc-python-send-string
 
- "rl" 'jupyter-eval-line-or-region
- "re" 'bc-python-send-string
- "ro" 'bc-python-local-repl
- "rO" 'bc-python-remote-repl
- "rc" 'jupyter-repl-associate-buffer
- "rz" 'bc-python-reconnect
- "rh" 'eglot-help-at-point
- "rm" 'eglot-rename
- "jj" 'xref-find-definitions-other-window
- "jr" 'xref-find-references)
+ "eo" 'bc-python-local-repl
+ "eO" 'bc-python-remote-repl
+
+ "ec" 'jupyter-repl-associate-buffer
+ "ez" 'bc-python-reconnect)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
 
