@@ -114,9 +114,6 @@
                (backward-delete-char-untabify 1)
                (delete-char 1))
 
-   "TAB" 'bc-evil-smart-tab
-   "<tab>" 'bc-evil-smart-tab
-
    "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
    "C-y" (lambda () (interactive) (evil-scroll-line-up 5))
 
@@ -126,23 +123,39 @@
    "*" 'bc-evil-search-visually-forward
    "#" 'bc-evil-search-visually-backward)
 
+  (:keymaps '(normal motion)
+   "<tab>" 'evil-jump-item)
+
+  (:keymaps 'visual
+   "<tab>" 'bc-evil-visual-tab)
+
   (:keymaps 'insert
-   [remap newline] 'newline-and-indent)
+   "<tab>" 'bc-lsp-unified-tab)
 
   (:keymaps '(help-mode-map message-mode-map)
    :states 'motion
    :prefix "SPC"
    "q" 'delete-window))
 
+
 (electric-pair-mode 1)
-(setq electric-pair-pairs '((?\" . ?\")
-                            (?\{ . ?\})
-                            (?\` . ?\')
-                            (?\$ . ?\$)
-                            (?\< . ?\>)))
+(eval-after-load 'electric-pair
+  (setq electric-pair-pairs '((?\" . ?\")
+                              (?\{ . ?\})
+                              (?\` . ?\')
+                              (?\$ . ?\$)
+                              (?\< . ?\>))))
 
 
 ;; functions:
+;;
+(defun bc-evil-visual-tab ()
+  "Tab binding in visual mode."
+  (interactive)
+  (when (evil-visual-state-p)
+    (if (eq evil-visual-selection 'line)
+        (indent-region (region-beginning) (region-end))
+      (er/expand-region 1))))
 
 (defun bc-evil--is-user-buffer ()
   "Determine whether the current buffer is a user-buffer by looking at the first char.  Return t if current buffer is not a dired tree or is a user-buffer (include *scratch* buffer)."
@@ -191,30 +204,6 @@
   (interactive)
   (evil-previous-visual-line 3))
 
-(defun bc-evil-smart-tab ()
-  "Smart tab key.
-
-In normal mode, call `evil-jump-item';
-In visual-line mode, call `indent-region';
-In visual mode, call `er/expand-region';
-In insert more, first try `company-manual-begin'.  If there is no snippet available at point, indent the current line by `tab-width' length."
-  (interactive)
-  (cond ((and (evil-visual-state-p) (eq evil-visual-selection 'line))
-         (indent-region (region-beginning) (region-end)))
-        ((evil-visual-state-p) (er/expand-region 1))
-        ((evil-insert-state-p) (progn
-                                 (company-manual-begin)
-                                 (unless company-candidates
-                                   (if (looking-back
-                                        "^[ \t]*\="
-                                        (line-beginning-position))
-                                       (dotimes (n tab-width)
-                                         (insert " "))
-                                     (indent-region
-                                      (line-beginning-position)
-                                      (line-end-position))))))
-        (t (evil-jump-item))))
-
 (defun bc-evil-better-newline (&optional arg interactive)
   "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline'.  Otherwise call `newline' as default.
 
@@ -232,7 +221,6 @@ Optional arguments ARG and INTERACTIVE are included to satisfied `newline'."
     (insert output-str)))
 
 (advice-add 'newline :after #'bc-evil-better-newline)
-
 
 (defun bc-evil--search-visually-selected-text (forward)
   "Search visually selected test.  If FORWARD is t, search forward, otherwise search backward."

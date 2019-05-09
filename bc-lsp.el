@@ -35,8 +35,7 @@
   :commands company-mode
   :general
   (:keymaps 'company-active-map
-   "<tab>" 'bc-lsp--complete
-   "TAB" 'bc-lsp--complete
+   "<tab>" 'bc-lsp-unified-tab
    "M-j" 'company-select-next
    "M-k" 'company-select-previous-or-abort
    "M-J" 'company-next-page
@@ -87,11 +86,38 @@
 
 (defun bc-lsp--complete ()
   (interactive)
-  (if (or company-selection-changed
-          (member last-command '(company-complete-common
-                                 bc-lsp--complete)))
-      (call-interactively 'company-complete-selection)
-    (call-interactively 'company-complete-common)))
+  (cond
+   ((eq last-command 'bc-evil-smart-tab)
+    (call-ineractively 'company-complete-common))
+
+   ((member last-command '(company-complete-common
+                           bc-lsp--complete
+                           company-select-next
+                           company-select-previous-or-abort))
+    (call-interactively 'company-complete-selection))
+
+   (t
+    (call-interactively 'company-complete-common))))
+
+
+(defun bc-lsp-unified-tab ()
+  "Use tab for both company and indentation.
+
+In insert mode, first try `company-manual-begin'.  If there is no completion available at point, indent the current line by `tab-width' length."
+  (interactive)
+  (if (looking-back "^[ \t]*" (line-beginning-position))
+      (dotimes (n tab-width) (insert " "))
+    (company-manual-begin)
+    (if company-candidates
+        (if (or company-selection-changed
+                (and (eq real-last-command 'company-complete)
+                     (eq last-command 'company-complete-common)))
+            (call-interactively 'company-complete-selection)
+          (call-interactively 'company-complete-common)
+          (when company-candidates
+            (setq this-command 'company-complete-common)))
+      (indent-region (line-beginning-position) (line-end-position)))))
+
 
 ;; taking from
 ;; https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/
