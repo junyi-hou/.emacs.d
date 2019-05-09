@@ -24,6 +24,7 @@
 (add-hook 'emacs-lisp-mode-hook (lambda ()
                                   (setq tab-width 2)
                                   (company-mode 1)
+                                  (flymake-mode 1)
                                   (dumb-jump-mode 1)))
 
 (provide 'bc-ide-lisp)
