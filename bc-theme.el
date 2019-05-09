@@ -48,8 +48,11 @@
   :config
   (setq-default display-line-numbers-type 'visual
                 display-line-numbers-current-absolute t
-                display-line-numbers-width 3
+                display-line-numbers-width 2
                 display-line-numbers-widen t))
+
+;; display time
+(display-time-mode)
 
 ;; highlight keywords
 (use-package hl-todo
@@ -67,6 +70,8 @@
 ;; load everything
 
 (setq-default custom-safe-themes t)
+(setq-default left-fringe-width 8)
+
 (set-face-attribute 'default nil
                     :family "monospace"
                     :height 130
