@@ -1,11 +1,9 @@
 ;;; bc-ide-python.el -- provide IDE features for editing python files -*- lexical-binding: t; -*-
 
 ;;; Commentary:
+
 ;; This module adds on top of the default python.el:
-;; linting and autocompletion support using flycheck and company;
-;; REPL support using jupyter;
-;; jump to definition using dumb-jump;
-;; code formatting using py-papf
+;; use `jupyter' for REPL and `lsp-mode' for all language server stuffs
 
 ;;; Code:
 
@@ -63,6 +61,9 @@
 
    ;; load autocompletion
    (company-mode 1)
+
+   ;; start lsp server
+   (lsp)
 
    ;; hook to reformat buffer
    (add-hook 'before-save-hook 'lsp-format-buffer nil t)
