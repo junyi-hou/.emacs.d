@@ -118,11 +118,16 @@
    "<tab>" 'bc-evil-smart-tab
 
    "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
-   "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
+   "C-y" (lambda () (interactive) (evil-scroll-line-up 5))
+
+   "M-`" nil)
 
   (:keymaps 'visual
    "*" 'bc-evil-search-visually-forward
    "#" 'bc-evil-search-visually-backward)
+
+  (:keymaps 'insert
+   [remap newline] 'newline-and-indent)
 
   (:keymaps '(help-mode-map message-mode-map)
    :states 'motion
@@ -200,9 +205,9 @@ In insert more, first try `company-manual-begin'.  If there is no snippet availa
         ((evil-insert-state-p) (progn
                                  (company-manual-begin)
                                  (unless company-candidates
-                                   (if (string-match-p
-                                        "^[ \t]*\n$"
-                                        (thing-at-point 'line t))
+                                   (if (looking-back
+                                        "^[ \t]*\="
+                                        (line-beginning-position))
                                        (dotimes (n tab-width)
                                          (insert " "))
                                      (indent-region

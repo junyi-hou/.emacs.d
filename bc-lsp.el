@@ -53,8 +53,7 @@
         company-show-numbers t
         company-tooltip-limit 10
         company-selection-wrap-around t
-        company-backends '((company-lsp
-                            company-capf
+        company-backends '((company-capf
                             company-yasnippet
                             company-files)
                            (company-dabbrev
