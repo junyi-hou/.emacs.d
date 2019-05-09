@@ -21,9 +21,18 @@
    font-latex-fontify-script nil
    font-latex-fontify-sectioning 1.0
 
+   ;; latex command - enable syntax and shell-escape
+   LaTeX-command "latex -syntax=1 --shell-escape -interaction=nonstopmode"
+
    ;; other settings
    TeX-parse-self t
    TeX-auto-save t)
+
+  (face-spec-set
+   'font-latex-slide-title-face
+   '((t :inherit  'font-lock-function-name-face
+        :height 1.0
+        :weight normal)))
 
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
