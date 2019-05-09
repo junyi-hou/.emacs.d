@@ -60,6 +60,13 @@
    (bc-jupyter--enable-venv)
 
    ;; load autocompletion
+   (setq company-backends
+         (let* ((first (car company-backends))
+                (rest (cdr company-backends))
+                (removed-capf (delete 'company-capf first))
+                (add-lsp (push 'company-lsp removed-capf)))
+         (cons add-lsp rest)))
+
    (company-mode 1)
 
    ;; start lsp server

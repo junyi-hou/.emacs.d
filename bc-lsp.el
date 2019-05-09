@@ -81,7 +81,9 @@
    "jj" 'ivy-resume
    "jb" 'bc-lsp-switch-to-previous-buffer))
 
-(use-package company-lsp :after company)
+(use-package company-lsp
+  :defer t
+  :commands company-lsp)
 
 (defun bc-lsp--complete ()
   (interactive)
