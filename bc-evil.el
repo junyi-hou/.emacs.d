@@ -52,8 +52,9 @@
   :prefix "SPC"
             
   ;; execute
-  "ee"  'execute-extended-command
-  "el"  'eval-last-sexp
+  "ee" 'execute-extended-command
+  "el" 'eval-last-sexp
+  "ei" 'ivy-resume
             
   ;; helps
   "hf" 'describe-function

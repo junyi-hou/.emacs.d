@@ -82,16 +82,41 @@
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
-   "eh" 'bc-lsp-help
+   "eh" 'lsp-ui-doc-show
    "en" 'lsp-rename
-   "jd" 'lsp-find-definition
-   "jr" 'lsp-find-references
-   "jj" 'ivy-resume
+   "jd" 'lsp-ui-peek-find-definitions
+   "jr" 'lsp-ui-peek-find-references
    "jb" 'bc-lsp-switch-to-previous-buffer))
 
 (use-package company-lsp
   :defer t
   :commands company-lsp)
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :init
+  ;; I only need peek
+  (setq lsp-ui-sideline-enable nil
+        lsp-ui-flycheck-enable nil
+        lsp-ui-imenu-enable nil
+        lsp-ui-doc-enable nil
+        
+        ;; peek setting
+        lsp-ui-peek-width 40)
+
+  :config
+  ;; set faces for lsp-ui-peek
+  ;; (set-face-attribute )
+
+  :general
+  (:keymaps 'lsp-ui-peek-mode-map
+  "j" 'lsp-ui-peek--select-next
+  "J" 'lsp-ui-peek--select-next-file
+  "k" 'lsp-ui-peek--select-prev
+  "K" 'lsp-ui-peek--select-prev-file
+  "q" 'lsp-ui-peek--abort
+  "<tab>" 'lsp-ui-peek--goto-xref
+  "<enter>" 'lsp-ui-peek--goto-xref-other-window))
 
 
 ;; functions
@@ -121,18 +146,6 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   "Switch to previously open buffer."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-
-;; (defun bc-lsp-help ()
-;;   "Wrapper around `lsp-describe-thing-at-point'.
-
-;; Call `lsp-describe-thing-at-point' to update `*lsp-help*' buffer, then
-;; display the help using `posframe'."
-;;   (interactive)
-;;   (lsp-describe-thing-at-point)
-;;   (delete-window)
-;;   (posframe-show
-;;    (get-buffer "*lsp-help*")
-;;    :))
 
 (provide 'bc-lsp)
 ;;; bc-lsp.el ends here
