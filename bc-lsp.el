@@ -106,8 +106,8 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
     (company-manual-begin)
     (if company-candidates
         (if (or company-selection-changed
-                (and (eq real-last-command 'company-complete)
-                     (eq last-command 'company-complete-common)))
+                (memq last-command '(company-complete-common
+                                     bc-lsp-unified-tab)))
             (call-interactively 'company-complete-selection)
           (call-interactively 'company-complete-common)
           (when company-candidates
