@@ -11,9 +11,8 @@
   :config
   ;; get rid of the annoying underlines
   (dolist (face '(flymake-note flymake-warning flymake-error))
-    (face-spec-set
-     face
-     '((t :underline nil))))
+    (set-face-attribute face nil
+     :underline nil))
 
   (setq flymake-start-on-newline nil)
 
