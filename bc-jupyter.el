@@ -11,7 +11,35 @@
 
 (use-package jupyter
   :defer t
-  :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next))
+  :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next)
+  :general
+  (:keymaps
+   'jupyter-repl-mode-map
+   :states
+   '(insert normal visual motion emacs)
+   (kbd "<up>") 'jupyter-repl-history-previous
+   (kbd "<down>") 'jupyter-repl-history-next
+   "C-u" 'jupyter-repl-backward-cell
+   "C-d" 'jupyter-repl-forward-cell)
+
+  (:keymaps
+   'jupyter-repl-mode-map
+   :states
+   '(normal visual motion)
+   "A" (lambda () (interactive)
+         (goto-char (point-max))
+         (evil-insert 1))
+   "G" 'jupyter-repl-forward-cell
+   "gg" 'jupyter-repl-backward-cell
+   "SPC" nil)
+
+  (:keymaps
+   'jupyter-repl-mode-map
+   :states
+   '(normal visual motion)
+   :prefix
+   "SPC"
+   "q" 'kill-buffer-and-window))
 
 
 ;; customizable variables
@@ -140,32 +168,15 @@ If REMOTE is provided, start an remote kernel and connect to it."
 
 ;; settings
 
-(general-define-key
- :keymaps 'jupyter-repl-mode-map
- :states '(insert normal visual motion emacs)
- (kbd "<up>") 'jupyter-repl-history-previous
- (kbd "<down>") 'jupyter-repl-history-next
- "C-u" 'jupyter-repl-backward-cell
- "C-d" 'jupyter-repl-forward-cell)
+(defun bc-jupyter--hook ()
+  "Set up proper `company-backends' for jupyter repl."
+  (setq company-backends '((company-capf company-yasnippet company-files)
+                           (company-dabbrev company-abbrev)))
+  (company-mode 1))
 
-(general-define-key
- :keymaps 'jupyter-repl-mode-map
- :states '(normal visual motion)
- "A" (lambda () (interactive)
-       (goto-char (point-max))
-       (evil-insert 1))
- "G" 'jupyter-repl-forward-cell
- "gg" 'jupyter-repl-backward-cell
- "SPC" nil)
-
-(general-define-key
- :keymaps 'jupyter-repl-mode-map
- :states '(normal visual motion)
- :prefix "SPC"
- "q" 'kill-buffer-and-window)
+(add-hook 'jupyter-repl-mode-hook #'bc-jupyter--hook)
 
 
-(add-hook 'jupyter-repl-mode-hook #'company-mode)
 
 (provide 'bc-jupyter)
 ;;; bc-jupyter.el ends here
