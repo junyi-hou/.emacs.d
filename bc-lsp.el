@@ -15,6 +15,8 @@
      face
      '((t :underline nil))))
 
+  (setq flymake-start-on-newline nil)
+
   ;; hover info
   (use-package flymake-posframe
     :after posframe
@@ -70,6 +72,13 @@
         lsp-auto-guess-root t
         lsp-enable-symbol-highlighting nil)
 
+  ;; do not mess with my company-backends
+  (advice-add
+   'lsp--auto-configure
+   :after
+   (lambda ()
+     (setq company-backends (cdr company-backends))))
+
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
@@ -84,21 +93,8 @@
   :defer t
   :commands company-lsp)
 
-(defun bc-lsp--complete ()
-  (interactive)
-  (cond
-   ((eq last-command 'bc-evil-smart-tab)
-    (call-ineractively 'company-complete-common))
 
-   ((member last-command '(company-complete-common
-                           bc-lsp--complete
-                           company-select-next
-                           company-select-previous-or-abort))
-    (call-interactively 'company-complete-selection))
-
-   (t
-    (call-interactively 'company-complete-common))))
-
+;; functions
 
 (defun bc-lsp-unified-tab ()
   "Use tab for both company and indentation.
@@ -126,17 +122,17 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-(defun bc-lsp-help ()
-  "Wrapper around `lsp-describe-thing-at-point'.
+;; (defun bc-lsp-help ()
+;;   "Wrapper around `lsp-describe-thing-at-point'.
 
-Call `lsp-describe-thing-at-point' to update `*lsp-help*' buffer, then
-display the help using `posframe'."
-  (interactive)
-  (lsp-describe-thing-at-point)
-  (delete-window)
-  (posframe-show
-   (get-buffer "*lsp-help*")
-   :))
+;; Call `lsp-describe-thing-at-point' to update `*lsp-help*' buffer, then
+;; display the help using `posframe'."
+;;   (interactive)
+;;   (lsp-describe-thing-at-point)
+;;   (delete-window)
+;;   (posframe-show
+;;    (get-buffer "*lsp-help*")
+;;    :))
 
 (provide 'bc-lsp)
 ;;; bc-lsp.el ends here
