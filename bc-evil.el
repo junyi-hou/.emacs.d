@@ -64,17 +64,17 @@
   "hh" 'help-for-help
 
   ;; basic function
-  "w"  'evil-write
-  "k"  'delete-window
-  "q"  'kill-current-buffer
+  "w" 'evil-write
+  "k" 'delete-window
+  "q" 'kill-current-buffer
   "b" 'balance-windows
 
   ;; buffer related
-  "n"  'bc-evil-next-user-buffer
-  "N"  'bc-evil-previous-user-buffer
+  "n" 'bc-evil-next-user-buffer
+  "N" 'bc-evil-previous-user-buffer
 
   ;; split
-  "\\"   (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
+  "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
   "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
 
   ;; open stuffs
