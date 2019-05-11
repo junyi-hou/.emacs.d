@@ -16,9 +16,9 @@
 
   (setq flymake-start-on-newline nil)
 
-  ;; hover info
+  ;; flymake frontend
   (use-package flymake-posframe
-    :after posframe
+    :after flymake
     :load-path "~/Documents/projects/posframe-collection"
     :hook (flymake-mode . flymake-posframe-mode)))
 
@@ -75,7 +75,7 @@
   (advice-add
    'lsp--auto-configure
    :after
-   (lambda ()
+   (defun remove-autoadded-backends ()
      (setq company-backends (cdr company-backends))))
 
   :general
@@ -91,6 +91,11 @@
   :defer t
   :commands company-lsp)
 
+;; (use-package lsp-doc-posframe
+;;   :after lsp-mode
+;;   :load-path "~/Documents/projects/posframe-collection"
+;;   :hook (lsp-mode . lsp-doc-posframe-mode))
+
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
   :init
@@ -99,13 +104,44 @@
         lsp-ui-flycheck-enable nil
         lsp-ui-imenu-enable nil
         lsp-ui-doc-enable nil
-        
-        ;; peek setting
-        lsp-ui-peek-width 40)
+
+        lsp-ui-peek-list-width 20)
 
   :config
   ;; set faces for lsp-ui-peek
-  ;; (set-face-attribute )
+  ;; 
+  (face-spec-set 'lsp-ui-peek-header
+   '((((background light)) :background "#6F6F6F" :foreground "#FFFFEF")
+    (t :background "#6F6F6F" :foreground "#FFFFEF")))
+
+  (face-spec-set 'lsp-ui-peek-filename
+   '((((background light)) :foreground "#CC9393")
+    (t :foreground "#CC9393")))
+   
+  (face-spec-set 'lsp-ui-peek-list
+  '((((background light)) :background "#383838")
+    (t :background "#383838")))
+
+  (face-spec-set 'lsp-ui-peek-peek
+  '((((background light)) :background "#383838")
+    (t :background "#383838")))
+
+  (face-spec-set 'lsp-ui-peek-highlight
+   '((((background light)) :background "dim gray"
+      :foreground "dim gray"
+      :distant-foreground "black")
+     (t :background "#383838"
+        :foreground "#6F6F6F"
+        :distant-foreground "white"
+        :box (:line-width -1 :color "#DCDCCC"))))
+
+  (face-spec-set 'lsp-ui-peek-selection
+    '((((background light)) :background "#6F6F6F" :foreground "#DCDCCC")
+      (t :background "#DCDCDC" :foreground "#6F6F6F")))
+
+  (set-face-attribute
+   'lsp-ui-peek-line-number nil
+   :foreground "#D0BF8F")
 
   :general
   (:keymaps 'lsp-ui-peek-mode-map
@@ -113,7 +149,6 @@
   "J" 'lsp-ui-peek--select-next-file
   "k" 'lsp-ui-peek--select-prev
   "K" 'lsp-ui-peek--select-prev-file
-  "q" 'lsp-ui-peek--abort
   "<tab>" 'lsp-ui-peek--goto-xref
   "<enter>" 'lsp-ui-peek--goto-xref-other-window))
 
