@@ -149,7 +149,7 @@
 
 
 ;; functions:
-;;
+
 (defun bc-evil-visual-tab ()
   "Tab binding in visual mode."
   (interactive)
