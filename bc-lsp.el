@@ -83,7 +83,13 @@
   ;; load my doc-viewer
   (use-package lsp-doc-posframe
     :after lsp-mode
-    :load-path "~/Documents/projects/posframe-collection")
+    :load-path "~/Documents/projects/posframe-collection"
+    :init
+    ;; fix unpleasant underline in the doc
+    (set-face-attribute
+     'nobreak-space nil
+     :underline nil)
+    )
 
   :general
   (:keymaps '(normal visual motion)
