@@ -23,7 +23,7 @@
     :hook (flymake-mode . flymake-posframe-mode)))
 
 (use-package yasnippet
-  :commands yas-minor-mode
+  :commands (yas-minor-mode yas-reload-all)
   :general
   (:keymaps 'yas-minor-mode-map
             "<tab>" nil
@@ -43,7 +43,9 @@
    "M-K" 'company-previous-page)
 
   :config
-  (add-hook 'company-mode-hook #'yas-minor-mode)
+  (add-hook 'company-mode-hook (defun bc-lsp-load-yas ()
+                                 (yas-minor-mode)
+                                 (yas-reload-all)))
   (setq company-idle-delay nil
         company-require-match 'never
         company-dabbrev-downcase nil
@@ -78,10 +80,15 @@
    (defun remove-autoadded-backends ()
      (setq company-backends (cdr company-backends))))
 
+  ;; load my doc-viewer
+  (use-package lsp-doc-posframe
+    :after lsp-mode
+    :load-path "~/Documents/projects/posframe-collection")
+
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
-   "eh" 'lsp-ui-doc-show
+   "eh" 'lsp-doc-posframe-show
    "en" 'lsp-rename
    "jd" 'lsp-ui-peek-find-definitions
    "jr" 'lsp-ui-peek-find-references
@@ -91,10 +98,6 @@
   :defer t
   :commands company-lsp)
 
-;; (use-package lsp-doc-posframe
-;;   :after lsp-mode
-;;   :load-path "~/Documents/projects/posframe-collection"
-;;   :hook (lsp-mode . lsp-doc-posframe-mode))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
