@@ -88,8 +88,7 @@
     ;; fix unpleasant underline in the doc
     (set-face-attribute
      'nobreak-space nil
-     :underline nil)
-    )
+     :underline nil))
 
   :general
   (:keymaps '(normal visual motion)
@@ -172,7 +171,14 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   (if (looking-back "^[ \t]*" (line-beginning-position))
       (dotimes (n tab-width) (insert " "))
     (company-manual-begin)
-    (if company-candidates
+    ;; HACK: manually call `company-manual-begin' will set
+    ;; `company-minimum-prefix-length' to 0, which means that the snippets
+    ;; will always get call. To fix this add a condition that if all candidates
+    ;; are snippets, cancel autocompletion and indent region.
+    (if (null (seq-every-p
+               (lambda (candidate)
+                 (member candidate (yas-active-keys)))
+               company-candidates))
         (if (or company-selection-changed
                 (memq last-command '(company-complete-common
                                      bc-lsp-unified-tab)))
@@ -180,6 +186,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
           (call-interactively 'company-complete-common)
           (when company-candidates
             (setq this-command 'company-complete-common)))
+      (company-cancel)
       (indent-region (line-beginning-position) (line-end-position)))))
 
 
