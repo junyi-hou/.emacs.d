@@ -173,8 +173,8 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
     (company-manual-begin)
     ;; HACK: manually call `company-manual-begin' will set
     ;; `company-minimum-prefix-length' to 0, which means that the snippets
-    ;; will always get call. To fix this add a condition that if all candidates
-    ;; are snippets, cancel autocompletion and indent region.
+    ;; will always get included. To fix this add a condition that if
+    ;; all candidates are snippets, cancel auto completion and indent region.
     (if (null (seq-every-p
                (lambda (candidate)
                  (member candidate (yas-active-keys)))
