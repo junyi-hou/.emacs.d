@@ -88,8 +88,8 @@
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
-   "eh" 'lsp-doc-posframe-show
-   "en" 'lsp-rename
+   "rh" 'lsp-doc-posframe-show
+   "rn" 'lsp-rename
    "jd" 'lsp-ui-peek-find-definitions
    "jr" 'lsp-ui-peek-find-references
    "jb" 'bc-lsp-switch-to-previous-buffer))

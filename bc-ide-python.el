@@ -91,14 +91,14 @@
  :states '(motion normal visual)
  :keymaps 'python-mode-map
  :prefix "SPC"
- "eb" 'bc-jupyter-eval-buffer-or-region
- "er" 'bc-python-send-string
+ "rb" 'bc-jupyter-eval-buffer-or-region
+ "rr" 'bc-python-send-string
 
- "eo" 'bc-python-local-repl
- "eO" 'bc-python-remote-repl
+ "ro" 'bc-python-local-repl
+ "rO" 'bc-python-remote-repl
 
- "ec" 'jupyter-repl-associate-buffer
- "ez" 'bc-python-reconnect)
+ "rc" 'jupyter-repl-associate-buffer
+ "rz" 'bc-python-reconnect)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
 

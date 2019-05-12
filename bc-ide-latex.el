@@ -84,7 +84,12 @@
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
-   "rc" 'ivy-bibtex))
+   "rc" 'ivy-bibtex)
+
+  (:keymaps 'LaTeX-mode-map
+   :states 'insert
+   :prefix "C-c"
+   "c" 'ivy-bibtex))
 
 (use-package pdf-tools
   :config
