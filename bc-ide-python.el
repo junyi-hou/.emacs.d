@@ -8,6 +8,8 @@
 ;;; Code:
 
 ;;load pkgs
+(require 'bc-company)
+(require 'bc-flymake)
 (require 'bc-lsp)
 (require 'bc-jupyter)
 

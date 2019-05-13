@@ -4,7 +4,7 @@
 
 ;;; Code:
 
-(require 'bc-lsp)
+(require 'bc-company)
 
 (use-package tex-site
   :ensure auctex
@@ -120,7 +120,7 @@
    "q" 'kill-this-buffer))
 
 (use-package company-auctex
-  :after 'company
+  :after tex-site
   :defer t
   :config (add-hook 'LaTeX-mode-hook #'company-auctex-init))
 

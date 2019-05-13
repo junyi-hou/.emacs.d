@@ -131,7 +131,7 @@
    "<tab>" 'bc-evil-visual-tab)
 
   (:keymaps 'insert
-   "<tab>" 'bc-lsp-unified-tab)
+   "<tab>" 'bc-company-unified-tab)
 
   (:keymaps '(help-mode-map message-mode-map)
    :states 'motion

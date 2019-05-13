@@ -7,64 +7,8 @@
 
 ;;; Code:
 
-(use-package flymake
-  :config
-  ;; get rid of the annoying underlines
-  (dolist (face '(flymake-note flymake-warning flymake-error))
-    (set-face-attribute face nil
-     :underline nil))
-
-  (setq flymake-start-on-newline nil)
-
-  ;; flymake frontend
-  (use-package flymake-posframe
-    :after flymake
-    :load-path "~/Documents/projects/posframe-collection"
-    :hook (flymake-mode . flymake-posframe-mode)))
-
-(use-package yasnippet
-  :commands (yas-minor-mode yas-reload-all)
-  :general
-  (:keymaps 'yas-minor-mode-map
-            "<tab>" nil
-            "TAB" nil
-            "M-f" 'yas-expand
-            "M-j" 'yas-next-field
-            "M-k" 'yas-prev-field))
-
-(use-package company
-  :commands company-mode
-  :general
-  (:keymaps 'company-active-map
-   "<tab>" 'bc-lsp-unified-tab
-   "M-j" 'company-select-next
-   "M-k" 'company-select-previous-or-abort
-   "M-J" 'company-next-page
-   "M-K" 'company-previous-page)
-
-  :config
-  (add-hook 'company-mode-hook (defun bc-lsp-load-yas ()
-                                 (yas-minor-mode)
-                                 (yas-reload-all)))
-  (setq company-idle-delay nil
-        company-require-match 'never
-        company-dabbrev-downcase nil
-        company-dabbrev-ignore-case nil
-        company-dabbrev-code-other-buffers t
-        company-minimum-prefix-length 2
-        company-show-numbers t
-        company-tooltip-limit 10
-        company-selection-wrap-around t
-        company-backends '((company-capf
-                            company-yasnippet
-                            company-files)
-                           (company-dabbrev
-                            company-abbrev))))
-
-(use-package company-posframe
-  :after company
-  :commands company-posframe-mode
-  :hook (company-mode . company-posframe-mode))
+(require 'bc-company)
+(require 'bc-flymake)
 
 (use-package lsp-mode
   :config
@@ -100,7 +44,7 @@
    "jb" 'bc-lsp-switch-to-previous-buffer))
 
 (use-package company-lsp
-  :defer t
+  :after lsp-mode
   :commands company-lsp)
 
 
@@ -162,33 +106,6 @@
 
 
 ;; functions
-
-(defun bc-lsp-unified-tab ()
-  "Use tab for both company and indentation.
-
-In insert mode, first try `company-manual-begin'.  If there is no completion available at point, indent the current line by `tab-width' length."
-  (interactive)
-  (if (looking-back "^[ \t]*" (line-beginning-position))
-      (dotimes (n tab-width) (insert " "))
-    (company-manual-begin)
-    ;; HACK: manually call `company-manual-begin' will set
-    ;; `company-minimum-prefix-length' to 0, which means that the snippets
-    ;; will always get included. To fix this add a condition that if
-    ;; all candidates are snippets, cancel auto completion and indent region.
-    (if (null (seq-every-p
-               (lambda (candidate)
-                 (member candidate (yas-active-keys)))
-               company-candidates))
-        (if (or company-selection-changed
-                (memq last-command '(company-complete-common
-                                     bc-lsp-unified-tab)))
-            (call-interactively 'company-complete-selection)
-          (call-interactively 'company-complete-common)
-          (when company-candidates
-            (setq this-command 'company-complete-common)))
-      (company-cancel)
-      (indent-region (line-beginning-position) (line-end-position)))))
-
 
 ;; taking from
 ;; https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/

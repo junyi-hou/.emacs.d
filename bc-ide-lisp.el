@@ -4,7 +4,8 @@
 
 ;;; Code:
 
-(require 'bc-lsp)
+(require 'bc-company)
+(require 'bc-flymake)
 
 (eval-after-load 'dash '(dash-enable-font-lock)) ; syntax highlight for dash
 
