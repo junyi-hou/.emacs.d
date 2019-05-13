@@ -5,7 +5,7 @@
 ;;; Code:
 
 (require 'bc-core)
-(require 'bc-lsp)
+(require 'bc-company)
 
 (use-package eshell
   :init
@@ -15,6 +15,10 @@
         eshell-save-history-on-exit t
         eshell-prefer-lisp-functions nil
         eshell-destroy-buffer-when-process-dies t))
+
+(use-package company-shell
+  :after eshell
+  :commands (company-shell company-env))
 
 (defun bc-eshell--format-path-name (path)
   "Formatting a given PATH.
@@ -123,6 +127,15 @@ return the formatted path name."
    "q" 'kill-buffer-and-window))
 
 (add-hook 'eshell-mode-hook #'bc-eshell--keymaps)
+(add-hook 'eshell-mode-hook (defun bc-eshell--company ()
+                              (setq-local company-backend
+                                          '((company-shell
+                                             company-env
+                                             company-flies
+                                             company-yasnippet)
+                                            (company-dabbrev
+                                             company-abbrev)))
+                              (company-mode)))
 
 
 (provide 'bc-eshell)
