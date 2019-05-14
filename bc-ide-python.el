@@ -55,6 +55,17 @@
        (buffer-substring-no-properties (region-beginning) (region-end)))
     (bc-python--send (thing-at-point 'line t))))
 
+(defun bc-ide-python-eval-class ()
+  "Eval the python class at `point'."
+  (interactive)
+  (let ((beg (save-excursion
+               (word-search-backward "class")))
+        (end (condition-case nil
+                 (save-excursion
+                   (- (word-search-forward "class") 5))
+               (error (point-max)))))
+    (jupyter-eval-region beg end)))
+
 (defun bc-python--hook ()
   "Initiate venv, autocomplete and linters."
 
@@ -93,14 +104,16 @@
  :states '(motion normal visual)
  :keymaps 'python-mode-map
  :prefix "SPC"
- "rb" 'bc-jupyter-eval-buffer-or-region
+ "rl" 'bc-jupyter-eval-buffer-or-region
+ "rf" 'jupyter-eval-defun
+ "rc" 'bc-ide-python-eval-class
  "rr" 'bc-python-send-string
 
  "ro" 'bc-python-local-repl
  "rO" 'bc-python-remote-repl
 
- "rc" 'jupyter-repl-associate-buffer
- "rz" 'bc-python-reconnect)
+ "rz" 'jupyter-repl-associate-buffer
+ "rZ" 'bc-python-reconnect)
 
 (add-hook 'python-mode-hook #'bc-python--hook)
 
