@@ -20,51 +20,17 @@
   :after eshell
   :commands (company-shell company-env))
 
-(defun bc-eshell--format-path-name (path)
-  "Formatting a given PATH.
-
-For a given absolute path:
-1. replace $HOME with ~
-2. short handing all previous directories with their first letter
-
-return the formatted path name."
-  (bc-eshell--shorten-path (bc-eshell--replace-home path)))
-
-(defun bc-eshell--replace-home (path)
-  "Replace home in PATH with tilde (~) character."
-  (let* ((home (expand-file-name (getenv "HOME")))
-         (home-len (length home)))
-    (if (and
-         (>= (length path) home-len)
-         (equal home (substring path 0 home-len)))
-        (concat "~" (substring path home-len))
-      path)))
-
-(defun bc-eshell--shorten-path (path)
-  "Shorten all directory names in PATH except the last two."
-  (let ((p-lst (split-string path "/")))
-    (if (> (length p-lst) 2)
-        (concat
-         (mapconcat (lambda (elm) (if (zerop (length elm)) ""
-                               (substring elm 0 1)))
-                    (butlast p-lst 2)
-                    "/")
-         "/"
-         (mapconcat (lambda (elm) elm)
-                    (last p-lst 2)
-                    "/"))
-      path)))  ;; Otherwise, we just return the PATH
-
 (defun bc-eshell--open (dir)
   "Open an eshell in directory DIR.  If there is already a eshell buffer open for dir, switch to that buffer."
-  (let* ((name (bc-eshell--format-path-name dir)))
-    (if (get-buffer (concat "*" name "*"))
-        (switch-to-buffer (concat "*" name "*"))
-      (progn
-        (eshell)
-        (insert "cd " dir)
-        (eshell-send-input)
-        (rename-buffer (concat "*" name "*"))))))
+  (switch-to-buffer (get-buffer-create "*eshell*"))
+  (unless (string-equal major-mode "eshell-mode")
+    (eshell))
+  (eshell/cd dir)
+  (eshell-interrupt-process)
+  (goto-char (point-max))
+  (insert "ls")
+  (eshell-send-input)
+  (evil-insert-state))
 
 (defun bc-eshell-open-here ()
   "Open a new shell in the pwd of the current buffer.  If there is already a eshell buffer open for that directory, switch to that buffer."
@@ -91,16 +57,6 @@ return the formatted path name."
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
-
-(defun bc-eshell-cd (dir)
-  "Change directory to DIR.  Modify the eshell buffer name accordingly."
-  (interactive)
-  (let ((dir (if (or (file-name-absolute-p dir)
-                     (string-equal (substring dir 0 1) "."))
-                 dir
-               (expand-file-name dir))))
-   (eshell/cd dir)
-   (rename-buffer (concat "*" (bc-eshell--format-path-name default-directory) "*"))))
 
 
 ;; settings
