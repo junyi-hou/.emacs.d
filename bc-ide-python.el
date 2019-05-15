@@ -104,7 +104,7 @@
  :states '(motion normal visual)
  :keymaps 'python-mode-map
  :prefix "SPC"
- "rl" 'bc-jupyter-eval-buffer-or-region
+ "rb" 'bc-jupyter-eval-buffer-or-region
  "rf" 'jupyter-eval-defun
  "rc" 'bc-ide-python-eval-class
  "rr" 'bc-python-send-string

@@ -33,6 +33,11 @@
    "gg" 'jupyter-repl-backward-cell
    "SPC" nil)
 
+  (:keymaps 'jupyter-repl-mode-map
+   :states '(normal visual motion insert)
+   :prefix "C-c"
+   "C-c" 'jupyter-interrupt-kernel)
+
   (:keymaps
    'jupyter-repl-mode-map
    :states
