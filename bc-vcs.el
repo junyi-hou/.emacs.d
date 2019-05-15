@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(require 'dash)
+
 (use-package magit
   :config
   (dolist (mode '(magit-status-mode magit-diff-mode magit-log-mode))
@@ -25,6 +27,7 @@
   (:keymaps 'magit-status-mode-map
    :state '(motion normal)
    "d" 'magit-discard
+   "s" 'magit-show-commit
    "c" 'magit-commit
    "p" 'magit-push
    "f" 'magit-fetch
@@ -33,7 +36,7 @@
 
   (:keymaps 'magit-log-mode-map
    :states '(normal motion)
-   "d" (lambda () (interactive)
+   "s" (lambda () (interactive)
            (magit-diff-show-or-scroll-down)
            (other-window 1)))
 
