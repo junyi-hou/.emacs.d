@@ -46,6 +46,14 @@
                           (evil-window-down 1)
                           (bc-eshell--open (concat remote x)))))))
 
+
+;; TODO:
+;; uniform ivy backend:
+;; 1. projects
+;; 2. files
+;; 3. buffers
+;; 4. recently opened files
+
 ;; settings
 (general-define-key
  :keymaps '(normal visual motion)
