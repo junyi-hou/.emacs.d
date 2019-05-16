@@ -54,6 +54,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   (interactive)
   (if (looking-back "^[ \t]*" (line-beginning-position))
       (dotimes (n tab-width) (insert " "))
+    (yas-expand)
     (company-manual-begin)
     ;; HACK: manually call `company-manual-begin' will set
     ;; `company-minimum-prefix-length' to 0, which means that the snippets
