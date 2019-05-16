@@ -12,7 +12,9 @@
   :config
   (setq ivy-do-completion-in-region nil
         ivy-wrap t
+        ivy-count-format "" ; do not count candidates
         ivy-initial-inputs-alist nil ; do not use ^
+        ivy-re-builders-alist '((t   . ivy--regex-ignore-order)) ; allow input not in order
         ivy-format-function #'ivy-format-function-line ; highlight til EOL
         ivy-magic-slash-non-match-action nil ; disable magic slash on nonmatch
         projectile-completion-system 'ivy  ; use projectile
@@ -23,6 +25,16 @@
    "M-k" 'ivy-previous-line
    "M-J" (lambda () (interactive) (ivy-next-line 3))
    "M-K" (lambda () (interactive) (ivy-previous-line 3))))
+
+(use-package counsel
+  :after ivy
+  :general
+  (:keymaps '(normal visual motion)
+   :prefix "SPC"
+   "or" 'counsel-recentf
+   "js" 'counsel-ag
+   "jf" 'counsel-grep-or-swiper
+   [remap describe-key] 'counsel-descbinds))
 
 (use-package ivy-posframe
   :after ivy
@@ -55,10 +67,6 @@
 ;; 4. recently opened files
 
 ;; settings
-(general-define-key
- :keymaps '(normal visual motion)
- :prefix "SPC"
- "or" 'bc-ivy-open-remote-shell)
 
 
 (provide 'bc-ivy)
