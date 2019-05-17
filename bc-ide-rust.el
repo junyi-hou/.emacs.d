@@ -17,7 +17,7 @@
    :prefix "SPC"
    "rr" 'bc-ide-rust-run-in-eshell
    "rb" 'rust-compile
-   "rc" 'bc-ide-rust-edit-cargo-toml))
+   "ro" 'bc-ide-rust-edit-cargo-toml))
 
 (use-package toml-mode)
 
