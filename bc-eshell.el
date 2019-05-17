@@ -21,14 +21,14 @@
   :commands (company-shell company-env))
 
 (defun bc-eshell--open (dir)
-  "Open an eshell in directory DIR.  If there is already a eshell buffer open for dir, switch to that buffer."
+  "Open an eshell in directory DIR.  If there is already a eshell buffer open, switch to that buffer and cd to DIR."
   (switch-to-buffer (get-buffer-create "*eshell*"))
   (unless (string-equal major-mode "eshell-mode")
     (eshell))
-  (eshell/cd dir)
   (eshell-interrupt-process)
+  (eshell/cd dir)
   (goto-char (point-max))
-  (insert "ls")
+  (bc-eshell-clear-buffer)
   (eshell-send-input)
   (evil-insert-state))
 
@@ -36,9 +36,13 @@
   "Open a new shell in the pwd of the current buffer.  If there is already a eshell buffer open for that directory, switch to that buffer."
   (interactive)
   (let* ((dir (file-name-directory (or (buffer-file-name) default-directory)))
-         (height (/ (window-total-height) 3)))
-    (split-window-vertically (- height))
-    (evil-window-down 1)
+         (buf (car (member (get-buffer "*eshell*")
+                          (mapcar 'window-buffer (window-list)))))
+         (win (get-buffer-window buf)))
+    (when buf
+      (delete-window win))
+    (split-window-below (- (/ (window-total-height) 3)))
+    (other-window 1)
     (bc-eshell--open dir)))
 
 (defun bc-eshell-open-file-in-parent-buffer (file)
