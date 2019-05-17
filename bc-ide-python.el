@@ -56,7 +56,9 @@
     (bc-python--send (thing-at-point 'line t))))
 
 (defun bc-ide-python-eval-class ()
-  "Eval the python class at `point'."
+  "Eval the python class at `point'.
+
+  FIXME: cannot run if there is only one class"
   (interactive)
   (let ((beg (save-excursion
                (word-search-backward "class")))
