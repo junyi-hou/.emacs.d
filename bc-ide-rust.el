@@ -10,16 +10,45 @@
 
 (use-package rust-mode
   :config
-  (add-hook 'rust-before-save-hook #'rust-format-buffer))
+  (setq rust-format-on-save t)
+  :general
+  (:keymaps 'rust-mode-map
+   :states '(normal visual)
+   :prefix "SPC"
+   "rr" 'bc-ide-rust-run-in-eshell
+   "rb" 'rust-compile
+   "rc" 'bc-ide-rust-edit-cargo-toml))
 
 (use-package toml-mode)
+
+;; functions
+
+(defun bc-ide-rust-edit-cargo-toml ()
+  "Edit the cargo.toml file of the current rust project in a new window."
+  (interactive)
+  (let ((cargo
+         (concat (projectile-root-bottom-up default-directory) "Cargo.toml")))
+    (when (file-exists-p cargo)
+      (bc-core--split-window)
+      (other-window 1)
+      (find-file cargo))))
+
+(defun bc-ide-rust-run-in-eshell ()
+  "Run the current project in eshell."
+  (interactive)
+  (bc-eshell-open-here)
+  (insert "cargo run")
+  (eshell-send-input))
+
 
 ;; setting
 
 (defun rust-hook ()
-  (setq tab-width 4)
+  "Settings for rust mode."
   (setq lsp-rust-clippy-preference "on")
   (lsp)
+
+  (add-hook 'before-save-hook #'rust-format-buffer nil t)
 
   (setq-local company-backends
               (let* ((first (car company-backends))
@@ -28,9 +57,6 @@
                      (add-lsp (push 'company-lsp removed-capf)))
                 (cons add-lsp rest)))
   (company-mode))
-
-
-(add-hook 'rust-mode-hook #'rust-hook)
 
 
 
