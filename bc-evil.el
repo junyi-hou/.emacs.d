@@ -58,8 +58,7 @@
             
   ;; helps
   "hf" 'describe-function
-  "hw" 'where-is
-  "hk" 'describe-key
+  "hk" 'counsel-descbinds
   "hv" 'describe-variable
   "hm" 'describe-mode
   "hh" 'help-for-help
@@ -111,9 +110,6 @@
 
    "M-l" 'right-char
    "M-h" 'left-char
-   "M-<DEL>" (lambda () (interactive)
-               (backward-delete-char-untabify 1)
-               (delete-char 1))
 
    "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
    "C-y" (lambda () (interactive) (evil-scroll-line-up 5))
@@ -131,7 +127,8 @@
    "<tab>" 'bc-evil-visual-tab)
 
   (:keymaps 'insert
-   "<tab>" 'bc-company-unified-tab)
+   "<tab>" 'bc-company-unified-tab
+   "<backspace>" 'backward-delete-char-untabify)
 
   (:keymaps '(help-mode-map message-mode-map)
    :states 'motion

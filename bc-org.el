@@ -10,6 +10,7 @@
   :config
   (setq org-default-notes-file (concat org-directory "/notes.org")
         org-agenda-files '("~/org/")
+        org-agenda-skip-scheduled-if-done t
         org-todo-keywords
         '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")))
 
@@ -24,22 +25,15 @@
            (concat "* TODO %?\n"
                    "CREATED:  %t\n")
            :empty-lines 1)
-          ("s"
-           "A scheduled item"
-           entry
-           (file "todo.org"),
-           (concat "* scheduled TODO %?\n"
-                   "CREATED: %t\n")
-           :empty-lines 1)
-          ("a" "test"
-           entry
-           (file "todo.org"),
-           (concat "* test\n"
-                   "%^T\n"
-                   "%?"))
+          ;; ("r" "Save selected region"
+          ;;  entry
+          ;;  (file "todo.org"),
+          ;;  (concat "* Note \n"
+          ;;          "%?"))
           )
         )
   :general
+
   (:keymaps 'org-mode-map
    :states 'normal
    "<tab>" 'org-cycle ; do not need `evil-jump-item'

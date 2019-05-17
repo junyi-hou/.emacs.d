@@ -36,7 +36,7 @@
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion insert)
    :prefix "C-c"
-   "C-c" 'jupyter-interrupt-kernel)
+   "C-c" 'jupyter-repl-interrupt-kernel)
 
   (:keymaps
    'jupyter-repl-mode-map

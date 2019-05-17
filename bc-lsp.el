@@ -38,74 +38,14 @@
   (:keymaps '(normal visual motion)
    :prefix "SPC"
    "rh" 'lsp-doc-posframe-show
+   "jd" 'lsp-find-definition
    "rn" 'lsp-rename
-   "jd" 'lsp-ui-peek-find-definitions
-   "jr" 'lsp-ui-peek-find-references
    "jb" 'bc-lsp-switch-to-previous-buffer))
 
 (use-package company-lsp
   :after lsp-mode
   :commands company-lsp)
 
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :init
-  ;; I only need peek
-  (setq lsp-ui-sideline-enable nil
-        lsp-ui-flycheck-enable nil
-        lsp-ui-imenu-enable nil
-        lsp-ui-doc-enable nil
-
-        lsp-ui-peek-list-width 20)
-
-  :config
-  ;; set faces for lsp-ui-peek
-  ;; 
-  (face-spec-set 'lsp-ui-peek-header
-   '((((background light)) :background "#6F6F6F" :foreground "#FFFFEF")
-    (t :background "#6F6F6F" :foreground "#FFFFEF")))
-
-  (face-spec-set 'lsp-ui-peek-filename
-   '((((background light)) :foreground "#CC9393")
-    (t :foreground "#CC9393")))
-   
-  (face-spec-set 'lsp-ui-peek-list
-  '((((background light)) :background "#383838")
-    (t :background "#383838")))
-
-  (face-spec-set 'lsp-ui-peek-peek
-  '((((background light)) :background "#383838")
-    (t :background "#383838")))
-
-  (face-spec-set 'lsp-ui-peek-highlight
-   '((((background light)) :background "dim gray"
-      :foreground "dim gray"
-      :distant-foreground "black")
-     (t :background "#383838"
-        :foreground "#6F6F6F"
-        :distant-foreground "white"
-        :box (:line-width -1 :color "#DCDCCC"))))
-
-  (face-spec-set 'lsp-ui-peek-selection
-    '((((background light)) :background "#6F6F6F" :foreground "#DCDCCC")
-      (t :background "#DCDCDC" :foreground "#6F6F6F")))
-
-  (set-face-attribute
-   'lsp-ui-peek-line-number nil
-   :foreground "#D0BF8F")
-
-  :general
-  (:keymaps 'lsp-ui-peek-mode-map
-  "j" 'lsp-ui-peek--select-next
-  "J" 'lsp-ui-peek--select-next-file
-  "k" 'lsp-ui-peek--select-prev
-  "K" 'lsp-ui-peek--select-prev-file
-  "<tab>" 'lsp-ui-peek--goto-xref
-  "<enter>" 'lsp-ui-peek--goto-xref-other-window))
-
-
-;; functions
 
 ;; taking from
 ;; https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/

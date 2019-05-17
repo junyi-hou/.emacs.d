@@ -33,8 +33,8 @@
    :prefix "SPC"
    "or" 'counsel-recentf
    "js" 'counsel-ag
-   "jf" 'counsel-grep-or-swiper
-   [remap describe-key] 'counsel-descbinds))
+   "jr" (lambda () (interactive)
+          (counsel-ag (symbol-name (symbol-at-point))))))
 
 (use-package ivy-posframe
   :after ivy
