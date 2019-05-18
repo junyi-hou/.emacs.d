@@ -19,7 +19,12 @@
    "rb" 'rust-compile
    "ro" 'bc-ide-rust-edit-cargo-toml))
 
-(use-package toml-mode)
+(use-package toml-mode
+  :general
+  (:keymaps 'toml-mode-map
+   :states '(normal visual)
+   :prefix "SPC"
+   "q" 'kill-buffer-and-window))
 
 ;; functions
 
