@@ -32,7 +32,7 @@
   "Edit the cargo.toml file of the current rust project in a new window."
   (interactive)
   (let ((cargo
-         (concat (projectile-root-bottom-up default-directory) "Cargo.toml")))
+         (concat (cdr (project-current)) "Cargo.toml")))
     (when (file-exists-p cargo)
       (bc-core--split-window)
       (other-window 1)
