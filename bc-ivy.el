@@ -17,8 +17,24 @@
         ivy-re-builders-alist '((t   . ivy--regex-ignore-order)) ; allow input not in order
         ivy-format-function #'ivy-format-function-line ; highlight til EOL
         ivy-magic-slash-non-match-action nil ; disable magic slash on nonmatch
-        projectile-completion-system 'ivy  ; use projectile
-        )
+        projectile-completion-system 'ivy)  ; use projectile
+
+  (use-package counsel
+    :after ivy
+    :general
+    (:keymaps '(normal visual motion)
+              :prefix "SPC"
+              "or" 'counsel-recentf
+              "js" 'counsel-ag
+              "jr" (lambda () (interactive)
+                     (counsel-ag (symbol-name (symbol-at-point))))))
+
+  (use-package ivy-posframe
+    :after ivy
+    :config
+    (setq ivy-display-function #'ivy-posframe-display-at-point)
+    (ivy-posframe-enable))
+
   :general
   (:keymaps 'ivy-minibuffer-map
    "M-j" 'ivy-next-line
@@ -26,21 +42,6 @@
    "M-J" (lambda () (interactive) (ivy-next-line 3))
    "M-K" (lambda () (interactive) (ivy-previous-line 3))))
 
-(use-package counsel
-  :after ivy
-  :general
-  (:keymaps '(normal visual motion)
-   :prefix "SPC"
-   "or" 'counsel-recentf
-   "js" 'counsel-ag
-   "jr" (lambda () (interactive)
-          (counsel-ag (symbol-name (symbol-at-point))))))
-
-(use-package ivy-posframe
-  :after ivy
-  :config
-  (setq ivy-display-function #'ivy-posframe-display-at-point)
-  (ivy-posframe-enable))
 
 ;; functions
 
@@ -57,7 +58,6 @@
                           (split-window-vertically (- height))
                           (evil-window-down 1)
                           (bc-eshell--open (concat remote x)))))))
-
 
 ;; TODO:
 ;; uniform ivy backend:
