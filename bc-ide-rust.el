@@ -46,24 +46,8 @@
   (eshell-send-input))
 
 
-;; setting
-
-(defun rust-hook ()
-  "Settings for rust mode."
-  (setq lsp-rust-clippy-preference "on")
-  (lsp)
-
-  (add-hook 'before-save-hook #'rust-format-buffer nil t)
-
-  (setq-local company-backends
-              (let* ((first (car company-backends))
-                     (rest (cdr company-backends))
-                     (removed-capf (remove 'company-capf first))
-                     (add-lsp (push 'company-lsp removed-capf)))
-                (cons add-lsp rest)))
-  (company-mode))
-
-
+(add-hook 'rust-mode-hook #'eglot-ensure)
+(add-hook 'rust-mode-hook #'company-mode t)
 
 (provide 'bc-ide-rust)
 ;;; bc-ide-rust.el ends here

@@ -9,24 +9,17 @@
 
 (require 'bc-company)
 (require 'bc-flymake)
+;; (require 'bc-eldoc)
 
-(use-package lsp-mode
+(use-package eglot
+  :init
+  (setq eglot-autoreconnect t
+        eglot-put-doc-in-help-buffer t)
+
   :config
-  (setq lsp-prefer-flymake t
-        lsp-enable-indentation t
-        lsp-auto-guess-root t
-        lsp-enable-symbol-highlighting nil)
-
-  ;; do not mess with my company-backends
-  (advice-add
-   'lsp--auto-configure
-   :after
-   (defun remove-autoadded-backends ()
-     (setq company-backends (cdr company-backends))))
-
   ;; load my doc-viewer
-  (use-package lsp-doc-posframe
-    :after lsp-mode
+  (use-package eglot-posframe
+    :after eglot
     :load-path "~/Documents/projects/posframe-collection"
     :init
     ;; fix unpleasant underline in the doc
@@ -37,14 +30,10 @@
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
-   "rh" 'lsp-doc-posframe-show
-   "jd" 'lsp-find-definition
-   "rn" 'lsp-rename
+   "rh" 'eglot-posframe-show
+   "jd" 'xref-find-definitions
+   "rn" 'eglot-rename
    "jb" 'bc-lsp-switch-to-previous-buffer))
-
-(use-package company-lsp
-  :after lsp-mode
-  :commands company-lsp)
 
 
 ;; taking from
