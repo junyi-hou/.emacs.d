@@ -7,6 +7,11 @@
 ;; theme
 (use-package zenburn-theme)
 
+;; ligatures
+(use-package bc-fira-code-mode
+  :load-path "~/.emacs.d/site-lisp/"
+  :hook (prog-mode . fira-code-mode))
+
 ;; mode line
 (use-package telephone-line
   :init
@@ -75,11 +80,14 @@
 (setq-default custom-safe-themes t)
 (setq-default left-fringe-width 8)
 
+;; font
+
 (set-face-attribute 'default nil
                     :family "monospace"
                     :height 130
                     :weight 'normal
                     :width 'normal)
+
 (add-to-list 'default-frame-alist '(alpha . (100 . 85)))  ; transparency
 (load-theme 'zenburn t)  ; theme
 (telephone-line-mode 1)  ; status line
