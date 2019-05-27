@@ -40,6 +40,7 @@
   (add-hook 'LaTeX-mode-hook #'TeX-PDF-mode)
   (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook #'bc-latex-ivy-bibtex-load-bib-file)
+  (put 'LaTeX-mode 'derived-mode-parent 'prog-mode)
 
   :general
   (:keymaps 'LaTeX-mode-map
