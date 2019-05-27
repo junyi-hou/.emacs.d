@@ -16,7 +16,8 @@
    :states '(normal visual)
    :prefix "SPC"
    "rr" 'bc-ide-rust-run-in-eshell
-   "rb" 'rust-compile
+   "rR" 'bc-ide-rust-release
+   "rb" 'bc-ide-rust-build
    "ro" 'bc-ide-rust-edit-cargo-toml))
 
 (use-package toml-mode
@@ -37,6 +38,21 @@
       (bc-core--split-window)
       (other-window 1)
       (find-file cargo))))
+
+(defun bc-ide-rust-build ()
+  "Build the current project in eshell."
+  (interactive)
+  (bc-eshell-open-here)
+  (insert "cargo build")
+  (eshell-send-input))
+
+(defun bc-ide-rust-release ()
+  "Build the current project in eshell."
+  (interactive)
+  (bc-eshell-open-here)
+  (insert "cargo run --release")
+  (eshell-send-input))
+
 
 (defun bc-ide-rust-run-in-eshell ()
   "Run the current project in eshell."
