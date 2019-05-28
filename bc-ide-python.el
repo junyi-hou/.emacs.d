@@ -12,6 +12,7 @@
 (require 'bc-flymake)
 (require 'bc-lsp)
 (require 'bc-jupyter)
+(require 'bc-venv)
 
 ;; functions
 
@@ -72,7 +73,7 @@
   "Initiate venv, autocomplete and linters."
 
    ;; load venv
-   (bc-jupyter--enable-venv)
+   (bc-venv--enable-venv (bc-venv--get-python-version))
 
    (eglot-ensure)
    (company-mode)
