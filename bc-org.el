@@ -19,7 +19,8 @@
 
         ;; src block settings
         org-src-fontify-natively t
-        org-src-tab-acts-natively t)
+        org-src-tab-acts-natively t
+        org-confirm-babel-evaluate nil)
 
   (add-hook 'org-capture-mode-hook #'evil-insert-state)
   (add-hook 'org-mode-hook #'company-mode)
@@ -53,11 +54,6 @@
    "<tab>" 'org-cycle)
 
   (:keymaps 'org-mode-map
-   :states '(normal visual)
-   :prefix "SPC"
-   "re" 'org-edit-src-code)
-
-  (:keymaps 'org-mode-map
    :states '(normal visual motion)
    "<up>" 'org-previous-visible-heading
    "<down>" 'org-next-visible-heading
@@ -76,13 +72,7 @@
   (:keymaps '(normal motion visual)
    :prefix "SPC"
    "yc" 'counsel-org-capture
-   "ya" 'org-agenda)
-
-  (:keymaps 'org-src-mode-map
-   :states 'normal
-   :prefix "SPC"
-   "w" 'org-edit-src-exit
-   "q" 'org-edit-src-abort))
+   "ya" 'org-agenda))
 
 
 ;; functions
