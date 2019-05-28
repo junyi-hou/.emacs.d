@@ -8,11 +8,18 @@
 
 (use-package org
   :config
+
+  ;; general config
   (setq org-default-notes-file (concat org-directory "/notes.org")
         org-agenda-files '("~/org/")
         org-agenda-skip-scheduled-if-done t
         org-todo-keywords
-        '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")))
+        '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE")
+          (sequence "|" "CANCELED" "SOMEDAY"))
+
+        ;; src block settings
+        org-src-fontify-natively t
+        org-src-tab-acts-natively t)
 
   (add-hook 'org-capture-mode-hook #'evil-insert-state)
   (add-hook 'org-mode-hook #'company-mode)
@@ -25,32 +32,42 @@
            (concat "* TODO %?\n"
                    "CREATED:  %t\n")
            :empty-lines 1)
-          ;; ("r" "Save selected region"
-          ;;  entry
-          ;;  (file "todo.org"),
-          ;;  (concat "* Note \n"
-          ;;          "%?"))
           )
         )
-  :general
 
+  ;; babel blocks
+  (unless bc-venv-current-venv
+    (bc-venv--enable-venv)
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (jupyter . t))))
+
+  (advice-add 'org-edit-src-code :after (lambda () (ignore-errors (eglot-ensure))))
+
+  :general
   (:keymaps 'org-mode-map
    :states 'normal
-   "<tab>" 'org-cycle ; do not need `evil-jump-item'
-   )
+   ;; do not need `evil-jump-item'
+   "<tab>" 'org-cycle)
+
+  (:keymaps 'org-mode-map
+   :states '(normal visual)
+   :prefix "SPC"
+   "re" 'org-edit-src-code)
 
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
-   "J" 'org-forward-heading-same-level
-   "K" 'org-backward-heading-same-level
    "<up>" 'org-previous-visible-heading
    "<down>" 'org-next-visible-heading
    "U" 'outline-up-heading
-   "r" 'org-refile
-   )
+   "r" 'org-refile)
 
   (:keymaps 'org-mode-map
    :states '(insert normal visual motion)
+   "C-d" 'org-forward-heading-same-level
+   "C-u" 'org-backward-heading-same-level
    "M-j" 'org-shiftdown
    "M-k" 'org-shiftup
    "M-h" 'org-shiftleft
@@ -59,23 +76,31 @@
   (:keymaps '(normal motion visual)
    :prefix "SPC"
    "yc" 'counsel-org-capture
-   "ya" 'org-agenda))
+   "ya" 'org-agenda)
+
+  (:keymaps 'org-src-mode-map
+   :states 'normal
+   :prefix "SPC"
+   "w" 'org-edit-src-exit
+   "q" 'org-edit-src-abort))
+
 
 ;; functions
 
 (defun bc-org-insert-date ()
-  "insert today's date in org-mode's format"
+  "Insert today's date in org-mode's format."
   (insert (concat "<"
                   (shell-command-to-string "echo -n $(date +%Y-%m-%d)")
                   ">")))
 
 (defun bc-org-insert-date-time ()
-  "insert today's date-time in org-mode's format"
+  "Insert today's date-time in org-mode's format."
   (insert (concat "<"
                   (shell-command-to-string "echo -n $(date +%Y-%m-%d)")
                   " "
                   (shell-command-to-string "echo -n $(date +%H:%M)")
                   ">")))
+
 
 (provide 'bc-org)
 ;;; bc-org.el ends here

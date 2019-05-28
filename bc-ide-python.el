@@ -12,6 +12,7 @@
 (require 'bc-flymake)
 (require 'bc-lsp)
 (require 'bc-jupyter)
+(require 'bc-venv)
 
 ;; functions
 
@@ -72,29 +73,13 @@
   "Initiate venv, autocomplete and linters."
 
    ;; load venv
-   (bc-jupyter--enable-venv)
+   (bc-venv--enable-venv (bc-venv--get-python-version))
 
-   ;; start lsp server
-   ;; disable some jedi function to improve performance
-   (setq lsp-pyls-plugins-jedi-completion-include-params nil
-         lsp-pyls-plugins-jedi-symbols-all-scopes nil
-         lsp-pyls-plugins-pylint-enabled nil
-         lsp-pyls-plugins-mccabe-enabled nil
-         lsp-pyls-plugins-rope-completion-enabled nil)
-   (lsp)
-
-   ;; load autocompletion
-   (setq-local company-backends
-               (let* ((first (car company-backends))
-                      (rest (cdr company-backends))
-                      (removed-capf (remove 'company-capf first))
-                      (add-lsp (push 'company-lsp removed-capf)))
-                 (cons add-lsp rest)))
-
-   (company-mode 1)
+   (eglot-ensure)
+   (company-mode)
 
    ;; hook to reformat buffer
-   (add-hook 'before-save-hook 'lsp-format-buffer nil t)
+   (add-hook 'before-save-hook 'eglot-format nil t)
    
    ;; set tab-width
    (setq tab-width 4))

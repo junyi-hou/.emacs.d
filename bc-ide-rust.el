@@ -16,7 +16,8 @@
    :states '(normal visual)
    :prefix "SPC"
    "rr" 'bc-ide-rust-run-in-eshell
-   "rb" 'rust-compile
+   "rR" 'bc-ide-rust-release
+   "rb" 'bc-ide-rust-build
    "ro" 'bc-ide-rust-edit-cargo-toml))
 
 (use-package toml-mode
@@ -32,11 +33,26 @@
   "Edit the cargo.toml file of the current rust project in a new window."
   (interactive)
   (let ((cargo
-         (concat (projectile-root-bottom-up default-directory) "Cargo.toml")))
+         (concat (cdr (project-current)) "Cargo.toml")))
     (when (file-exists-p cargo)
       (bc-core--split-window)
       (other-window 1)
       (find-file cargo))))
+
+(defun bc-ide-rust-build ()
+  "Build the current project in eshell."
+  (interactive)
+  (bc-eshell-open-here)
+  (insert "cargo build")
+  (eshell-send-input))
+
+(defun bc-ide-rust-release ()
+  "Build the current project in eshell."
+  (interactive)
+  (bc-eshell-open-here)
+  (insert "cargo run --release")
+  (eshell-send-input))
+
 
 (defun bc-ide-rust-run-in-eshell ()
   "Run the current project in eshell."
@@ -46,24 +62,8 @@
   (eshell-send-input))
 
 
-;; setting
-
-(defun rust-hook ()
-  "Settings for rust mode."
-  (setq lsp-rust-clippy-preference "on")
-  (lsp)
-
-  (add-hook 'before-save-hook #'rust-format-buffer nil t)
-
-  (setq-local company-backends
-              (let* ((first (car company-backends))
-                     (rest (cdr company-backends))
-                     (removed-capf (remove 'company-capf first))
-                     (add-lsp (push 'company-lsp removed-capf)))
-                (cons add-lsp rest)))
-  (company-mode))
-
-
+(add-hook 'rust-mode-hook #'eglot-ensure)
+(add-hook 'rust-mode-hook #'company-mode t)
 
 (provide 'bc-ide-rust)
 ;;; bc-ide-rust.el ends here

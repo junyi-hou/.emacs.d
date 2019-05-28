@@ -12,6 +12,7 @@
 (use-package jupyter
   :defer t
   :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next)
+
   :general
   (:keymaps
    'jupyter-repl-mode-map
@@ -46,53 +47,10 @@
    "SPC"
    "q" 'kill-buffer-and-window))
 
-
-;; customizable variables
-
-(defcustom bc-jupyter-default-venv "~/.virtualenv/nvimpy/"
-  "Default virtual environment to use."
-  :type 'string
-  :group 'baby-carrots)
-
-;; internal variables
-
-(defvar bc-jupyter-venv nil
-  "Whether we are in a virtualenv.")
-
-(defvar bc-jupyter-exec-path-no-venv nil
-  "Save PATH variable when venv is deactivated.")
-
-(defvar bc-jupyter-eshell-path-no-venv nil
-  "Save `eshell-path` variable when venv is deactivated.")
-
-;; functions
-
-(defun bc-jupyter--disable-venv ()
-  "Disable virtualenv if it is loaded."
-  (when bc-jupyter-venv
-    (setenv "PATH" bc-jupyter-exec-path-no-venv)
-    (setq exec-path bc-jupyter-eshell-path-no-venv
-          bc-jupyter-exec-path-no-venv nil
-          bc-jupyter-eshell-path-no-venv nil)))
-
-(defun bc-jupyter--enable-venv (&optional venv)
-  "Enable virtualenv.  If no VENV is given, value in `dev-python-default-venv` will be used."
-  (interactive)
-  (bc-jupyter--disable-venv)
-  (let* ((venv (or venv bc-jupyter-default-venv))
-         (bin (expand-file-name "bin/" (file-name-as-directory venv))))
-    ;; save current variables
-    (setq bc-jupyter-exec-path-no-venv (getenv "PATH")
-          bc-jupyter-eshell-path-no-venv exec-path)
-    ;; set environment variables
-    (setenv "PATH" (concat bin path-separator (getenv "PATH")))
-    (push bin exec-path))
-  (message "Entering python virtual environment"))
-
 (defun bc-jupyter--start-repl (kernel &optional remote)
   "Initiate a REPL for KERNEL and attach it to the current buffer.
 If REMOTE is provided, start an remote kernel and connect to it."
-  (bc-jupyter--enable-venv)
+   
   (if remote
       (let ((connection-file (bc-jupyter--start-remote-kernel kernel remote)))
         (jupyter-connect-repl connection-file
@@ -134,7 +92,7 @@ If REMOTE is provided, start an remote kernel and connect to it."
     (if jupyter-current-client
         (jupyter-with-repl-buffer jupyter-current-client
           (goto-char (point-max))
-          (insert string)
+          (insert (concat string "\n"))
           (jupyter-repl-ret))
       (error "No REPL associated with current buffer"))
     (switch-to-buffer buffer)
@@ -175,8 +133,9 @@ If REMOTE is provided, start an remote kernel and connect to it."
 
 (defun bc-jupyter--hook ()
   "Set up proper `company-backends' for jupyter repl."
-  (setq company-backends '((company-capf company-yasnippet company-files)
-                           (company-dabbrev company-abbrev)))
+  (setq company-backends
+        '((company-capf company-yasnippet company-files)
+          (company-dabbrev company-abbrev)))
   (company-mode 1))
 
 (add-hook 'jupyter-repl-mode-hook #'bc-jupyter--hook)

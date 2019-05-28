@@ -80,7 +80,7 @@
   ;; open stuffs
   "of" 'find-file
   "ob" 'ivy-switch-buffer
-  "oo" 'projectile-find-file
+  "oo" 'project-find-file
   "os" 'bc-eshell-open-here
   "op" 'projectile-switch-project
 
