@@ -19,7 +19,7 @@
   :type 'string)
 
 (defcustom bc-venv-default-py3-venv
-  "~/.virtualenv/emacspy/"
+  "~/.virtualenv/nvimpy/"
   "Default virtualenv for python 3."
   :group 'bc-venv
   :type 'string)
@@ -43,11 +43,12 @@
     (inherit-local-permanent bc-venv-exec-path-no-venv nil)
     (inherit-local-permanent bc-venv-eshell-path-no-venv nil)))
 
-(defun bc-venv--enable-venv (venv)
-  "Enable virtualenv.  If no VENV is given, value in `dev-python-default-venv` will be used."
+(defun bc-venv--enable-venv (&optional venv)
+  "Enable virtualenv given by VENV.  If VENV is given, use it, otherwise use `bc-venv-default-py3-venv'."
   (interactive)
   (bc-venv--disable-venv)
-  (let* ((bin (expand-file-name "bin/" (file-name-as-directory venv))))
+  (let* ((venv (or venv bc-venv-default-py3-venv))
+         (bin (expand-file-name "bin/" (file-name-as-directory venv))))
     ;; save current variables
     (inherit-local-permanent bc-venv-exec-path-no-venv (getenv "PATH"))
     (inherit-local-permanent bc-venv-eshell-path-no-venv exec-path)
