@@ -30,7 +30,7 @@
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
-   "rh" 'eglot-posframe-show
+   "rh" 'eglot-posframe-doc-show
    "jd" 'xref-find-definitions
    "rn" 'eglot-rename
    "jb" 'bc-lsp-switch-to-previous-buffer))

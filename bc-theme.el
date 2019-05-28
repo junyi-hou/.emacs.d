@@ -68,6 +68,7 @@
           ("HACK"   . "#d0bf8f")
           ("TEMP"   . "#d0bf8f")
           ("WAITING"   . "#d0bf8f")
+          ("SOMEDAY"   . "#d0bf8f")
           ("DONE"   . "#afd8af")
           ("CANCELED"   . "#afd8af")
           ("IN-PROGRESS"   . "#afd8af")

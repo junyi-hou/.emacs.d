@@ -29,10 +29,15 @@
               "jr" (lambda () (interactive)
                      (counsel-ag (symbol-name (symbol-at-point))))))
 
+  (use-package ivy-xref
+    :init
+    (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
+
   (use-package ivy-posframe
     :after ivy
     :config
-    (setq ivy-display-function #'ivy-posframe-display-at-point)
+    (setq ivy-display-function #'ivy-posframe-display-at-point
+          posframe-mouse-banish nil)
     (ivy-posframe-enable))
 
   :general
@@ -58,6 +63,32 @@
                           (split-window-vertically (- height))
                           (evil-window-down 1)
                           (bc-eshell--open (concat remote x)))))))
+
+;; (defun bc-ivy-xref--find-xrefs (input kind arg display-action)
+;;   (let ((xrefs (funcall (intern (format "xref-backend-%s" kind))
+;;                         (xref-find-backend)
+;;                         arg)))
+;;     (unless xrefs
+;;       (user-error "No %s found for: %s" (symbol-name kind) input))
+;;     (let ((xref-pos (point))
+;;           (xref-buffer (current-buffer))
+;;           (success nil))
+;;       (ivy-read "Find References: " (ivy-xref-make-collection xrefs)
+;;                 :unwind (lambda ()
+;;                           (unless success
+;;                             (switch-to-buffer xref-buffer)
+;;                             (goto-char xref-pos)
+;;                             (recenter)))
+;;                 :action (lambda (x)
+;;                           (let ((location (cdr x)))
+;;                             (let* ((marker (xref-location-marker location))
+;;                                    (buf (marker-buffer marker)))
+;;                               (bc-ivy-xref-posframe-show x)
+;;                               (with-ivy-window
+;;                                 (goto-char marker)
+;;                                 (recenter))
+;;                               (unless (eq 'ivy-call this-command)
+;;                                 (setq success t)))))))))
 
 ;; TODO:
 ;; uniform ivy backend:
