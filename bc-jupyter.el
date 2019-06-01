@@ -37,7 +37,8 @@
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion insert)
    :prefix "C-c"
-   "C-c" 'jupyter-repl-interrupt-kernel)
+   "C-c" 'jupyter-repl-interrupt-kernel
+   "C-l" 'bc-jupyter-clear-buffer)
 
   (:keymaps
    'jupyter-repl-mode-map
@@ -127,6 +128,13 @@ If REMOTE is provided, start an remote kernel and connect to it."
                connection-file
                kernel
                (current-buffer))))))))
+
+(defun bc-jupyter-clear-buffer ()
+  "Eshell version of `cls'."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (jupyter-send-input)))
 
 
 ;; settings
