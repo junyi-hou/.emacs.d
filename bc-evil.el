@@ -30,6 +30,17 @@
    "v" 'er/expand-region
    "V" 'er/contract-region))
 
+(use-package elec-pair
+  :init
+  (setq electric-pair-pairs '((?\" . ?\")
+                              (?\{ . ?\})
+                              (?\` . ?\')
+                              (?\$ . ?\$)
+        electric-pair-open-newline-between-pairs t
+        electric-pair-delete-adjacent-pairs t)
+  :config
+  (electric-pair-mode 1))
+
 (use-package evil
   :init
   (evil-mode 1)
@@ -134,15 +145,6 @@
    :states 'motion
    :prefix "SPC"
    "q" 'delete-window))
-
-
-(electric-pair-mode 1)
-(eval-after-load 'electric-pair
-  (setq electric-pair-pairs '((?\" . ?\")
-                              (?\{ . ?\})
-                              (?\` . ?\')
-                              (?\$ . ?\$)
-                              (?\< . ?\>))))
 
 
 ;; functions:
