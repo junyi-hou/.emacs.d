@@ -35,7 +35,7 @@
   (setq electric-pair-pairs '((?\" . ?\")
                               (?\{ . ?\})
                               (?\` . ?\')
-                              (?\$ . ?\$)
+                              (?\$ . ?\$))
         electric-pair-open-newline-between-pairs t
         electric-pair-delete-adjacent-pairs t)
   :config
