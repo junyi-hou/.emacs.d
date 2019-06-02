@@ -36,8 +36,7 @@
   (use-package ivy-posframe
     :after ivy
     :config
-    (setq ivy-display-function #'ivy-posframe-display-at-point
-          posframe-mouse-banish nil)
+    (setq ivy-display-function #'ivy-posframe-display-at-point)
     (ivy-posframe-enable))
 
   :general
