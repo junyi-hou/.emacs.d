@@ -10,7 +10,9 @@
   :config
 
   ;; general config
-  (setq org-todo-keywords
+  (setq org-cycle-emulate-tab nil
+        org-export-with-toc nil
+        org-todo-keywords
         '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE")
           (sequence "|" "CANCELED" "SOMEDAY")))
   (add-hook 'org-mode-hook #'company-mode)

@@ -53,7 +53,7 @@
   :config
   (setq-default display-line-numbers-type 'visual
                 display-line-numbers-current-absolute t
-                display-line-numbers-width 3
+                display-line-numbers-width 4
                 display-line-numbers-widen t))
 
 ;; display time

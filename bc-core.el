@@ -49,7 +49,7 @@
 ;; other minor modes I always want
 (show-paren-mode 1)          ; highlight matching paren
 (global-visual-line-mode 1)  ; word wrapping
-(require 'bc-eldoc)          ; wrapper for eldoc
+;; (require 'bc-eldoc)          ; wrapper for eldoc
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
