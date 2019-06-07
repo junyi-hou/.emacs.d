@@ -30,10 +30,15 @@
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
-   "rh" 'eglot-posframe-doc-show
-   "jd" 'xref-find-definitions
+   "rh" 'bc-lsp-help-show
+   "jd" 'bc-lsp-definition-show
    "rn" 'eglot-rename
    "jb" 'bc-lsp-switch-to-previous-buffer))
+
+
+;; functions
+
+(defconst bc-lsp-posframe-frame "*bc-lsp-posframe*")
 
 (defvar bc-lsp-posframe-keymap
   (let ((map (make-sparse-keymap)))
@@ -58,13 +63,13 @@
 (defun bc-lsp-posframe-hide ()
   "Hide posframe."
   (interactive)
-  (posframe-control-hide "*eglot-posframe*"))
+  (posframe-control-hide bc-lsp-posframe-frame))
 
 (defun bc-lsp-posframe-scroll-down ()
   "Scroll down posframe."
   (interactive)
   (posframe-control-command
-   "*eglot-posframe*"
+   bc-lsp-posframe-frame
    :command 'scroll-up
    (max 1 (/ (1- (window-height (selected-window))) 2))))
 
@@ -72,12 +77,18 @@
   "Scroll down posframe."
   (interactive)
   (posframe-control-command
-   "*eglot-posframe*"
+   bc-lsp-posframe-frame
    :command 'scroll-down
    (max 1 (/ (1- (window-height (selected-window))) 2))))
 
+(defun bc-lsp-posframe-enter ()
+  "Hide posframe and pop to the buffer displayed in the posframe."
+  (interactive)
+  (xref--show-xrefs (bc-lsp--get-xref-list 'definitions) nil)
+  (bc-lsp-posframe-hide))
 
-(defun eglot-posframe-doc-show ()
+
+(defun bc-lsp-help-show ()
   "Update variable `eglot--help-buffer' with helps of `symbol-at-point' and display it in a `posframe' frame."
   (interactive)
   (eglot--dbind ((Hover) contents range)
@@ -90,7 +101,7 @@
              (total-height (min 40 (/ (length blurb) 80))))
 
         (posframe-show
-         "*eglot-posframe*"
+         bc-lsp-posframe-frame
          :poshandler (lambda (_info) '(-1 . 0))
          :string blurb
          :internal-border-width 3
@@ -115,23 +126,27 @@
       (user-error (format "No %s found at point" kind)))))
 
 
-(defun bc-lsp-show-definitions ()
-  "docstring"
+(defun bc-lsp-definition-show ()
+  "Show definition-at-point in a posframe."
   (interactive)
-  (posframe-show
-   "*eglot-posframe*"
-   :poshandler 'posframe-poshandler-point-bottom-left-corner
-   :internal-border-width 3
-   :internal-border-color "gray80"
-   :left-fringe 1
-   :right-fringe 1
-   :width 40
-   :min-width 40
-   :height 10
-   :control-keymap bc-lsp-posframe-keymap)
-  (when (framep posframe--frame)
-    (with-selected-frame posframe--frame
-      (xref--show-xrefs (bc-lsp--get-xref-list 'definitions) nil))))
+  (let ((def (bc-lsp--get-xref-list 'definitions)))
+
+    (posframe-show
+     bc-lsp-posframe-frame
+     :poshandler 'posframe-poshandler-point-bottom-left-corner
+     :internal-border-width 3
+     :internal-border-color "gray80"
+     :left-fringe 1
+     :right-fringe 1
+     :width 70
+     :min-width 70
+     :height 15
+     :control-keymap bc-lsp-posframe-keymap
+     :hide-fn 'bc-lsp-posframe-hide)
+    (with-current-buffer bc-lsp-posframe-frame
+      (when (framep posframe--frame)
+        (with-selected-frame posframe--frame
+          (xref--show-xrefs def nil))))))
 
 ;; TODO:
 ;; also, take advantage that in a child frame, there could be multiple windows
