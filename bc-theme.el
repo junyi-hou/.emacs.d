@@ -5,7 +5,11 @@
 ;;; Code:
 
 ;; theme
-(use-package zenburn-theme)
+(use-package zenburn-theme
+  :init
+  (setq-default custom-safe-themes t)
+  :config
+  (load-theme 'zenburn t))
 
 ;; ligatures
 (use-package bc-fira-code-mode
@@ -22,10 +26,13 @@
           (nil      . (telephone-line-buffer-segment))))
   (setq telephone-line-rhs
         '((nil      . (telephone-line-misc-info-segment))
-          (evil     . (telephone-line-major-mode-segment)))))
+          (evil     . (telephone-line-major-mode-segment))))
+  :config
+  (telephone-line-mode 1))
 
 ;; indentation guide
-(use-package highlight-indentation)
+(use-package highlight-indentation
+  :hook (prog-mode . highlight-indentation-mode))
 
 (defun bc-theme--set-highlight-stipple ()
   "Define custom stipple for highlight-indentation.  See https://github.com/antonj/Highlight-Indentation-for-Emacs/issues/16."
@@ -33,13 +40,11 @@
         (hl-stipple (if (> char-width 8)
                         (list char-width 4 (string 16 0 0 0 0 0 0 0))
                       (list char-width 4 (string 16 0 0 0)))))
-    (set-face-attribute 'highlight-indentation-face nil
-                        :stipple hl-stipple
-                        :inherit nil)
-    (set-face-attribute 'highlight-indentation-current-column-face nil
-                        :stipple hl-stipple
-                        :inherit nil
-                        :foreground "yellow")))
+    (set-face-attribute
+     'highlight-indentation-face
+     nil
+     :stipple hl-stipple
+     :inherit nil)))
 
 ;; Patch highlight-indentation-mode to set/update a stipple attribute
 (defadvice highlight-indentation-mode
@@ -47,14 +52,16 @@
   "Set the stipple used by indentation highlighting."
   (bc-theme--set-highlight-stipple))
 
+
 ;; line numbers
 (use-package display-line-numbers
   :hook (prog-mode . display-line-numbers-mode)
   :config
-  (setq-default display-line-numbers-type 'visual
-                display-line-numbers-current-absolute t
-                display-line-numbers-width 4
-                display-line-numbers-widen t))
+  (setq-default
+   display-line-numbers-type 'visual
+   display-line-numbers-current-absolute t
+   display-line-numbers-width 4
+   display-line-numbers-widen t))
 
 ;; display time
 (display-time-mode)
@@ -78,21 +85,18 @@
 
 ;; load everything
 
-(setq-default custom-safe-themes t)
 (setq-default left-fringe-width 8)
 
 ;; font
 
-(set-face-attribute 'default nil
-                    :family "monospace"
-                    :height 130
-                    :weight 'normal
-                    :width 'normal)
+(set-face-attribute
+ 'default nil
+ :family "monospace"
+ :height 130
+ :weight 'normal
+ :width 'normal)
 
 (add-to-list 'default-frame-alist '(alpha . (100 . 85)))  ; transparency
-(load-theme 'zenburn t)  ; theme
-(telephone-line-mode 1)  ; status line
-(add-hook 'prog-mode-hook 'highlight-indentation-mode)  ; enable indentation hint for all programming modes
 
 (provide 'bc-theme)
 ;;; bc-theme.el ends here
