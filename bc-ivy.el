@@ -43,45 +43,19 @@
 
 ;; functions
 
-(defun bc-ivy-open-remote-shell (&optional remote)
-  "Open a ivy menu with a list of REMOTE location.  Open a eshell at the chosen location."
-  (interactive)
-  (let* ((remote (or remote bc-default-remote)))
-    (ivy-read "Where to?"
-              '("home/junyi/Documents/"
-                "home/junyi/Documents/Research/"
-                "home/junyi/Downloads/data/")
-              :action (lambda (x)
-                        (let* ((height (/ (window-total-height) 3)))
-                          (split-window-vertically (- height))
-                          (evil-window-down 1)
-                          (bc-eshell--open (concat remote x)))))))
-
-;; (defun bc-ivy-xref--find-xrefs (input kind arg display-action)
-;;   (let ((xrefs (funcall (intern (format "xref-backend-%s" kind))
-;;                         (xref-find-backend)
-;;                         arg)))
-;;     (unless xrefs
-;;       (user-error "No %s found for: %s" (symbol-name kind) input))
-;;     (let ((xref-pos (point))
-;;           (xref-buffer (current-buffer))
-;;           (success nil))
-;;       (ivy-read "Find References: " (ivy-xref-make-collection xrefs)
-;;                 :unwind (lambda ()
-;;                           (unless success
-;;                             (switch-to-buffer xref-buffer)
-;;                             (goto-char xref-pos)
-;;                             (recenter)))
-;;                 :action (lambda (x)
-;;                           (let ((location (cdr x)))
-;;                             (let* ((marker (xref-location-marker location))
-;;                                    (buf (marker-buffer marker)))
-;;                               (bc-ivy-xref-posframe-show x)
-;;                               (with-ivy-window
-;;                                 (goto-char marker)
-;;                                 (recenter))
-;;                               (unless (eq 'ivy-call this-command)
-;;                                 (setq success t)))))))))
+;; (defun bc-ivy-open-remote-shell (&optional remote)
+;;   "Open a ivy menu with a list of REMOTE location.  Open a eshell at the chosen location."
+;;   (interactive)
+;;   (let* ((remote (or remote bc-default-remote)))
+;;     (ivy-read "Where to?"
+;;               '("home/junyi/Documents/"
+;;                 "home/junyi/Documents/Research/"
+;;                 "home/junyi/Downloads/data/")
+;;               :action (lambda (x)
+;;                         (let* ((height (/ (window-total-height) 3)))
+;;                           (split-window-vertically (- height))
+;;                           (evil-window-down 1)
+;;                           (bc-eshell--open (concat remote x)))))))
 
 ;; TODO:
 ;; uniform ivy backend:
