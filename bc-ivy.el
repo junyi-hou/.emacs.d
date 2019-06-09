@@ -23,15 +23,11 @@
     :after ivy
     :general
     (:keymaps '(normal visual motion)
-              :prefix "SPC"
-              "or" 'counsel-recentf
-              "js" 'counsel-ag
-              "jr" (lambda () (interactive)
-                     (counsel-ag (symbol-name (symbol-at-point))))))
-
-  (use-package ivy-xref
-    :init
-    (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
+     :prefix "SPC"
+     "or" 'counsel-recentf
+     "js" 'counsel-ag
+     "jr" (lambda () (interactive)
+            (counsel-ag (symbol-name (symbol-at-point))))))
 
   (use-package ivy-posframe
     :after ivy
@@ -42,9 +38,7 @@
   :general
   (:keymaps 'ivy-minibuffer-map
    "M-j" 'ivy-next-line
-   "M-k" 'ivy-previous-line
-   "M-J" (lambda () (interactive) (ivy-next-line 3))
-   "M-K" (lambda () (interactive) (ivy-previous-line 3))))
+   "M-k" 'ivy-previous-line))
 
 
 ;; functions
