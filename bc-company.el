@@ -8,11 +8,11 @@
   :commands (yas-minor-mode yas-reload-all)
   :general
   (:keymaps 'yas-minor-mode-map
-            "<tab>" nil
-            "TAB" nil
-            "M-f" 'yas-expand
-            "M-j" 'yas-next-field
-            "M-k" 'yas-prev-field))
+   "<tab>" nil
+   "TAB" nil
+   "M-f" 'yas-expand
+   "M-j" 'yas-next-field
+   "M-k" 'yas-prev-field))
 
 (use-package company
   :commands company-mode
