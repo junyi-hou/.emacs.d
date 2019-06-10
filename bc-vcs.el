@@ -17,8 +17,8 @@
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal)
    "SPC" nil
-   "J" 'magit-section-forward-sibling
-   "K" 'magit-section-backward-sibling
+   "C-d" 'magit-section-forward-sibling
+   "C-u" 'magit-section-backward-sibling
    "<tab>" 'magit-section-toggle
    "TAB" 'magit-section-toggle
    "?" 'magit-dispatch
@@ -53,7 +53,7 @@
   (when (-remove (lambda (x)
                    (equal x (file-name-nondirectory (buffer-file-name))))
                  (magit-staged-files))
-    (error "There are other files in the staging area, abort action"))
+    (error "There are other files in the staging area, aborting"))
   (magit-stage-file (buffer-file-name))
   (magit-commit-create))
 
@@ -65,6 +65,30 @@
       (error "No file at point"))
   (other-window -1)
   (find-file file)))
+
+(use-package git-timemachine
+  :config
+  (add-hook 'git-timemachine-mode-hook #'evil-motion-state)
+  (evil-make-overriding-map git-timemachine-mode-map 'motion)
+  (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps)
+  :general
+  (:keymaps 'git-timemachine-mode-map
+   :state 'motion
+   "M-k" 'git-timemachine-show-previous-revision
+   "M-j" 'git-timemachine-show-next-revision
+   "<up>" 'git-timemachine-show-previous-revision
+   "<down>" 'git-timemachine-show-next-revision
+   "q" 'git-timemachine-quit
+   "c" 'git-timemachine-show-commit
+   "b" 'git-timemachine-blame
+   "t" 'git-timemachine-show-revision-fuzzy
+   "g" 'git-timemachine-show-revision
+   "y" 'git-timemachine-kill-abbreviated-revision
+   "Y" 'git-timemachine-kill-revision)
+
+  (:keymaps 'normal
+   :prefix "SPC"
+   "gh" 'git-timemachine))
 
 
 (provide 'bc-vcs)
