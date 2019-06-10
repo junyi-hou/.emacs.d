@@ -4,8 +4,6 @@
 
 ;;; Code:
 
-;; org-capture
-
 (use-package org
   :config
 

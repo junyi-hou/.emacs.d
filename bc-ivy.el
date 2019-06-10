@@ -7,8 +7,6 @@
 (require 'bc-core)
 
 (use-package ivy
-  :init
-  (ivy-mode 1)
   :config
   (setq ivy-do-completion-in-region nil
         ivy-wrap t
@@ -34,6 +32,8 @@
     :config
     (setq ivy-display-function #'ivy-posframe-display-at-point)
     (ivy-posframe-enable))
+
+  (ivy-mode 1)
 
   :general
   (:keymaps 'ivy-minibuffer-map
