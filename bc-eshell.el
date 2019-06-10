@@ -14,7 +14,10 @@
         eshell-hist-ignoredups t
         eshell-save-history-on-exit t
         eshell-prefer-lisp-functions nil
-        eshell-destroy-buffer-when-process-dies t))
+        eshell-destroy-buffer-when-process-dies t)
+  :config
+  (use-package eshell-up
+    :commands eshell-up))
 
 (use-package company-shell
   :after eshell
