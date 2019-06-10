@@ -69,7 +69,7 @@
             
   ;; helps
   "hf" 'describe-function
-  "hk" 'counsel-descbinds
+  "hk" 'describe-key
   "hv" 'describe-variable
   "hm" 'describe-mode
   "hh" 'help-for-help
