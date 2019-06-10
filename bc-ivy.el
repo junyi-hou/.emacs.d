@@ -30,8 +30,8 @@
   (use-package ivy-posframe
     :after ivy
     :config
-    (setq ivy-display-function #'ivy-posframe-display-at-point)
-    (ivy-posframe-enable))
+    (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point)))
+    (ivy-posframe-mode 1))
 
   (ivy-mode 1)
 
