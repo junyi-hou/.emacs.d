@@ -17,12 +17,13 @@
 (package-initialize)
 
 ;; package loader
-(unless (package-installed-p 'use-package)
+(unless (package-installed-p 'quelpa-use-package)
   (package-refresh-contents)
-  (package-install 'use-package))
+  (package-install 'quelpa-use-package))
 
 (eval-when-compile
-  (require 'use-package))
+  (require 'use-package)
+  (require 'quelpa-use-package))
 
 ;; use package settings
 (setq use-package-always-ensure t)
