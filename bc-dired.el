@@ -29,17 +29,17 @@
    "t" 'dired-show-file-type
    "y" 'dired-copy-filename-as-kill
    "c" (lambda () (interactive)
-         (dired-unmark-all-marks) (dired-mark 1) (dired-do-copy))
+         (bc-dired--mark-one 'dired-do-copy))
    "r" (lambda () (interactive)
-         (dired-unmark-all-marks) (dired-mark 1) (dired-do-rename))
+         (bc-dired--mark-one 'dired-do-rename))
    "d" (lambda () (interactive)
-         (dired-unmark-all-marks) (dired-mark 1) (dired-do-delete))
+         (bc-dired--mark-one 'dired-do-delete))
    "s" (lambda () (interactive)
-         (dired-unmark-all-marks) (dired-mark 1) (dired-do-symlink))
+         (bc-dired--mark-one 'dired-do-symlink))
    "o" (lambda () (interactive)
-         (dired-unmark-all-marks) (dired-mark 1) (dired-do-chown))
+         (bc-dired--mark-one 'dired-do-chown))
    "m" (lambda () (interactive)
-         (dired-unmark-all-marks) (dired-mark 1) (dired-do-chmod))
+         (bc-dired--mark-one 'dired-do-chmod))
 
    ;; marks
    "m" 'dired-mark
@@ -55,6 +55,19 @@
    "M-k" 'dired-prev-marked-file
 
    "v" 'revert-buffer))
+
+
+(defun bc-dired--mark-one (cmd)
+  "Run command CMD on the file under the cursor."
+  (let ((inhibit-read-only t)
+        (marked-files (mapcar (lambda (x) (cons x "*")) (dired-get-marked-files))))
+    (dired-unmark-all-marks)
+    (dired-mark 1)
+    (when (commandp cmd)
+      (funcall cmd))
+    (dired-unmark-all-marks)
+    (dired-mark-remembered marked-files)))
+
 
 
 (provide 'bc-dired)
