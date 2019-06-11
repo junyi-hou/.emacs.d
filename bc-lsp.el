@@ -18,9 +18,10 @@
 
   :config
   ;; load my doc-viewer
+
   (use-package eglot-posframe
     :after eglot
-    :load-path "~/Documents/projects/posframe-collection"
+    :quelpa (eglot-posframe :repo "junyi-hou/posframe-collection" :fetcher github)
     :config
     ;; fix unpleasant underline in the doc
     (set-face-attribute
@@ -34,6 +35,7 @@
    "jd" 'eglot-posframe-show-definition
    "rn" 'eglot-rename
    "jb" 'bc-lsp-switch-to-previous-buffer))
+
 
 
 ;; functions

@@ -16,7 +16,7 @@
   ;; flymake frontend
   (use-package flymake-posframe
     :after flymake
-    :load-path "~/Documents/projects/posframe-collection"
+    :quelpa (flymake-posframe :repo "junyi-hou/posframe-collection" :fetcher github)
     :hook (flymake-mode . flymake-posframe-mode)))
 
 
