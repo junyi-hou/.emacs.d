@@ -138,8 +138,7 @@
    "<tab>" 'bc-evil-visual-tab)
 
   (:keymaps 'insert
-   "<tab>" 'bc-company-unified-tab
-   "<backspace>" 'backward-delete-char-untabify)
+   "<tab>" 'bc-company-unified-tab)
 
   (:keymaps '(help-mode-map message-mode-map)
    :states 'motion
