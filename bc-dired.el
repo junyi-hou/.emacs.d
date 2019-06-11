@@ -8,7 +8,6 @@
   :ensure nil
   :config
   (evil-set-initial-state 'dired-mode 'motion)
-  (setq dired-mode-map (make-sparse-keymap))
   :general
   (:keymaps 'dired-mode-map
    :state 'motion
@@ -24,7 +23,7 @@
 
    ;; files
    "<return>" 'dired-find-file
-   "C-<return>" 'dired-find-file-other-window
+   "<C-return>" 'dired-find-file-other-window
    "n" 'find-file
    "N" 'dired-create-directory
    "t" 'dired-show-file-type
