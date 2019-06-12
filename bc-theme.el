@@ -19,6 +19,10 @@
 ;; mode line
 (use-package telephone-line
   :init
+  (telephone-line-defsegment* bc-theme-pctg-buffer-position ()
+    (concat "LN " (format "%d/%d"
+                          (1+ (count-lines 1 (point)))
+                          (1+ (count-lines (point-min) (point-max))))))
   (setq telephone-line-lhs
         '((evil     . (telephone-line-evil-tag-segment))
           (accent   . (telephone-line-vc-segment
@@ -26,7 +30,8 @@
           (nil      . (telephone-line-buffer-segment))))
   (setq telephone-line-rhs
         '((nil      . (telephone-line-misc-info-segment))
-          (evil     . (telephone-line-major-mode-segment))))
+          (accent   . (telephone-line-major-mode-segment))
+          (evil     . (bc-theme-pctg-buffer-position))))
   :config
   (telephone-line-mode 1))
 
