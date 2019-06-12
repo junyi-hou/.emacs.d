@@ -1,4 +1,4 @@
-;;; bc-company.el -- init company-mode -*- lexical-binding: t; -*-
+;;; bc-company.el --- init company-mode -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

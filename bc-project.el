@@ -1,4 +1,4 @@
-;;; bc-project.el -- config to jump to definitions -*- lexical-binding: t; -*-
+;;; bc-project.el --- config to jump to definitions -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

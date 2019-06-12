@@ -1,4 +1,4 @@
-;;; bc-eshell.el -- my eshell setting -*- lexical-binding: t; -*-
+;;; bc-eshell.el --- my eshell setting -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

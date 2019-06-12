@@ -1,4 +1,4 @@
-;;; bc-pkgmgmt.el -- package management -*- lexical-binding: t; -*-
+;;; bc-pkgmgmt.el --- package management -*- lexical-binding: t; -*-
 
 
 ;;; Commentary:

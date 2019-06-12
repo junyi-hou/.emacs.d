@@ -1,4 +1,4 @@
-;;; bc-lsp.el -- LSP settings -*- lexical-binding: t; -*-
+;; bc-lsp.el --- LSP settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -21,7 +21,7 @@
 
   (use-package eglot-posframe
     :after eglot
-    :quelpa (eglot-posframe :repo "junyi-hou/posframe-collection" :fetcher github)
+    :quelpa (eglot-posframe :repo "junyi-hou/eglot-posframe" :fetcher github)
     :config
     ;; fix unpleasant underline in the doc
     (set-face-attribute

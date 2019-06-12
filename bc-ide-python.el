@@ -1,4 +1,4 @@
-;;; bc-ide-python.el -- provide IDE features for editing python files -*- lexical-binding: t; -*-
+;;; bc-ide-python.el --- provide IDE features for editing python files -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

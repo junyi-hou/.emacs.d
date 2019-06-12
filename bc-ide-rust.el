@@ -1,4 +1,4 @@
-;;; bc-ide-rust.el -- provide IDE feature for working on rust code -*- lexical-binding: t; -*-
+;;; bc-ide-rust.el --- provide IDE feature for working on rust code -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

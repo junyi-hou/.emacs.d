@@ -1,4 +1,4 @@
-;;; bc-org.el -- my orgmode config
+;;; bc-org.el --- my orgmode config
 
 ;;; Commentary:
 

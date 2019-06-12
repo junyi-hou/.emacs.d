@@ -1,4 +1,4 @@
-;;; bc-ivy.el -- config for ivy -*- lexical-binding: t; -*-
+;;; bc-ivy.el --- config for ivy -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

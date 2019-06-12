@@ -1,4 +1,4 @@
-;;; bc-ide-latex.el -- ide for latex editing -*- lexical-binding: t; -*-
+;;; bc-ide-latex.el --- ide for latex editing -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

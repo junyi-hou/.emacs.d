@@ -1,4 +1,4 @@
-;;; bc-jupyter.el -- jupyter frontend for REPL -*- lexical-binding: t; -*-
+;;; bc-jupyter.el --- jupyter frontend for REPL -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

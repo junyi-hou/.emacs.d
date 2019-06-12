@@ -1,4 +1,4 @@
-;;; bc-eldoc.el -- eldoc settings -*- lexical-binding: t; -*-
+;;; bc-eldoc.el --- eldoc settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

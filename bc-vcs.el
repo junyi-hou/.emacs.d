@@ -1,4 +1,4 @@
-;;; bc-vcs.el -- version control software settings: mainly magit
+;;; bc-vcs.el --- version control software settings: mainly magit
 
 ;;; Commentary:
 

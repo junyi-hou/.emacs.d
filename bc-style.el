@@ -1,4 +1,4 @@
-;;; bc-style.el -- sytle guide: spell and grammar check -*- lexical-binding: t; -*-
+;;; bc-style.el --- sytle guide: spell and grammar check -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

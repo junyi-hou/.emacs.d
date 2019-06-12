@@ -1,4 +1,4 @@
-;;; bc-dired.el -- settings for dired mode -*- lexical-binding: t; -*-
+;;; bc-dired.el --- settings for dired mode -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

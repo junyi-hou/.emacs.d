@@ -1,4 +1,4 @@
-;;; bc-core.el -- settings that should be loaded for every buffer each time emacs starts -*- lexical-binding: t; -*-
+;;; bc-core.el --- settings that should be loaded for every buffer each time emacs starts -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

@@ -1,4 +1,4 @@
-;;; bc-theme.el -- setting themes -*- lexical-binding: t; -*-
+;;; bc-theme.el --- setting themes -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

@@ -1,4 +1,4 @@
-;;; bc-fira-code-mode.el -- description -*- lexical-binding: t; -*-
+;;; bc-fira-code-mode.el --- description -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

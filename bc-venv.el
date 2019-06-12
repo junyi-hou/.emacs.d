@@ -1,4 +1,4 @@
-;;; bc-venv.el -- python virtual env setting -*- lexical-binding: t; -*-
+;;; bc-venv.el --- python virtual env setting -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

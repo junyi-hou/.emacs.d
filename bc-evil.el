@@ -1,4 +1,4 @@
-;;; bc-evil.el -- evil mode related settings -*- lexical-binding: t; -*-
+;;; bc-evil.el --- evil mode related settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

@@ -1,4 +1,4 @@
-;;; bc-flymake.el -- init flymake for syntax check -*- lexical-binding: t; -*-
+;;; bc-flymake.el --- init flymake for syntax check -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -16,7 +16,9 @@
   ;; flymake frontend
   (use-package flymake-posframe
     :after flymake
-    :quelpa (flymake-posframe :repo "junyi-hou/posframe-collection" :fetcher github)
+    :quelpa (flymake-posframe
+             :repo "junyi-hou/flymake-posframe"
+             :fetcher github)
     :hook (flymake-mode . flymake-posframe-mode)))
 
 
