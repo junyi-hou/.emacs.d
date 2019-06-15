@@ -11,11 +11,6 @@
   :config
   (load-theme 'zenburn t))
 
-;; ligatures
-(use-package bc-fira-code-mode
-  :load-path "~/.emacs.d/site-lisp/"
-  :hook (prog-mode . fira-code-mode))
-
 ;; mode line
 (use-package telephone-line
   :init
