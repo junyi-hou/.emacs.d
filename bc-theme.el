@@ -5,11 +5,11 @@
 ;;; Code:
 
 ;; theme
-(use-package zenburn-theme
+(use-package doom-themes
   :init
   (setq-default custom-safe-themes t)
   :config
-  (load-theme 'zenburn t))
+  (load-theme 'doom-one t))
 
 ;; mode line
 (use-package telephone-line
@@ -60,8 +60,8 @@
   (setq-default
    display-line-numbers-type 'visual
    display-line-numbers-current-absolute t
-   display-line-numbers-width 4
-   display-line-numbers-widen t))
+   display-line-numbers-width 3
+   display-line-numbers-widen nil))
 
 ;; display time
 (display-time-mode)
