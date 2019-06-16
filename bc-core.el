@@ -49,6 +49,10 @@
 ;; other minor modes I always want
 (show-paren-mode 1)          ; highlight matching paren
 (global-visual-line-mode 1)  ; word wrapping
+(use-package hideshow
+  :hook
+  (prog-mode . hs-hide-all)
+  (prog-mode . hs-minor-mode))
 ;; (require 'bc-eldoc)          ; wrapper for eldoc
 
 ;; indentation settings
