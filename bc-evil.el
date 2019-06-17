@@ -107,7 +107,8 @@
   "mr" 'bc-evil-rename-file-and-buffer
 
   ;; other uses
-  "t" 'evilnc-comment-or-uncomment-lines)
+  "t" 'evilnc-comment-or-uncomment-lines
+  "T" 'counsel-load-theme)
 
   ;; combination key that should be active in all states
   (:keymaps '(motion normal visual emacs insert)
