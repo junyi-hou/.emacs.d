@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: deadline-with-time
+# key: ddlt
+# --
+DEADLINE: `(bc-org-insert-date-time)`

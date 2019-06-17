@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: python-block
+# key: python
+# --
+#+begin_src jupyter-python :session ${1:py}
+$0
+#+end_src

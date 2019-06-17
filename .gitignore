@@ -1,0 +1,8 @@
+**
+!site-lisp/
+!site-lisp/**
+!snippets/
+!snippets/**
+!eshell/
+!eshell/alias
+!.gitignore

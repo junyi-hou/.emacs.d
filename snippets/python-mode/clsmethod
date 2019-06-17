@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: clsmethod
+# key: __
+# --
+def __${1:meth}__(self${2:,arg}):
+    \"\"\"
+    $3
+    \"\"\"
+    $0

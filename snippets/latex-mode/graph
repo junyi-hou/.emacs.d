@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: graph
+# key: graph
+# --
+\includegraphics${1:[scale=${2:0.8}]}{${3:filename}}
