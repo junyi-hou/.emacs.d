@@ -130,13 +130,15 @@
 
   (:keymaps 'visual
    "*" 'bc-evil-search-visually-forward
-   "#" 'bc-evil-search-visually-backward)
+   "#" 'bc-evil-search-visually-backward\
+   "<tab>" 'bc-evil-visual-tab)
 
   (:keymaps '(normal motion)
    "<tab>" 'evil-jump-item)
 
   (:keymaps 'visual
-   "<tab>" 'bc-evil-visual-tab)
+   :prefix "SPC"
+   "a" 'align-regexp)
 
   (:keymaps 'insert
    "<tab>" 'bc-company-unified-tab)
