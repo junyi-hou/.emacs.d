@@ -44,10 +44,14 @@
     (inherit-local-permanent bc-venv-eshell-path-no-venv nil)))
 
 (defun bc-venv--enable-venv (&optional venv)
-  "Enable virtualenv given by VENV.  If VENV is given, use it, otherwise use `bc-venv-default-py3-venv'."
+  "Enable virtualenv.  If the virtualenv is explicitly given in VENV, use it, otherwise if a .venv folder is present, use it, otherwise fall back to `bc-venv-default-py3-venv'."
   (interactive)
   (bc-venv--disable-venv)
-  (let* ((venv (or venv bc-venv-default-py3-venv))
+  (let* ((local-venv (concat (cdr (project-current nil)) ".venv/"))
+         (venv (or
+                venv
+                (when (file-directory-p local-venv) local-venv)
+                bc-venv-default-py3-venv))
          (bin (expand-file-name "bin/" (file-name-as-directory venv))))
     ;; save current variables
     (inherit-local-permanent bc-venv-exec-path-no-venv (getenv "PATH"))
