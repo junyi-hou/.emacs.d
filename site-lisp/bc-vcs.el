@@ -25,7 +25,7 @@
    "RET" 'bc-vcs-visit-file-at-point)
 
   (:keymaps 'magit-status-mode-map
-   :state '(motion normal)
+   :states '(motion normal)
    "d" 'magit-discard
    "s" 'magit-show-commit
    "c" 'magit-commit
