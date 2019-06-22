@@ -40,12 +40,12 @@
                             company-yasnippet
                             company-files)
                            (company-dabbrev
-                            company-abbrev))))
+                            company-abbrev)))
 
-(use-package company-posframe
-  :after company
-  :commands company-posframe-mode
-  :hook (company-mode . company-posframe-mode))
+  (use-package company-posframe
+    :after company
+    :hook (company-mode . company-posframe-mode)))
+
 
 (defun bc-company-unified-tab ()
   "Use tab for both company and indentation.

@@ -56,6 +56,7 @@
 (use-package reftex
   :after 'tex-site
   :defer t
+  :hook (LaTeX-mode . reftex-mode)
   :config
   (setq reftex-cite-prompt-optional-args t)
 
@@ -123,7 +124,9 @@
 (use-package company-auctex
   :after tex-site
   :defer t
-  :config (add-hook 'LaTeX-mode-hook #'company-auctex-init))
+  :config
+  (add-hook 'LaTeX-mode-hook #'company-auctex-init)
+  (add-hook 'LaTeX-mode-hook #'company-mode))
 
 (defun bc-latex-ivy-bibtex-load-bib-file ()
   "Add bibtex file to `ivy-bibtex' library for the current .tex file.
