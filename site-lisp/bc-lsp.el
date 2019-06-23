@@ -45,7 +45,9 @@
 (defun bc-lsp-switch-to-previous-buffer ()
   "Switch to previously open buffer."
   (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
+  (condition-case nil
+      (xref-pop-marker-stack)
+    (switch-to-buffer (other-buffer (current-buffer) 1))))
 
 
 (provide 'bc-lsp)
