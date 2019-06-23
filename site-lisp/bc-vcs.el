@@ -66,29 +66,29 @@
   (other-window -1)
   (find-file file)))
 
-(use-package git-timemachine
-  :config
-  (add-hook 'git-timemachine-mode-hook #'evil-motion-state)
-  (evil-make-overriding-map git-timemachine-mode-map 'motion)
-  (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps)
-  :general
-  (:keymaps 'git-timemachine-mode-map
-   :state 'motion
-   "M-k" 'git-timemachine-show-previous-revision
-   "M-j" 'git-timemachine-show-next-revision
-   "<up>" 'git-timemachine-show-previous-revision
-   "<down>" 'git-timemachine-show-next-revision
-   "q" 'git-timemachine-quit
-   "c" 'git-timemachine-show-commit
-   "b" 'git-timemachine-blame
-   "t" 'git-timemachine-show-revision-fuzzy
-   "g" 'git-timemachine-show-revision
-   "y" 'git-timemachine-kill-abbreviated-revision
-   "Y" 'git-timemachine-kill-revision)
+;; (use-package git-timemachine
+;;   :config
+;;   (add-hook 'git-timemachine-mode-hook #'evil-motion-state)
+;;   (evil-make-overriding-map git-timemachine-mode-map 'motion)
+;;   (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps)
+;;   :general
+;;   (:keymaps 'git-timemachine-mode-map
+;;    :state 'motion
+;;    "M-k" 'git-timemachine-show-previous-revision
+;;    "M-j" 'git-timemachine-show-next-revision
+;;    "<up>" 'git-timemachine-show-previous-revision
+;;    "<down>" 'git-timemachine-show-next-revision
+;;    "q" 'git-timemachine-quit
+;;    "c" 'git-timemachine-show-commit
+;;    "b" 'git-timemachine-blame
+;;    "t" 'git-timemachine-show-revision-fuzzy
+;;    "g" 'git-timemachine-show-revision
+;;    "y" 'git-timemachine-kill-abbreviated-revision
+;;    "Y" 'git-timemachine-kill-revision)
 
-  (:keymaps 'normal
-   :prefix "SPC"
-   "gh" 'git-timemachine))
+;;   (:keymaps 'normal
+;;    :prefix "SPC"
+;;    "gh" 'git-timemachine))
 
 
 (provide 'bc-vcs)
