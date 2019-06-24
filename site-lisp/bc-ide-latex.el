@@ -114,6 +114,7 @@
    "?" 'isearch-backward
    "n" 'isearch-repeat-forward
    "N" 'isearch-repeat-backward
+   "o" 'pdf-outline
    "SPC" nil)
 
   (:keymaps 'pdf-view-mode-map
