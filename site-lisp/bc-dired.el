@@ -6,8 +6,23 @@
 
 (use-package dired
   :ensure nil
+  :init
+  ;; functions
+  
+  (defun bc-dired--mark-one (cmd)
+    "Run command CMD on the file under the cursor."
+    (let ((inhibit-read-only t)
+          (marked-files (mapcar (lambda (x) (cons x "*")) (dired-get-marked-files))))
+      (dired-unmark-all-marks)
+      (dired-mark 1)
+      (when (commandp cmd)
+        (funcall cmd))
+      (dired-unmark-all-marks)
+      (dired-mark-remembered marked-files)))
+
   :config
   (evil-set-initial-state 'dired-mode 'motion)
+
   :general
   (:keymaps 'dired-mode-map
    :state 'motion
@@ -55,20 +70,6 @@
    "M-k" 'dired-prev-marked-file
 
    "v" 'revert-buffer))
-
-
-(defun bc-dired--mark-one (cmd)
-  "Run command CMD on the file under the cursor."
-  (let ((inhibit-read-only t)
-        (marked-files (mapcar (lambda (x) (cons x "*")) (dired-get-marked-files))))
-    (dired-unmark-all-marks)
-    (dired-mark 1)
-    (when (commandp cmd)
-      (funcall cmd))
-    (dired-unmark-all-marks)
-    (dired-mark-remembered marked-files)))
-
-
 
 (provide 'bc-dired)
 ;;; bc-dired.el ends here

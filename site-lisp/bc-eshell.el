@@ -14,47 +14,50 @@
         eshell-hist-ignoredups t
         eshell-save-history-on-exit t
         eshell-prefer-lisp-functions nil
-        eshell-destroy-buffer-when-process-dies t))
+        eshell-destroy-buffer-when-process-dies t)
 
-(use-package company-shell
-  :after eshell
-  :commands (company-shell company-env))
+  ;; functions
 
-(defun bc-eshell-open-here ()
-  "Open a new shell in the pwd of the current buffer.  If there is already a eshell buffer open for that directory, switch to that buffer."
-  (interactive)
-  (let* ((dir (file-name-directory (or (buffer-file-name) default-directory)))
-         ;; check whether there exists a eshell buffer for the current directory
-         (exists (seq-filter (lambda (buf)
-                               (with-current-buffer buf
-                                 (and (string-equal major-mode "eshell-mode")
-                                      (equal dir default-directory))))
-                             (buffer-list)))
-         ;; check if the matched eshell buffer is visible
-         (visible (when exists
-                    (get-buffer-window (car exists)))))
-    (if visible
-        (select-window visible)
-      (split-window-below (- (/ (window-total-height) 3)))
-      (other-window 1)
-      (if exists
-          (switch-to-buffer (car exists))
-        (eshell 'Z)))
+  (defun bc-eshell-open-here ()
+    "Open a new shell in the pwd of the current buffer.  If there is already a eshell buffer open for that directory, switch to that buffer."
+    (interactive)
+    (let* ((dir (file-name-directory (or (buffer-file-name) default-directory)))
+           ;; check whether there exists a eshell buffer for the current directory
+           (exists (seq-filter (lambda (buf)
+                                 (with-current-buffer buf
+                                   (and (string-equal major-mode "eshell-mode")
+                                        (equal dir default-directory))))
+                               (buffer-list)))
+           ;; check if the matched eshell buffer is visible
+           (visible (when exists
+                      (get-buffer-window (car exists)))))
+      (if visible
+          (select-window visible)
+        (split-window-below (- (/ (window-total-height) 3)))
+        (other-window 1)
+        (if exists
+            (switch-to-buffer (car exists))
+          (eshell 'Z)))
       (goto-char (point-max))
       (evil-insert-state)))
 
-(defun bc-eshell-goto-prompt ()
-  "Goto current prompt and continue editting."
-  (interactive)
-  (goto-char (point-max))
-  (evil-insert 1))
+  (defun bc-eshell-goto-prompt ()
+    "Goto current prompt and continue editting."
+    (interactive)
+    (goto-char (point-max))
+    (evil-insert 1))
 
-(defun bc-eshell-clear-buffer ()
-  "Eshell version of `cls'."
-  (interactive)
-  (let ((inhibit-read-only t))
-    (erase-buffer)))
+  (defun bc-eshell-clear-buffer ()
+    "Eshell version of `cls'."
+    (interactive)
+    (let ((inhibit-read-only t))
+      (erase-buffer)))
 
+  :config
+  (use-package company-shell
+    :after eshell
+    :commands (company-shell company-env))
+  )
 
 ;; settings
 ;; a bug in eshell mode makes direct defining keymap impossible, need to run

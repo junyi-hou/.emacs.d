@@ -7,6 +7,28 @@
 (require 'dash)
 
 (use-package magit
+  :init
+
+  ;; functions
+  
+  (defun bc-vcs-commit-current-file ()
+    "Open a `git-commit-mode' window, prompt for commit message and commit the current file.  If there are other staged but uncommitted files, error out."
+    (interactive)
+    (when (-remove (lambda (x)
+                     (equal x (file-name-nondirectory (buffer-file-name))))
+                   (magit-staged-files))
+      (error "There are other files in the staging area, aborting"))
+    (magit-stage-file (buffer-file-name))
+    (magit-commit-create))
+
+  (defun bc-vcs-visit-file-at-point (&optional file)
+    "Show FILE or file at point in magit buffer using `magit-file-at-point' function in the previous window."
+    (interactive)
+    (let ((file (or file (expand-file-name (magit-file-at-point)))))
+      (unless file
+        (error "No file at point"))
+      (other-window -1)
+      (find-file file)))
   :config
   (dolist (mode '(magit-status-mode magit-diff-mode magit-log-mode))
     (evil-set-initial-state mode 'motion))
@@ -46,25 +68,6 @@
    "q" 'kill-buffer-and-window
    "r" (lambda () (interactive) (magit-refresh-buffer))))
 
-
-(defun bc-vcs-commit-current-file ()
-  "Open a `git-commit-mode' window, prompt for commit message and commit the current file.  If there are other staged but uncommitted files, error out."
-  (interactive)
-  (when (-remove (lambda (x)
-                   (equal x (file-name-nondirectory (buffer-file-name))))
-                 (magit-staged-files))
-    (error "There are other files in the staging area, aborting"))
-  (magit-stage-file (buffer-file-name))
-  (magit-commit-create))
-
-(defun bc-vcs-visit-file-at-point (&optional file)
-  "Show FILE or file at point in magit buffer using `magit-file-at-point' function in the previous window."
-  (interactive)
-  (let ((file (or file (expand-file-name (magit-file-at-point)))))
-    (unless file
-      (error "No file at point"))
-  (other-window -1)
-  (find-file file)))
 
 ;; (use-package git-timemachine
 ;;   :config
