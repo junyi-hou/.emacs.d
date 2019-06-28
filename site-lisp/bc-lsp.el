@@ -33,6 +33,7 @@
    :prefix "SPC"
    "rh" 'eglot-posframe-show-help
    "jd" 'eglot-posframe-show-definition
+   "jr" 'eglot-posframe-show-reference
    "rn" 'eglot-rename
    "jb" 'bc-lsp-switch-to-previous-buffer))
 
