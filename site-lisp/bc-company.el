@@ -76,8 +76,5 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
     :after company
     :hook (company-mode . company-posframe-mode)))
 
-
-
-
 (provide 'bc-company)
 ;;; bc-company.el ends here
