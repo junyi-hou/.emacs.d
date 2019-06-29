@@ -56,6 +56,8 @@
 ;; line numbers
 (use-package display-line-numbers
   :hook (prog-mode . display-line-numbers-mode)
+        (org-mode . display-line-numbers-mode)
+        (LaTeX-mode . display-line-numbers-mode)
   :config
   (setq-default
    display-line-numbers-type 'visual
