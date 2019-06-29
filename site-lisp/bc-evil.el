@@ -176,7 +176,7 @@
   ;; open stuffs
   "of" 'find-file
   "ob" 'ivy-switch-buffer
-  "oo" 'project-find-file
+  "oo" 'projectile-find-file
   "os" 'bc-eshell-open-here
   "op" 'projectile-switch-project
 
