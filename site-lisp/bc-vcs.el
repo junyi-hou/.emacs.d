@@ -41,8 +41,8 @@
    "SPC" nil
    "C-d" 'magit-section-forward-sibling
    "C-u" 'magit-section-backward-sibling
-   "<tab>" 'magit-section-toggle
-   "TAB" 'magit-section-toggle
+   "zo" 'magit-section-show
+   "zc" 'magit-section-hide
    "?" 'magit-dispatch
    "RET" 'bc-vcs-visit-file-at-point)
 
