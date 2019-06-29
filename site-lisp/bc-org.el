@@ -51,22 +51,18 @@
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
-   "r" 'org-export-dispatch)
+   "re" 'org-export-dispatch
+   "rr" 'org-edit-special)
 
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
    "<up>" 'org-previous-visible-heading
-   "<down>" 'org-next-visible-heading
-   "U" 'outline-up-heading)
+   "<down>" 'org-next-visible-heading)
 
   (:keymaps 'org-mode-map
    :states '(insert normal visual motion)
    "C-d" 'org-forward-heading-same-level
-   "C-u" 'org-backward-heading-same-level
-   "M-j" 'org-shiftdown
-   "M-k" 'org-shiftup
-   "M-h" 'org-shiftleft
-   "M-l" 'org-shiftright))
+   "C-u" 'org-backward-heading-same-level))
 
 ;; functions
 
