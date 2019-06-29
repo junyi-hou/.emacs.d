@@ -15,6 +15,36 @@
    "M-k" 'yas-prev-field))
 
 (use-package company
+  :init
+
+  ;; function
+  (defun bc-company-unified-tab ()
+    "Use tab for both company and indentation.
+
+In insert mode, first try `company-manual-begin'.  If there is no completion available at point, indent the current line by `tab-width' length."
+    (interactive)
+    (if (looking-back "^[ \t]*" (line-beginning-position))
+        (dotimes (n tab-width) (insert " "))
+      (yas-expand)
+      (company-manual-begin)
+      ;; HACK: manually call `company-manual-begin' will set
+      ;; `company-minimum-prefix-length' to 0, which means that the snippets
+      ;; will always get included. To fix this add a condition that if
+      ;; all candidates are snippets, cancel auto completion and indent region.
+      (if (null (seq-every-p
+                 (lambda (candidate)
+                   (member candidate (yas-active-keys)))
+                 company-candidates))
+          (if (or company-selection-changed
+                  (memq last-command '(company-complete-common
+                                       bc-lsp-unified-tab)))
+              (call-interactively 'company-complete-selection)
+            (call-interactively 'company-complete-common)
+            (when company-candidates
+              (setq this-command 'company-complete-common)))
+        (company-cancel)
+        (indent-region (line-beginning-position) (line-end-position)))))
+
   :commands company-mode
   :general
   (:keymaps 'company-active-map
@@ -47,32 +77,7 @@
     :hook (company-mode . company-posframe-mode)))
 
 
-(defun bc-company-unified-tab ()
-  "Use tab for both company and indentation.
 
-In insert mode, first try `company-manual-begin'.  If there is no completion available at point, indent the current line by `tab-width' length."
-  (interactive)
-  (if (looking-back "^[ \t]*" (line-beginning-position))
-      (dotimes (n tab-width) (insert " "))
-    (yas-expand)
-    (company-manual-begin)
-    ;; HACK: manually call `company-manual-begin' will set
-    ;; `company-minimum-prefix-length' to 0, which means that the snippets
-    ;; will always get included. To fix this add a condition that if
-    ;; all candidates are snippets, cancel auto completion and indent region.
-    (if (null (seq-every-p
-               (lambda (candidate)
-                 (member candidate (yas-active-keys)))
-               company-candidates))
-        (if (or company-selection-changed
-                (memq last-command '(company-complete-common
-                                     bc-lsp-unified-tab)))
-            (call-interactively 'company-complete-selection)
-          (call-interactively 'company-complete-common)
-          (when company-candidates
-            (setq this-command 'company-complete-common)))
-      (company-cancel)
-      (indent-region (line-beginning-position) (line-end-position)))))
 
 (provide 'bc-company)
 ;;; bc-company.el ends here
