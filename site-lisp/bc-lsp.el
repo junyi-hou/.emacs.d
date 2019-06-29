@@ -20,7 +20,18 @@
   ;; load my doc-viewer
 
   (use-package eglot-posframe
-    :after eglot
+    :init
+    ;; functions
+
+    ;; taking from
+    ;; https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/
+    (defun bc-lsp-switch-to-previous-buffer ()
+      "Switch to previously open buffer."
+      (interactive)
+      (if (ring-empty-p xref--marker-ring)
+          (switch-to-buffer (other-buffer (current-buffer) 1))
+        (xref-pop-marker-stack)))
+    
     :quelpa (eglot-posframe :repo "junyi-hou/eglot-posframe" :fetcher github)
     :config
     ;; fix unpleasant underline in the doc
@@ -36,19 +47,6 @@
    "jr" 'eglot-posframe-show-reference
    "rn" 'eglot-rename
    "jb" 'bc-lsp-switch-to-previous-buffer))
-
-
-
-;; functions
-
-;; taking from
-;; https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/
-(defun bc-lsp-switch-to-previous-buffer ()
-  "Switch to previously open buffer."
-  (interactive)
-  (condition-case nil
-      (xref-pop-marker-stack)
-    (switch-to-buffer (other-buffer (current-buffer) 1))))
 
 
 (provide 'bc-lsp)
