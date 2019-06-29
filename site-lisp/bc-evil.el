@@ -32,14 +32,10 @@
 
 (use-package elec-pair
   :init
-  (setq electric-pair-pairs '((?\" . ?\")
-                              (?\{ . ?\})
-                              (?\` . ?\')
-                              (?\$ . ?\$))
-        electric-pair-open-newline-between-pairs t
+  (setq electric-pair-open-newline-between-pairs t
         electric-pair-delete-adjacent-pairs t)
-  :config
-  (electric-pair-mode 1))
+  :hook
+  (prog-mode . electric-pair-mode))
 
 (use-package evil
   :init

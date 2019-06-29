@@ -24,6 +24,9 @@
    ;; latex command - enable syntax and shell-escape
    LaTeX-command "latex -syntax=1 --shell-escape -interaction=nonstopmode"
 
+   ;; auto-close
+   LaTeX-electric-left-right-brace t
+
    ;; other settings
    TeX-parse-self t
    TeX-auto-save t)
@@ -38,9 +41,9 @@
             #'TeX-revert-document-buffer)
 
   (add-hook 'LaTeX-mode-hook #'TeX-PDF-mode)
+  (add-hook 'LaTeX-mode-hook #'company-mode)
   (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook #'bc-latex-ivy-bibtex-load-bib-file)
-  (put 'LaTeX-mode 'derived-mode-parent 'prog-mode)
 
   :general
   (:keymaps 'LaTeX-mode-map
@@ -115,19 +118,19 @@
    "n" 'isearch-repeat-forward
    "N" 'isearch-repeat-backward
    "o" 'pdf-outline
+   "+" 'pdf-view-enlarge
+   "-" 'pdf-view-shrink
    "SPC" nil)
 
   (:keymaps 'pdf-view-mode-map
    :states '(motion normal visual)
    :prefix "SPC"
-   "q" 'kill-this-buffer))
+   "q" 'kill-buffer-and-window))
 
 (use-package company-auctex
   :after tex-site
-  :defer t
-  :config
-  (add-hook 'LaTeX-mode-hook #'company-auctex-init)
-  (add-hook 'LaTeX-mode-hook #'company-mode))
+  :hook
+  (LaTeX-mode . company-auctex-init))
 
 (defun bc-latex-ivy-bibtex-load-bib-file ()
   "Add bibtex file to `ivy-bibtex' library for the current .tex file.
