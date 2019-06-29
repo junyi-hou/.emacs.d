@@ -2,6 +2,6 @@
 # name: python-block
 # key: python
 # --
-#+begin_src jupyter-python :session ${1:py}
+#+begin_src jupyter-python ${1::session ${2:client}}
 $0
 #+end_src

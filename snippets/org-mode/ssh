@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: ssh
+# key: ssh
+# --
+#+begin_src bash :session client
+ssh ${1:remote}
+#+end_src
