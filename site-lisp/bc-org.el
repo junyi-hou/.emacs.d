@@ -27,6 +27,7 @@
      'org-babel-load-languages
      '((emacs-lisp . t)
        (latex . t)
+       (shell . t)
        (python . t)
        (jupyter . t))))
 
