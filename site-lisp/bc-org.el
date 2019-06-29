@@ -52,7 +52,8 @@
    :states '(normal visual motion)
    :prefix "SPC"
    "re" 'org-export-dispatch
-   "rr" 'org-edit-special)
+   "ro" 'org-edit-special
+   "rr" 'org-ctrl-c-ctrl-c)
 
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
