@@ -1,10 +1,19 @@
-;;; bc-org.el --- my orgmode config
+;;; bc-org.el --- my org-mode config
 
 ;;; Commentary:
 
 ;;; Code:
 
 (use-package org
+
+  :init
+
+  ;; functions
+
+  (defun bc-org-complete-keywords ()
+    "Allow company to complete org keywords after ^#+"
+    (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+
   :config
 
   ;; general config
@@ -16,6 +25,7 @@
   (add-hook 'org-mode-hook #'company-mode)
   (add-hook 'org-mode-hook (lambda () (setq tab-width 2)))
   (add-hook 'org-mode-hook #'org-indent-mode)
+  (add-hook 'org-mode-hook #'bc-org-complete-keywords)
 
   ;; src block settings
   (setq org-src-fontify-natively t
