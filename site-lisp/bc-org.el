@@ -15,6 +15,7 @@
           (sequence "|" "CANCELED" "SOMEDAY")))
   (add-hook 'org-mode-hook #'company-mode)
   (add-hook 'org-mode-hook (lambda () (setq tab-width 2)))
+  (add-hook 'org-mode-hook #'org-indent-mode)
 
   ;; src block settings
   (setq org-src-fontify-natively t
@@ -54,7 +55,8 @@
    :prefix "SPC"
    "re" 'org-export-dispatch
    "ro" 'org-edit-special
-   "rr" 'org-ctrl-c-ctrl-c)
+   "rr" 'org-ctrl-c-ctrl-c
+   "rf" 'org-footnote)
 
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
