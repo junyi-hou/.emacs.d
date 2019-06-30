@@ -53,10 +53,38 @@
     (let ((inhibit-read-only t))
       (erase-buffer)))
 
+  (defun bc-eshell--keymaps ()
+    "Define keymap for eshell."
+    (general-define-key
+     :states 'normal
+     :keymaps 'eshell-mode-map
+     "A" 'bc-eshell-goto-prompt)
+
+    (general-define-key
+     :states 'normal
+     :keymaps 'eshell-mode-map
+     :prefix "SPC"
+     "q" 'kill-buffer-and-window))
+
+  (add-hook 'eshell-mode-hook #'bc-eshell--keymaps)
+  
+
   :config
   (use-package company-shell
-    :after eshell
-    :commands (company-shell company-env))
+    :commands (company-shell company-env)
+
+    :init
+    (add-hook 'eshell-mode-hook
+            (defun bc-eshell--company ()
+              (setq-local company-backend
+                          '((company-shell
+                             company-env
+                             company-flies
+                             company-yasnippet)
+                            (company-dabbrev
+                             company-abbrev)))
+              (company-mode))))
+
   )
 
 ;; settings
@@ -69,29 +97,6 @@
 ;; (eshell/alias "l" "ls -AlohG --color=always")
 ;; (eshell/alias "cd" "bc-eshell-cd $1")
 
-(defun bc-eshell--keymaps ()
-  "Define keymap for eshell."
-  (general-define-key
-   :states 'normal
-   :keymaps 'eshell-mode-map
-   "A" 'bc-eshell-goto-prompt)
-
-  (general-define-key
-   :states 'normal
-   :keymaps 'eshell-mode-map
-   :prefix "SPC"
-   "q" 'kill-buffer-and-window))
-
-(add-hook 'eshell-mode-hook #'bc-eshell--keymaps)
-(add-hook 'eshell-mode-hook (defun bc-eshell--company ()
-                              (setq-local company-backend
-                                          '((company-shell
-                                             company-env
-                                             company-flies
-                                             company-yasnippet)
-                                            (company-dabbrev
-                                             company-abbrev)))
-                              (company-mode)))
 
 
 (provide 'bc-eshell)
