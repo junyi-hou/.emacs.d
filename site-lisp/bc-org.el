@@ -12,7 +12,9 @@
 
   (defun bc-org-complete-keywords ()
     "Allow company to complete org keywords after ^#+"
-    (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+    (add-hook
+     'completion-at-point-functions
+     'pcomplete-completions-at-point nil t))
 
   :config
 
@@ -22,6 +24,7 @@
         org-todo-keywords
         '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE")
           (sequence "|" "CANCELED" "SOMEDAY")))
+
   (add-hook 'org-mode-hook #'company-mode)
   (add-hook 'org-mode-hook (lambda () (setq tab-width 2)))
   (add-hook 'org-mode-hook #'org-indent-mode)
