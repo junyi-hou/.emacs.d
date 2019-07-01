@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inline-latex-code
+# key: code
+# --
+src_latex{\texttt{$1}} $0

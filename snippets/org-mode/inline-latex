@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name:inline-latex 
+# key: latexx
+# --
+src_latex{$0}

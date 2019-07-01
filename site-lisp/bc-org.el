@@ -16,6 +16,20 @@
      'completion-at-point-functions
      'pcomplete-completions-at-point nil t))
 
+  (defun bc-org-insert-date ()
+    "Insert today's date in org-mode's format."
+    (insert (concat "<"
+                    (shell-command-to-string "echo -n $(date +%Y-%m-%d)")
+                    ">")))
+
+  (defun bc-org-insert-date-time ()
+    "Insert today's date-time in org-mode's format."
+    (insert (concat "<"
+                    (shell-command-to-string "echo -n $(date +%Y-%m-%d)")
+                    " "
+                    (shell-command-to-string "echo -n $(date +%H:%M)")
+                    ">")))
+
   :config
 
   ;; general config
@@ -48,6 +62,27 @@
   (advice-add 'org-edit-src-code :after (lambda ()
                                           (ignore-errors (eglot-ensure))))
 
+  ;; export to latex
+  (setq org-latex-packages-alist '(("" "setspace")
+                                   ("" "pdflscape")
+                                   ("" "multirow")
+                                   ("" "multicol")
+                                   ("" "booktabs")
+                                   ("" "amsthm")
+                                   ("" "amssymb")
+                                   ("" "bbm")
+                                   ("" "listingsutf8")
+                                   ("" "minted")
+                                   ("top=1in, bottom=1in, left=1in, right=1in" "geometry")
+                                   ("" "natbib")))
+  (setq
+   org-latex-listings 'minted
+   org-latex-pdf-process
+   '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+   )
+  
   ;; org-capture
 
   ;; (add-hook 'org-capture-mode-hook #'evil-insert-state)
@@ -80,22 +115,6 @@
    :states '(insert normal visual motion)
    "C-d" 'org-forward-heading-same-level
    "C-u" 'org-backward-heading-same-level))
-
-;; functions
-
-(defun bc-org-insert-date ()
-  "Insert today's date in org-mode's format."
-  (insert (concat "<"
-                  (shell-command-to-string "echo -n $(date +%Y-%m-%d)")
-                  ">")))
-
-(defun bc-org-insert-date-time ()
-  "Insert today's date-time in org-mode's format."
-  (insert (concat "<"
-                  (shell-command-to-string "echo -n $(date +%Y-%m-%d)")
-                  " "
-                  (shell-command-to-string "echo -n $(date +%H:%M)")
-                  ">")))
 
 
 (provide 'bc-org)
