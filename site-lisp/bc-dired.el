@@ -20,6 +20,36 @@
       (dired-unmark-all-marks)
       (dired-mark-remembered marked-files)))
 
+  (defun bc-dired-sort-size ()
+    "Dired sort by size."
+    (interactive)
+    (dired-sort-other (concat dired-listing-switches "S")))
+
+  (defun bc-dired-sort-extension ()
+    "Dired sort by extension."
+    (interactive)
+    (dired-sort-other (concat dired-listing-switches "X")))
+
+  (defun bc-dired-sort-ctime ()
+    "Dired sort by create time."
+    (interactive)
+    (dired-sort-other (concat dired-listing-switches "ct")))
+
+  (defun bc-dired-sort-utime ()
+    "Dired sort by access time."
+    (interactive)
+    (dired-sort-other (concat dired-listing-switches "ut")))
+
+  (defun bc-dired-sort-time ()
+    "Dired sort by time."
+    (interactive)
+    (dired-sort-other (concat dired-listing-switches "t")))
+
+  (defun bc-dired-sort-name ()
+    "Dired sort by name."
+    (interactive)
+    (dired-sort-other (concat dired-listing-switches "")))
+
   :config
   (evil-set-initial-state 'dired-mode 'motion)
 
