@@ -13,7 +13,7 @@
 #+LATEX_HEADER: \usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
 #+LATEX_HEADER: \usepackage{pdflscape}
 #+LATEX_HEADER: \usepackage{longtable,multirow,multicol,booktabs}
-#+LATEX_HEADER: \usepackage{amsmath,amsthm,amsfonts,amssymb}
+#+LATEX_HEADER: \usepackage{amsmath,amsthm,amsfonts,amssymb,bbm}
 #+LATEX_HEADER: \usepackage{graphicx,rotating}
 #+LATEX_HEADER: \usepackage{color}
 #+LATEX_HEADER: \usepackage{natbib}
