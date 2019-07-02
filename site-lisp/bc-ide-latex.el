@@ -41,7 +41,6 @@
             #'TeX-revert-document-buffer)
 
   (add-hook 'LaTeX-mode-hook #'TeX-PDF-mode)
-  (add-hook 'LaTeX-mode-hook #'company-mode)
   (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook #'bc-latex-ivy-bibtex-load-bib-file)
 

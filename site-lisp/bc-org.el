@@ -113,8 +113,8 @@
 
   (:keymaps 'org-mode-map
    :states '(insert normal visual motion)
-   "C-d" 'org-forward-heading-same-level
-   "C-u" 'org-backward-heading-same-level))
+   "C-d" 'org-next-visible-heading
+   "C-u" 'org-previous-visible-heading))
 
 
 (provide 'bc-org)
