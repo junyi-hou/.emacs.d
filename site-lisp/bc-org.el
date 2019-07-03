@@ -59,8 +59,8 @@
        (python . t)
        (jupyter . t))))
 
-  (advice-add 'org-edit-src-code :after (lambda ()
-                                          (ignore-errors (eglot-ensure))))
+  ;; (advice-add 'org-edit-src-code :after (lambda ()
+  ;;                                         (ignore-errors (eglot-ensure))))
 
   ;; export to latex
   (setq org-latex-packages-alist '(("" "setspace")

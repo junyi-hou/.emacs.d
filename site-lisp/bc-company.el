@@ -15,6 +15,9 @@
    "M-k" 'yas-prev-field))
 
 (use-package company
+  :hook
+  (LaTeX-mode . company-mode)
+
   :init
 
   ;; function

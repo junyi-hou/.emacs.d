@@ -42,7 +42,7 @@
 
   (add-hook 'LaTeX-mode-hook #'TeX-PDF-mode)
   (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
-  (add-hook 'LaTeX-mode-hook #'bc-latex-ivy-bibtex-load-bib-file)
+  ;; (add-hook 'LaTeX-mode-hook #'bc-latex-ivy-bibtex-load-bib-file)
 
   :general
   (:keymaps 'LaTeX-mode-map
