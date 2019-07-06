@@ -46,7 +46,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
             (when company-candidates
               (setq this-command 'company-complete-common)))
         (company-cancel)
-        (save-mark-and-excursion
+        (save-excursion
           (indent-region (line-beginning-position) (line-end-position))))))
 
   :commands company-mode
