@@ -33,7 +33,21 @@
   :config
 
   (use-package company-auctex
-    :hook (org-mode . company-auctex-init))
+    :init
+    (defun bc-org-company-add-latex-backends ()
+      (setq-local company-backends
+                  '((company-auctex-labels
+                     company-auctex-bibs
+                     company-auctex-environments
+                     company-auctex-macros
+                     company-auctex-symbols
+                     company-capf
+                     company-yasnippet
+                     company-files)
+                    (company-dabbrev
+                     company-abbrev))))
+    :hook
+    (org-mode . bc-org-company-add-latex-backends))
 
   ;; general config
   (setq org-cycle-emulate-tab nil
