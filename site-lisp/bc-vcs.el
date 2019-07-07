@@ -50,6 +50,7 @@
    :states '(motion normal)
    "d" 'magit-discard
    "s" 'magit-show-commit
+   "V" 'magit-revert
    "c" 'magit-commit
    "p" 'magit-push
    "f" 'magit-fetch
