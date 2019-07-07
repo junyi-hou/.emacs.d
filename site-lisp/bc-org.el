@@ -32,6 +32,9 @@
 
   :config
 
+  (use-package company-auctex
+    :hook (org-mode . company-auctex-init))
+
   ;; general config
   (setq org-cycle-emulate-tab nil
         org-export-with-toc nil
@@ -78,7 +81,8 @@
   (setq
    org-latex-listings 'minted
    org-latex-pdf-process
-   '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+   '("pdflatex -shell-escape -output-directory %o %f"
+     "biber %b"
      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
    )

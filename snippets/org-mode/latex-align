@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: align
+# key: align
+# --
+\begin{align${1:*}}
+  ${2:content...}
+\end{align$1}

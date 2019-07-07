@@ -2,8 +2,6 @@
 # name: latex-env
 # key: begin
 # --
-#+begin_src latex
 \begin{${1:env}}
 $0
-\end{align$1}
-#+end_src latex
+\end{$1}
