@@ -87,7 +87,6 @@
                                    ("" "booktabs")
                                    ("" "amsthm")
                                    ("" "amssymb")
-                                   ("" "bbm")
                                    ("" "listingsutf8")
                                    ("" "minted")
                                    ("top=1in, bottom=1in, left=1in, right=1in" "geometry")
