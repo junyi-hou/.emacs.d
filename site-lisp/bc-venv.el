@@ -1,6 +1,8 @@
 ;;; bc-venv.el --- python virtual env setting -*- lexical-binding: t; -*-
 
 ;;; Commentary:
+;;; TODO: how to correctly inherit local variable?
+;;; TODO: need to understand better `inherit-local'
 
 ;;; Code:
 
