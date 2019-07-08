@@ -190,6 +190,9 @@
 
   ;; search and replace
 
+  ;; dired
+  "d" (lambda () (interactive) (dired "./"))
+
   ;; change files
   "mr" 'bc-evil-rename-file-and-buffer
 

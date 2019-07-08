@@ -99,7 +99,8 @@
   :config
   (setq pdf-view-display-size 'fit-page)
   (evil-set-initial-state 'pdf-view-mode 'motion)
-  (add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode -1)))
+  (add-hook 'pdf-view-mode-hook (lambda ()
+                                  (pdf-view-midnight-minor-mode)))
   :defer t
   :mode ("\\.pdf\\'" . pdf-tools-install)
 

@@ -9,13 +9,13 @@
 
 (require 'bc-company)
 (require 'bc-flymake)
-;; (require 'bc-eldoc)
 
 (use-package eglot
   :init
   (setq eglot-autoreconnect t
         eglot-put-doc-in-help-buffer t)
 
+  ;; TODO: figure out a way to silent eglot
   ;; (defun bc-lsp--silent-eglot (&optional string)
   ;;   "Do not show eglot info with eldoc."
   ;;   (let ((string

@@ -66,7 +66,13 @@
    display-line-numbers-widen nil))
 
 ;; display time
-(display-time-mode)
+(use-package time
+  :defer 10
+  :init
+  (setq display-time-load-average-threshold 0.9
+        display-time-24hr-format t)
+  :config
+  (display-time-mode))
 
 ;; highlight keywords
 (use-package hl-todo

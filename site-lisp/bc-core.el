@@ -49,11 +49,11 @@
 ;; other minor modes I always want
 (show-paren-mode 1)          ; highlight matching paren
 (global-visual-line-mode 1)  ; word wrapping
+(global-subword-mode 1)      ; better camelCase support
 (use-package hideshow
   :hook
   (prog-mode . hs-hide-all)
   (prog-mode . hs-minor-mode))
-;; (require 'bc-eldoc)          ; wrapper for eldoc
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
@@ -70,7 +70,7 @@
 
 (defun bc-core--gc ()
   "Start garbage collection."
-  (setq gc-cons-threshold 400000))
+  (garbage-collect))
 
 (run-with-idle-timer 10 t #'bc-core--gc)
 
