@@ -9,6 +9,40 @@
 (require 'bc-lsp)
 
 (use-package rust-mode
+  :init
+  ;; functions
+
+  (defun bc-ide-rust-edit-cargo-toml ()
+    "Edit the cargo.toml file of the current rust project in a new window."
+    (interactive)
+    (let ((cargo
+           (concat (cdr (project-current)) "Cargo.toml")))
+      (when (file-exists-p cargo)
+        (bc-core--split-window)
+        (other-window 1)
+        (find-file cargo))))
+
+  (defun bc-ide-rust-build ()
+    "Build the current project in eshell."
+    (interactive)
+    (bc-eshell-open-here)
+    (insert "cargo build")
+    (eshell-send-input))
+
+  (defun bc-ide-rust-release ()
+    "Build the current project in eshell."
+    (interactive)
+    (bc-eshell-open-here)
+    (insert "cargo build --release")
+    (eshell-send-input))
+
+  (defun bc-ide-rust-run-in-eshell ()
+    "Run the current project in eshell."
+    (interactive)
+    (bc-eshell-open-here)
+    (insert "cargo run")
+    (eshell-send-input))
+  
   :config
   (setq rust-format-on-save t)
   :general
@@ -16,7 +50,7 @@
    :states '(normal visual)
    :prefix "SPC"
    "rr" 'bc-ide-rust-run-in-eshell
-   "rR" 'bc-ide-rust-release
+   "rB" 'bc-ide-rust-release
    "rb" 'bc-ide-rust-build
    "ro" 'bc-ide-rust-edit-cargo-toml))
 
@@ -26,41 +60,6 @@
    :states '(normal visual)
    :prefix "SPC"
    "q" 'kill-buffer-and-window))
-
-;; functions
-
-(defun bc-ide-rust-edit-cargo-toml ()
-  "Edit the cargo.toml file of the current rust project in a new window."
-  (interactive)
-  (let ((cargo
-         (concat (cdr (project-current)) "Cargo.toml")))
-    (when (file-exists-p cargo)
-      (bc-core--split-window)
-      (other-window 1)
-      (find-file cargo))))
-
-(defun bc-ide-rust-build ()
-  "Build the current project in eshell."
-  (interactive)
-  (bc-eshell-open-here)
-  (insert "cargo build")
-  (eshell-send-input))
-
-(defun bc-ide-rust-release ()
-  "Build the current project in eshell."
-  (interactive)
-  (bc-eshell-open-here)
-  (insert "cargo run --release")
-  (eshell-send-input))
-
-
-(defun bc-ide-rust-run-in-eshell ()
-  "Run the current project in eshell."
-  (interactive)
-  (bc-eshell-open-here)
-  (insert "cargo run")
-  (eshell-send-input))
-
 
 (add-hook 'rust-mode-hook #'eglot-ensure)
 (add-hook 'rust-mode-hook #'company-mode t)
