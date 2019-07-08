@@ -10,7 +10,7 @@
 
   ;; functions
 
-  (defun bc-org-complete-keywords ()
+  (defun bc-org--complete-keywords ()
     "Allow company to complete org keywords after ^#+"
     (add-hook
      'completion-at-point-functions
@@ -51,15 +51,12 @@
 
   ;; general config
   (setq org-cycle-emulate-tab nil
-        org-export-with-toc nil
-        org-todo-keywords
-        '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE")
-          (sequence "|" "CANCELED" "SOMEDAY")))
+        org-export-with-toc nil)
 
   (add-hook 'org-mode-hook #'company-mode)
   (add-hook 'org-mode-hook (lambda () (setq tab-width 2)))
   (add-hook 'org-mode-hook #'org-indent-mode)
-  (add-hook 'org-mode-hook #'bc-org-complete-keywords)
+  (add-hook 'org-mode-hook #'bc-org--complete-keywords)
 
   ;; src block settings
   (setq org-src-fontify-natively t

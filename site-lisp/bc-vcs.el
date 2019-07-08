@@ -26,13 +26,19 @@
 
   (setq magit-log-auto-more t)
 
+  ;; TODO: fix org config so it does not load python env when startup
+  ;;       so I can use the following package
   ;; (use-package magit-todos
   ;;   :init
+  ;;   (defun bc-vcs--jump-to-todo-file (&optional file)
+  ;;     "Jump to file at point in todo section"
+  ;;     (interactive)
+  ;;     )
   ;;   :commands magit-todos-mode
   ;;   :general
   ;;   (:keymaps 'magit-todos-section-map
   ;;    "j" 'evil-next-visual-line
-  ;;    "<RET>" 'magit-todos-jump-to-item))
+  ;;    "<RET>" 'bc-vcs--jump-to-todo-file))
 
   :general
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
