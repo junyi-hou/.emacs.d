@@ -185,7 +185,6 @@
 
   ;; git-related
   "gg" 'magit-status
-  "gc" 'bc-vcs-commit-current-file
   "gd" 'magit-diff-buffer-file
   "gl" 'magit-log-buffer-file
 
