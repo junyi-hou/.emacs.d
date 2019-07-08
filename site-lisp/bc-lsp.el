@@ -16,8 +16,17 @@
   (setq eglot-autoreconnect t
         eglot-put-doc-in-help-buffer t)
 
+  ;; (defun bc-lsp--silent-eglot (&optional string)
+  ;;   "Do not show eglot info with eldoc."
+  ;;   (let ((string
+  ;;          (if (string-match-p "^\\[eglot\\]" string)
+  ;;              ""
+  ;;            string)))
+  ;;     (apply 'eldoc-message string)))
+
   :config
-  ;; load my doc-viewer
+  ;; (advice-add 'eldoc-message :before #'bc-lsp--silent-eglot)
+  ;; (advice-remove 'eldoc-message #'bc-lsp--silent-eglot)
 
   (use-package eglot-posframe
     :init
