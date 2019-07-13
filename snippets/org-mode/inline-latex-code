@@ -2,4 +2,4 @@
 # name: inline-latex-code
 # key: code
 # --
-src_latex{\texttt{$1}} $0
+src_latex{\mintinline{${1:python}}{$0}}

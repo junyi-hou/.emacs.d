@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: latex-ref
+# key: ref
+# --
+src_latex{(\ref{$0})}
