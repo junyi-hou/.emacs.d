@@ -19,7 +19,6 @@
   (LaTeX-mode . company-mode)
 
   :init
-
   ;; function
   (defun bc-company-unified-tab ()
     "Use tab for both company and indentation.
@@ -73,7 +72,8 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
         company-backends '((company-capf
                             company-yasnippet
                             company-files)
-                           (company-dabbrev
+                           (company-dabbrev-code
+                            company-dabbrev
                             company-abbrev)))
 
   (use-package company-posframe
