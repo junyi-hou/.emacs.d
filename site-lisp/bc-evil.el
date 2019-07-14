@@ -135,6 +135,15 @@
     (interactive)
     (bc-evil--search-visually-selected-text nil))
 
+  (defun bc-evil-normal-state-if-not-motion ()
+    "Switch to evil normal state if the current state is not motion state."
+    (interactive)
+    (unless (evil-motion-state-p)
+      (evil-normal-state)))
+
+  ;; bind esc to normal state in all cases
+  (global-set-key (kbd "<escape>") 'bc-evil-normal-state-if-not-motion)
+
   :general
   (:keymaps '(motion normal visual)
    "j" 'evil-next-visual-line
@@ -182,16 +191,19 @@
   "oo" 'projectile-find-file
   "os" 'bc-eshell-open-here
   "op" 'projectile-switch-project
+  ;; dired
+  "od" (lambda () (interactive) (dired "./"))
 
   ;; git-related
-  "gg" 'magit-status
+  "gg" (lambda () (interactive)
+         (unless magit-todos-mode
+           (magit-todos-mode))
+         (magit-status))
   "gd" 'magit-diff-buffer-file
   "gl" 'magit-log-buffer-file
 
   ;; search and replace
 
-  ;; dired
-  "d" (lambda () (interactive) (dired "./"))
 
   ;; change files
   "mr" 'bc-evil-rename-file-and-buffer
