@@ -26,6 +26,7 @@
 (require 'bc-ide-python)
 (require 'bc-ide-rust)
 (require 'bc-ide-latex)
+(require 'bc-ide-matlab)
 
 
 ;;; init.el ends here
