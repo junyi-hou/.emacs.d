@@ -45,12 +45,15 @@
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
 (tooltip-mode -1)
+(blink-cursor-mode -1)
 
 ;; other minor modes I always want
 (show-paren-mode 1)          ; highlight matching paren
 (global-visual-line-mode 1)  ; word wrapping
 (global-subword-mode 1)      ; better camelCase support
 (use-package hideshow
+  :init
+  (advice-add #'hs-show-block :before #'beginning-of-visual-line)
   :hook
   (prog-mode . hs-hide-all)
   (prog-mode . hs-minor-mode))
