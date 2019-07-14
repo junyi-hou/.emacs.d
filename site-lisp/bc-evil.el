@@ -43,9 +43,6 @@
   (setq evil-normal-state-modes (append evil-emacs-state-modes
                                         evil-normal-state-modes))
 
-  ;; bind esc to normal state in all cases
-  (global-set-key (kbd "<escape>") 'evil-normal-state)
-
   ;; functions:
   (defun bc-evil-visual-tab ()
     "Tab binding in visual mode."
