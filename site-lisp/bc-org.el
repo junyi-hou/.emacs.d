@@ -39,22 +39,10 @@
                     (shell-command-to-string "echo -n $(date +%H:%M)")
                     ">")))
 
-  (defun bc-org--enable-jupyter-interpreter ()
-    "Add jupyter family to `org-babel-load-languages'."
-    (unless bc-venv-current-venv
-      (bc-venv--enable-venv)
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((emacs-lisp . t)
-         (latex . t)
-         (shell . t)
-         (python . t)
-         (jupyter . t)))))
-
   :config
 
   ;; enable latex aucotomplete
-  (use-package company-auctex
+  ;; (use-package company-auctex
     :init
     (defun bc-org--company-add-latex-backends ()
       (let* ((backends company-backends)
@@ -86,7 +74,9 @@
    'org-babel-load-languages
    '((emacs-lisp . t)
      (latex . t)
-     (shell . t)))
+     (shell . t)
+     (python . t)
+     (jupyter . t)))
 
   ;; src block settings
   (setq org-src-fontify-natively t
