@@ -5,11 +5,11 @@
 ;;; Code:
 
 ;; theme
-(use-package doom-themes
+(use-package color-theme-sanityinc-tomorrow
   :init
   (setq-default custom-safe-themes t)
   :config
-  (load-theme 'doom-one t))
+  (color-theme-sanityinc-tomorrow-night))
 
 ;; mode line
 (use-package telephone-line
