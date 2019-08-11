@@ -7,7 +7,7 @@
 ;; theme
 (use-package color-theme-sanityinc-tomorrow
   :init
-  (setq-default custom-safe-themes t)
+  (setq custom-safe-themes t)
   :config
   (color-theme-sanityinc-tomorrow-night))
 
@@ -74,8 +74,7 @@
   (display-time-mode))
 
 ;; display battery level
-(use-package display-battery-mode
-  :ensure nil
+(use-package battery
   :init
   (setq battery-mode-line-limit 30)
   :config
@@ -102,10 +101,17 @@
  'default nil
  :family "monospace"
  :height 130
- :weight 'normal
+ :weight 'thin
  :width 'normal)
 
-(add-to-list 'default-frame-alist '(alpha . (100 . 85)))  ; transparency
+;; TODO: finish these functions
+(defun bc-fontsize-up (&optional size)
+  "Increase the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
+  (interactive))
+
+(defun bc-fontsize-down (&optional size)
+  "Decrease the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
+  (interactive))
 
 (provide 'bc-theme)
 ;;; bc-theme.el ends here
