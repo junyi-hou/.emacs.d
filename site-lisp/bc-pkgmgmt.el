@@ -12,6 +12,7 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 
 (setq package-enable-at-startup nil)
 (package-initialize)
