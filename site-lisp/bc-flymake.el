@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package flymake
+  :defer t
   :config
   ;; get rid of the annoying underlines
   (dolist (face '(flymake-note flymake-warning flymake-error))

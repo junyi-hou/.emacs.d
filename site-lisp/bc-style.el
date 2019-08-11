@@ -5,7 +5,8 @@
 ;;; Code:
 
 ;; spell checker
-(use-package flyspell-correct-ivy)
+(use-package flyspell-correct-ivy
+  :after '(ivy flyspell-correct))
 
 (use-package flyspell-correct
   :commands flyspell-correct-wrapper
@@ -18,6 +19,7 @@
     "Advising `flyspell-correct-wrapper' to go to previous cursor position."
     (interactive "p")
     (save-excursion
+      (forward-char)
       (flyspell-correct-wrapper arg)))
 
   :hook

@@ -11,6 +11,7 @@
 (require 'bc-flymake)
 
 (use-package eglot
+  :defer t
   :init
   (setq eglot-autoreconnect t
         eglot-put-doc-in-help-buffer t)
@@ -29,6 +30,7 @@
   ;; (advice-remove 'eldoc-message #'bc-lsp--silent-eglot)
 
   (use-package eglot-posframe
+    :defer t
     :init
     ;; functions
 

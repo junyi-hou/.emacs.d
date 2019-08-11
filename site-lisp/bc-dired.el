@@ -6,6 +6,7 @@
 
 (use-package dired
   :ensure nil
+  :defer t
   :init
   ;; functions
   
