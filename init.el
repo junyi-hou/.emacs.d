@@ -15,6 +15,7 @@
 
 (require 'bc-core)
 (require 'bc-theme)
+;; (require 'bc-exwm)
 
 (require 'bc-evil)
 (require 'bc-ivy)
@@ -26,6 +27,7 @@
 (require 'bc-dired)
 
 (require 'bc-ide-lisp)
+;; (require 'bc-ide-gentoo)
 ;; (require 'bc-ide-python)
 ;; (require 'bc-ide-rust)
 ;; (require 'bc-ide-latex)
