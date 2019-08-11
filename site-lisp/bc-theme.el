@@ -67,12 +67,19 @@
 
 ;; display time
 (use-package time
-  :defer 10
   :init
   (setq display-time-load-average-threshold 0.9
         display-time-24hr-format t)
   :config
   (display-time-mode))
+
+;; display battery level
+(use-package display-battery-mode
+  :ensure nil
+  :init
+  (setq battery-mode-line-limit 30)
+  :config
+  (display-battery-mode))
 
 ;; highlight keywords
 (use-package hl-todo
