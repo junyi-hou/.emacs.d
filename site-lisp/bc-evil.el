@@ -225,7 +225,7 @@
    "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
    "C-y" (lambda () (interactive) (evil-scroll-line-up 5))
 
-   "M-`" nil)
+   (kbd "M-`") nil)
 
   (:keymaps 'visual
    "*" 'bc-evil-search-visually-forward
