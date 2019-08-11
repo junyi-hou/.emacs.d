@@ -4,6 +4,9 @@
 
 ;;; Code:
 
+;; temp fix bug 34341
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 ;; set load path
 (add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory))
 
@@ -15,18 +18,18 @@
 
 (require 'bc-evil)
 (require 'bc-ivy)
-(require 'bc-project)
+;; (require 'bc-project)
 (require 'bc-vcs)
 (require 'bc-eshell)
 (require 'bc-style)
-(require 'bc-org)
+;; (require 'bc-org)
 (require 'bc-dired)
 
 (require 'bc-ide-lisp)
-(require 'bc-ide-python)
-(require 'bc-ide-rust)
-(require 'bc-ide-latex)
-(require 'bc-ide-matlab)
+;; (require 'bc-ide-python)
+;; (require 'bc-ide-rust)
+;; (require 'bc-ide-latex)
+;; (require 'bc-ide-matlab)
 
 
 ;;; init.el ends here
