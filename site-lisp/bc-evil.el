@@ -267,6 +267,7 @@
              (eq last-command 'newline))
         (progn (kill-line 0)
                (insert (match-string 1 line))
+               ;; FIXME: bug here
                (pop kill-ring))
       (apply newline-fun args)
       (insert newline-string))))
