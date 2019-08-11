@@ -18,7 +18,7 @@
 
 (require 'bc-evil)
 (require 'bc-ivy)
-;; (require 'bc-project)
+(require 'bc-project)
 (require 'bc-vcs)
 (require 'bc-eshell)
 (require 'bc-style)
