@@ -7,7 +7,7 @@
 (use-package projectile
   :init
   (setq projectile-project-search-path
-        '("~/Documents/Research/" "~/Documents/projects/")
+        '("~/projects/")
         projectile-globally-ignored-directories
         '(".mypy_cache" "__pycache__" ".git" "log"))
   :config
