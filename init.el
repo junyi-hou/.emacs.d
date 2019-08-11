@@ -22,7 +22,7 @@
 (require 'bc-vcs)
 (require 'bc-eshell)
 (require 'bc-style)
-;; (require 'bc-org)
+(require 'bc-org)
 (require 'bc-dired)
 
 (require 'bc-ide-lisp)

@@ -117,7 +117,7 @@
      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
-:general
+  :general
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
@@ -129,12 +129,7 @@
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
    "<up>" 'org-previous-visible-heading
-   "<down>" 'org-next-visible-heading)
-
-  (:keymaps 'org-mode-map
-   :states '(insert normal visual motion)
-   "C-d" 'org-next-visible-heading
-   "C-u" 'org-previous-visible-heading))
+   "<down>" 'org-next-visible-heading))
 
 
 (provide 'bc-org)
