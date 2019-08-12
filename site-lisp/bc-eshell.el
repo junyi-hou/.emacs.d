@@ -103,11 +103,10 @@
   :ensure nil
   :after eshell
   :init
-  (setq password-cache t
-        password-cache-expiry 360)
-  :config
   (require 'esh-module)
   (require 'em-tramp)
+  (setq password-cache t
+        password-cache-expiry 360)
   (add-to-list 'eshell-modules-list #'eshell-tramp))
 
 
