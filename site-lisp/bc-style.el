@@ -6,7 +6,7 @@
 
 ;; spell checker
 (use-package flyspell-correct-ivy
-  :after '(ivy flyspell-correct))
+  :after flyspell-correct)
 
 (use-package flyspell-correct
   :commands flyspell-correct-wrapper
