@@ -67,15 +67,15 @@
 
 (setq-default backward-delete-char-untabify-method 'hungry)  ; bs kill whole tab
 
-;; gc only when idling for longer than 5 seconds
-(setq-default large-file-warning-threshold nil
-              gc-cons-threshold most-positive-fixnum)
+;; use doom-emacs gc
+(setq gc-cons-threshold 402653184
+    gc-cons-percentage 0.6
+    file-name-handler-alist nil)
 
-(defun bc-core--gc ()
-  "Start garbage collection."
-  (garbage-collect))
-
-(run-with-idle-timer 10 t #'bc-core--gc)
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq gc-cons-threshold 16777216
+                  gc-cons-percentage 0.1)))
 
 ;; direct backup files to /tmp
 (setq-default backup-directory-alist
