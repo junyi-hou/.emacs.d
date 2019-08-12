@@ -7,7 +7,6 @@
 ;; load pkgs
 
 (require 'bc-ivy)
-(require 'bc-eshell)
 
 (use-package jupyter
   :defer t

@@ -66,24 +66,7 @@
      :prefix "SPC"
      "q" 'kill-buffer-and-window))
 
-  (add-hook 'eshell-mode-hook #'bc-eshell--keymaps)
-  
-
-  :config
-  (use-package company-shell
-    :commands (company-shell company-env)
-
-    :init
-    (add-hook 'eshell-mode-hook
-            (defun bc-eshell--company ()
-              (setq-local company-backend
-                          '((company-shell
-                             company-env
-                             company-flies
-                             company-yasnippet)
-                            (company-dabbrev
-                             company-abbrev)))
-              (company-mode)))))
+  (add-hook 'eshell-mode-hook #'bc-eshell--keymaps))
 
 (use-package xterm-color
   :after eshell
@@ -100,6 +83,32 @@
   (setq eshell-output-filter-functions
         (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
 
+(use-package company-shell
+    :commands (company-shell company-env)
+    :init
+    (add-hook 'eshell-mode-hook
+            (defun bc-eshell--company ()
+              (setq-local company-backend
+                          '((company-shell
+                             company-env
+                             company-flies
+                             company-yasnippet)
+                            (company-dabbrev
+                             company-abbrev)))
+              (company-mode))))
+
+
+(use-package esh-module
+  ;; foo package, just to make things tidy
+  :ensure nil
+  :after eshell
+  :init
+  (setq password-cache t
+        password-cache-expiry 360)
+  :config
+  (require 'esh-module)
+  (require 'em-tramp)
+  (add-to-list 'eshell-modules-list #'eshell-tramp))
 
 
 (provide 'bc-eshell)

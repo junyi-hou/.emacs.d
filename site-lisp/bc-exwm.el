@@ -4,7 +4,8 @@
 
 ;;; Code:
 
-;; TODO: finish this
+(use-package sudo-edit
+  :defer t)
 
 (provide 'bc-exwm)
 ;;; bc-exwm.el ends here
