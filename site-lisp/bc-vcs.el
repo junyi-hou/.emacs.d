@@ -5,8 +5,8 @@
 ;;; Code:
 
 (use-package magit
+  :defer t
   :init
-
   ;; functions
   
   (defun bc-vcs-get-file-at-point (&optional file)
@@ -31,20 +31,21 @@
 
   (setq magit-log-auto-more t)
 
-  (use-package magit-todos
-    :init
-    (setq magit-todos-insert-at 'top)
-    :commands magit-todos-mode
-    :general
-    (:keymaps 'magit-todos-section-map
-     "j" 'evil-next-visual-line))
-
   :general
+  (:keymaps '(motion normal visual)
+   :prefix "SPC"
+   "gg" (lambda () (interactive)
+          (unless magit-todos-mode
+            (magit-todos-mode))
+          (magit-status))
+   "gd" 'magit-diff-buffer-file
+   "gl" 'magit-log-buffer-file)
+
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal)
    "SPC" nil
-   "C-d" 'magit-section-forward-sibling
-   "C-u" 'magit-section-backward-sibling
+   ;; "C-d" 'magit-section-forward-sibling
+   ;; "C-u" 'magit-section-backward-sibling
    "zo" 'magit-section-show
    "zc" 'magit-section-hide
    "?" 'magit-dispatch
@@ -77,6 +78,14 @@
    "q" 'kill-buffer-and-window
    "r" (lambda () (interactive) (magit-refresh-buffer))))
 
+(use-package magit-todos
+  :after magit
+  :init
+  (setq magit-todos-insert-at 'top)
+  :commands magit-todos-mode
+  :general
+  (:keymaps 'magit-todos-section-map
+            "j" 'evil-next-visual-line))
 
 (provide 'bc-vcs)
 ;;; bc-vcs.el ends here

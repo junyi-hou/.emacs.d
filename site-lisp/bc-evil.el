@@ -155,12 +155,12 @@
 
   (:keymaps '(motion normal visual)
   :prefix "SPC"
-            
+
   ;; execute
   "ee" 'execute-extended-command
   "el" 'eval-last-sexp
   "ei" 'ivy-resume
-            
+
   ;; helps
   "hf" 'describe-function
   "hk" 'describe-key
@@ -183,31 +183,19 @@
   "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
 
   ;; open stuffs
-  "of" 'find-file
+  "oF" 'counsel-find-file
+  "of" 'projectile-find-file
   "ob" 'ivy-switch-buffer
-  "oo" 'projectile-find-file
   "os" 'bc-eshell-open-here
   "op" 'projectile-switch-project
   ;; dired
   "od" (lambda () (interactive) (dired "./"))
 
-  ;; git-related
-  "gg" (lambda () (interactive)
-         (unless magit-todos-mode
-           (magit-todos-mode))
-         (magit-status))
-  "gd" 'magit-diff-buffer-file
-  "gl" 'magit-log-buffer-file
-
   ;; search and replace
 
 
-  ;; change files
-  "mr" 'bc-evil-rename-file-and-buffer
-
   ;; other uses
-  "t" 'evilnc-comment-or-uncomment-lines
-  "T" 'counsel-load-theme)
+  "t" 'evilnc-comment-or-uncomment-lines)
 
   ;; combination key that should be active in all states
   (:keymaps '(motion normal visual emacs insert)
@@ -223,9 +211,7 @@
    "M-h" 'left-char
 
    "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
-   "C-y" (lambda () (interactive) (evil-scroll-line-up 5))
-
-   (kbd "M-`") nil)
+   "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
 
   (:keymaps 'visual
    "*" 'bc-evil-search-visually-forward
