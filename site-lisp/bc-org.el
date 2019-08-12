@@ -55,8 +55,8 @@
   ;;                         company-auctex-symbols)))
   ;;       (setq-local company-backends (append (list `(,@bes ,@car)) cdr)))))
 
-    :hook
-    (org-mode . bc-org--company-add-latex-backends)
+    ;; :hook
+    ;; (org-mode . bc-org--company-add-latex-backends)
 
   ;; general config
   (setq org-cycle-emulate-tab nil
