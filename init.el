@@ -14,14 +14,14 @@
 (require 'bc-pkgmgmt)
 
 (require 'bc-core)
+(require 'bc-exwm)
 (require 'bc-theme)
-;; (require 'bc-exwm)
 
 (require 'bc-evil)
-(require 'bc-ivy)
-(require 'bc-project)
 (require 'bc-vcs)
+(require 'bc-ivy)
 (require 'bc-eshell)
+(require 'bc-project)
 (require 'bc-style)
 (require 'bc-org)
 (require 'bc-dired)
