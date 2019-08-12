@@ -12,16 +12,25 @@
     (set-face-attribute face nil
      :underline nil))
 
-  (setq flymake-start-on-newline nil)
+  (setq flymake-start-on-newline nil))
 
-  ;; flymake frontend
-  (use-package flymake-posframe
-    :after flymake
-    :quelpa (flymake-posframe
-             :repo "junyi-hou/flymake-posframe"
-             :fetcher github)
-    :hook (flymake-mode . flymake-posframe-mode)))
-
+;; flymake frontend
+(use-package flymake-posframe
+  :after flymake
+  :quelpa (flymake-posframe
+           :repo "junyi-hou/flymake-posframe"
+           :fetcher github)
+  :hook (flymake-mode . flymake-posframe-mode)
+  :init
+  (setq flymake-posframe-prefix
+        (let ((hash (make-hash-table :test 'equal)))
+          (puthash ':note "." hash)
+          (puthash ':warning "?" hash)
+          (puthash ':error "!" hash)
+          (puthash 'eglot-note "." hash)
+          (puthash 'eglot-warning "?" hash)
+          (puthash 'eglpt-error "!" hash)
+          hash)))
 
 (provide 'bc-flymake)
 ;;; bc-flymake.el ends here
