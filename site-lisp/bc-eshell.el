@@ -83,19 +83,22 @@
                              company-yasnippet)
                             (company-dabbrev
                              company-abbrev)))
-              (company-mode))))
+              (company-mode)))))
 
-  )
+(use-package xterm-color
+  :after eshell
 
-;; settings
-;; a bug in eshell mode makes direct defining keymap impossible, need to run
-;; hook
+  :init
+  (defun bc-eshell--set-term-envvar ()
+    "Set TERM to term-256color."
+    (setenv "TERM" "xterm-256color"))
 
-;; alias
-;; (eshell/alias "ff" "bc-eshell-open-file-in-parent-buffer $1")
-;; (eshell/alias "cls" "bc-eshell-clear-buffer")
-;; (eshell/alias "l" "ls -AlohG --color=always")
-;; (eshell/alias "cd" "bc-eshell-cd $1")
+  :config
+  (add-hook 'eshell-mode-hook #'bc-eshell--set-term-envvar)
+  (add-hook 'eshell-before-prompt-hook (lambda () (setq xterm-color-preserve-properties t)))
+  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+  (setq eshell-output-filter-functions
+        (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
 
 
 
