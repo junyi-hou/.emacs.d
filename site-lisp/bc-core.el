@@ -4,9 +4,6 @@
 
 ;;; Code:
 
-;; enable debug mode
-;; (toggle-debug-on-error)
-
 ;; put custom files in a separate location
 (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror)
@@ -69,8 +66,7 @@
 
 ;; use doom-emacs gc
 (setq gc-cons-threshold 402653184
-    gc-cons-percentage 0.6
-    file-name-handler-alist nil)
+    gc-cons-percentage 0.6)
 
 (add-hook 'after-init-hook
           (lambda ()
@@ -86,18 +82,6 @@
 ;; When something changes a file, automatically refresh the
 ;; buffer containing that file so they can't get out of sync.
 (global-auto-revert-mode 1)
-
-;; define my groups, code name baby-carrots
-(defgroup baby-carrots nil
-  "My settings"
-  :prefix "bc-"
-  :group 'emacs)
-
-(defcustom bc-default-remote
-  "/ssh:remote:/"
-  "The remote machine."
-  :type 'string
-  :group 'baby-carrots)
 
 (provide 'bc-core)
 ;;; bc-core.el ends here
