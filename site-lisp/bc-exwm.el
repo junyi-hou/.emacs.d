@@ -55,14 +55,18 @@
                                               (buffer-string))))
            (direction (if up "+" "-"))
            (new-level (if up
-                          (+ current-level (* 0.05 current-level))
-                        (- current-level (* 0.05 current-level)))))
+                          (+ current-level 25)
+                        (- current-level 25)))
+           (new-level (if (> 0 new-level) 0 new-level)))
       (let ((inhibit-message t))
         (write-region
          (format "%d" new-level)
          nil
          (concat "/sudo:root@localhost:" bl-file)))
       (message (concat "brightness " direction))))
+
+  (require 'exwm-config)
+  (exwm-config-default)
 
   :general
 
