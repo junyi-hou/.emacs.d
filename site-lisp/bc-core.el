@@ -9,7 +9,11 @@
 (load custom-file 'noerror)
 
 ;; turn off bell
-(setq ring-bell-function 'ignore)
+(setq-default visible-bell t
+              ring-bell-function 'ignore)
+
+;; mini window should be mini
+(setq-default max-mini-window-height 1)
 
 ;; tramp uses ssh
 (setq-default tramp-default-method "ssh")
