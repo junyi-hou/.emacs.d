@@ -74,11 +74,11 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
                             company-files)
                            (company-dabbrev-code
                             company-dabbrev
-                            company-abbrev)))
+                            company-abbrev))))
 
-  (use-package company-posframe
+(use-package company-posframe
     :after company
-    :hook (company-mode . company-posframe-mode)))
+    :hook (company-mode . company-posframe-mode))
 
 (provide 'bc-company)
 ;;; bc-company.el ends here

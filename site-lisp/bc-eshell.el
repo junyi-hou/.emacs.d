@@ -66,7 +66,17 @@
      :prefix "SPC"
      "q" 'kill-buffer-and-window))
 
-  (add-hook 'eshell-mode-hook #'bc-eshell--keymaps))
+  (add-hook 'eshell-mode-hook #'bc-eshell--keymaps)
+
+  :config
+
+  ;; setup eshell sudo support
+  (require 'em-tramp)
+  (setq password-cache t
+        password-cache-expiry 3600)
+  (add-to-list 'eshell-modules-list #'eshell-tramp))
+
+
 
 (use-package xterm-color
   :after eshell
@@ -84,9 +94,9 @@
         (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
 
 (use-package company-shell
-    :commands (company-shell company-env)
-    :init
-    (add-hook 'eshell-mode-hook
+  :commands (company-shell company-env)
+  :init
+  (add-hook 'eshell-mode-hook
             (defun bc-eshell--company ()
               (setq-local company-backend
                           '((company-shell
@@ -97,18 +107,11 @@
                              company-abbrev)))
               (company-mode))))
 
-
-(use-package esh-module
-  ;; foo package, just to make things tidy
-  :ensure nil
-  :after eshell
-  :init
-  (require 'esh-module)
-  (require 'em-tramp)
-  (setq password-cache t
-        password-cache-expiry 360)
-  (add-to-list 'eshell-modules-list #'eshell-tramp))
-
+;; sudo edit files
+(use-package sudo-edit
+  :defer t
+  :config
+  (sudo-edit-indicator-mode))
 
 (provide 'bc-eshell)
 ;;; bc-eshell.el ends here

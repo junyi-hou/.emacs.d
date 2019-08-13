@@ -8,6 +8,9 @@
 (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror)
 
+;; turn off bell
+(setq ring-bell-function 'ignore)
+
 ;; tramp uses ssh
 (setq-default tramp-default-method "ssh")
 

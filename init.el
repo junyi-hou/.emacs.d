@@ -18,9 +18,9 @@
 (require 'bc-theme)
 
 (require 'bc-evil)
+(require 'bc-eshell)
 (require 'bc-vcs)
 (require 'bc-ivy)
-(require 'bc-eshell)
 (require 'bc-project)
 (require 'bc-style)
 (require 'bc-org)
