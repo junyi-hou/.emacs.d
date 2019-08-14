@@ -57,7 +57,10 @@
 (global-subword-mode 1)      ; better camelCase support
 (use-package hideshow
   :init
+  ;; don't make me move to the beginning of line before expanding the block
   (advice-add #'hs-show-block :before #'beginning-of-visual-line)
+  ;; don't fold comments
+  (setq hs-hide-comments-when-hiding-all nil)
   :hook
   (prog-mode . hs-hide-all)
   (prog-mode . hs-minor-mode))
