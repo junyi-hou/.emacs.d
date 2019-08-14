@@ -24,12 +24,12 @@
   :init
   (setq flymake-posframe-prefix
         (let ((hash (make-hash-table :test 'equal)))
-          (puthash ':note "." hash)
-          (puthash ':warning "?" hash)
-          (puthash ':error "!" hash)
-          (puthash 'eglot-note "." hash)
-          (puthash 'eglot-warning "?" hash)
-          (puthash 'eglpt-error "!" hash)
+          (puthash ':note "" hash)
+          (puthash ':warning "" hash)
+          (puthash ':error "" hash)
+          (puthash 'eglot-note "" hash)
+          (puthash 'eglot-warning "" hash)
+          (puthash 'eglpt-error "" hash)
           hash)))
 
 (provide 'bc-flymake)
