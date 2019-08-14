@@ -8,6 +8,9 @@
   :ensure nil
   :defer t
   :init
+
+  (setq dired-listing-switches "-alh")
+
   ;; functions
   
   (defun bc-dired--mark-one (cmd)
@@ -64,7 +67,7 @@
    "K" (lambda () (interactive) (dired-previous-line 3))
    ">" 'dired-next-subdir
    "<" 'dired-prev-subdir
-   "b" 'dired-up-directory
+   "<backspace>" 'dired-up-directory
 
    ;; files
    "<return>" 'dired-find-file
@@ -89,6 +92,7 @@
    ;; marks
    "m" 'dired-mark
    "u" 'dired-unmark
+   "U" 'dired-unmark-all-marks
    "C" 'dired-do-copy
    "D" 'dired-do-delete
    "R" 'dired-do-rename
@@ -97,9 +101,12 @@
    "O" 'dired-do-chown
    "Z" 'dired-compress
    "M-j" 'dired-next-marked-file
-   "M-k" 'dired-prev-marked-file
+   "M-k" 'dired-prev-marked-file)
 
-   "v" 'revert-buffer))
+  (:keymaps 'dired-mode-map
+   :states 'motion
+   :prefix "SPC"
+   "r" 'revert-buffer))
 
 (provide 'bc-dired)
 ;;; bc-dired.el ends here
