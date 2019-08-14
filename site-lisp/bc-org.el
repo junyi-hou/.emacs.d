@@ -41,23 +41,6 @@
 
   :config
 
-  ;; enable latex aucotomplete
-  ;; (use-package company-auctex
-  ;;   :init
-  ;;   (defun bc-org--company-add-latex-backends ()
-  ;;     (let* ((backends company-backends)
-  ;;            (car (car backends))
-  ;;            (cdr (cdr backends))
-  ;;            (bes '(company-auctex-labels
-  ;;                         company-auctex-bibs
-  ;;                         company-auctex-environments
-  ;;                         company-auctex-macros
-  ;;                         company-auctex-symbols)))
-  ;;       (setq-local company-backends (append (list `(,@bes ,@car)) cdr)))))
-
-    ;; :hook
-    ;; (org-mode . bc-org--company-add-latex-backends)
-
   ;; general config
   (setq org-cycle-emulate-tab nil
         org-export-with-toc nil

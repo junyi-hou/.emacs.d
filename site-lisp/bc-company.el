@@ -19,7 +19,9 @@
   (LaTeX-mode . company-mode)
 
   :init
+
   ;; function
+
   (defun bc-company-unified-tab ()
     "Use tab for both company and indentation.
 
@@ -47,6 +49,13 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
         (company-cancel)
         (save-excursion
           (indent-region (line-beginning-position) (line-end-position))))))
+
+  (defun bc-company-add-backends (new-backends)
+    "add NEW-BACKENDS to the first element of `company-backends'."
+    (let* ((backends company-backends)
+           (car (car backends))
+           (cdr (cdr backends)))
+      (setq-local company-backends (append (list `(,@new-backends ,@car)) cdr))))
 
   :commands company-mode
   :general
