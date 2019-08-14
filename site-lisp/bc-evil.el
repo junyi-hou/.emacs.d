@@ -207,6 +207,9 @@
    "C-u" 'evil-scroll-up
    "C-d" 'evil-scroll-down
 
+   "C-+" 'bc-fontsize-up
+   "C--" 'bc-fontsize-down
+
    "M-l" 'right-char
    "M-h" 'left-char
 

@@ -104,14 +104,23 @@
  :weight 'thin
  :width 'normal)
 
-;; TODO: finish these functions
 (defun bc-fontsize-up (&optional size)
   "Increase the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
-  (interactive))
+  (interactive)
+  (let* ((current-size (plist-get (custom-face-attributes-get 'default nil) :height))
+         (new-size (+ (or size 5) current-size)))
+    (set-face-attribute
+     'default (selected-frame)
+     :height new-size)))
 
 (defun bc-fontsize-down (&optional size)
   "Decrease the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
-  (interactive))
+  (interactive)
+  (let* ((current-size (plist-get (custom-face-attributes-get 'default nil) :height))
+         (new-size (- current-size (or size 5))))
+    (set-face-attribute
+     'default (selected-frame)
+     :height new-size)))
 
 (provide 'bc-theme)
 ;;; bc-theme.el ends here
