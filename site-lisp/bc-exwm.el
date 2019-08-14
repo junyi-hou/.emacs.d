@@ -8,7 +8,13 @@
 
 (use-package exwm
   :init
-  (setq exwm-workspace-number 2)
+
+  ;; rename buffer to window title
+  (defun bc-exwm-rename-buffer-to-title ()
+    (exwm-workspace-rename-buffer exwm-title))
+  (add-hook 'exwm-update-title-hook 'ambrevar/exwm-rename-buffer-to-title)
+  (add-hook 'exwm-floating-setup-hook 'exwm-layout-hide-mode-line)
+  (add-hook 'exwm-floating-exit-hook 'exwm-layout-show-mode-line)
 
   ;; functions
 
@@ -32,6 +38,7 @@
   
   (defun bc-exwm-launch-x-with-ivy ()
     "Use `ivy-mode' as interface for launching x applications in exwm."
+    ;; TODO: filter out some bins
     (interactive)
     (ivy-read "run: "
     (bc-exwm--get-all-bins)
@@ -53,6 +60,7 @@
            (current-level (string-to-number (with-temp-buffer
                                               (insert-file-contents bl-file)
                                               (buffer-string))))
+           ;;; HACK: why isn't (direction (if up '+ '-)) working???
            (direction (if up "+" "-"))
            (new-level (if up
                           (+ current-level 25)
@@ -70,8 +78,10 @@
 
   :general
 
-  (:keymaps '(motion normal visual)
-  "s-d" #'bc-exwm-launch-x-with-ivy
+  (:keymaps '(motion normal visual insert emacs)
+  "s-d" 'bc-exwm-launch-x-with-ivy
+  "s-r" 'exwm-reset
+  "s-x" 'exwm-input-toggle-keyboard
   "<XF86AudioLowerVolume>" (lambda () (interactive)
                              (bc-exwm-amixer-adjust-volume))
   "<XF86AudioRaiseVolume>" (lambda () (interactive)
