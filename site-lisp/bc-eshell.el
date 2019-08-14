@@ -74,9 +74,12 @@
   (require 'em-tramp)
   (setq password-cache t
         password-cache-expiry 3600)
-  (add-to-list 'eshell-modules-list #'eshell-tramp))
+  (add-to-list 'eshell-modules-list #'eshell-tramp)
 
-
+  ;; support tui
+  (with-eval-after-load 'em-term
+    (dolist (p '("alsamixer" "htop" "mutt"))
+      (add-to-list 'eshell-visual-commands p))))
 
 (use-package xterm-color
   :after eshell
