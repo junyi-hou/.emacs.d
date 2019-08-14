@@ -3,3 +3,4 @@ alias cls bc-eshell-clear-buffer
 alias ff find-file $1
 alias up eshell-up $1
 alias sudo eshell/sudo $*
+alias su eshell/su $*
