@@ -11,7 +11,9 @@
 (require 'bc-flymake)
 
 (use-package eglot
-  :defer t
+  :hook
+  (python-mode . eglot-ensure)
+
   :init
   (setq eglot-autoreconnect t
         eglot-put-doc-in-help-buffer t)

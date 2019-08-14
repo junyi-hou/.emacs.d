@@ -3,16 +3,13 @@
 ;;; Commentary:
 
 ;; This module adds on top of the default python.el:
-;; use `jupyter' for REPL and `lsp-mode' for all language server stuffs
+;; use `jupyter' for REPL and `eglot' for all language server stuffs
 
 ;;; Code:
 
 ;;load pkgs
-(require 'bc-company)
-(require 'bc-flymake)
 (require 'bc-lsp)
 (require 'bc-jupyter)
-(require 'bc-venv)
 
 ;; functions
 
@@ -69,12 +66,6 @@
 
 (defun bc-python--hook ()
   "Initiate venv, autocomplete and linters."
-
-   ;; load venv
-   (bc-venv--enable-venv (bc-venv--get-python-version))
-
-   (eglot-ensure)
-   (company-mode)
 
    ;; hook to reformat buffer
    (add-hook 'before-save-hook 'eglot-format nil t)

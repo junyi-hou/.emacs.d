@@ -5,7 +5,12 @@
 ;;; Code:
 
 (use-package flymake
-  :defer t
+  :hook
+  (LaTeX-mode . flymake-mode)
+  (python-mode . flymake-mode)
+  (emacs-lisp-mode . flymake-mode)
+  (lisp-interaction-mode . flymake-mode)
+
   :config
   ;; get rid of the annoying underlines
   (dolist (face '(flymake-note flymake-warning flymake-error))

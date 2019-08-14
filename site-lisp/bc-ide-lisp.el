@@ -4,15 +4,8 @@
 
 ;;; Code:
 
-(require 'bc-company)
-(require 'bc-flymake)
-
-(eval-after-load 'dash '(dash-enable-font-lock)) ; syntax highlight for dash
-
 (add-hook 'emacs-lisp-mode-hook (lambda ()
-                                  (setq tab-width 2)
-                                  (company-mode 1)
-                                  (flymake-mode 1)))
+                                  (setq-local tab-width 2)))
 
 (provide 'bc-ide-lisp)
 ;;; bc-ide-lisp.el ends here

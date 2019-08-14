@@ -17,6 +17,10 @@
 (use-package company
   :hook
   (LaTeX-mode . company-mode)
+  (python-mode . company-mode)
+  (emacs-lisp-mode . company-mode)
+  (lisp-interaction-mode . company-mode)
+  (jupyter-repl-mode . company-mode)
 
   :init
 
