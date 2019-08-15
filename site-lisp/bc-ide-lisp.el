@@ -4,8 +4,7 @@
 
 ;;; Code:
 
-(add-hook 'emacs-lisp-mode-hook (lambda ()
-                                  (setq-local tab-width 2)))
+(add-hook 'emacs-lisp-mode-hook (lambda () (setq-local tab-width 2)))
 
 (provide 'bc-ide-lisp)
 ;;; bc-ide-lisp.el ends here
