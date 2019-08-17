@@ -49,14 +49,6 @@
                                         evil-normal-state-modes))
 
   ;; functions:
-  (defun bc-evil-visual-tab ()
-    "Tab binding in visual mode."
-    (interactive)
-    (when (evil-visual-state-p)
-      (if (eq evil-visual-selection 'line)
-          (indent-region (region-beginning) (region-end))
-        (er/expand-region 1))))
-
   (defun bc-evil--is-user-buffer ()
     "Determine whether the current buffer is a user-buffer by looking at the first char.  Return t if current buffer is not a dired tree or is a user-buffer (include *scratch* buffer)."
     (let ((name (buffer-name)))
@@ -244,9 +236,7 @@
   "os" 'bc-eshell-open-here
   "op" 'projectile-switch-project
   ;; dired
-  "od" (lambda () (interactive) (dired "./"))
-
-  ;; search and replace
+  "od" (lambda () (interactiveevilmi-sel ;; search and replace
 
 
   ;; other uses
@@ -255,7 +245,7 @@
   (:keymaps 'visual
    "*" 'bc-evil-search-visually-forward
    "#" 'bc-evil-search-visually-backward
-   "<tab>" 'bc-evil-visual-tab)
+   "<tab>" 'evilmi-select-items)
 
   (:keymaps '(normal motion)
    "<tab>" 'evilmi-jump-items)
