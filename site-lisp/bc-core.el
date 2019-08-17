@@ -5,8 +5,14 @@
 ;;; Code:
 
 ;; put custom files in a separate location
-(setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file 'noerror)
+(use-package no-littering
+  :config
+  (setq-default no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
+                no-littering-var-directory (expand-file-name "var/" user-emacs-directory)
+                auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+                backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
+                custom-file (no-littering-expand-etc-file-name "custom.el"))
+  (load custom-file 'noerror))
 
 ;; turn off bell
 (setq-default visible-bell t
@@ -82,12 +88,6 @@
           (lambda ()
             (setq gc-cons-threshold 16777216
                   gc-cons-percentage 0.1)))
-
-;; direct backup files to /tmp
-(setq-default backup-directory-alist
-    `((".*" . ,temporary-file-directory)))
-(setq-default auto-save-file-name-transforms
-    `((".*" ,temporary-file-directory t)))
 
 ;; When something changes a file, automatically refresh the
 ;; buffer containing that file so they can't get out of sync.

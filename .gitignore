@@ -1,8 +1,6 @@
 **
 !site-lisp/
 !site-lisp/**
-!snippets/
-!snippets/**
-!eshell/
-!eshell/alias
 !.gitignore
+!etc/yasnippet/*
+!var/eshell/alias
