@@ -16,6 +16,11 @@
   :config
   (global-evil-surround-mode 1))
 
+(use-package evil-matchit
+  :after evil
+  :config
+  (global-evil-matchit-mode))
+
 (use-package evil-indent-textobject :after evil)
 
 (use-package evil-nerd-commenter
@@ -141,6 +146,33 @@
   ;; bind esc to normal state in all cases
   (global-set-key (kbd "<escape>") 'bc-evil-normal-state-if-not-motion)
 
+  (defun bc-evil-better-newline (newline-fun &rest args)
+    "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline' for the first call.  Delete the auto-inserted comment for the second call.  Otherwise call `newline' as default."
+    (let* (
+           ;; line - the current line as string
+           (line (buffer-substring-no-properties
+                  (line-beginning-position)
+                  (line-end-position)))
+           ;; only-comment - t if the current line starts with comment
+           (only-comment (string-match
+                          (concat "\\(^[\t ]*\\)\\("
+                                  comment-start-skip "\\)")
+                          line))
+           ;; newline-string - string insert into newline
+           (newline-string (if only-comment
+                               (match-string 2 line)
+                             "")))
+      (if (and only-comment
+               (eq last-command 'newline))
+          (progn (kill-line 0)
+                 (insert (match-string 1 line))
+                 ;; FIXME: bug here
+                 (pop kill-ring))
+        (apply newline-fun args)
+        (insert newline-string))))
+
+  (advice-add 'newline :around #'bc-evil-better-newline)
+
   :general
   (:keymaps '(motion normal visual)
    "j" 'evil-next-visual-line
@@ -150,11 +182,33 @@
    "J" 'bc-evil-next-three-lines
    "K" 'bc-evil-previous-three-lines
    "L" 'evil-end-of-visual-line
-   "" nil
-   "SPC" nil)
 
-  (:keymaps '(motion normal visual)
+   "SPC" nil
+   "S-SPC" nil)
+
+  ;; combination key that should be active in all states
+  (:keymaps '(motion normal visual emacs insert)
+   "C-h" 'evil-window-left
+   "C-j" 'evil-window-down
+   "C-k" 'evil-window-up
+   "C-l" 'evil-window-right
+
+   "C-u" 'evil-scroll-up
+   "C-d" 'evil-scroll-down
+
+   "C-=" 'bc-fontsize-up
+   "C--" 'bc-fontsize-down
+
+   "M-l" 'right-char
+   "M-h" 'left-char
+
+   "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
+   "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
+
+  ;; leader key
+  (:keymaps '(motion normal visual emacs insert)
   :prefix "SPC"
+  :non-normal-prefix "S-SPC"
 
   ;; execute
   "ee" 'execute-extended-command
@@ -183,7 +237,8 @@
   "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
 
   ;; open stuffs
-  "oF" 'counsel-find-file
+  "oo" 'counsel-find-file
+  "or" 'counsel-recentf
   "of" 'projectile-find-file
   "ob" 'ivy-switch-buffer
   "os" 'bc-eshell-open-here
@@ -197,32 +252,13 @@
   ;; other uses
   "t" 'evilnc-comment-or-uncomment-lines)
 
-  ;; combination key that should be active in all states
-  (:keymaps '(motion normal visual emacs insert)
-   "C-h" 'evil-window-left
-   "C-j" 'evil-window-down
-   "C-k" 'evil-window-up
-   "C-l" 'evil-window-right
-
-   "C-u" 'evil-scroll-up
-   "C-d" 'evil-scroll-down
-
-   "C-+" 'bc-fontsize-up
-   "C--" 'bc-fontsize-down
-
-   "M-l" 'right-char
-   "M-h" 'left-char
-
-   "C-e" (lambda () (interactive) (evil-scroll-line-down 5))
-   "C-y" (lambda () (interactive) (evil-scroll-line-up 5)))
-
   (:keymaps 'visual
    "*" 'bc-evil-search-visually-forward
    "#" 'bc-evil-search-visually-backward
    "<tab>" 'bc-evil-visual-tab)
 
   (:keymaps '(normal motion)
-   "<tab>" 'evil-jump-item)
+   "<tab>" 'evilmi-jump-items)
 
   (:keymaps 'visual
    :prefix "SPC"
@@ -235,34 +271,6 @@
    :states 'motion
    :prefix "SPC"
    "q" 'delete-window))
-
-(defun bc-evil-better-newline (newline-fun &rest args)
-  "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline' for the first call.  Delete the auto-inserted comment for the second call.  Otherwise call `newline' as default."
-  (let* (
-         ;; line - the current line as string
-         (line (buffer-substring-no-properties
-                (line-beginning-position)
-                (line-end-position)))
-         ;; only-comment - t if the current line starts with comment
-         (only-comment (string-match
-                        (concat "\\(^[\t ]*\\)\\("
-                                comment-start-skip "\\)")
-                        line))
-         ;; newline-string - string insert into newline
-         (newline-string (if only-comment
-                             (match-string 2 line)
-                           "")))
-    (if (and only-comment
-             (eq last-command 'newline))
-        (progn (kill-line 0)
-               (insert (match-string 1 line))
-               ;; FIXME: bug here
-               (pop kill-ring))
-      (apply newline-fun args)
-      (insert newline-string))))
-
-(advice-add 'newline :around #'bc-evil-better-newline)
-
 
 (provide 'bc-evil)
 ;;; bc-evil.el ends here

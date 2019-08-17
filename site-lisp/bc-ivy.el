@@ -24,7 +24,6 @@
     :general
     (:keymaps '(normal visual motion)
      :prefix "SPC"
-     "or" 'counsel-recentf
      "js" 'counsel-ag
      "jr" (lambda () (interactive)
             (counsel-ag (symbol-name (symbol-at-point))))))
@@ -41,21 +40,6 @@
    "M-k" 'ivy-previous-line))
 
 
-;; functions
-
-;; (defun bc-ivy-open-remote-shell (&optional remote)
-;;   "Open a ivy menu with a list of REMOTE location.  Open a eshell at the chosen location."
-;;   (interactive)
-;;   (let* ((remote (or remote bc-default-remote)))
-;;     (ivy-read "Where to?"
-;;               '("home/junyi/Documents/"
-;;                 "home/junyi/Documents/Research/"
-;;                 "home/junyi/Downloads/data/")
-;;               :action (lambda (x)
-;;                         (let* ((height (/ (window-total-height) 3)))
-;;                           (split-window-vertically (- height))
-;;                           (evil-window-down 1)
-;;                           (bc-eshell--open (concat remote x)))))))
 
 ;; TODO:
 ;; uniform ivy backend:

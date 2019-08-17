@@ -2,9 +2,6 @@
 
 ;;; Commentary:
 
-;; FIXME: exwm does only one thing for me (for now): launch firefox
-;; FIXME: how to make exwm plays well with evil?
-
 ;;; Code:
 
 (require 'tramp)
@@ -13,10 +10,10 @@
 ;; number of initial workspaces
 (setq exwm-workspace-number 2)
 
-;; FIXME: how to use SPC leader key in exwm buffer?
-;; If I do the following, a. I won't be able to use spc in exwm buffer; b.
-;; the posframe is behind the exwm buffer
-;; (push ?\s  exwm-input-prefix-keys)
+;; leader key in exwm buffer M-SPC
+(evil-set-initial-state 'exwm-mode 'emacs)
+(push ?\S-\  exwm-input-prefix-keys)
+;; FIXME: childframe is behind firefox in exwm mode, solution?
 
 ;; rename buffer to window title
 (defun bc-exwm-rename-buffer-to-title ()
