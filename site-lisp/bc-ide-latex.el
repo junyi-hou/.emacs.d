@@ -11,9 +11,14 @@
   :defer t
   :config
   (setq
-  ;; use emacs to view pdf
-   TeX-view-program-selection '((output-pdf "PDF Tools"))
-   TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+  ;; use zathura to view pdf
+   TeX-view-program-selection '((output-pdf "Zathura"))
+   ;; TeX-view-program-list
+   ;; '(("Zathura" "zathura "
+   ;;     (mode-io-correlate
+   ;;      " --syntctex-forward %n:0%b -x \"emacsclient +%{line} %{input}\" "
+   ;;      " %o")
+   ;;     "zathura"))
    TeX-source-correlate-start-server t
 
    ;; disable moving sub/super scripts
@@ -53,7 +58,8 @@
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
-   "rr" 'TeX-command-run-all))
+   "rr" 'TeX-command-run-all
+   "ro" 'TeX))
 
 ;; (use-package reftex
 ;;   :after 'tex-site
@@ -94,38 +100,6 @@
    :states 'insert
    :prefix "C-c"
    "c" 'ivy-bibtex))
-
-;; TODO: cannot rotate (and many other problems) use alternative?
-(use-package pdf-tools
-  :defer t
-  :config
-  (setq pdf-view-display-size 'fit-page)
-  (evil-set-initial-state 'pdf-view-mode 'motion)
-  :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
-  :mode ("\\.pdf\\'" . pdf-tools-install)
-
-  :general
-  (:keymaps 'pdf-view-mode-map
-   :states '(motion normal visual)
-   "j" 'pdf-view-scroll-up-or-next-page
-   "k" 'pdf-view-scroll-down-or-previous-page
-   "J" 'pdf-view-next-page
-   "K" 'pdf-view-previous-page
-   "gg" 'pdf-view-first-page
-   "G" 'pdf-view-last-page
-   "/" 'isearch-forward
-   "?" 'isearch-backward
-   "n" 'isearch-repeat-forward
-   "N" 'isearch-repeat-backward
-   "o" 'pdf-outline
-   "+" 'pdf-view-enlarge
-   "-" 'pdf-view-shrink
-   "SPC" nil)
-
-  (:keymaps 'pdf-view-mode-map
-   :states '(motion normal visual)
-   :prefix "SPC"
-   "q" 'kill-buffer-and-window))
 
 (use-package company-auctex
   :after tex-site
