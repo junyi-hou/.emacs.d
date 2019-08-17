@@ -28,8 +28,9 @@
         ;; to line mode
         ([?\s-r] . exwm-reset)
         ;; toggle between line and char mode
-        ([?\s-x] 'exwm-input-toggle-keyboard)
+        ([?\s-x] . exwm-input-toggle-keyboard)
         ;; switch to and from workspaces
+        ;; workspaces start from 0, but keymaps should start from 1
         ,@(mapcar (lambda (i)
                     `(,(kbd (format "s-%d" i)) .
                       (lambda ()
@@ -45,7 +46,25 @@
         ([XF86MonBrightnessDown] . (lambda () (interactive)
                                      (bc-exwm-adjust-backlight)))))
 
-(exwm-enable)
+;; simulation key
+(setq exwm-input-simulation-keys
+      '(;; arrow keys
+        ([?\M-j] . [down])
+        ([?\M-k] . [up])
+        ([?\M-h] . [left])
+        ([?\M-l] . [right])
+        ;; c-g = esc
+        ([?\C-g] . [escape])
+        ;; yank; paste: find a solution
+        )
+
+;; line-mode keybinding
+(general-define-key
+ :keymaps 'exwm-mode-map
+ "C-h" 'evil-window-left
+ "C-j" 'evil-window-down
+ "C-k" 'evil-window-up
+ "C-l" 'evil-window-right)
 
 ;; functions
 (defun bc-exwm--flatten (l)
@@ -68,7 +87,7 @@
 
 (defun bc-exwm-launch-x-with-ivy ()
   "Use `ivy-mode' as interface for launching x applications in exwm."
-  ;; TODO: filter out some bins
+  ;; TODO: some bins need to be called with arguments, how to deal with that?
   (interactive)
   (ivy-read "run: "
             (bc-exwm--get-all-bins)
