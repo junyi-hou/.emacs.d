@@ -40,9 +40,10 @@
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
 
-  (add-hook 'LaTeX-mode-hook #'TeX-PDF-mode)
-  (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
-  ;; (add-hook 'LaTeX-mode-hook #'bc-latex-ivy-bibtex-load-bib-file)
+  :hook
+  (LaTeX-mode . TeX-PDF-mode)
+  (LaTeX-mode . TeX-source-correlate-mode)
+  ;; (LaTeX-mode-hook . bc-latex-ivy-bibtex-load-bib-file)
 
   :general
   (:keymaps 'LaTeX-mode-map
@@ -52,27 +53,26 @@
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
-   "rr" 'TeX-command-run-all)
-  )
+   "rr" 'TeX-command-run-all))
 
-(use-package reftex
-  :after 'tex-site
-  :defer t
-  :hook (LaTeX-mode . reftex-mode)
-  :config
-  (setq reftex-cite-prompt-optional-args t)
+;; (use-package reftex
+;;   :after 'tex-site
+;;   :defer t
+;;   :hook (LaTeX-mode . reftex-mode)
+;;   :config
+;;   (setq reftex-cite-prompt-optional-args t)
 
-  :general
-  (:keymaps 'reftex-mode-map
-   :states '(motion normal visual)
-   :prefix "SPC"
-   "rl" 'reftex-label
-   "ri" 'reftex-reference)
-  (:keymaps 'reftex-mode-map
-   :states 'insert
-   :prefix "C-c"
-   "l" 'reftex-label
-   "i" 'reftex-reference))
+;;   :general
+;;   (:keymaps 'reftex-mode-map
+;;    :states '(motion normal visual)
+;;    :prefix "SPC"
+;;    "rl" 'reftex-label
+;;    "ri" 'reftex-reference)
+;;   (:keymaps 'reftex-mode-map
+;;    :states 'insert
+;;    :prefix "C-c"
+;;    "l" 'reftex-label
+;;    "i" 'reftex-reference))
 
 (use-package ivy-bibtex
   :after tex-site
@@ -95,13 +95,13 @@
    :prefix "C-c"
    "c" 'ivy-bibtex))
 
+;; TODO: cannot rotate (and many other problems) use alternative?
 (use-package pdf-tools
+  :defer t
   :config
   (setq pdf-view-display-size 'fit-page)
   (evil-set-initial-state 'pdf-view-mode 'motion)
-  (add-hook 'pdf-view-mode-hook (lambda ()
-                                  (pdf-view-midnight-minor-mode)))
-  :defer t
+  :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
   :mode ("\\.pdf\\'" . pdf-tools-install)
 
   :general
