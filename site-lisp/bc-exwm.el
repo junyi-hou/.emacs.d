@@ -12,7 +12,7 @@
 
 ;; leader key in exwm buffer M-SPC
 (evil-set-initial-state 'exwm-mode 'emacs)
-(push ?\S-\  exwm-input-prefix-keys)
+(push ?\s-\  exwm-input-prefix-keys)
 ;; FIXME: childframe is behind firefox in exwm mode, solution?
 
 ;; rename buffer to window title

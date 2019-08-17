@@ -208,7 +208,7 @@
   ;; leader key
   (:keymaps '(motion normal visual emacs insert)
   :prefix "SPC"
-  :non-normal-prefix "S-SPC"
+  :non-normal-prefix "s-SPC"
 
   ;; execute
   "ee" 'execute-extended-command
