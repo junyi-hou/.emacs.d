@@ -10,14 +10,14 @@
 ;; set load path
 (add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory))
 
+
 ;; package loader and manager
 (require 'bc-pkgmgmt)
 
 (require 'bc-core)
-(require 'bc-exwm)
-
-(require 'bc-evil)
 (require 'bc-theme)
+(require 'bc-evil)
+(require 'bc-exwm)
 
 (require 'bc-eshell)
 (require 'bc-vcs)
@@ -31,7 +31,7 @@
 (require 'bc-ide-gentoo)
 ;; (require 'bc-ide-python)
 ;; (require 'bc-ide-rust)
-;; (require 'bc-ide-latex)
+(require 'bc-ide-latex)
 ;; (require 'bc-ide-matlab)
 
 ;;; init.el ends here
