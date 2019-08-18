@@ -27,6 +27,11 @@
 (require 'bc-org)
 (require 'bc-dired)
 
+;;; ide features
+(require 'bc-flymake)
+(require 'bc-company)
+(require 'bc-lsp)
+
 (require 'bc-ide-lisp)
 (require 'bc-ide-gentoo)
 ;; (require 'bc-ide-python)

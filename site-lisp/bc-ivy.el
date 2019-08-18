@@ -19,7 +19,12 @@
         ivy-magic-slash-non-match-action nil
         projectile-completion-system 'ivy)
 
-  (use-package counsel
+  :general
+  (:keymaps 'ivy-minibuffer-map
+   "M-j" 'ivy-next-line
+   "M-k" 'ivy-previous-line))
+
+(use-package counsel
     :after ivy
     :general
     (:keymaps '(normal visual motion)
@@ -28,18 +33,11 @@
      "jr" (lambda () (interactive)
             (counsel-ag (symbol-name (symbol-at-point))))))
 
-  (use-package ivy-posframe
+(use-package ivy-posframe
     :after ivy
     :config
     (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point)))
     (ivy-posframe-mode 1))
-
-  :general
-  (:keymaps 'ivy-minibuffer-map
-   "M-j" 'ivy-next-line
-   "M-k" 'ivy-previous-line))
-
-
 
 ;; TODO:
 ;; uniform ivy backend:
