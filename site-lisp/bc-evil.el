@@ -163,10 +163,9 @@
                              "")))
       (if (and only-comment
                (eq last-command 'newline))
-          (progn (kill-line 0)
-                 (insert (match-string 1 line))
-                 ;; FIXME: bug here
-                 (pop kill-ring))
+            (progn
+              (delete-region (line-beginning-position) (line-end-position))
+              (insert (match-string 1 line)))
         (apply newline-fun args)
         (insert newline-string))))
 
