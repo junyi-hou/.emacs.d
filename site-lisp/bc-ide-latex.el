@@ -9,6 +9,21 @@
 (use-package tex-site
   :ensure auctex
   :defer t
+  :init
+  (defun bc-ide-latex-complie ()
+    "Compile current tex file using `TeX-command-run-all'.  This function is required because exwm opens zathura in the selected window displaying the tex source file.  Instead, I want to open zathura in a new window."
+    (interactive)
+    (save-excursion
+     (let* ((fname (file-name-sans-extension (buffer-file-name)))
+           (pdf-fname (concat fname ".pdf")))
+      (unless (get-buffer-window pdf-fname)
+        ;; if the pdf file is not displayed
+        (bc-core--split-window)
+        (other-window 1))
+      (TeX-command-run-all nil))))
+
+(get-buffer-window "/home/junyi/downloads/tmp/test.pdf")
+  
   :config
   (setq
   ;; use zathura to view pdf
@@ -58,9 +73,9 @@
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
-   "rr" 'TeX-command-run-all
-   "ro" 'TeX))
+   "rr" 'bc-ide-latex-complie))
 
+(setq debug-on-error t)
 ;; (use-package reftex
 ;;   :after 'tex-site
 ;;   :defer t
