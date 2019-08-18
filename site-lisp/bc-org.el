@@ -100,7 +100,9 @@
    "rf" 'org-footnote)
 
   (:keymaps 'org-mode-map
-   :states '(normal visual motion)
+   :states '(normal visual motion insert)
+   "C-e" 'org-next-visible-heading
+   "C-y" 'org-previous-visible-heading
    "<up>" 'org-previous-visible-heading
    "<down>" 'org-next-visible-heading))
 
