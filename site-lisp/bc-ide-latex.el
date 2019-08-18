@@ -46,6 +46,7 @@
 
    ;; auto-close
    LaTeX-electric-left-right-brace t
+   TeX-electric-sub-and-superscript t
 
    ;; other settings
    TeX-parse-self t
