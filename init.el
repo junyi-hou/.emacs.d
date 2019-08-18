@@ -35,7 +35,7 @@
 ;;; language
 (require 'bc-ide-lisp)
 (require 'bc-ide-gentoo)
-;; (require 'bc-ide-python)
+(require 'bc-ide-python)
 ;; (require 'bc-ide-rust)
 (require 'bc-ide-latex)
 ;; (require 'bc-ide-matlab)

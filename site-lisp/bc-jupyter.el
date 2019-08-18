@@ -3,22 +3,15 @@
 ;;; Commentary:
 
 ;; TODO: multiple buffers could use same repl, what is the optimal way to do that?
-;; TODO: rework the remote repl
 ;; TODO: add logging support - when quit, save the repl buffer to PROJ_ROOT/log/date.log file
 
 ;;; Code:
-
-(require 'bc-ivy)
 
 (use-package jupyter
   :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next)
 
   :init
-
-  ;; (defalias 'jupyter-eval-line-or-region
-  ;;   (lambda () (interactive) (jupyter-eval-line-or-region) (deactivate-mark))
-  ;;   "Exit visual state after run `jupyter-eval-line-or-region'.")
-
+  (setq jupyter-repl-echo-eval-p t)
   (advice-add 'jupyter-eval-line-or-region :after #'deactive-mark)
 
   ;; functions
@@ -33,21 +26,10 @@ If REMOTE is provided, start an remote kernel and connect to it."
                                 (current-buffer)))
       (jupyter-run-repl kernel kernel (current-buffer))))
 
-  (defun bc-jupyter--start-remote-kernel (kernel &optional location)
-    "Start a remote KERNEL, save the connection file to a default location.  If LOCATION is given, use it, otherwise use `bc-default-remote' instead."
-    (interactive)
-    (let* ((code-buffer (current-buffer))
-           (location (or (when (stringp location) location) bc-default-remote)))
-      (bc-eshell--open (concat location "home/junyi/.virtualenv/nvimpy/bin/"))
-      (insert
-       (concat
-        "./jupyter-console --kernel="
-        kernel
-        " -f=/home/junyi/" kernel ".json"))
-      (eshell-send-input)
-      (rename-buffer (concat "*jupyter-remote-" kernel "-kernel*" ))
-      (switch-to-buffer code-buffer)
-      (concat location "home/junyi/" kernel ".json")))
+  (defun bc-jupyter--start-remote-kernel (kernel remote)
+    "Start a remote KERNEL at REMOTE.  Return the tramp location of the connection file."
+    ;; TODO: implement this
+    )
 
   (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
     "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
@@ -60,42 +42,22 @@ If REMOTE is provided, start an remote kernel and connect to it."
                (jupyter-repl-pop-to-buffer)
                (switch-to-buffer-other-window code-buffer)))))
 
-  (defun bc-jupyter--send (string)
-    "Send STRING to associated REPL."
-    (let* ((buffer (current-buffer)))
-      (if jupyter-current-client
-          (jupyter-with-repl-buffer jupyter-current-client
-                                    (goto-char (point-max))
-                                    (insert (concat string "\n"))
-                                    (jupyter-repl-ret))
-        (error "No REPL associated with current buffer"))
-      (switch-to-buffer buffer)
-      (when (evil-visual-state-p)
-        (deactivate-mark))))
+  (defun bc-jupyter--pop-repl ()
+    "Pop repl buffer, then go back to the code buffer."
+    (let* ((code-buffer (current-buffer)))
+      (jupyter-repl-pop-to-buffer)
+      (switch-to-buffer-other-window code-buffer)))
 
   (defun bc-jupyter-eval-buffer-or-region ()
     "If in visual state, evaluate the current region; otherwise evaluate the current buffer."
     (interactive)
+    (bc-jupyter--pop-repl)
     (if (evil-visual-state-p)
         (jupyter-eval-region (region-beginning) (region-end))
       (jupyter-eval-buffer (current-buffer)))
     (deactivate-mark))
 
-  (defun bc-jupyter-reconnect (kernel)
-    "Try to reconnect to the KERNEL.  For a local kernel, use built-in `jupyter-repl-restart-kernel', for a remote kernel, close the current REPL and start a new one using the connection file."
-    (interactive)
-    (let* ((local (ignore-errors (jupyter-repl-restart-kernel) t)))
-      (unless local  ; restart remote kernel
-        (let* ((connection-file (concat bc-default-remote "home/junyi" kernel ".json")))
-          (if jupyter-current-client
-              (progn
-                (jupyter-with-client-buffer jupyter-current-client
-                                            (kill-buffer-and-window))
-                (setq-local jupyter-current-client nil)
-                (jupyter-connect-repl
-                 connection-file
-                 kernel
-                 (current-buffer))))))))
+  (advice-add #'jupyter-eval-line-or-region :before #'bc-jupyter--pop-repl)
 
   (defun bc-jupyter-clear-buffer ()
     "Eshell version of `cls'."
@@ -128,16 +90,12 @@ If REMOTE is provided, start an remote kernel and connect to it."
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion insert)
    :prefix "C-c"
-   "C-c" 'jupyter-repl-interrupt-kernel
-   "C-l" 'bc-jupyter-clear-buffer)
+   "C-c" 'jupyter-repl-interrupt-kernel)
 
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
    "q" 'kill-buffer-and-window))
-
-
-
 
 (provide 'bc-jupyter)
 ;;; bc-jupyter.el ends here
