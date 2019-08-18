@@ -4,8 +4,8 @@
 
 ;;; Code:
 
+(use-package exwm)
 (require 'tramp)
-(require 'exwm)
 
 ;; number of initial workspaces
 (setq exwm-workspace-number 2)
@@ -13,7 +13,7 @@
 ;; leader key in exwm buffer M-SPC
 (evil-set-initial-state 'exwm-mode 'emacs)
 (push ?\s-\  exwm-input-prefix-keys)
-;; FIXME: childframe is behind firefox in exwm mode, solution?
+;; FIXME: childframe is behind firefox in exwm mode, solution? (seems no)
 
 ;; rename buffer to window title
 (defun bc-exwm-rename-buffer-to-title ()
