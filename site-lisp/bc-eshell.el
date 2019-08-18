@@ -16,6 +16,14 @@
         eshell-prefer-lisp-functions nil
         eshell-destroy-buffer-when-process-dies t)
 
+  (unless (file-exists-p (no-littering-expand-var-file-name "eshell/alias"))
+    ;; if alias file does not exists, define aliases
+    (eshell/alias "su" "eshell/su $*")
+    (eshell/alias "sudo" "eshell/sudo $*")
+    (eshell/alias "ff" "find-file $*")
+    (eshell/alias "cls" "bc-eshell-clear-buffer")
+    (eshell/alias "ll" "ls -Aloh --color=always"))
+
   ;; functions
 
   (defun bc-eshell-open-here ()
