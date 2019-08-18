@@ -4,10 +4,11 @@
 
 ;;; Code:
 
+;; TODO: replace projectile with built-in project
 (use-package projectile
   :init
   (setq projectile-project-search-path
-        '("~/projects/")
+        '("~/projects/" "~/research/")
         projectile-globally-ignored-directories
         '(".mypy_cache" "__pycache__" ".git" "log"))
   :config

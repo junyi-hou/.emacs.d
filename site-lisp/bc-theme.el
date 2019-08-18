@@ -5,11 +5,11 @@
 ;;; Code:
 
 ;; theme
-(use-package color-theme-sanityinc-tomorrow
+(use-package darktooth-theme
   :init
   (setq custom-safe-themes t)
   :config
-  (color-theme-sanityinc-tomorrow-night))
+  (load-theme 'darktooth t))
 
 ;; mode line
 (use-package telephone-line
@@ -43,8 +43,8 @@
     (set-face-attribute
      'highlight-indentation-face
      nil
-     :stipple hl-stipple
-     :inherit nil)))
+     :background "#282828"
+     :stipple hl-stipple)))
 
 ;; Patch highlight-indentation-mode to set/update a stipple attribute
 (defadvice highlight-indentation-mode
