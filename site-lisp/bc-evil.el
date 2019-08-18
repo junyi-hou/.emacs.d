@@ -49,6 +49,13 @@
                                         evil-normal-state-modes))
 
   ;; functions:
+  (defun bc-evil-visual-tab ()
+    "Indent region if in visual-line-mode, otherwise select contains inside a pair of tags via `evilmi-select-items'"
+    (interactive)
+    (if (eq evil-visual-selection 'line)
+        (indent-region (region-beginning) (region-end))
+      (evilmi-select-items)))
+
   (defun bc-evil--is-user-buffer ()
     "Determine whether the current buffer is a user-buffer by looking at the first char.  Return t if current buffer is not a dired tree or is a user-buffer (include *scratch* buffer)."
     (let ((name (buffer-name)))
@@ -248,7 +255,7 @@
   (:keymaps 'visual
    "*" 'bc-evil-search-visually-forward
    "#" 'bc-evil-search-visually-backward
-   "<tab>" 'evilmi-select-items)
+   "<tab>" 'bc-evil-visual-tab)
 
   (:keymaps '(normal motion)
    "<tab>" 'evilmi-jump-items)

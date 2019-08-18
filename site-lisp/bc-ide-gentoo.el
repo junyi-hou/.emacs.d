@@ -4,13 +4,13 @@
 
 ;;; Code:
 
-(use-package ebuild-mode
-  :ensure nil
-  :defer t
-  :config
-  (require 'ebuild-mode))
+(add-to-list 'auto-mode-alist '("\\.ebuild\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.eclass\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("package\\.accept_keywords" . sh-mode))
+(add-to-list 'auto-mode-alist '("package\\.mask" . sh-mode))
+(add-to-list 'auto-mode-alist '("package\\.use" . sh-mode))
 
-;; TODO: generate functions/yasnippets from ebuild-mode.el
+;; TODO: generate functions/yasnippets to build ebuild
 
 (provide 'bc-ide-gentoo)
 ;;; bc-ide-gentoo.el ends here

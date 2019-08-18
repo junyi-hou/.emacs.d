@@ -73,8 +73,8 @@
    ;; files
    "<return>" 'dired-find-file
    "<C-return>" 'dired-find-file-other-window
-   "n" 'find-file
-   "N" 'dired-create-directory
+   "f" 'find-file
+   "F" 'dired-create-directory
    "t" 'dired-show-file-type
    "y" 'dired-copy-filename-as-kill
    "c" (lambda () (interactive)
