@@ -32,6 +32,7 @@
 (require 'bc-company)
 (require 'bc-lsp)
 
+;;; language
 (require 'bc-ide-lisp)
 (require 'bc-ide-gentoo)
 ;; (require 'bc-ide-python)

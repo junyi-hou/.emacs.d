@@ -27,10 +27,10 @@
   (require 'quelpa-use-package))
 
 ;; use package settings
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure t
+      quelpa-update-melpa-p nil)
 (use-package auto-compile
   :config (auto-compile-on-load-mode))
-
 (use-package auto-package-update
   :config
   (setq auto-package-update-prompt-before-update t
