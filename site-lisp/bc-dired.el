@@ -59,6 +59,7 @@
 
   :general
   (:keymaps 'dired-mode-map
+   :states 'motion
 
    ;; movement
    "j" 'dired-next-line

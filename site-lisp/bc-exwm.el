@@ -55,8 +55,10 @@
         ([?\M-l] . [right])
         ;; c-g = esc
         ([?\C-g] . [escape])
+        ;; for zathura: C-mouse1 = C-mouse1
+        ([C-down-mouse1] . [C-down-mouse1])
         ;; yank; paste: find a solution
-        )
+        ))
 
 ;; line-mode keybinding
 (general-define-key
@@ -65,6 +67,9 @@
  "C-j" 'evil-window-down
  "C-k" 'evil-window-up
  "C-l" 'evil-window-right)
+
+(server-start)
+(exwm-enable)
 
 ;; functions
 (defun bc-exwm--flatten (l)

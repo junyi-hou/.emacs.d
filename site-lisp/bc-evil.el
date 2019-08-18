@@ -236,7 +236,10 @@
   "os" 'bc-eshell-open-here
   "op" 'projectile-switch-project
   ;; dired
-  "od" (lambda () (interactiveevilmi-sel ;; search and replace
+  "od" (lambda () (interactive)
+         (dired (file-name-directory (buffer-file-name))))
+
+  ;; search and replace
 
 
   ;; other uses
