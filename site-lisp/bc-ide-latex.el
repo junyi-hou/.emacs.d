@@ -4,8 +4,6 @@
 
 ;;; Code:
 
-(require 'bc-company)
-
 (use-package tex-site
   :ensure auctex
   :defer t
@@ -22,8 +20,6 @@
         (other-window 1))
       (TeX-command-run-all nil))))
 
-(get-buffer-window "/home/junyi/downloads/tmp/test.pdf")
-  
   :config
   (setq
   ;; use zathura to view pdf
@@ -76,7 +72,6 @@
    :prefix "SPC"
    "rr" 'bc-ide-latex-complie))
 
-(setq debug-on-error t)
 ;; (use-package reftex
 ;;   :after 'tex-site
 ;;   :defer t
@@ -99,6 +94,24 @@
 (use-package ivy-bibtex
   :after tex-site
   :defer t
+  :init
+  (defun bc-latex-load-bib-file ()
+    "Add bibtex file to `ivy-bibtex' library for the current .tex file.
+
+It search the current directory for a bib file named \"example-bib.bib\". If such file exists, it will automatically add it to `bibtex-completion-bibliography'. If such file does not exists, it prompt to ask you whether you want to choose the bib file manually."
+    (let* ((bib-file
+            (concat
+             (expand-file-name (file-name-base (buffer-file-name)))
+             "-bib.bib")))
+      (if (file-exists-p bib-file)
+          (setq-local bibtex-completion-bibliography bib-file)
+        (if (y-or-n-p "Cannot find bib file, feed one? ")
+            (ivy-read "bib file:"
+                      #'read-file-name-internal
+                      :action
+                      (lambda (x)
+                        (setq-local bibtex-completion-bibliography x)))))))
+
   :config
   (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
                                 (t . ivy--regex-plus))
@@ -122,22 +135,6 @@
   :hook
   (LaTeX-mode . company-auctex-init))
 
-(defun bc-latex-ivy-bibtex-load-bib-file ()
-  "Add bibtex file to `ivy-bibtex' library for the current .tex file.
-
-It search the current directory for a bib file named \"example-bib.bib\". If such file exists, it will automatically add it to `bibtex-completion-bibliography'. If such file does not exists, it prompt to ask you whether you want to choose the bib file manually."
-  (let* ((bib-file
-          (concat
-           (expand-file-name (file-name-base (buffer-file-name)))
-           "-bib.bib")))
-    (if (file-exists-p bib-file)
-        (setq-local bibtex-completion-bibliography bib-file)
-      (if (y-or-n-p "Cannot find bib file, feed one? ")
-          (ivy-read "bib file:"
-                    #'read-file-name-internal
-                    :action
-                    (lambda (x)
-                      (setq-local bibtex-completion-bibliography x)))))))
 
 
 (provide 'bc-ide-latex)

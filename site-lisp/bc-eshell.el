@@ -127,7 +127,7 @@
 (use-package em-tramp
   :ensure nil
   :after eshell
-  :config
+  :init
   (setq password-cache t
         password-cache-expiry 3600)
   (add-to-list 'eshell-modules-list #'eshell-tramp))
@@ -156,7 +156,6 @@
     (bc-company-add-backends '(company-shell company-env)))
   :hook
   (company-mode . bc-eshell-company-backends))
-
 
 ;; sudo edit files
 (use-package sudo-edit
