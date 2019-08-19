@@ -3,4 +3,3 @@
 !site-lisp/**
 !.gitignore
 !etc/yasnippet/*
-!var/eshell/alias
