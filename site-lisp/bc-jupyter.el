@@ -4,6 +4,21 @@
 
 ;; TODO: multiple buffers could use same repl, what is the optimal way to do that?
 ;; TODO: add logging support - when quit, save the repl buffer to PROJ_ROOT/log/date.log file
+;; FIXME: the following function needs formatting (in/out)
+;; (defun bc-jupyter-logger ()
+;;   "Save current workspace to PROJECT_ROOT/log/{kernel}-{datetime}."
+;;   (let* ((proj-root (project-current))
+;;          (log-dir (file-directory-p (concat (cdr proj-root) "log"))))
+;;     (if proj-root
+;;       (progn
+;;         (unless log-dir
+;;           (make-directory log-dir))
+;;         (let* ((time (format-time-string "%Y%m%d-%H%M"))
+;;                (file-name (expand-file-name (concat "jupyter-" time) log-dir)))
+;;           (save-excursion
+;;             (widen)
+;;             (write-region 1 (point-max) file-name))))
+;;       (user-error "Cannot determine project root"))))
 
 ;;; Code:
 
