@@ -13,7 +13,6 @@
 ;; leader key in exwm buffer M-SPC
 (evil-set-initial-state 'exwm-mode 'emacs)
 (push ?\s-\  exwm-input-prefix-keys)
-;; FIXME: childframe is behind firefox in exwm mode, solution? (seems no)
 
 ;; rename buffer to window title
 (defun bc-exwm-rename-buffer-to-title ()
@@ -55,10 +54,9 @@
         ([?\M-l] . [right])
         ;; c-g = esc
         ([?\C-g] . [escape])
-        ;; for zathura: C-mouse1 = C-mouse1
-        ([C-down-mouse1] . [C-down-mouse1])
         ;; yank; paste: find a solution
-        ))
+        ([?\s-y] . [?\C-c])
+        ([?\s-p] . [?\C-v])))
 
 ;; line-mode keybinding
 (general-define-key
