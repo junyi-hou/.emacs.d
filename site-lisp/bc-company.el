@@ -22,6 +22,7 @@
   (lisp-interaction-mode . company-mode)
   (jupyter-repl-mode . company-mode)
   (eshell-mode . company-mode)
+  (org-mode . company-mode)
 
   :init
 

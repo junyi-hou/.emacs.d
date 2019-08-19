@@ -6,6 +6,11 @@
 
 (use-package org
   :defer t
+  :hook
+  (org-mode . org-indent-mode)
+  (org-mode . (lambda () (setq tab-width 2)))
+  (org-mode . bc-org--complete-keywords)
+
   :init
 
   ;; functions
@@ -27,17 +32,11 @@
 
   (defun bc-org-insert-date ()
     "Insert today's date in org-mode's format."
-    (insert (concat "<"
-                    (shell-command-to-string "echo -n $(date +%Y-%m-%d)")
-                    ">")))
+    (insert (concat "<" (format-time-string "%Y-%m-%d") ">")))
 
   (defun bc-org-insert-date-time ()
     "Insert today's date-time in org-mode's format."
-    (insert (concat "<"
-                    (shell-command-to-string "echo -n $(date +%Y-%m-%d)")
-                    " "
-                    (shell-command-to-string "echo -n $(date +%H:%M)")
-                    ">")))
+    (insert (concat "<" (format-time-string "%Y-%m-%d %H:%M") ">")))
 
   :config
 
@@ -45,11 +44,6 @@
   (setq org-cycle-emulate-tab nil
         org-export-with-toc nil
         org-highlight-latex-and-related '(latex entities script))
-
-  (add-hook 'org-mode-hook #'company-mode)
-  (add-hook 'org-mode-hook #'org-indent-mode)
-  (add-hook 'org-mode-hook (lambda () (setq tab-width 2)))
-  (add-hook 'org-mode-hook #'bc-org--complete-keywords)
 
   ;; babel
   ;; load interpreters
@@ -67,7 +61,7 @@
         org-confirm-babel-evaluate nil)
 
   ;; display/update images in the buffer after I evaluate
-  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images t)
 
   ;; export to latex and other formats
   (setq org-latex-packages-alist '(("" "setspace")
@@ -97,7 +91,8 @@
    "re" 'org-export-dispatch
    "ro" 'org-edit-special
    "rr" 'org-ctrl-c-ctrl-c
-   "rf" 'org-footnote)
+   "rf" 'org-footnote
+   "rc" 'bc-org-remove-all-results)
 
   (:keymaps 'org-mode-map
    :states '(normal visual motion insert)
