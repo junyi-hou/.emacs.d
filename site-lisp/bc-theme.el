@@ -84,10 +84,12 @@
 (use-package hl-todo
   :config
   (setq hl-todo-keyword-faces
-        '(("TODO" . "#cc9393")
-          ("NOTE"   . "#d0bf8f")
-          ("HACK"   . "#d0bf8f")
-          ("FIXME"  . "#cc9393")
+        '(("TODO" . "#FB4934")
+          ("FIXME"  . "#FB4934")
+          ("WONT FIX" . "#FB4934")
+          ("REVIEW"   . "#FABD2F")
+          ("NOTE"   . "#FABD2F")
+          ("HACK"   . "#FABD2F")
           ("\\?\\?\\?+" . "#cc9393")))
   (global-hl-todo-mode))
 
