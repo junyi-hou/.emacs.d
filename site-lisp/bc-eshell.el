@@ -4,8 +4,6 @@
 
 ;;; Code:
 
-(require 'bc-core)
-(require 'bc-company)
 (use-package eshell
   :init
   (setq eshell-scroll-to-bottom-on-input 'all
@@ -19,6 +17,7 @@
         eshell-list-files-after-cd t
         eshell-destroy-buffer-when-process-dies t)
 
+  ;; setup eshell sudo support
   (unless (file-exists-p (no-littering-expand-var-file-name "eshell/alias"))
     (require 'em-alias)
     ;; if alias file does not exists, define aliases
@@ -116,20 +115,22 @@
      :prefix "SPC"
      "q" 'kill-buffer-and-window))
 
-  (add-hook 'eshell-mode-hook #'bc-eshell--keymaps)
+  (add-hook 'eshell-mode-hook #'bc-eshell--keymaps))
 
+(use-package em-term
+  :ensure nil
+  :after eshell
   :config
+  (dolist (p '("alsamixer" "htop" "mutt"))
+      (add-to-list 'eshell-visual-commands p)))
 
-  ;; setup eshell sudo support
-  (require 'em-tramp)
+(use-package em-tramp
+  :ensure nil
+  :after eshell
+  :config
   (setq password-cache t
         password-cache-expiry 3600)
-  (add-to-list 'eshell-modules-list #'eshell-tramp)
-
-  ;; support tui
-  (with-eval-after-load 'em-term
-    (dolist (p '("alsamixer" "htop" "mutt"))
-      (add-to-list 'eshell-visual-commands p))))
+  (add-to-list 'eshell-modules-list #'eshell-tramp))
 
 (use-package xterm-color
   :after eshell
@@ -148,6 +149,7 @@
 
 (use-package company-shell
   :commands (company-shell company-env)
+  :after company
   :init
   (add-hook 'eshell-mode-hook
             (defun bc-eshell--company ()
