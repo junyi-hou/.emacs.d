@@ -13,7 +13,6 @@
 (use-package python
   :defer t
   :init
-
   (defalias 'bc-python-local-repl
     (lambda () (interactive)
       (bc-jupyter-start-or-switch-to-repl "python"))
@@ -31,33 +30,25 @@
     (lambda (string) (bc-jupyter--send (bc-python--dedent string)))
     "Send string using `bc-jupyter--send' with `bc-python--dedent' to processing STRING first.")
 
-  ;; (defun bc-python-send-string ()
-  ;;   "If in `evil-visual-state', send the current region to `jupyter-current-client'.  Otherwise send the current line."
-  ;;   (interactive)
-  ;;   (if (evil-visual-state-p)
-  ;;       (bc-python--send
-  ;;        (buffer-substring-no-properties (region-beginning) (region-end)))
-  ;;     (bc-python--send (thing-at-point 'line t))))
-
-  ;; (defun bc-ide-python-eval-class ()
-  ;;   "Eval the python class at `point'."
-  ;;   (interactive)
-  ;;   (let ((beg (save-excursion
-  ;;                (word-search-backward "class")))
-  ;;         (end (condition-case nil
-  ;;                  (save-excursion
-  ;;                    (- (word-search-forward "class") 5))
-  ;;                (error (point-max)))))
-  ;;     (jupyter-eval-region beg end)))
+  (defun bc-python-eval-class ()
+    "Eval the python class at `point'."
+    (interactive)
+    (let ((beg (save-excursion
+                 (word-search-backward "class")))
+          (end (condition-case nil
+                   (save-excursion
+                     (- (word-search-forward "class") 5))
+                 (error (point-max)))))
+      (jupyter-eval-region beg end)))
 
   :general
   (:states '(motion normal visual)
    :keymaps 'python-mode-map
    :prefix "SPC"
-   "rb" 'bc-jupyter-eval-buffer-or-region
+   "rb" 'jupyter-eval-buffer
    "rf" 'jupyter-eval-defun
-   "rc" 'bc-ide-python-eval-class
-   "rr" 'bc-python-send-string
+   "rr" 'jupyter-eval-line-or-region
+   "rc" 'bc-python-eval-class
 
    "ro" 'bc-python-local-repl
 

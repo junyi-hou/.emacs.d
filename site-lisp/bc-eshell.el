@@ -149,7 +149,7 @@
 
 (use-package company-shell
   :commands (company-shell company-env)
-  :after company
+  :after '(company eshell)
   :init
   (defun bc-eshell-company-backends ()
     "Add shell backends to company"

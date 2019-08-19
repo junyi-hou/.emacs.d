@@ -11,14 +11,14 @@
   :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next)
 
   :init
-  (setq jupyter-repl-echo-eval-p t)
-  (advice-add 'jupyter-eval-line-or-region :after #'deactive-mark)
+  (setq jupyter-repl-echo-eval-p t
+        jupyter-repl-maximum-size 12000
+        jupyter-repl-history-maximum-length 300)
 
   ;; functions
   (defun bc-jupyter--start-repl (kernel &optional remote)
     "Initiate a REPL for KERNEL and attach it to the current buffer.
 If REMOTE is provided, start an remote kernel and connect to it."
-    
     (if remote
         (let ((connection-file (bc-jupyter--start-remote-kernel kernel remote)))
           (jupyter-connect-repl connection-file
@@ -42,7 +42,7 @@ If REMOTE is provided, start an remote kernel and connect to it."
                (jupyter-repl-pop-to-buffer)
                (switch-to-buffer-other-window code-buffer)))))
 
-  (defun bc-jupyter--pop-repl ()
+  (defun bc-jupyter--pop-repl (&rest args)
     "Pop repl buffer, then go back to the code buffer."
     (let* ((code-buffer (current-buffer)))
       (jupyter-repl-pop-to-buffer)
@@ -57,14 +57,15 @@ If REMOTE is provided, start an remote kernel and connect to it."
       (jupyter-eval-buffer (current-buffer)))
     (deactivate-mark))
 
-  (advice-add #'jupyter-eval-line-or-region :before #'bc-jupyter--pop-repl)
-
   (defun bc-jupyter-clear-buffer ()
     "Eshell version of `cls'."
     (interactive)
     (let ((inhibit-read-only t))
       (erase-buffer)
       (jupyter-send-input)))
+
+  (advice-add #'jupyter-eval-region :after #'deactivate-mark)
+  (advice-add #'jupyter-eval-line-or-region :before #'bc-jupyter--pop-repl)
 
   :general
   (:keymaps
