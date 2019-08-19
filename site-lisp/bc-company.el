@@ -21,6 +21,7 @@
   (emacs-lisp-mode . company-mode)
   (lisp-interaction-mode . company-mode)
   (jupyter-repl-mode . company-mode)
+  (eshell-mode . company-mode)
 
   :init
 
@@ -54,12 +55,14 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
         (save-excursion
           (indent-region (line-beginning-position) (line-end-position))))))
 
-  (defun bc-company-add-backends (new-backends)
-    "add NEW-BACKENDS to the first element of `company-backends'."
+  (defun bc-company-add-backends (bkends)
+    "Prepend BKENDS to the first element of `company-backends'.  BKENDS can be either a single backend or a list of backends (grouped-backend)."
     (let* ((backends company-backends)
            (car (car backends))
            (cdr (cdr backends)))
-      (setq-local company-backends (append (list `(,@new-backends ,@car)) cdr))))
+      (if (listp bkends)
+          (append (list `(,@bkends ,@car)) cdr)
+        (append (list `(,bkends ,@car) cdr)))))
 
   :commands company-mode
   :general

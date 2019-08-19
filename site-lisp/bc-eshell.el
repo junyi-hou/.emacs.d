@@ -151,16 +151,12 @@
   :commands (company-shell company-env)
   :after company
   :init
-  (add-hook 'eshell-mode-hook
-            (defun bc-eshell--company ()
-              (setq-local company-backend
-                          '((company-shell
-                             company-env
-                             company-flies
-                             company-yasnippet)
-                            (company-dabbrev
-                             company-abbrev)))
-              (company-mode))))
+  (defun bc-eshell-company-backends ()
+    "Add shell backends to company"
+    (bc-company-add-backends '(company-shell company-env)))
+  :hook
+  (company-mode . bc-eshell-company-backends))
+
 
 ;; sudo edit files
 (use-package sudo-edit
