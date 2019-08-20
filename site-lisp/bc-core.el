@@ -85,9 +85,9 @@
     gc-cons-percentage 0.6)
 
 (add-hook 'after-init-hook
-          (lambda ()
+          (defun bc-core-set-gc ()
             (setq gc-cons-threshold 16777216
-                  gc-cons-percentage 0.1)))
+                  gc-cons-percentage 0.2)))
 
 ;; When something changes a file, automatically refresh the
 ;; buffer containing that file so they can't get out of sync.

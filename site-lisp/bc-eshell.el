@@ -46,41 +46,42 @@
     (eshell/alias "ll" "ls -Aloh --color=always"))
 
   ;; functions
-  ;; https://www.emacswiki.org/emacs/EshellFunctions
   (defun eshell/x (file &rest args)
     "Unpack FILE with ARGS using default command."
-    (let ((command (-some (lambda (x)
-                           (if (string-match-p (car x) file)
-                               (cadr x)))
-                         '((".*\.tar.bz2" "tar xjf")
-                           (".*\.tar.gz" "tar xzf")
-                           (".*\.bz2" "bunzip2")
-                           (".*\.rar" "unrar x")
-                           (".*\.gz" "gunzip")
-                           (".*\.tar" "tar xf")
-                           (".*\.tbz2" "tar xjf")
-                           (".*\.tgz" "tar xzf")
-                           (".*\.zip" "unzip")
-                           (".*\.Z" "uncompress")
-                           (".*" "echo 'Could not unpack the file:'")))))
-      (let ((unpack-command (concat command " " file " " (mapconcat 'identity args " "))))
-        (eshell/printnl "Unpack command: " unpack-command)
-        (eshell-command-result unpack-command))))
+    (let* ((command
+            (-some (lambda (x)
+                     (if (string-match-p (car x) file)
+                         (cadr x)))
+                   '((".*\.tar.bz2" "tar xjf")
+                     (".*\.tar.gz" "tar xzf")
+                     (".*\.bz2" "bunzip2")
+                     (".*\.rar" "unrar x")
+                     (".*\.gz" "gunzip")
+                     (".*\.tar" "tar xf")
+                     (".*\.tbz2" "tar xjf")
+                     (".*\.tgz" "tar xzf")
+                     (".*\.zip" "unzip")
+                     (".*\.Z" "uncompress")
+                     (".*" "echo 'Could not unpack the file:'"))))
+           (unpack-command
+            (concat command " " file " " (mapconcat 'identity args " "))))
+      (eshell/printnl "Unpack command: " unpack-command)
+      (eshell-command-result unpack-command)))
 
   (defun bc-eshell-toggle-sudo ()
     "Add/Remove sudo in the begining of command line."
     (interactive)
-    (save-excursion
-      (let ((commands (buffer-substring-no-properties
-                       (eshell-bol) (point-max))))
-        (if (string-match-p "^sudo " commands)
-            (progn
-              (eshell-bol)
-              (while (re-search-forward "sudo " nil t)
-                (replace-match "" t nil)))
+    (let ((commands (buffer-substring-no-properties
+                     (eshell-bol) (point-max))))
+      (if (string-match-p "^sudo " commands)
           (progn
             (eshell-bol)
-            (insert "sudo ")))))
+            (while (re-search-forward "sudo " nil t)
+              (replace-match "" t nil)))
+        (progn
+          (eshell-bol)
+          (insert "sudo "))))
+    (goto-char (point-max))
     (evil-insert-state))
 
   (defun bc-eshell-open-here ()
