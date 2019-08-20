@@ -240,10 +240,11 @@
   "of" 'projectile-find-file
   "ob" 'ivy-switch-buffer
   "os" 'bc-eshell-open-here
+  "oS" 'bc-eshell-open-home
   "op" 'projectile-switch-project
   ;; dired
   "od" (lambda () (interactive)
-         (dired (file-name-directory (buffer-file-name))))
+         (dired default-directory))
 
   ;; search and replace
 

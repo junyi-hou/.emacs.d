@@ -60,7 +60,7 @@
   :hook
   (LaTeX-mode . TeX-PDF-mode)
   (LaTeX-mode . TeX-source-correlate-mode)
-  ;; (LaTeX-mode-hook . bc-latex-ivy-bibtex-load-bib-file)
+  ;; (LaTeX-mode . bc-latex-load-bib-file)
 
   :general
   (:keymaps 'LaTeX-mode-map
