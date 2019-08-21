@@ -6,9 +6,6 @@
 
 ;; load pkgs
 
-(require 'bc-pkgmgmt)
-(require 'bc-core)
-
 (use-package general)
 
 (use-package evil-surround
@@ -246,6 +243,10 @@
   ;; dired
   "od" (lambda () (interactive)
          (dired default-directory))
+
+  ;; pass
+  "pc" 'password-store-copy
+  "pg" 'password-store-generate
 
   ;; search and replace
 

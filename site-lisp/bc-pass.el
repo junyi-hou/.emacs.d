@@ -13,7 +13,14 @@
     (let ((str (read-passwd (concat (replace-regexp-in-string "%22" "\"" (replace-regexp-in-string "%0A" "\n" desc)) prompt ": "))))
       str))
 
-  (start-process-shell-command "gpg-agent" nil "gpg-agent --deamon"))
+  (setq password-store-password-length 16)
+
+  ;; when generate passwords, copy them automatically
+  (advice-add
+   #'password-store--run-generate
+   :after
+   (lambda (entry &rest args)
+     (password-store-copy entry))))
 
 
 (provide 'bc-pass)
