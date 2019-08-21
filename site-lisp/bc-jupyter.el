@@ -46,6 +46,44 @@ If REMOTE is provided, start an remote kernel and connect to it."
     ;; TODO: implement this
     )
 
+  (defun bc-jupyter--list-attached-buffer (repl)
+    "List all code buffer that are attached to the REPL buffer"
+    (seq-filter
+     (lambda (buffer)
+       (with-current-buffer buffer
+         (and (bc-evil--is-user-buffer)
+              jupyter-current-client
+              (string-equal (buffer-name (oref jupyter-current-client buffer)) repl))
+         ))
+     (buffer-list)))
+
+  (defun bc-jupyter--strip-repl-identifier (&optional code-buffer)
+    "Remove the repl identifier in CODE-BUFFER.  If CODE-BUFFER is not given, use `current-buffer' instead."
+    (with-current-buffer (or code-buffer (current-buffer))
+      (substring (buffer-name) 0 (string-match-p "<repl-\\([0-9]+\\)>" (buffer-name)))))
+
+  (defun bc-jupyter-kill-repl ()
+    "Kill current repl, reset names of all code buffers associated with it."
+    (interactive)
+    (mapc
+     (lambda (buffer)
+       (with-current-buffer buffer
+         (rename-buffer (bc-jupyter--strip-repl-identifier))))
+     (bc-jupyter--list-attached-buffer (buffer-name)))
+    (kill-buffer-and-window))
+
+
+  (defun bc-jupyter--rename-code-buffer (fun &rest args)
+    "Rename code buffer to reflect the repl it attaches to."
+    (let* ((code-buffer (current-buffer)))
+      (apply fun args)
+      (with-current-buffer code-buffer
+        (let* ((repl-name
+                (buffer-name (oref (buffer-local-value 'jupyter-current-client code-buffer) buffer)))
+               (repl-no (if (string-match "<\\([0-9]+\\)>" repl-name) (match-string 1 repl-name) "1"))
+               (code-buffer-name (bc-jupyter--strip-repl-identifier)))
+          (rename-buffer (concat code-buffer-name "<repl-" repl-no ">" ))))))
+
   (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
     "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
     (interactive)
@@ -63,17 +101,8 @@ If REMOTE is provided, start an remote kernel and connect to it."
       (jupyter-repl-pop-to-buffer)
       (switch-to-buffer-other-window code-buffer)))
 
-  (defun bc-jupyter-eval-buffer-or-region ()
-    "If in visual state, evaluate the current region; otherwise evaluate the current buffer."
-    (interactive)
-    (bc-jupyter--pop-repl)
-    (if (evil-visual-state-p)
-        (jupyter-eval-region (region-beginning) (region-end))
-      (jupyter-eval-buffer (current-buffer)))
-    (deactivate-mark))
-
   (defun bc-jupyter-clear-buffer ()
-    "Eshell version of `cls'."
+    "Jupyter REPL version of `cls'."
     (interactive)
     (let ((inhibit-read-only t))
       (erase-buffer)
@@ -81,6 +110,8 @@ If REMOTE is provided, start an remote kernel and connect to it."
 
   (advice-add #'jupyter-eval-region :after #'deactivate-mark)
   (advice-add #'jupyter-eval-line-or-region :before #'bc-jupyter--pop-repl)
+  (advice-add #'jupyter-repl-associate-buffer :around #'bc-jupyter--rename-code-buffer)
+  (advice-add #'bc-jupyter--start-repl :around #'bc-jupyter--rename-code-buffer)
 
   :general
   (:keymaps
@@ -111,7 +142,7 @@ If REMOTE is provided, start an remote kernel and connect to it."
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
-   "q" 'kill-buffer-and-window))
+   "q" 'bc-jupyter-kill-repl))
 
 (provide 'bc-jupyter)
 ;;; bc-jupyter.el ends here
