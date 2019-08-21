@@ -2,23 +2,6 @@
 
 ;;; Commentary:
 
-;; TODO: multiple buffers could use same repl, what is the optimal way to do that?
-;; TODO: add logging support - when quit, save the repl buffer to PROJ_ROOT/log/date.log file
-;; FIXME: the following function needs formatting (in/out)
-;; (defun bc-jupyter-logger ()
-;;   "Save current workspace to PROJECT_ROOT/log/{kernel}-{datetime}."
-;;   (let* ((proj-root (project-current))
-;;          (log-dir (file-directory-p (concat (cdr proj-root) "log"))))
-;;     (if proj-root
-;;       (progn
-;;         (unless log-dir
-;;           (make-directory log-dir))
-;;         (let* ((time (format-time-string "%Y%m%d-%H%M"))
-;;                (file-name (expand-file-name (concat "jupyter-" time) log-dir)))
-;;           (save-excursion
-;;             (widen)
-;;             (write-region 1 (point-max) file-name))))
-;;       (user-error "Cannot determine project root"))))
 
 ;;; Code:
 
@@ -46,6 +29,23 @@ If REMOTE is provided, start an remote kernel and connect to it."
     ;; TODO: implement this
     )
 
+  (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
+    "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
+    (interactive)
+    (condition-case nil
+        (jupyter-repl-pop-to-buffer)
+      (error (let* ((code-buffer (current-buffer)))
+               (setq-local jupyter-current-client nil)
+               (bc-jupyter--start-repl kernel remote)
+               (jupyter-repl-pop-to-buffer)
+               (switch-to-buffer-other-window code-buffer)))))
+
+  (defun bc-jupyter--pop-repl (&rest args)
+    "Pop repl buffer, then go back to the code buffer."
+    (let* ((code-buffer (current-buffer)))
+      (jupyter-repl-pop-to-buffer)
+      (switch-to-buffer-other-window code-buffer)))
+
   (defun bc-jupyter--list-attached-buffer (repl)
     "List all code buffer that are attached to the REPL buffer"
     (seq-filter
@@ -72,7 +72,6 @@ If REMOTE is provided, start an remote kernel and connect to it."
      (bc-jupyter--list-attached-buffer (buffer-name)))
     (kill-buffer-and-window))
 
-
   (defun bc-jupyter--rename-code-buffer (fun &rest args)
     "Rename code buffer to reflect the repl it attaches to."
     (let* ((code-buffer (current-buffer)))
@@ -84,29 +83,50 @@ If REMOTE is provided, start an remote kernel and connect to it."
                (code-buffer-name (bc-jupyter--strip-repl-identifier)))
           (rename-buffer (concat code-buffer-name "<repl-" repl-no ">" ))))))
 
-  (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
-    "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
-    (interactive)
-    (condition-case nil
-        (jupyter-repl-pop-to-buffer)
-      (error (let* ((code-buffer (current-buffer)))
-               (setq-local jupyter-current-client nil)
-               (bc-jupyter--start-repl kernel remote)
-               (jupyter-repl-pop-to-buffer)
-               (switch-to-buffer-other-window code-buffer)))))
-
-  (defun bc-jupyter--pop-repl (&rest args)
-    "Pop repl buffer, then go back to the code buffer."
-    (let* ((code-buffer (current-buffer)))
-      (jupyter-repl-pop-to-buffer)
-      (switch-to-buffer-other-window code-buffer)))
-
   (defun bc-jupyter-clear-buffer ()
     "Jupyter REPL version of `cls'."
     (interactive)
     (let ((inhibit-read-only t))
       (erase-buffer)
       (jupyter-send-input)))
+
+  (defun bc-jupyter-log--save-workspace ()
+    "Save current workspace to PROJECT_ROOT/log/{kernel}-{datetime}."
+    (let* ((proj-root (project-current))
+           (log-dir (concat (cdr proj-root) "log"))
+           (log-dir-p (file-directory-p log-dir)))
+      (if proj-root
+          (progn
+            (unless log-dir-p
+              (make-directory log-dir))
+            (let* ((time (format-time-string "%Y%m%d-%H%M"))
+                   (kernel (plist-get
+                            (oref jupyter-current-client kernel-info)
+                            :implementation))
+                   (file-name (expand-file-name (concat kernel "-" time) log-dir))
+                   (content (bc-jupyter--logger-cell)))
+              (with-temp-buffer
+                (insert content)
+                (write-file file-name))))
+        (user-error "Cannot determine project root"))))
+
+  (defun bc-jupyter-log--get-cell-content (&optional formatted)
+    "Format jupyter repl workspace cell by cell."
+    (jupyter-repl-next-cell)
+    (let* ((formatted (or formatted ""))
+           (code (jupyter-repl-cell-code))
+           (output (jupyter-repl-cell-output))
+           (count (number-to-string(jupyter-repl-cell-count)))
+           (out
+            (concat
+             formatted "In [" count "]\n" code "\nOut [" count "]" output "\n")))
+      (if (bc-jupyter-log--more-cell-p)
+          (bc-jupyter-log--get-cell-content out)
+        out)))
+
+  (defun bc-jupyter-log--more-cell-p ()
+    "Return t if there are more cells to parse."
+    )
 
   (advice-add #'jupyter-eval-region :after #'deactivate-mark)
   (advice-add #'jupyter-eval-line-or-region :before #'bc-jupyter--pop-repl)
@@ -130,8 +150,6 @@ If REMOTE is provided, start an remote kernel and connect to it."
    "A" (lambda () (interactive)
          (goto-char (point-max))
          (evil-insert 1))
-   "G" 'jupyter-repl-forward-cell
-   "gg" 'jupyter-repl-backward-cell
    "SPC" nil)
 
   (:keymaps 'jupyter-repl-mode-map
