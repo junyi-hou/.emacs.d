@@ -63,8 +63,9 @@ If REMOTE is provided, start an remote kernel and connect to it."
       (substring (buffer-name) 0 (string-match-p "<repl-\\([0-9]+\\)>" (buffer-name)))))
 
   (defun bc-jupyter-kill-repl ()
-    "Kill current repl, reset names of all code buffers associated with it."
+    "Kill current repl, save workspace to log folder, reset names of all code buffers associated with it."
     (interactive)
+    (bc-jupyter-log--save-workspace)
     (mapc
      (lambda (buffer)
        (with-current-buffer buffer
@@ -99,34 +100,36 @@ If REMOTE is provided, start an remote kernel and connect to it."
           (progn
             (unless log-dir-p
               (make-directory log-dir))
+            (goto-char (point-min))
             (let* ((time (format-time-string "%Y%m%d-%H%M"))
                    (kernel (plist-get
                             (oref jupyter-current-client kernel-info)
                             :implementation))
                    (file-name (expand-file-name (concat kernel "-" time) log-dir))
-                   (content (bc-jupyter--logger-cell)))
+                   (content (bc-jupyter-log--get-cell-content)))
               (with-temp-buffer
                 (insert content)
                 (write-file file-name))))
         (user-error "Cannot determine project root"))))
 
   (defun bc-jupyter-log--get-cell-content (&optional formatted)
-    "Format jupyter repl workspace cell by cell."
-    (jupyter-repl-next-cell)
-    (let* ((formatted (or formatted ""))
-           (code (jupyter-repl-cell-code))
-           (output (jupyter-repl-cell-output))
-           (count (number-to-string(jupyter-repl-cell-count)))
-           (out
-            (concat
-             formatted "In [" count "]\n" code "\nOut [" count "]" output "\n")))
-      (if (bc-jupyter-log--more-cell-p)
-          (bc-jupyter-log--get-cell-content out)
-        out)))
+    "Format jupyter repl workspace cell by cell.
 
-  (defun bc-jupyter-log--more-cell-p ()
-    "Return t if there are more cells to parse."
-    )
+HACK: do not export the last cell, as `jupyter-repl-cell-finalized-p' is nil in that cell."
+    (let* ((formatted (or formatted "")))
+      (jupyter-repl-next-cell)
+      (if (not (jupyter-repl-cell-finalized-p))
+          ;; last cell
+          formatted
+        (let* ((code (jupyter-repl-cell-code))
+               (output (jupyter-repl-cell-output))
+               (count (number-to-string(jupyter-repl-cell-count)))
+               (out
+                (if (string-empty-p code)
+                    formatted
+                  (concat
+                   formatted "In [" count "]\n" code "\nOut [" count "]" output "\n"))))
+          (bc-jupyter-log--get-cell-content out)))))
 
   (advice-add #'jupyter-eval-region :after #'deactivate-mark)
   (advice-add #'jupyter-eval-line-or-region :before #'bc-jupyter--pop-repl)
