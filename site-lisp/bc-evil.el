@@ -27,6 +27,15 @@
 (use-package expand-region
   :after evil
   :commands (er/expand-region er/contract-region)
+  :init
+  (defun bc-expand-region--suppress-message (fun &rest args)
+    "Suppress the message when calling FUN with ARGS."
+    (let ((inhibit-message t))
+      (apply fun args)))
+
+  (advice-add 'er/expand-region :around #'bc-expand-region--suppress-message)
+  (advice-add 'er/contract-region :around #'bc-expand-region--suppress-message)
+
   :general
   (:keymaps 'visual
    "v" 'er/expand-region
