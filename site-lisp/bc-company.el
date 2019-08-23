@@ -6,6 +6,9 @@
 
 (use-package yasnippet
   :commands (yas-minor-mode yas-reload-all)
+  :hook
+  (company-mode . yas-reload-all)
+  (company-mode . yas-minor-mode)
   :general
   (:keymaps 'yas-minor-mode-map
    "<tab>" nil
@@ -74,10 +77,6 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
    "M-J" 'company-next-page
    "M-K" 'company-previous-page)
 
-  :config
-  (add-hook 'company-mode-hook (defun bc-lsp-load-yas ()
-                                 (yas-minor-mode)
-                                 (yas-reload-all)))
   (setq company-idle-delay nil
         company-require-match 'never
         company-dabbrev-downcase nil
