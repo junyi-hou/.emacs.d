@@ -14,6 +14,10 @@
 ;; mode line
 (use-package telephone-line
   :init
+  (set-face-attribute
+   'mode-line-buffer-id
+   nil
+   :weight 'normal)
   (telephone-line-defsegment* bc-theme-pctg-buffer-position ()
     (concat "LN " (format "%d/%d"
                           (1+ (count-lines 1 (point)))
