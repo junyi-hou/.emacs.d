@@ -27,8 +27,21 @@
   (require 'quelpa-use-package))
 
 ;; use package settings
-(setq use-package-always-ensure t
+(setq use-package-verbose t
+      use-package-always-ensure t
       quelpa-update-melpa-p nil)
+
+;; do not litter my .emacs.d
+(use-package no-littering
+  :config
+  (setq-default
+   no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
+   no-littering-var-directory (expand-file-name "var/" user-emacs-directory)
+   auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+   backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
+   custom-file (no-littering-expand-etc-file-name "custom.el"))
+  (load custom-file 'noerror))
+
 (use-package auto-compile
   :config (auto-compile-on-load-mode))
 (use-package auto-package-update

@@ -4,16 +4,6 @@
 
 ;;; Code:
 
-;; put custom files in a separate location
-(use-package no-littering
-  :config
-  (setq-default no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
-                no-littering-var-directory (expand-file-name "var/" user-emacs-directory)
-                auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
-                backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
-                custom-file (no-littering-expand-etc-file-name "custom.el"))
-  (load custom-file 'noerror))
-
 ;; turn off bell
 (setq-default visible-bell t
               ring-bell-function 'ignore)
