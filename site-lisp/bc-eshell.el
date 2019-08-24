@@ -136,7 +136,6 @@
   (dolist (p '("alsamixer" "htop" "ssh" "top"))
       (add-to-list 'eshell-visual-commands p)))
 
-;; FIXME: need to call su before call sudo, otherwise causing recursive load
 (use-package em-tramp
   :ensure nil
   :after eshell
