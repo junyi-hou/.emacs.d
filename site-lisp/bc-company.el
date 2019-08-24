@@ -76,7 +76,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
    "M-k" 'company-select-previous-or-abort
    "M-J" 'company-next-page
    "M-K" 'company-previous-page)
-
+  :config
   (setq company-idle-delay nil
         company-require-match 'never
         company-dabbrev-downcase nil
