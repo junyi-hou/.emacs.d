@@ -89,7 +89,7 @@
 
   (setq org-capture-templates
         '(("t" "todo item" entry (file "~/org/todo.org")
-            "* TODO %?\n  %t\n  %F")
+            "* TODO %t %?\n  %F" :empty-lines 1)
           ("r" "research notes" entry
            (file (concat (cdr (project-current)) "note.org"))
            "* NOTE %?\n  %t\n  %F")))
