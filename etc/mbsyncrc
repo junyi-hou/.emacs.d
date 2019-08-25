@@ -1,0 +1,151 @@
+## mbsync config file -*- mode: sh -*-
+
+## ACCOUNT INFORMATION
+
+# ===============================================
+# bmail.berkeley.edu
+# ===============================================
+
+IMAPAccount berkeley
+Host imap.gmail.com
+User junyi.hou
+PassCmd "pass show bmail/passwd"
+AuthMechs LOGIN
+SSLType IMAPS
+SSLVersions TLSv1.2
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+## WE SPECIFY THE LOCAL AND REMOTE STORAGE
+# REMOTE STORAGE: WHERE WE GET THE MAIL FROM
+# LOCAL STORAGE: WHERE WE STORE THE EMAIL ON OUR COMPUTER
+
+IMAPStore berkeley-remote
+Account berkeley
+
+MaildirStore berkeley-local
+Path ~/mail/berkeley/
+Inbox ~/mail/berkeley/INBOX
+
+Channel berkeley-inbox
+Master :berkeley-remote:
+Slave :berkeley-local:
+Patterns "INBOX"
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+Channel berkeley-all
+Master :berkeley-remote:"[Gmail]/All Mail"
+Slave :berkeley-local:all
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+Channel berkeley-sent
+Master :berkeley-remote:"[Gmail]/Sent Mail"
+Slave :berkeley-local:sent
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+Channel berkeley-starred
+Master :berkeley-remote:"[Gmail]/Starred"
+Slave :berkeley-local:starred
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+# GROUPS PUT TOGETHER CHANNELS, SO THAT WE CAN INVOKE
+# MBSYNC ON A GROUP TO SYNC ALL CHANNELS
+Group berkeley
+Channel berkeley-inbox
+Channel berkeley-sent
+Channel berkeley-all
+Channel berkeley-starred
+
+# ===============================================
+# gmail.com
+# ===============================================
+
+IMAPAccount gmail
+Host imap.gmail.com
+User junyi.yi.hou@gmail.com
+PassCmd "pass show gmail/passwd"
+AuthMechs LOGIN
+SSLType IMAPS
+SSLVersions TLSv1.2
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+## WE SPECIFY THE LOCAL AND REMOTE STORAGE
+# REMOTE STORAGE: WHERE WE GET THE MAIL FROM
+# LOCAL STORAGE: WHERE WE STORE THE EMAIL ON OUR COMPUTER
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Path ~/mail/gmail/
+Inbox ~/mail/gmail/INBOX
+
+Channel gmail-inbox
+Master :gmail-remote:
+Slave :gmail-local:
+Patterns "INBOX"
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+Channel gmail-all
+Master :gmail-remote:"[Gmail]/All Mail"
+Slave :gmail-local:all
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+Channel gmail-sent
+Master :gmail-remote:"[Gmail]/Sent Mail"
+Slave :gmail-local:sent
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+Channel gmail-draft
+Master :gmail-remote:"[Gmail]/Draft"
+Slave :gmail-local:draft
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+Channel gmail-bin
+Master :gmail-remote:"[Gmail]/Bin"
+Slave :gmail-local:bin
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+Channel gmail-starred
+Master :gmail-remote:"[Gmail]/Starred"
+Slave :gmail-local:starred
+Create Slave
+SyncState *
+Sync All
+Expunge Both
+
+# GROUPS PUT TOGETHER CHANNELS, SO THAT WE CAN INVOKE
+# MBSYNC ON A GROUP TO SYNC ALL CHANNELS
+Group gmail
+Channel gmail-inbox
+Channel gmail-sent
+Channel gmail-all
+Channel gmail-starred
+Channel gmail-bin
+Channel gmail-draft
