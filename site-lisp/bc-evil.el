@@ -255,7 +255,10 @@
 
   ;; pass
   "pc" 'password-store-copy
-  "pg" 'password-store-generate
+  "pg" 'bc-password-store-generate
+
+  ;; mail
+  "m" 'mu4e
 
   ;; search and replace
 
