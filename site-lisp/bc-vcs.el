@@ -32,15 +32,6 @@
   (setq magit-log-auto-more t)
 
   :general
-  (:keymaps '(motion normal visual)
-   :prefix "SPC"
-   "gg" (lambda () (interactive)
-          (unless magit-todos-mode
-            (magit-todos-mode))
-          (magit-status))
-   "gd" 'magit-diff-buffer-file
-   "gl" 'magit-log-buffer-file)
-
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal)
    "SPC" nil

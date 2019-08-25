@@ -94,15 +94,6 @@
            (file (concat (cdr (project-current)) "note.org"))
            "* NOTE %?\n  %t\n  %F")))
   :general
-  (:keymaps '(normal visual motion)
-   :prefix "SPC"
-   "ct" (lambda () (interactive)
-          (org-capture nil "t")
-          (evil-insert-state))
-   "cr" (lambda () (interactive)
-          (org-capture nil "r")
-          (evil-insert-state)))
-
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
    :prefix "SPC"

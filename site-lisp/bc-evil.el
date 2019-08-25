@@ -260,6 +260,22 @@
   ;; mail
   "m" 'mu4e
 
+  ;; org-capture
+  "ct" (lambda () (interactive)
+         (org-capture nil "t")
+         (evil-insert-state))
+  "cr" (lambda () (interactive)
+         (org-capture nil "r")
+         (evil-insert-state))
+
+  ;; magit
+  "gg" (lambda () (interactive)
+         (unless magit-todos-mode
+           (magit-todos-mode))
+         (magit-status))
+  "gd" 'magit-diff-buffer-file
+  "gl" 'magit-log-buffer-file)
+
   ;; search and replace
 
 
