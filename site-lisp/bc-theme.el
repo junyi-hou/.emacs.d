@@ -56,7 +56,6 @@
   "Set the stipple used by indentation highlighting."
   (bc-theme--set-highlight-stipple))
 
-
 ;; line numbers
 (use-package display-line-numbers
   :hook (prog-mode . display-line-numbers-mode)
@@ -72,7 +71,7 @@
 ;; display time
 (use-package time
   :init
-  (setq display-time-load-average-threshold 0.9
+  (setq display-time-load-average-threshold 2.0
         display-time-24hr-format t)
   :config
   (display-time-mode))

@@ -27,8 +27,7 @@
   (require 'quelpa-use-package))
 
 ;; use package settings
-(setq use-package-verbose t
-      use-package-always-ensure t
+(setq use-package-always-ensure t
       quelpa-update-melpa-p nil)
 
 ;; do not litter my .emacs.d
