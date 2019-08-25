@@ -10,45 +10,44 @@
   :init
 
   ;; context - different mail accounts
-  (setq mu4e-contexts
-        `(
-          ,(make-mu4e-context
-            :name "Gmail"
-            :enter-func (lambda () (mu4e-message "Entering Gmail..."))
-            :match-func ;; use maildir to match
-            (lambda (msg)
-              (when msg
-                (string-match-p
-                 "~/mail/gmail"
-                 (mu4e-message-contact-field-matches msg :maildir))))
-            :vars '((user-mail-address . "junyi.yi.hou@gmail.com")
-                    (user-full-name . "Junyi Hou")
-                    (mu4e-compose-signature . nil)
-                    (mu4e-sent-folder . "/gmail/sent")
-                    (mu4e-drafts-folder . "/gmail/drafts")
-                    (mu4e-refile-folder . "/gmail/all")
-                    (mu4e-trash-folder . "/gmail/bin")))
+  ;; (setq mu4e-contexts
+  ;;       `(
+  ;;         ,(make-mu4e-context
+  ;;           :name "Gmail"
+  ;;           :enter-func (lambda () (mu4e-message "Entering Gmail..."))
+  ;;           :match-func ;; use maildir to match
+  ;;           (lambda (msg)
+  ;;             (when msg
+  ;;               (string-match-p
+  ;;                "~/mail/gmail"
+  ;;                (mu4e-message-contact-field-matches msg :maildir))))
+  ;;           :vars '((user-mail-address . "junyi.yi.hou@gmail.com")
+  ;;                   (user-full-name . "Junyi Hou")
+  ;;                   (mu4e-compose-signature . nil)
+  ;;                   (mu4e-sent-folder . "/gmail/sent")
+  ;;                   (mu4e-drafts-folder . "/gmail/drafts")
+  ;;                   (mu4e-refile-folder . "/gmail/all")
+  ;;                   (mu4e-trash-folder . "/gmail/bin")))
 
-          ,(make-mu4e-context
-            :name "Berkeley"
-            :enter-func (lambda () (mu4e-message "Entering Gmail..."))
-            :match-func ;; use maildir to match
-            (lambda (msg)
-              (when msg
-                (string-match-p
-                 "~/mail/berkeley"
-                 (mu4e-message-contact-field-matches msg :maildir))))
-            :vars '((user-mail-address . "junyi.hou@berkeley.edu")
-                    (user-full-name . "Junyi Hou")
-                    (mu4e-compose-signature . nil)))
-          ))
+  ;;         ,(make-mu4e-context
+  ;;           :name "Berkeley"
+  ;;           :enter-func (lambda () (mu4e-message "Entering Gmail..."))
+  ;;           :match-func ;; use maildir to match
+  ;;           (lambda (msg)
+  ;;             (when msg
+  ;;               (string-match-p
+  ;;                "~/mail/berkeley"
+  ;;                (mu4e-message-contact-field-matches msg :maildir))))
+  ;;           :vars '((user-mail-address . "junyi.hou@berkeley.edu")
+  ;;                   (user-full-name . "Junyi Hou")
+  ;;                   (mu4e-compose-signature . nil)))
+  ;;         ))
 
-  (setq mu4e-context-policy 'ask
-        mu4e-get-mail-command "mbsync -c ~/.emacs.d/etc/mbsyncrc -a")
+  (setq mu4e-get-mail-command "mbsync -c ~/.emacs.d/etc/mbsyncrc -a")
 
   ;; sending
 
-  (setq mu4e-maildir "~/.emacs.d/var/emails"
+  (setq mu4e-maildir "~/.emacs.d/var/emails/gmail"
         mu4e-show-images t
         mu4e-view-prefer-html t)
   ;; use imagemagick, if available
