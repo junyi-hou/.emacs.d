@@ -23,8 +23,8 @@ IMAPStore berkeley-remote
 Account berkeley
 
 MaildirStore berkeley-local
-Path ~/mail/berkeley/
-Inbox ~/mail/berkeley/INBOX
+Path ~/.emacs.d/var/emails/berkeley/
+Inbox ~/.emacs.d/var/emails/berkeley/INBOX
 
 Channel berkeley-inbox
 Master :berkeley-remote:
@@ -88,8 +88,8 @@ IMAPStore gmail-remote
 Account gmail
 
 MaildirStore gmail-local
-Path ~/mail/gmail/
-Inbox ~/mail/gmail/INBOX
+Path ~/.emacs.d/var/emails/gmail/
+Inbox ~/.emacs.d/var/emails/gmail/INBOX
 
 Channel gmail-inbox
 Master :gmail-remote:

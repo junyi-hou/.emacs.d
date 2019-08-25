@@ -44,13 +44,11 @@
           ))
 
   (setq mu4e-context-policy 'ask
-        mu4e-get-mail-command "mbsync -c ~/.emacs.d/etc/mbsyncrc gmail")
+        mu4e-get-mail-command "mbsync -c ~/.emacs.d/etc/mbsyncrc -a")
 
   ;; sending
-  ;; don't save message to Sent Messages, IMAP takes care of this
-  ;; (setq mu4e-sent-messages-behavior 'delete)
 
-  (setq mu4e-maildir "~/mail"
+  (setq mu4e-maildir "~/.emacs.d/var/emails"
         mu4e-show-images t
         mu4e-view-prefer-html t)
   ;; use imagemagick, if available
