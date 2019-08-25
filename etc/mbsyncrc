@@ -116,9 +116,9 @@ SyncState *
 Sync All
 Expunge Both
 
-Channel gmail-draft
-Master :gmail-remote:"[Gmail]/Draft"
-Slave :gmail-local:draft
+Channel gmail-drafts
+Master :gmail-remote:"[Gmail]/Drafts"
+Slave :gmail-local:drafts
 Create Slave
 SyncState *
 Sync All
@@ -148,4 +148,4 @@ Channel gmail-sent
 Channel gmail-all
 Channel gmail-starred
 Channel gmail-bin
-Channel gmail-draft
+Channel gmail-drafts
