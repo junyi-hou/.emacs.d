@@ -274,7 +274,7 @@
            (magit-todos-mode))
          (magit-status))
   "gd" 'magit-diff-buffer-file
-  "gl" 'magit-log-buffer-file)
+  "gl" 'magit-log-buffer-file
 
   ;; search and replace
 
