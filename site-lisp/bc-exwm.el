@@ -176,6 +176,9 @@
 (server-start)
 (exwm-enable)
 
+;; TODO:
+;; advice c-h to change workspace focus
+;; abstract xrandr as a function with arguments orientation and external-monitor?
 
 (provide 'bc-exwm)
 ;;; bc-exwm.el ends here
