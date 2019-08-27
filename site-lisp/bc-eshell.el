@@ -142,6 +142,8 @@
   :init
   (setq password-cache t
         password-cache-expiry 3600)
+  ;; wired, why do I start requiring this?
+  (setq tramp-histfile-override "/dev/null")
   (add-to-list 'eshell-modules-list #'eshell-tramp))
 
 (use-package xterm-color

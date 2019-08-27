@@ -5,7 +5,6 @@
 ;;; Code:
 
 (require 'exwm)
-(require 'tramp)
 
 ;; functions
 (defun bc-exwm--flatten (l)
@@ -79,16 +78,51 @@
           (exwm-workspace-switch-create index)))))
 
 (defun bc-exwm--external-monitor-p ()
-  "Return the port of (first) attached external monitor.  If there is no, return nil."
+  "Return the name of (first) attached external monitor.  If there is no, return nil."
   (let* ((xrandr-output-regexp "\n\\([^ ]+\\) connected ")
          (default-output "eDP1"))
     (with-temp-buffer
       (call-process "xrandr" nil t nil)
       (goto-char (point-min))
       (re-search-forward xrandr-output-regexp nil 'noerror 2)
-      (let* ((port (match-string 1)))
-        (unless (string-equal default-output port)
-          port)))))
+      (let* ((output (match-string 1)))
+        (unless (string-equal default-output output)
+          output)))))
+
+(defun bc-exwm--turnoff-external-monitor ()
+  "Turn off all external monitors."
+  (let ((xrandr-output-regexp "\n\\([^ ]+\\) disconnected "))
+    (with-temp-buffer
+      (call-process "xrandr" nil t nil)
+      (goto-char (point-min))
+      (while (re-search-forward xrandr-output-regexp nil 'noerror)
+        (call-process
+         "xrandr" nil nil nil
+         "--output" (match-string 1) "--off")))))
+
+(defun bc-exwm--turnon-external-monitor (position)
+  "Turn on the monitor identified by `bc-exwm--external-monitor-p'.  POSITION determines the relative position of the new monitor to the builtin monitor eDP1.  If POSITION is given, use it, otherwise read it from input."
+  (interactive "sPosition (left/right-of, above, below or same-as): ")
+  (let ((ext-mon (bc-exwm--external-monitor-p)))
+    (when ext-mon
+      (call-process
+       "xrandr" nil nil nil
+       "--output" "eDP1" "--auto"
+       "--output" ext-mon position "eDP1" "--auto"))))
+
+(defun bc-exwm--assign-workspaces (ext-mon)
+  "Assigning workspaces 1 - 9 to EXT-MON and 0 to eDP1."
+  (setq exwm-randr-workspace-monitor-plist
+        `(0 "eDP1"
+          1 ,ext-mon
+          2 ,ext-mon
+          3 ,ext-mon
+          4 ,ext-mon
+          5 ,ext-mon
+          6 ,ext-mon
+          7 ,ext-mon
+          8 ,ext-mon
+          9 ,ext-mon)))
 
 ;; rename buffer to window title
 (defun bc-exwm-rename-buffer-to-title ()
@@ -121,6 +155,7 @@
                         (interactive)
                         (bc-exwm-switch-to-workplace-confirm (- ,i 1)))))
                   (number-sequence 1 9))
+        ;; multimedia keys
         ([XF86AudioLowerVolume] . (lambda () (interactive)
                                     (bc-exwm-amixer-adjust-volume)))
         ([XF86AudioRaiseVolume] . (lambda () (interactive)
@@ -132,12 +167,7 @@
 
 ;; simulation key
 (setq exwm-input-simulation-keys
-      '(;; arrow keys
-        ([?\M-j] . [down])
-        ([?\M-k] . [up])
-        ([?\M-h] . [left])
-        ([?\M-l] . [right])
-        ;; c-g = esc
+      '(;; c-g = esc
         ([?\C-g] . [escape])
         ;; yank; paste: find a solution
         ([?\s-y] . [?\C-c])
@@ -150,35 +180,6 @@
  "C-j" 'evil-window-down
  "C-k" 'evil-window-up
  "C-l" 'evil-window-right)
-
-;; multi-screen support
-(let ((external-monitor? (bc-exwm--external-monitor-p)))
-  (when external-monitor?
-    (require 'exwm-randr)
-    ;; if external monitor is attached, the internal monitor needs only
-    ;; 1 workspace
-    (setq exwm-randr-workspace-monitor-plist
-          (seq-reduce
-           'append
-           `((0 "eDP1")
-             ,@(mapcar (lambda (i)
-                         `(,i ,external-monitor?))
-                       (number-sequence 1 9)))
-           '()))
-    ;; call xrandr
-    (call-process
-     "xrandr" nil nil nil
-     "--output" "eDP1" "--auto"
-     "--output" external-monitor? "--right-of" "eDP1" "--auto")
-    (exwm-randr-enable)
-    ))
-
-(server-start)
-(exwm-enable)
-
-;; TODO:
-;; advice c-h to change workspace focus
-;; abstract xrandr as a function with arguments orientation and external-monitor?
 
 (provide 'bc-exwm)
 ;;; bc-exwm.el ends here
