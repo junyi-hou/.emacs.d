@@ -4,70 +4,8 @@
 
 ;;; Code:
 
-(use-package exwm)
+(require 'exwm)
 (require 'tramp)
-
-;; number of initial workspaces
-(setq exwm-workspace-number 2)
-
-;; leader key in exwm buffer M-SPC
-(evil-set-initial-state 'exwm-mode 'emacs)
-(push ?\s-\  exwm-input-prefix-keys)
-
-;; rename buffer to window title
-(defun bc-exwm-rename-buffer-to-title ()
-  (exwm-workspace-rename-buffer exwm-title))
-(add-hook 'exwm-update-title-hook 'bc-exwm-rename-buffer-to-title)
-(add-hook 'exwm-floating-setup-hook 'exwm-layout-hide-mode-line)
-(add-hook 'exwm-floating-exit-hook 'exwm-layout-show-mode-line)
-
-(setq exwm-input-global-keys
-      `(;; app launcher
-        ([?\s-d] . bc-exwm-launch-x-with-ivy)
-        ;; to line mode
-        ([?\s-r] . exwm-reset)
-        ;; toggle between line and char mode
-        ([?\s-x] . exwm-input-toggle-keyboard)
-        ;; switch to and from workspaces
-        ;; workspaces start from 0, but keymaps should start from 1
-        ,@(mapcar (lambda (i)
-                    `(,(kbd (format "s-%d" i)) .
-                      (lambda ()
-                        (interactive)
-                        (bc-exwm-switch-to-workplace-confirm (- ,i 1)))))
-                  (number-sequence 1 9))
-        ([XF86AudioLowerVolume] . (lambda () (interactive)
-                                    (bc-exwm-amixer-adjust-volume)))
-        ([XF86AudioRaiseVolume] . (lambda () (interactive)
-                                    (bc-exwm-amixer-adjust-volume t)))
-        ([XF86MonBrightnessUp] . (lambda () (interactive)
-                                   (bc-exwm-adjust-backlight t)))
-        ([XF86MonBrightnessDown] . (lambda () (interactive)
-                                     (bc-exwm-adjust-backlight)))))
-
-;; simulation key
-(setq exwm-input-simulation-keys
-      '(;; arrow keys
-        ([?\M-j] . [down])
-        ([?\M-k] . [up])
-        ([?\M-h] . [left])
-        ([?\M-l] . [right])
-        ;; c-g = esc
-        ([?\C-g] . [escape])
-        ;; yank; paste: find a solution
-        ([?\s-y] . [?\C-c])
-        ([?\s-p] . [?\C-v])))
-
-;; line-mode keybinding
-(general-define-key
- :keymaps 'exwm-mode-map
- "C-h" 'evil-window-left
- "C-j" 'evil-window-down
- "C-k" 'evil-window-up
- "C-l" 'evil-window-right)
-
-(server-start)
-(exwm-enable)
 
 ;; functions
 (defun bc-exwm--flatten (l)
@@ -139,6 +77,104 @@
         (exwm-workspace-switch index)
       (if (y-or-n-p (format "workspace %d doesn't exists, create?" index))
           (exwm-workspace-switch-create index)))))
+
+(defun bc-exwm--external-monitor-p ()
+  "Return the port of (first) attached external monitor.  If there is no, return nil."
+  (let* ((xrandr-output-regexp "\n\\([^ ]+\\) connected ")
+         (default-output "eDP1"))
+    (with-temp-buffer
+      (call-process "xrandr" nil t nil)
+      (goto-char (point-min))
+      (re-search-forward xrandr-output-regexp nil 'noerror 2)
+      (let* ((port (match-string 1)))
+        (unless (string-equal default-output port)
+          port)))))
+
+;; rename buffer to window title
+(defun bc-exwm-rename-buffer-to-title ()
+  (exwm-workspace-rename-buffer exwm-title))
+
+(add-hook 'exwm-update-title-hook 'bc-exwm-rename-buffer-to-title)
+(add-hook 'exwm-floating-setup-hook 'exwm-layout-hide-mode-line)
+(add-hook 'exwm-floating-exit-hook 'exwm-layout-show-mode-line)
+
+;; settings
+;; initial workspace - start only 2
+(setq exwm-workspace-number 2)
+
+;; leader key in exwm buffer M-SPC
+(evil-set-initial-state 'exwm-mode 'emacs)
+(push ?\s-\  exwm-input-prefix-keys)
+
+(setq exwm-input-global-keys
+      `(;; app launcher
+        ([?\s-d] . bc-exwm-launch-x-with-ivy)
+        ;; to line mode
+        ([?\s-r] . exwm-reset)
+        ;; toggle between line and char mode
+        ([?\s-x] . exwm-input-toggle-keyboard)
+        ;; switch to and from workspaces
+        ;; workspaces start from 0, but keymaps should start from 1
+        ,@(mapcar (lambda (i)
+                    `(,(kbd (format "s-%d" i)) .
+                      (lambda ()
+                        (interactive)
+                        (bc-exwm-switch-to-workplace-confirm (- ,i 1)))))
+                  (number-sequence 1 9))
+        ([XF86AudioLowerVolume] . (lambda () (interactive)
+                                    (bc-exwm-amixer-adjust-volume)))
+        ([XF86AudioRaiseVolume] . (lambda () (interactive)
+                                    (bc-exwm-amixer-adjust-volume t)))
+        ([XF86MonBrightnessUp] . (lambda () (interactive)
+                                   (bc-exwm-adjust-backlight t)))
+        ([XF86MonBrightnessDown] . (lambda () (interactive)
+                                     (bc-exwm-adjust-backlight)))))
+
+;; simulation key
+(setq exwm-input-simulation-keys
+      '(;; arrow keys
+        ([?\M-j] . [down])
+        ([?\M-k] . [up])
+        ([?\M-h] . [left])
+        ([?\M-l] . [right])
+        ;; c-g = esc
+        ([?\C-g] . [escape])
+        ;; yank; paste: find a solution
+        ([?\s-y] . [?\C-c])
+        ([?\s-p] . [?\C-v])))
+
+;; line-mode keybinding
+(general-define-key
+ :keymaps 'exwm-mode-map
+ "C-h" 'evil-window-left
+ "C-j" 'evil-window-down
+ "C-k" 'evil-window-up
+ "C-l" 'evil-window-right)
+
+;; multi-screen support
+(let ((external-monitor? (bc-exwm--external-monitor-p)))
+  (when external-monitor?
+    (require 'exwm-randr)
+    ;; if external monitor is attached, the internal monitor needs only
+    ;; 1 workspace
+    (setq exwm-randr-workspace-monitor-plist
+          (seq-reduce
+           'append
+           `((0 "eDP1")
+             ,@(mapcar (lambda (i)
+                         `(,i ,external-monitor?))
+                       (number-sequence 1 9)))
+           '()))
+    ;; call xrandr
+    (call-process
+     "xrandr" nil nil nil
+     "--output" "eDP1" "--auto"
+     "--output" external-monitor? "--right-of" "eDP1" "--auto")
+    (exwm-randr-enable)
+    ))
+
+(server-start)
+(exwm-enable)
 
 
 (provide 'bc-exwm)
