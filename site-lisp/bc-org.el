@@ -29,13 +29,38 @@
      'completion-at-point-functions
      'pcomplete-completions-at-point nil t))
 
-  (defun bc-org-insert-date ()
-    "Insert today's date in org-mode's format."
-    (insert (concat "<" (format-time-string "%Y-%m-%d") ">")))
+  (defun bc-org--export-headline ()
+    "Return the first level headline of an org file."
+    (set-mark (point-min))
+    (goto-char (point-max))
+    (org-map-entries
+     (lambda ()
+       (let ((heading (org-heading-components)))
+         ;; return heading text if there is any, otherwise return the todo keyword
+         (if (nth 4 heading)
+             (nth 4 heading)
+           (nth 2 heading))))
+     nil
+     'region-start-level))
 
-  (defun bc-org-insert-date-time ()
-    "Insert today's date-time in org-mode's format."
-    (insert (concat "<" (format-time-string "%Y-%m-%d %H:%M") ">")))
+  (defun bc-org-capture-todo (headline)
+    "Create a temporary org capture entry pointing to todo.org under HEADLINE, capture the current content there and then"
+    (interactive
+     (list (ivy-read
+            "Headline: "
+            (org-babel-with-temp-filebuffer "~/org/todo.org"
+              (bc-org--export-headline))
+            :action
+            (lambda (headline)
+              (let ((templates org-capture-templates))
+                (add-to-list
+                 'org-capture-templates
+                 `("t" "todo item" entry (file+headline "~/org/todo.org" ,headline)
+                  "* %t %?\n%a" :empty-lines 1))
+                (org-capture nil "t")
+                (evil-insert-state)
+                (setq org-capture-templates templates)))))))
+
 
   :config
 
@@ -88,11 +113,14 @@
         org-default-notes-file (concat org-directory "/notes.org"))
 
   (setq org-capture-templates
-        '(("t" "todo item" entry (file "~/org/todo.org")
-            "* TODO %t %?\n  %F" :empty-lines 1)
+        '(
+          ;; ("t" "todo item" entry (file+headline "~/org/todo.org" "TODO")
+          ;;   "* %t %?\n%a" :empty-lines 1)
+          ("m" "mail item" entry (file+headline "~/org/todo.org" "MAIL")
+           "* %t %?\n%a" :empty-lines 1)
           ("r" "research notes" entry
-           (file (concat (cdr (project-current)) "note.org"))
-           "* NOTE %?\n  %t\n  %F")))
+           (file+headline (concat (cdr (project-current)) "notes.org") "NOTE:")
+           "** %T %?\n %a" :)))
   :general
   (:keymaps 'org-mode-map
    :states '(normal visual motion)

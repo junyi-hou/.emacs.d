@@ -178,15 +178,16 @@
 
   (advice-add 'newline :around #'bc-evil-better-newline)
 
-  (defun bc-evil-open-file-at-point ()
-    "Try to open file at point.  If not file is found, fallback to `evil-ret'."
+  (defun bc-evil-open-file-at-point (&optional other-window)
+    "Try to open file at point.  If not file is found, fallback to `evil-ret'.  If OTHER-WINDOW is t, open the file in other window."
     (interactive)
-    (let ((filename (symbol-name (symbol-at-point))))
+    (let ((fn (if other-window 'find-file-other-window 'find-file))
+          (filename (symbol-name (symbol-at-point))))
       (cond
        ((file-readable-p filename)
-        (find-file filename))
+        (funcall fn filename))
        ((file-readable-p (expand-file-name filename))
-        (find-file (expand-file-name filename)))
+        (funcall fn (expand-file-name filename)))
        (t
         (evil-ret)))))
 
@@ -201,6 +202,7 @@
    "L" 'evil-end-of-visual-line
 
    "RET" 'bc-evil-open-file-at-point
+   "S-RET" (lambda () (interactive) (bc-evil-open-file-at-point t))
 
    "SPC" nil
    "S-SPC" nil)
@@ -275,9 +277,7 @@
   "m" 'mu4e
 
   ;; org-capture
-  "ct" (lambda () (interactive)
-         (org-capture nil "t")
-         (evil-insert-state))
+  "ct" 'bc-org-capture-todo
   "cr" (lambda () (interactive)
          (org-capture nil "r")
          (evil-insert-state))
