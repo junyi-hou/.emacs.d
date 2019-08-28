@@ -178,6 +178,18 @@
 
   (advice-add 'newline :around #'bc-evil-better-newline)
 
+  (defun bc-evil-open-file-at-point ()
+    "Try to open file at point.  If not file is found, fallback to `evil-ret'."
+    (interactive)
+    (let ((filename (symbol-name (symbol-at-point))))
+      (cond
+       ((file-readable-p filename)
+        (find-file filename))
+       ((file-readable-p (expand-file-name filename))
+        (find-file (expand-file-name filename)))
+       (t
+        (evil-ret)))))
+
   :general
   (:keymaps '(motion normal visual)
    "j" 'evil-next-visual-line
@@ -187,6 +199,8 @@
    "J" 'bc-evil-next-three-lines
    "K" 'bc-evil-previous-three-lines
    "L" 'evil-end-of-visual-line
+
+   "RET" 'bc-evil-open-file-at-point
 
    "SPC" nil
    "S-SPC" nil)
