@@ -9,7 +9,6 @@
   :after flyspell-correct)
 
 (use-package flyspell-correct
-  :commands flyspell-correct-wrapper
   :init
   (setq flyspell-correct-interface #'flyspell-correct-ivy)
 
