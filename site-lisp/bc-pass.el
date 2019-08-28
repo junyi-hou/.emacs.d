@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package password-store
-  :defer t
+  :commands password-store--run-generate
   :init
   ;; use emacs minibuffer as pinentry frontend
   (defun pinentry-emacs (desc prompt ok error)
@@ -24,8 +24,7 @@
       (when (file-exists-p (concat "~/.password-store/" entry ".gpg"))
         (unless (y-or-n-p (concat entry "already exists, override?"))
           (user-error "Aborting")))
-      (password-store--run-generate entry password-length t)
-      ))
+      (password-store--run-generate entry password-length t)))
 
   ;; when generate passwords, copy them automatically
   (advice-add
