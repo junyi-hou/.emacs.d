@@ -31,8 +31,26 @@
    #'password-store--run-generate
    :after
    (lambda (entry &rest args)
-     (password-store-copy entry))))
+     (password-store-copy entry)))
 
+  (defun bc-pass--get-entry (entry type)
+    "Retrieve secret TYPE from ENTRY."
+    (password-store-get (concat entry "/" type)))
+
+  (defun bc-pass-qutebroswer ()
+    "A qutebroswer userscript to retrieve secrets from gnu pass."
+    (let* ((candidates (seq-filter
+                        (lambda (folder-name)
+                          (not
+                           (string=
+                            "."
+                            (substring-no-properties folder-name 0 1))))
+                        (directory-files "~/.password-store/")))
+           (entry (ivy-read "account: " candidates :action 'identity)))
+       (concat (bc-pass--get-entry entry "account")
+               " "
+               (bc-pass--get-entry entry "passwd"))))
+  )
 
 (provide 'bc-pass)
 ;;; bc-pass.el ends here
