@@ -96,11 +96,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
                             company-abbrev))))
 
 (use-package company-quickhelp
-  :after company
-  :hook (company-mode . company-quickhelp-mode)
-  :config
-  (setq company-quickhelp-delay 1))
-
+  :hook (company-mode . company-quickhelp-mode))
 
 ;; posframes are super laggy - use tooltip for now
 ;; (use-package company-posframe
