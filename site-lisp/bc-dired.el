@@ -1,6 +1,7 @@
 ;;; bc-dired.el --- settings for dired mode -*- lexical-binding: t; -*-
 
 ;;; Commentary:
+;; TODO: checkout dired-hacks
 
 ;;; Code:
 

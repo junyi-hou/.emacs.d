@@ -20,7 +20,6 @@
               auto-window-vscroll nil)
 
 ;; first try to split window side-by-side, if window width is < 90, split it top-and-down
-
 (defun bc-core--split-window (&optional window)
   "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down."
   (let ((window (or window (selected-window))))
@@ -52,6 +51,7 @@
 (global-visual-line-mode 1)  ; word wrapping
 (global-subword-mode 1)      ; better camelCase support
 (recentf-mode 1)             ; recent files
+(global-auto-revert-mode 1)  ; automatically refresh file when it changes
 (use-package hideshow
   :init
   ;; don't make me move to the beginning of line before expanding the block
@@ -71,7 +71,7 @@
 
 (setq-default backward-delete-char-untabify-method 'hungry)  ; bs kill whole tab
 
-;; use doom-emacs gc
+;; use doom-emacs gc setting
 (setq gc-cons-threshold 402653184
     gc-cons-percentage 0.6)
 
@@ -79,10 +79,6 @@
           (defun bc-core-set-gc ()
             (setq gc-cons-threshold 16777216
                   gc-cons-percentage 0.2)))
-
-;; When something changes a file, automatically refresh the
-;; buffer containing that file so they can't get out of sync.
-(global-auto-revert-mode 1)
 
 (provide 'bc-core)
 ;;; bc-core.el ends here
