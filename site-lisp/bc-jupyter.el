@@ -96,21 +96,24 @@ If REMOTE is provided, start an remote kernel and connect to it."
     (let* ((proj-root (project-current))
            (log-dir (concat (cdr proj-root) "log"))
            (log-dir-p (file-directory-p log-dir)))
-      (if proj-root
-          (progn
-            (unless log-dir-p
-              (make-directory log-dir))
-            (goto-char (point-min))
-            (let* ((time (format-time-string "%Y%m%d-%H%M"))
-                   (kernel (plist-get
-                            (oref jupyter-current-client kernel-info)
-                            :implementation))
-                   (file-name (expand-file-name (concat kernel "-" time) log-dir))
-                   (content (bc-jupyter-log--get-cell-content)))
-              (with-temp-buffer
-                (insert content)
-                (write-file file-name))))
-        (user-error "Cannot determine project root"))))
+      (cond
+       (proj-root
+        (progn
+          (unless log-dir-p
+            (make-directory log-dir))
+          (goto-char (point-min))
+          (let* ((time (format-time-string "%Y%m%d-%H%M"))
+                 (kernel (plist-get
+                          (oref jupyter-current-client kernel-info)
+                          :implementation))
+                 (file-name (expand-file-name (concat kernel "-" time) log-dir))
+                 (content (bc-jupyter-log--get-cell-content)))
+            (with-temp-buffer
+              (insert content)
+              (write-file file-name)))))
+       ((y-or-n-p "Cannot determine project root, quit REPL without saving?")
+        nil)
+       (t (user-error "Cannot determine project root")))))
 
   (defun bc-jupyter-log--get-cell-content (&optional formatted)
     "Format jupyter repl workspace cell by cell.
