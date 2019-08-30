@@ -20,6 +20,7 @@
   (setq flymake-start-on-newline nil))
 
 ;; flymake frontend
+;; FIXME - flymake posframe is super laggy
 (use-package flymake-posframe
   :after flymake
   :quelpa (flymake-posframe
