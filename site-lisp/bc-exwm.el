@@ -131,8 +131,7 @@
       (call-process
        "xrandr" nil nil nil
        "--output" "eDP1" "--auto"
-       "--output" ext-mon position "eDP1" "--auto")
-      (exwm-randr-enable))))
+       "--output" ext-mon position "eDP1" "--auto"))))
 
 (defun bc-exwm--assign-workspaces (ext-mon)
   "Assigning workspaces 1 - 8 to EXT-MON and 0 to eDP1."
@@ -147,7 +146,7 @@
   "Automatically adjust display by calling `bc-exwm--turn-off-external-monitor' and `bc-exwm-turn-on-external-monitor'."
   (if (bc-exwm--external-monitor-p)
       (call-interactively 'bc-exwm-turn-on-external-monitor)
-      (bc-exwm--turn-off-external-monitor)))
+    (bc-exwm--turn-off-external-monitor)))
 
 (add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
@@ -221,6 +220,8 @@
 
 (server-start)
 (exwm-enable)
+(exwm-randr-enable)
+
 (when (bc-exwm--external-monitor-p)
   (call-interactively #'bc-exwm--external-monitor-p))
 
