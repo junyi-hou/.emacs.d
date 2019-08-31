@@ -145,10 +145,9 @@
 ;; automatically adjust display when external monitor plug in/out
 (defun bc-exwm--auto-adjust-display ()
   "Automatically adjust display by calling `bc-exwm--turn-off-external-monitor' and `bc-exwm-turn-on-external-monitor'."
-  (let ((ext-mon (bc-exwm--external-monitor-p)))
-    (if ext-mon
-        (bc-exwm--turn-off-external-monitor)
-      (call-interactively 'bc-exwm-turn-on-external-monitor))))
+  (if (bc-exwm--external-monitor-p)
+      (call-interactively 'bc-exwm-turn-on-external-monitor)
+      (bc-exwm--turn-off-external-monitor)))
 
 (add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
@@ -222,7 +221,8 @@
 
 (server-start)
 (exwm-enable)
-(bc-exwm-turn-on-external-monitor "--right-of")
+(when (bc-exwm--external-monitor-p)
+  (call-interactively #'bc-exwm--external-monitor-p))
 
 (provide 'bc-exwm)
 ;;; bc-exwm.el ends here
