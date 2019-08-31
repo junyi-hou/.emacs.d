@@ -2,11 +2,17 @@
 
 ;;; Commentary:
 
+;; TODO: exwm-xrandr does not play well with emacs daemon -- when daemon started
+;; the monitor does not connected yet and therefore the script will not run
+
 ;;; Code:
 
 (require 'exwm)
 
-;; functions
+;;; ===============================
+;;  functions
+;;; ===============================
+
 (defun bc-exwm--flatten (l)
   "Flatten list L."
   (mapcan (lambda (x) (if (listp x) x nil)) l))
@@ -77,52 +83,81 @@
       (if (y-or-n-p (format "workspace %d doesn't exists, create?" index))
           (exwm-workspace-switch-create index)))))
 
+;;; ===============================
+;;  multi-monitor setup
+;;; ===============================
+
+(require 'exwm-randr)
+
+(defconst bc-exwm--default-monitor "eDP1"
+  "The internal screen output.")
+(defvar bc-exwm--relative-layout nil
+  "How the position of external monitor relates to `bc-exwm--default-monitor'.")
+
 (defun bc-exwm--external-monitor-p ()
   "Return the name of (first) attached external monitor.  If there is no, return nil."
-  (let* ((xrandr-output-regexp "\n\\([^ ]+\\) connected ")
-         (default-output "eDP1"))
+  (let* ((xrandr-output-regexp "\n\\([^ ]+\\) connected "))
     (with-temp-buffer
       (call-process "xrandr" nil t nil)
       (goto-char (point-min))
       (re-search-forward xrandr-output-regexp nil 'noerror 2)
       (let* ((output (match-string 1)))
-        (unless (string-equal default-output output)
+        (unless (string-equal bc-exwm--default-monitor output)
           output)))))
 
-(defun bc-exwm--turnoff-external-monitor ()
+(defun bc-exwm--turn-off-external-monitor ()
   "Turn off all external monitors."
   (let ((xrandr-output-regexp "\n\\([^ ]+\\) disconnected "))
     (with-temp-buffer
       (call-process "xrandr" nil t nil)
       (goto-char (point-min))
-      (while (re-search-forward xrandr-output-regexp nil 'noerror)
+      (while (and (re-search-forward xrandr-output-regexp nil 'noerror)
+                  (not (string-equal (match-string 1) bc-exwm--default-monitor)))
         (call-process
          "xrandr" nil nil nil
          "--output" (match-string 1) "--off")))))
 
-(defun bc-exwm--turnon-external-monitor (position)
-  "Turn on the monitor identified by `bc-exwm--external-monitor-p'.  POSITION determines the relative position of the new monitor to the builtin monitor eDP1.  If POSITION is given, use it, otherwise read it from input."
-  (interactive "sPosition (left/right-of, above, below or same-as): ")
+(defun bc-exwm-turn-on-external-monitor (position)
+  "Turn on the monitor identified by `bc-exwm--external-monitor-p'.  POSITION determines the relative position of the new monitor to the builtin monitor `bc-exwm--default-monitor'.  If POSITION is given, use it, otherwise read it from input."
+  (interactive
+   (list (ivy-read
+          "Relative position: "
+          '("--right-of" "--left-of" "--above" "--below" "--same-as")
+          :action 'identity)))
+  (setq bc-exwm--relative-layout position)
   (let ((ext-mon (bc-exwm--external-monitor-p)))
     (when ext-mon
+      (bc-exwm--assign-workspaces ext-mon)
       (call-process
        "xrandr" nil nil nil
        "--output" "eDP1" "--auto"
-       "--output" ext-mon position "eDP1" "--auto"))))
+       "--output" ext-mon position "eDP1" "--auto")
+      (exwm-randr-enable))))
 
 (defun bc-exwm--assign-workspaces (ext-mon)
-  "Assigning workspaces 1 - 9 to EXT-MON and 0 to eDP1."
+  "Assigning workspaces 1 - 8 to EXT-MON and 0 to eDP1."
   (setq exwm-randr-workspace-monitor-plist
-        `(0 "eDP1"
-          1 ,ext-mon
-          2 ,ext-mon
-          3 ,ext-mon
-          4 ,ext-mon
-          5 ,ext-mon
-          6 ,ext-mon
-          7 ,ext-mon
-          8 ,ext-mon
-          9 ,ext-mon)))
+        (seq-reduce
+         'append
+         (mapcar (lambda (i) `(,i ,ext-mon)) (number-sequence 1 8))
+         `(0 ,bc-exwm--default-monitor))))
+
+;; automatically adjust display when external monitor plug in/out
+(defun bc-exwm--auto-adjust-display ()
+  "Automatically adjust display by calling `bc-exwm--turn-off-external-monitor' and `bc-exwm-turn-on-external-monitor'."
+  (let ((ext-mon (bc-exwm--external-monitor-p)))
+    (if ext-mon
+        (bc-exwm--turn-off-external-monitor)
+      (call-interactively 'bc-exwm-turn-on-external-monitor))))
+
+(add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
+
+;; TODO use C-{hjkl} to move across workspaces as well
+(defmacro bc-exwm--switch-workspaces (switch-window-fn))
+
+;;; ===============================
+;;  Settings
+;;; ===============================
 
 ;; rename buffer to window title
 (defun bc-exwm-rename-buffer-to-title ()
@@ -180,6 +215,14 @@
  "C-j" 'evil-window-down
  "C-k" 'evil-window-up
  "C-l" 'evil-window-right)
+
+;;; ===============================
+;;  launch exwm
+;;; ===============================
+
+(server-start)
+(exwm-enable)
+(bc-exwm-turn-on-external-monitor "--right-of")
 
 (provide 'bc-exwm)
 ;;; bc-exwm.el ends here
