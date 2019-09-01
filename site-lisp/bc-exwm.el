@@ -80,6 +80,24 @@
       (if (y-or-n-p (format "workspace %d doesn't exists, create?" index))
           (exwm-workspace-switch-create index)))))
 
+(defun bc-exwm--get-xwindow-buffer ()
+  "Return a list of buffers containing currently opened Xwindows."
+  (seq-filter
+   (lambda (buffer)
+     (with-current-buffer buffer
+       (equal major-mode 'exwm-mode)))
+  (buffer-list)))
+
+(defun bc-exwm-switch-to-xwindow (xwindow)
+  "Display XWINDOW in the current window."
+  (interactive
+   (list
+    (ivy-read
+     "swtich to: "
+     (bc-exwm--get-xwindow-buffer)
+     :action 'identity)))
+  (exwm-workspace-switch-to-buffer xwindow))
+
 ;;; ===============================
 ;;  multi-monitor setup
 ;;; ===============================
@@ -168,6 +186,23 @@
 
 ;; leader key in exwm buffer M-SPC
 (evil-set-initial-state 'exwm-mode 'emacs)
+
+;; make sure the exwm buffer is always in emacs state
+(defun bc-exwm--back-emacs-state ()
+  "Automatically switch back to `evil-emacs-state' if not already in it."
+  (when (and (equal major-mode 'exwm-mode)
+             (not (evil-emacs-state-p)))
+    (evil-emacs-state)))
+
+(add-hook
+ 'exwm-mode-hook
+ (defun bc-exwm--hook ()
+   (add-hook 'post-command-hook #'bc-exwm--back-emacs-state nil t)))
+
+;; keys
+
+;; keys that should be interpreted by emacs in
+;; addition to simulate and global keys
 (push ?\s-\  exwm-input-prefix-keys)
 
 (setq exwm-input-global-keys

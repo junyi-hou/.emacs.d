@@ -268,6 +268,12 @@
   ;; dired
   "od" (lambda () (interactive)
          (dired default-directory))
+  ;; x windows
+  "ox" 'bc-exwm-switch-to-xwindow
+  "oX" (lambda () (interactive)
+         (bc-core--split-window)
+         (other-window 1)
+         (call-interactively 'bc-exwm-switch-to-xwindow))
 
   ;; pass
   "pc" 'password-store-copy
