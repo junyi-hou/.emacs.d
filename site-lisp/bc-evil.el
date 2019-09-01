@@ -262,6 +262,10 @@
   "or" 'counsel-recentf
   "of" 'projectile-find-file
   "ob" 'ivy-switch-buffer
+  "oB" (lambda () (interactive)
+         (bc-core--split-window)
+         (other-window 1)
+         (call-interactively 'ivy-switch-buffer))
   "os" 'bc-eshell-open-here
   "oS" 'bc-eshell-open-home
   "op" 'projectile-switch-project

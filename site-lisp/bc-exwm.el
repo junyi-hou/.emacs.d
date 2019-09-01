@@ -52,18 +52,15 @@
          (current-level (string-to-number (with-temp-buffer
                                             (insert-file-contents bl-file)
                                             (buffer-string))))
-           ;;; HACK: why isn't (direction (if up '+ '-)) working???
-         (direction (if up "+" "-"))
-         (new-level (if up
-                        (+ current-level 25)
-                      (- current-level 25)))
+         (direction (if up '+ '-))
+         (new-level (funcall direction current-level 25))
          (new-level (if (> 0 new-level) 0 new-level)))
     (let ((inhibit-message t))
       (write-region
        (format "%d" new-level)
        nil
        (concat "/sudo:root@localhost:" bl-file)))
-    (message (concat "brightness " direction))))
+    (message (concat "brightness " (symbol-name direction)))))
 
 (defun bc-exwm-switch-to-workplace-confirm (index)
   "Switch to workspace INDEX, if it doesn't exists, ask whether to create it."

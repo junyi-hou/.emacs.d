@@ -20,6 +20,7 @@
               auto-window-vscroll nil)
 
 ;; first try to split window side-by-side, if window width is < 90, split it top-and-down
+;; TODO: better split window function
 (defun bc-core--split-window (&optional window)
   "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down."
   (let ((window (or window (selected-window))))
