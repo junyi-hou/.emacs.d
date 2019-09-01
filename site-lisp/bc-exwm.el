@@ -2,9 +2,6 @@
 
 ;;; Commentary:
 
-;; TODO: exwm-xrandr does not play well with emacs daemon -- when daemon started
-;; the monitor does not connected yet and therefore the script will not run
-
 ;;; Code:
 
 (require 'exwm)
@@ -222,8 +219,20 @@
 (exwm-enable)
 (exwm-randr-enable)
 
-(when (bc-exwm--external-monitor-p)
-  (call-interactively #'bc-exwm--external-monitor-p))
+;; in early beta
+(use-package exwm-edit
+  ;; C-c ' in X windows
+  :init
+  (add-hook 'exwm-edit-compose-hook #'evil-insert-state)
+
+  (defun bc-exwm--auto-select-all (&rest args)
+    "Advice `exwm-edit--compose' to send fake <C-a> to the exwm window."
+    (exwm-input--fake-key ?\C-a)
+    (sleep-for 0.05))
+
+  (advice-add 'exwm-edit--compose :before #'bc-exwm--auto-select-all))
+
+
 
 (provide 'bc-exwm)
 ;;; bc-exwm.el ends here
