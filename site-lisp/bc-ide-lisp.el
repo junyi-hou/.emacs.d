@@ -28,6 +28,13 @@
 ;;    :height 35
 ;;    ))
 
+(use-package elispfl
+  :quelpa (elispfl
+           :repo "cireu/elispfl"
+           :fetcher github)
+  :hook
+  (emacs-lisp-mode . elispfl-mode)
+  (lisp-interaction-mode . elispfl-mode))
 
 (add-hook 'emacs-lisp-mode-hook (lambda () (setq-local tab-width 2)))
 

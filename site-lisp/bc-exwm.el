@@ -252,6 +252,7 @@
 (exwm-randr-enable)
 
 ;; in early beta
+;; FIXME: `gui-get-selection' return ?? instead of Chinese characters
 (use-package exwm-edit
   ;; C-c ' in X windows
   :init

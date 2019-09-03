@@ -34,6 +34,8 @@
 (require 'bc-company)
 (require 'bc-lsp)
 
+(require 'bc-pyim)
+
 ;;; language
 (require 'bc-ide-lisp)
 (require 'bc-ide-gentoo)
