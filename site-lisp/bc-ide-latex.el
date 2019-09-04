@@ -16,6 +16,7 @@
            (pdf-fname (concat fname ".pdf")))
       (unless (get-buffer-window pdf-fname)
         ;; if the pdf file is not displayed
+        ;; FIXME: if buffer exists, then bring up the buffer, if not, create one
         (bc-core--split-window)
         (other-window 1))
       (TeX-command-run-all nil))))
