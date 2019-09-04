@@ -24,12 +24,6 @@
   (setq
   ;; use zathura to view pdf
    TeX-view-program-selection '((output-pdf "Zathura"))
-   ;; TeX-view-program-list
-   ;; '(("Zathura" "zathura "
-   ;;     (mode-io-correlate
-   ;;      " --syntctex-forward %n:0%b -x \"emacsclient +%{line} %{input}\" "
-   ;;      " %o")
-   ;;     "zathura"))
    TeX-source-correlate-start-server t
 
    ;; disable moving sub/super scripts
@@ -47,6 +41,9 @@
    ;; other settings
    TeX-parse-self t
    TeX-auto-save t)
+
+  ;; set tab width to 2
+  (setq-default tab-width 2)
 
   (face-spec-set
    'font-latex-slide-title-face
