@@ -163,7 +163,7 @@
 (add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
 ;; TODO use C-{hjkl} to move across workspaces as well
-(defmacro bc-exwm--switch-workspaces (switch-window-fn))
+;; (defmacro bc-exwm--switch-workspaces (switch-window-fn))
 
 ;;; ===============================
 ;;  Settings
@@ -201,6 +201,7 @@
 ;; keys that should be interpreted by emacs in
 ;; addition to simulate and global keys
 (push ?\s-\  exwm-input-prefix-keys)
+(setq exwm-input-prefix-keys (delete ?\C-u exwm-input-prefix-keys))
 
 (setq exwm-input-global-keys
       `(;; app launcher
