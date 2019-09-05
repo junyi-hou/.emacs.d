@@ -27,9 +27,9 @@
 (require 'bc-style)
 (require 'bc-org)
 (require 'bc-dired)
-(require 'bc-mail)
+;; (require 'bc-mail)
 
-;;; ide features
+;; ide features
 (require 'bc-flymake)
 (require 'bc-company)
 (require 'bc-lsp)

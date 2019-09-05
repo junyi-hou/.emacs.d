@@ -15,7 +15,7 @@
                 ("gnu" . "https://elpa.gnu.org/packages/")))
 
 (setq package-enable-at-startup nil)
-(package-initialize)
+;; (package-initialize)
 
 ;; package loader
 (unless (package-installed-p 'quelpa-use-package)
