@@ -13,13 +13,16 @@
     (interactive)
     (save-excursion
      (let* ((fname (file-name-sans-extension (buffer-file-name)))
-           (pdf-fname (concat fname ".pdf")))
-      (unless (get-buffer-window pdf-fname)
-        ;; if the pdf file is not displayed
-        ;; FIXME: if buffer exists, then bring up the buffer, if not, create one
-        (bc-core--split-window)
-        (other-window 1))
-      (TeX-command-run-all nil))))
+           (pdf-fname (concat fname ".pdf"))
+           (code-buffer (current-buffer))
+           (pdf-buffer (get-buffer pdf-fname)))
+       (cond
+        (pdf-buffer (with-current-buffer code-buffer
+                      (TeX-command-run-all nil)))
+        (t (progn
+             (bc-core--split-window)
+             (other-window 1)
+             (TeX-command-run-all nil)))))))
 
   :config
   (setq
