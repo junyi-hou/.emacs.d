@@ -170,21 +170,27 @@
 ;;  org-integration
 ;;; ===============================
 
-;; (eval-after-load 'org
-;;   (progn
-;;    (defmacro bc-exwm--capture (app type link description &rest args)
-;;      "Capture LINK of TYPE with DESCRIPTION in exwm APP."
-;;      `(lambda ()
-;;         (when (and (equal major-mode 'exwm-mode)
-;;                    (equal exwm-class-name ,app))
-;;           (org-store-link-props
-;;            :type ,type
-;;            :link ,link
-;;            :description ,description))))
+(eval-after-load 'org
+  (progn
+   (defmacro bc-exwm--capture (app type link description &rest args)
+     "Capture LINK of TYPE with DESCRIPTION in exwm APP."
+     `(lambda ()
+        (when (and (equal major-mode 'exwm-mode)
+                   (equal exwm-class-name ,app))
+          (org-store-link-props
+           :type ,type
+           :link ,link
+           :description ,description))))
 
-;;    (org-link-set-parameters
-;;     "zathura"
-;;     :store (bc-exwm--capture "Zathura" "file" (buffer-name) ""))))
+   (org-link-set-parameters
+    "zathura"
+    :store (bc-exwm--capture "Zathura" "file" (buffer-name) ""))
+
+   ;; HACK - need to tell qutebrowser to set window-title = url
+   (org-link-set-parameters
+    "qutebrowser"
+    :store (bc-exwm--capture "qutebrowser" "http" (buffer-name) ""))))
+
 ;;; ===============================
 ;;  Settings
 ;;; ===============================
@@ -283,8 +289,6 @@
     (sleep-for 0.05))
 
   (advice-add 'exwm-edit--compose :before #'bc-exwm--auto-select-all))
-
-
 
 (provide 'bc-exwm)
 ;;; bc-exwm.el ends here
