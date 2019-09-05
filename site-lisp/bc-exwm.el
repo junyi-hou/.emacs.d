@@ -156,6 +156,7 @@
 ;; automatically adjust display when external monitor plug in/out
 (defun bc-exwm--auto-adjust-display ()
   "Automatically adjust display by calling `bc-exwm--turn-off-external-monitor' and `bc-exwm-turn-on-external-monitor'."
+  (sleep-for 0.1)
   (if (bc-exwm--external-monitor-p)
       (call-interactively 'bc-exwm-turn-on-external-monitor)
     (bc-exwm--turn-off-external-monitor)))
@@ -177,7 +178,18 @@
 (add-hook 'exwm-floating-setup-hook 'exwm-layout-hide-mode-line)
 (add-hook 'exwm-floating-exit-hook 'exwm-layout-show-mode-line)
 
-;; settings
+;; less information on the modeline
+(defun bc-exwm--quieter-modeline ()
+    "Quieter modeline for exwm buffers."
+    (telephone-line-mode 0)
+    (setq-local telephone-line-lhs
+                '((evil     . (telephone-line-evil-tag-segment))
+                  (nil      . (telephone-line-buffer-segment))))
+    (setq-local telephone-line-rhs '())
+    (telephone-line-mode 1))
+
+(add-hook 'exwm-manage-finish-hook #'bc-exwm--quieter-modeline)
+
 ;; initial workspace - start only 2
 (setq exwm-workspace-number 2)
 
