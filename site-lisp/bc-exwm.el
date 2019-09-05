@@ -167,6 +167,25 @@
 ;; (defmacro bc-exwm--switch-workspaces (switch-window-fn))
 
 ;;; ===============================
+;;  org-integration
+;;; ===============================
+
+(eval-after-load 'org
+  (progn
+   (defmacro bc-exwm--capture (app type link description &rest args)
+     "Capture LINK of TYPE with DESCRIPTION in exwm APP."
+     `(lambda ()
+        (when (and (equal major-mode 'exwm-mode)
+                   (equal exwm-class-name ,app))
+          (org-store-link-props
+           :type ,type
+           :link ,link
+           :description ,description))))
+
+   (org-link-set-parameters
+    "zathura"
+    :store (bc-exwm--capture "Zathura" "file" (buffer-name) ""))))
+;;; ===============================
 ;;  Settings
 ;;; ===============================
 
