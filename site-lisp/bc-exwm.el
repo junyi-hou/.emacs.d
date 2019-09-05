@@ -211,7 +211,7 @@
     (evil-emacs-state)))
 
 (add-hook
- 'exwm-mode-hook
+ 'exwm-manage-finish-hook
  (defun bc-exwm--hook ()
    (add-hook 'post-command-hook #'bc-exwm--back-emacs-state nil t)))
 
@@ -250,10 +250,7 @@
 ;; simulation key
 (setq exwm-input-simulation-keys
       '(;; c-g = esc
-        ([?\C-g] . [escape])
-        ;; yank; paste: find a solution
-        ([?\s-y] . [?\C-c])
-        ([?\s-p] . [?\C-v])))
+        ([?\C-g] . [escape])))
 
 ;; line-mode keybinding
 (general-define-key
@@ -271,10 +268,12 @@
 (exwm-enable)
 (exwm-randr-enable)
 
-;; in early beta
-;; FIXME: `gui-get-selection' return ?? instead of Chinese characters
 (use-package exwm-edit
   ;; C-c ' in X windows
+  :quelpa (exwm-edit
+           :repo "junyi-hou/exwm-edit"
+           :fetcher github
+           :stable nil)
   :init
   (add-hook 'exwm-edit-compose-hook #'evil-insert-state)
 
