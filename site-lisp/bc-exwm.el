@@ -197,18 +197,6 @@
 (add-hook 'exwm-floating-setup-hook 'exwm-layout-hide-mode-line)
 (add-hook 'exwm-floating-exit-hook 'exwm-layout-show-mode-line)
 
-;; less information on the modeline
-(defun bc-exwm--quieter-modeline ()
-    "Quieter modeline for exwm buffers."
-    (telephone-line-mode 0)
-    (setq-local telephone-line-lhs
-                '((evil     . (telephone-line-evil-tag-segment))
-                  (nil      . (telephone-line-buffer-segment))))
-    (setq-local telephone-line-rhs '())
-    (telephone-line-mode 1))
-
-(add-hook 'exwm-manage-finish-hook #'bc-exwm--quieter-modeline)
-
 ;; initial workspace - start only 2
 (setq exwm-workspace-number 2)
 
