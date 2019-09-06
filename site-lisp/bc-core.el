@@ -39,6 +39,31 @@
               inhibit-startup-message t
               inhibit-startup-echo-area-message t)
 
+;; cannot delete *scratch* buffer
+(defun bc-core--unkillable-scratch ()
+  (if (string= (buffer-name (current-buffer)) "*scratch*")
+      (progn
+        (delete-region (point-min) (point-max))
+        (insert initial-scratch-message)
+        nil)
+    t))
+
+(add-hook 'kill-buffer-query-functions
+          #'bc-core--unkillable-scratch)
+
+;; encoding
+(use-package mule
+  :ensure nil
+  :config
+  (set-language-environment "UTF-8")
+  (set-buffer-file-coding-system 'utf-8-unix)
+  (set-clipboard-coding-system 'utf-8-unix)
+  (set-file-name-coding-system 'utf-8-unix)
+  (set-keyboard-coding-system 'utf-8-unix)
+  (set-next-selection-coding-system 'utf-8-unix)
+  (set-selection-coding-system 'utf-8-unix)
+  (set-terminal-coding-system 'utf-8-unix))
+
 ;; disable menu tool and scroll bars
 (menu-bar-mode -1)
 (tool-bar-mode -1)
