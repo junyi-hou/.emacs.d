@@ -40,7 +40,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
         (dotimes (n tab-width) (insert " "))
       (yas-expand)
       (company-manual-begin)
-      ;; HACK: manually call `company-manual-begin' will set
+      ;; manually call `company-manual-begin' will set
       ;; `company-minimum-prefix-length' to 0, which means that the snippets
       ;; will always get included. To fix this add a condition that if
       ;; all candidates are snippets, cancel auto completion and indent region.
