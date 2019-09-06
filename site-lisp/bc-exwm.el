@@ -170,7 +170,7 @@
 ;;  org-integration
 ;;; ===============================
 
-(eval-after-load 'org
+(with-eval-after-load 'org
   (progn
    (defmacro bc-exwm--capture (app type link description &rest args)
      "Capture LINK of TYPE with DESCRIPTION in exwm APP."

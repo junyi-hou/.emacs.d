@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package org
-  :defer t
+  :demand t
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda () (setq tab-width 2)))
