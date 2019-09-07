@@ -85,8 +85,6 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
         company-show-numbers t
         company-tooltip-limit 5
         company-tooltip-align-annotations t
-        company-frontends '(company-pseudo-tooltip-frontend
-                            company-echo-metadata-frontend)
         company-selection-wrap-around t
         company-backends '((company-capf
                             company-yasnippet
@@ -95,15 +93,9 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
                             company-dabbrev
                             company-abbrev))))
 
-(use-package company-quickhelp
-  :hook (company-mode . company-quickhelp-mode)
-  :config
-  (setq company-quickhelp-delay 1))
-
-;; posframes are super laggy - use tooltip for now
-;; (use-package company-posframe
-;;     :after company
-;;     :hook (company-mode . company-posframe-mode))
+(use-package company-posframe
+    :after company
+    :hook (company-mode . company-posframe-mode))
 
 (provide 'bc-company)
 ;;; bc-company.el ends here

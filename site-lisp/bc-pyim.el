@@ -9,7 +9,7 @@
   :init
   (setq default-input-method "pyim"
         default-scheme 'quanpin
-        pyim-page-tooltip 'popup
+        pyim-page-tooltip 'posframe
         pyim-page-length 5)
   :config
   ;; 设置 pyim 探针设置，这是 pyim 高级功能设置，可以实现 *无痛* 中英文切换 :-)
