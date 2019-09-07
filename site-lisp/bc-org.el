@@ -70,6 +70,13 @@
     (interactive)
     (let* ((project-root (cdr (project-current)))
            (notes (concat project-root "notes.org")))
+      (unless project-root
+        (user-error "No project found"))
+      (unless (file-exists-p notes)
+        (if (y-or-n-p "File notes.org does not exists, create? ")
+            (with-temp-buffer
+              (write-file notes))
+          (user-error "notes.org does not exists, abort")))
       (bc-org--capture notes)))
 
   :config
