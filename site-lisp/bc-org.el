@@ -43,24 +43,34 @@
      nil
      'region-start-level))
 
-  (defun bc-org-capture-todo (headline)
-    "Create a temporary org capture entry pointing to todo.org under HEADLINE, capture the current content there and then"
-    (interactive
-     (list (ivy-read
-            "Headline: "
-            (org-babel-with-temp-filebuffer "~/org/todo.org"
-              (bc-org--export-headline))
-            :action
-            (lambda (headline)
-              (let ((templates org-capture-templates))
-                (add-to-list
-                 'org-capture-templates
-                 `("t" "todo item" entry (file+headline "~/org/todo.org" ,headline)
-                  "* %t %?\n%a" :empty-lines 1))
-                (org-capture nil "t")
-                (evil-insert-state)
-                (setq org-capture-templates templates)))))))
+  (defun bc-org--capture (filename &optional headline)
+    "Create a temporary org capture entry pointing to FILENAME under HEADLINE, capture the current content there and then"
+    (let ((headline (or headline
+                        (ivy-read
+                         "Headline: "
+                         (org-babel-with-temp-filebuffer filename
+                           (bc-org--export-headline))
+                         :action 'identity)))
+          (templates org-capture-templates))
+      (add-to-list
+       'org-capture-templates
+       `("t" "todo item" entry (file+headline ,filename ,headline)
+         "* %t %?\n%a" :empty-lines 1))
+      (org-capture nil "t")
+      (evil-insert-state)
+      (setq org-capture-templates templates)))
 
+  (defun bc-org-capture-todo ()
+    "Capture to ~/org/todo.org."
+    (interactive)
+    (bc-org--capture "~/org/todo.org"))
+
+  (defun bc-org-capture-project-notes ()
+    "Capture to current-project-root/notes.org."
+    (interactive)
+    (let* ((project-root (cdr (project-current)))
+           (notes (concat project-root "notes.org")))
+      (bc-org--capture notes)))
 
   :config
 
@@ -113,14 +123,8 @@
         org-default-notes-file (concat org-directory "/notes.org"))
 
   (setq org-capture-templates
-        '(
-          ;; ("t" "todo item" entry (file+headline "~/org/todo.org" "TODO")
-          ;;   "* %t %?\n%a" :empty-lines 1)
-          ("m" "mail item" entry (file+headline "~/org/todo.org" "MAIL")
-           "* %t %?\n%a" :empty-lines 1)
-          ("r" "research notes" entry
-           (file+headline (concat (cdr (project-current)) "notes.org") "NOTE:")
-           "** %T %?\n %a" :)))
+        '(("m" "mail item" entry (file+headline "~/org/todo.org" "MAIL")
+           "* %t %?\n%a" :empty-lines 1)))
   :general
   (:keymaps 'org-mode-map
    :states '(normal visual motion)

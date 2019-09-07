@@ -288,9 +288,7 @@
 
   ;; org-capture
   "ct" 'bc-org-capture-todo
-  "cr" (lambda () (interactive)
-         (org-capture nil "r")
-         (evil-insert-state))
+  "cr" 'bc-org-capture-project-notes
 
   ;; magit
   "gg" (lambda () (interactive)
