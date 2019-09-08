@@ -2,6 +2,6 @@
 # name: ssh
 # key: ssh
 # --
-#+begin_src bash :session client
+#+begin_src bash :session ${1:name}
 ssh ${1:remote}
 #+end_src

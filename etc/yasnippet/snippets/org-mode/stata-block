@@ -2,7 +2,7 @@
 # name: stata-block
 # key: stata
 # --
-#+begin_src jupyter-stata ${1::session ${2:client}}
+#+begin_src jupyter-stata ${1::session ${2:name}}
 $0
 #+end_src
 

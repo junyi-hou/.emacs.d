@@ -2,6 +2,6 @@
 # name: bash-block
 # key: bash
 # --
-#+begin_src bash ${1::session ${2:client}}
+#+begin_src bash
 $0
 #+end_src

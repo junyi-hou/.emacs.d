@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: schedule
-# key: sch
-# --
-SCHEDULE: `(bc-org-insert-date)`
