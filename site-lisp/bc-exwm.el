@@ -91,7 +91,7 @@
    (list
     (ivy-read
      "swtich to: "
-     (bc-exwm--get-xwindow-buffer)
+     (mapcar 'buffer-name (bc-exwm--get-xwindow-buffer))
      :action 'identity)))
   (exwm-workspace-switch-to-buffer xwindow))
 
@@ -156,7 +156,7 @@
 ;; automatically adjust display when external monitor plug in/out
 (defun bc-exwm--auto-adjust-display ()
   "Automatically adjust display by calling `bc-exwm--turn-off-external-monitor' and `bc-exwm-turn-on-external-monitor'."
-  (sleep-for 0.1)
+  (sleep-for 0.5)
   (if (bc-exwm--external-monitor-p)
       (call-interactively 'bc-exwm-turn-on-external-monitor)
     (bc-exwm--turn-off-external-monitor)))

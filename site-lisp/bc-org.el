@@ -149,6 +149,30 @@
    "<up>" 'org-previous-visible-heading
    "<down>" 'org-next-visible-heading))
 
+;; (use-package calfw
+;;   :config
+;;   (setq calendar-month-name-array
+;;         '("January" "February" "March"     "April"   "May"      "June"
+;;           "July"    "August"   "September" "October" "November" "December")
+;;         calendar-day-name-array
+;;         '("Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday"
+;;           "Saturday")
+;;         calendar-week-start-day 1)
+
+;;   (setq cfw:render-line-breaker 'cfw:render-line-breaker-wordwrap)
+
+;;   ;; grid frame
+;;   (setq cfw:fchar-junction ?╋
+;;         cfw:fchar-vertical-line ?┃
+;;         cfw:fchar-horizontal-line ?━
+;;         cfw:fchar-left-junction ?┣
+;;         cfw:fchar-right-junction ?┫
+;;         cfw:fchar-top-junction ?┯
+;;         cfw:fchar-top-left-corner ?┏
+;;         cfw:fchar-top-right-corner ?┓))
+
+;; (use-package calfw-org
+;;   :after org)
 
 (provide 'bc-org)
 ;;; bc-org.el ends here
