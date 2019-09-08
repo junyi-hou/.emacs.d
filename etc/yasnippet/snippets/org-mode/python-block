@@ -2,7 +2,6 @@
 # name: python-block
 # key: python
 # --
-`(bc-org--enable-jupyter-interpreter)`
-#+begin_src jupyter-python ${1::session ${2:client}}
+#+begin_src jupyter-python ${1::session ${2:name}}
 $0
 #+end_src
