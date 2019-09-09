@@ -102,7 +102,7 @@
 
 (setq-default left-fringe-width 8)
 
-;; font
+;; font/faces
 
 (set-face-attribute
  'default nil
@@ -110,6 +110,11 @@
  :height 130
  :weight 'thin
  :width 'normal)
+
+(set-face-attribute
+ 'minibuffer-prompt
+ nil
+ :weight 'normal)
 
 (defun bc-fontsize-up (&optional size)
   "Increase the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
