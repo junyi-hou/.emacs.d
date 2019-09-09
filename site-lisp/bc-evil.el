@@ -170,9 +170,9 @@
                              "")))
       (if (and only-comment
                (eq last-command 'newline))
-            (progn
-              (delete-region (line-beginning-position) (point))
-              (insert (match-string 1 line)))
+          (progn
+            (delete-region (line-beginning-position) (point))
+            (insert (match-string 1 line)))
         (apply newline-fun args)
         (insert newline-string))))
 

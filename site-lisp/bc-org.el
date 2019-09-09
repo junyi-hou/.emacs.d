@@ -54,7 +54,7 @@
           (templates org-capture-templates))
       (add-to-list
        'org-capture-templates
-       `("t" "todo item" entry (file+headline ,filename ,headline)
+       `("t" "customized capture item" entry (file+headline ,filename ,headline)
          "* %t %?\n%a" :empty-lines 1))
       (org-capture nil "t")
       (evil-insert-state)
