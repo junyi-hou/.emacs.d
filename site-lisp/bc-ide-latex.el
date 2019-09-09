@@ -49,6 +49,7 @@
   ;; set tab width to 2
   (setq-default tab-width 2)
 
+  ;; faces
   (face-spec-set
    'font-latex-slide-title-face
    '((t :inherit  'font-lock-function-name-face

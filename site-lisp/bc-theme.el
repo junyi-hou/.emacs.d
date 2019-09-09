@@ -5,11 +5,13 @@
 ;;; Code:
 
 ;; theme
-(use-package darktooth-theme
+(use-package gruvbox-theme
   :init
   (setq custom-safe-themes t)
   :config
-  (load-theme 'darktooth t))
+  (load-theme 'gruvbox-dark-hard t)
+  (set-face-attribute 'line-number nil
+                      :background (face-background 'default)))
 
 ;; mode line
 (use-package telephone-line
@@ -47,7 +49,7 @@
     (set-face-attribute
      'highlight-indentation-face
      nil
-     :background "#282828"
+     :background (face-background 'default)
      :stipple hl-stipple)))
 
 ;; Patch highlight-indentation-mode to set/update a stipple attribute
