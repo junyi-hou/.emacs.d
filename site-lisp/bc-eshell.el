@@ -42,6 +42,7 @@
     (eshell/alias "su" "eshell/su $*")
     (eshell/alias "sudo" "eshell/sudo $*")
     (eshell/alias "ff" "find-file $1")
+    (eshell/alias "FF" "find-file-other-window $1")
     (eshell/alias "cls" "bc-eshell-clear-buffer")
     (eshell/alias "ll" "ls -Aloh --color=always"))
 

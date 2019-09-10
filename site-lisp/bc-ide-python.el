@@ -12,7 +12,9 @@
 
 (use-package python
   :defer t
-  :init
+  :config
+  (setq-local tab-width 4)
+
   (defalias 'bc-python-local-repl
     (lambda () (interactive)
       (bc-jupyter-start-or-switch-to-repl "python"))

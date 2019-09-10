@@ -6,7 +6,9 @@
 
 (use-package magit
   :defer t
-  :init
+
+  :config
+
   ;; functions
   
   (defun bc-vcs-get-file-at-point (&optional file)
@@ -22,8 +24,6 @@
           (unless file
             (error "No file at point"))
           file))))
-
-  :config
 
   (dolist (mode '(magit-status-mode magit-diff-mode magit-log-mode))
     (evil-set-initial-state mode 'motion))

@@ -7,8 +7,6 @@
 (require 'bc-core)
 
 (use-package ivy
-  :init
-  (ivy-mode 1)
   :config
   (setq ivy-do-completion-in-region nil
         ivy-wrap t
@@ -18,7 +16,8 @@
         ivy-format-function #'ivy-format-function-line
         ivy-magic-slash-non-match-action nil
         projectile-completion-system 'ivy)
-
+  :init
+  (ivy-mode 1)
   :general
   (:keymaps 'ivy-minibuffer-map
    "M-j" 'ivy-next-line

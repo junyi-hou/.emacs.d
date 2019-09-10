@@ -42,7 +42,7 @@
    "V" 'er/contract-region))
 
 (use-package elec-pair
-  :init
+  :config
   (setq electric-pair-open-newline-between-pairs t
         electric-pair-delete-adjacent-pairs t)
   :hook
@@ -51,8 +51,11 @@
 (use-package evil
   :init
   (evil-mode 1)
-  (setq evil-normal-state-modes (append evil-emacs-state-modes
-                                        evil-normal-state-modes))
+
+  ;; set normal state as default start state
+  (setq evil-normal-state-modes
+        (append evil-emacs-state-modes
+                evil-normal-state-modes))
 
   ;; functions:
   (defun bc-evil-visual-tab ()

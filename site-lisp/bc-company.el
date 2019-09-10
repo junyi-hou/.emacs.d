@@ -27,10 +27,24 @@
   (eshell-mode . company-mode)
   (org-mode . company-mode)
 
-  :init
+  :config
+  (setq company-idle-delay nil
+        company-require-match 'never
+        company-dabbrev-downcase nil
+        company-dabbrev-ignore-case nil
+        company-dabbrev-code-other-buffers t
+        company-show-numbers t
+        company-tooltip-limit 5
+        company-tooltip-align-annotations t
+        company-selection-wrap-around t
+        company-backends '((company-capf
+                            company-yasnippet
+                            company-files)
+                           (company-dabbrev-code
+                            company-dabbrev
+                            company-abbrev)))
 
   ;; function
-
   (defun bc-company-unified-tab ()
     "Use tab for both company and indentation.
 
@@ -68,30 +82,13 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
           (append (list `(,@bkends ,@car)) cdr)
         (append (list `(,bkends ,@car) cdr)))))
 
-  :commands company-mode
   :general
   (:keymaps 'company-active-map
    "<tab>" 'bc-company-unified-tab
    "M-j" 'company-select-next
    "M-k" 'company-select-previous-or-abort
    "M-J" 'company-next-page
-   "M-K" 'company-previous-page)
-  :config
-  (setq company-idle-delay nil
-        company-require-match 'never
-        company-dabbrev-downcase nil
-        company-dabbrev-ignore-case nil
-        company-dabbrev-code-other-buffers t
-        company-show-numbers t
-        company-tooltip-limit 5
-        company-tooltip-align-annotations t
-        company-selection-wrap-around t
-        company-backends '((company-capf
-                            company-yasnippet
-                            company-files)
-                           (company-dabbrev-code
-                            company-dabbrev
-                            company-abbrev))))
+   "M-K" 'company-previous-page))
 
 (use-package company-posframe
     :after company

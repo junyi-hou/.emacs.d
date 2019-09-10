@@ -7,22 +7,6 @@
 (use-package tex-site
   :ensure auctex
   :defer t
-  :init
-  (defun bc-ide-latex-complie ()
-    "Compile current tex file using `TeX-command-run-all'.  This function is required because exwm opens zathura in the selected window displaying the tex source file.  Instead, I want to open zathura in a new window."
-    (interactive)
-    (save-excursion
-     (let* ((fname (file-name-sans-extension (buffer-file-name)))
-           (pdf-fname (concat fname ".pdf"))
-           (code-buffer (current-buffer))
-           (pdf-buffer (get-buffer pdf-fname)))
-       (cond
-        (pdf-buffer (with-current-buffer code-buffer
-                      (TeX-command-run-all nil)))
-        (t (progn
-             (bc-core--split-window)
-             (other-window 1)
-             (TeX-command-run-all nil)))))))
 
   :config
   (setq
@@ -47,7 +31,7 @@
    TeX-auto-save t)
 
   ;; set tab width to 2
-  (setq-default tab-width 2)
+  (setq-local tab-width 2)
 
   ;; faces
   (face-spec-set
@@ -58,6 +42,22 @@
 
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
+
+  (defun bc-ide-latex-complie ()
+    "Compile current tex file using `TeX-command-run-all'.  This function is required because exwm opens zathura in the selected window displaying the tex source file.  Instead, I want to open zathura in a new window."
+    (interactive)
+    (save-excursion
+      (let* ((fname (file-name-sans-extension (buffer-file-name)))
+             (pdf-fname (concat fname ".pdf"))
+             (code-buffer (current-buffer))
+             (pdf-buffer (get-buffer pdf-fname)))
+        (cond
+         (pdf-buffer (with-current-buffer code-buffer
+                       (TeX-command-run-all nil)))
+         (t (progn
+              (bc-core--split-window)
+              (other-window 1)
+              (TeX-command-run-all nil)))))))
 
   :hook
   (LaTeX-mode . TeX-PDF-mode)

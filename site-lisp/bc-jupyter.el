@@ -6,7 +6,7 @@
 ;;; Code:
 
 (use-package jupyter
-  :commands (jupyter-run-repl jupyter-connect-repl jupyter-repl-ret jupyter-repl-history-previous jupyter-repl-history-next)
+  :defer t
 
   :init
   (setq jupyter-repl-echo-eval-p t
@@ -40,7 +40,7 @@ If REMOTE is provided, start an remote kernel and connect to it."
                (jupyter-repl-pop-to-buffer)
                (switch-to-buffer-other-window code-buffer)))))
 
-  (defun bc-jupyter--pop-repl (&rest args)
+  (defun bc-jupyter--pop-repl (&rest _)
     "Pop repl buffer, then go back to the code buffer."
     (let* ((code-buffer (current-buffer)))
       (jupyter-repl-pop-to-buffer)
@@ -134,7 +134,11 @@ HACK: won't export the last cell, as `jupyter-repl-cell-finalized-p' is nil in t
                    formatted "In [" count "]\n" code "\nOut [" count "]" output "\n"))))
           (bc-jupyter-log--get-cell-content out)))))
 
-  (advice-add #'jupyter-eval-region :after #'deactivate-mark)
+  (defun bc-jupyter--deactivate-mark (&rest _)
+    "Deactivate mark, use &rest to satisfies the number of arguments"
+    (deactivate-mark))
+
+  (advice-add #'jupyter-eval-region :after #'bc-jupyter--deactivate-mark)
   (advice-add #'jupyter-eval-line-or-region :before #'bc-jupyter--pop-repl)
   (advice-add #'jupyter-repl-associate-buffer :around #'bc-jupyter--rename-code-buffer)
   (advice-add #'bc-jupyter--start-repl :around #'bc-jupyter--rename-code-buffer)

@@ -11,14 +11,14 @@
   :hook
   (python-mode . eglot-ensure)
 
-  :init
+  :config
   (setq eglot-autoreconnect t
         eglot-put-doc-in-help-buffer t)
 
-  :config
   (add-hook 'before-save-hook 'eglot-format nil t)
 
   ;; TODO: figure out a way to silent eglot
+  ;; use delight?
   ;; (defun bc-lsp--silent-eglot (&optional string)
   ;;   "Do not show eglot info with eldoc."
   ;;   (let ((string

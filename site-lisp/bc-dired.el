@@ -7,8 +7,8 @@
 (use-package dired
   :ensure nil
   :defer t
-  :init
-
+  :config
+  (evil-set-initial-state 'dired-mode 'motion)
   (setq dired-listing-switches "-alh")
 
   ;; functions
@@ -22,9 +22,6 @@
         (funcall cmd))
       (dired-unmark-all-marks)
       (dired-mark-remembered marked-files)))
-
-  :config
-  (evil-set-initial-state 'dired-mode 'motion)
 
   :general
   (:keymaps 'dired-mode-map

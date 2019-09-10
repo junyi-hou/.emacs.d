@@ -72,17 +72,15 @@
 
 ;; display time
 (use-package time
-  :init
+  :config
   (setq display-time-load-average-threshold 2.0
         display-time-24hr-format t)
-  :config
   (display-time-mode))
 
 ;; display battery level
 (use-package battery
-  :init
-  (setq battery-mode-line-limit 30)
   :config
+  (setq battery-mode-line-limit 30)
   (display-battery-mode))
 
 ;; highlight keywords
