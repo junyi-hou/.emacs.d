@@ -57,9 +57,7 @@
   :quelpa (eglot-posframe :repo "junyi-hou/eglot-posframe" :fetcher github)
   :config
   ;; fix unpleasant underline in the doc
-  (set-face-attribute
-   'nobreak-space nil
-   :underline nil))
+  (set-face-attribute 'nobreak-space nil :underline nil))
 
 (provide 'bc-lsp)
 ;;; bc-lsp.el ends here

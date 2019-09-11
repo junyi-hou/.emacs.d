@@ -4,9 +4,12 @@
 
 ;;; Code:
 
-(use-package tex-site
-  :ensure auctex
+(use-package auctex
   :defer t
+
+  :custom-face
+  (font-latex-italic-face ((t (:underline nil :inherit 'italic))))
+  (font-latex-slide-title-face ((t (:height 1.0 :inherit 'font-lock-function-name-face))))
 
   :config
   (setq
@@ -31,14 +34,7 @@
    TeX-auto-save t)
 
   ;; set tab width to 2
-  (setq-local tab-width 2)
-
-  ;; faces
-  (face-spec-set
-   'font-latex-slide-title-face
-   '((t :inherit  'font-lock-function-name-face
-        :height 1.0
-        :weight normal)))
+  (setq-default tab-width 2)
 
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)

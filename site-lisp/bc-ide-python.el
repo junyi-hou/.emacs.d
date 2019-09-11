@@ -13,7 +13,7 @@
 (use-package python
   :defer t
   :config
-  (setq-local tab-width 4)
+  (setq-default tab-width 4)
 
   (defalias 'bc-python-local-repl
     (lambda () (interactive)

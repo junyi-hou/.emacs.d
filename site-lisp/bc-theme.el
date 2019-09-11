@@ -8,18 +8,37 @@
 (use-package gruvbox-theme
   :init
   (setq custom-safe-themes t)
+
   :config
   (load-theme 'gruvbox-dark-hard t)
-  (set-face-attribute 'line-number nil
-                      :background (face-background 'default)))
+
+  (set-face-attribute
+   'default
+   nil
+   :family "Monospace"
+   :height 150
+   :weight 'Light
+   :width 'normal)
+
+  (set-face-attribute
+   'minibuffer-prompt
+   nil
+   :weight 'normal)
+
+  (set-face-attribute
+   'line-number
+   nil
+   :background (face-background 'default)))
 
 ;; mode line
 (use-package telephone-line
   :init
+
   (set-face-attribute
    'mode-line-buffer-id
    nil
    :weight 'normal)
+
   (telephone-line-defsegment* bc-theme-pctg-buffer-position ()
     (concat "LN " (format "%d/%d"
                           (1+ (count-lines 1 (point)))
@@ -99,20 +118,6 @@
 ;; load everything
 
 (setq-default left-fringe-width 8)
-
-;; font/faces
-
-(set-face-attribute
- 'default nil
- :family "monospace"
- :height 130
- :weight 'thin
- :width 'normal)
-
-(set-face-attribute
- 'minibuffer-prompt
- nil
- :weight 'normal)
 
 (defun bc-fontsize-up (&optional size)
   "Increase the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
