@@ -11,11 +11,14 @@
   (font-latex-italic-face ((t (:underline nil :inherit 'italic))))
   (font-latex-slide-title-face ((t (:height 1.0 :inherit 'font-lock-function-name-face))))
 
-  :config
+  :init
   (setq
-  ;; use zathura to view pdf
+   ;; use zathura to view pdf
    TeX-view-program-selection '((output-pdf "Zathura"))
    TeX-source-correlate-start-server t
+
+   ;; do not mess up my indentation
+   LaTeX-item-indent 0
 
    ;; disable moving sub/super scripts
    tex-fontify-script nil
@@ -33,8 +36,7 @@
    TeX-parse-self t
    TeX-auto-save t)
 
-  ;; set tab width to 2
-  (setq-default tab-width 2)
+  (add-to-list 'LaTeX-indent-environment-list '("aligned" LaTeX-indent-tabular))
 
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
@@ -49,15 +51,31 @@
              (pdf-buffer (get-buffer pdf-fname)))
         (cond
          (pdf-buffer (with-current-buffer code-buffer
-                       (TeX-command-run-all nil)))
+                       (TeX-command-run-all nil)
+                       (switch-to-buffer-other-window pdf-buffer)))
          (t (progn
               (bc-core--split-window)
               (other-window 1)
               (TeX-command-run-all nil)))))))
 
+  (defun bc-ide-latex--set-tab-width ()
+    "Set tab width in latex buffer."
+    (setq-local tab-width 2))
+
+  (defun bc-ide-latex--fix-indent ()
+    "Fix indentation for the current buffer."
+    (add-hook
+     'before-save-hook
+     (defun indent-buffer ()
+       "Indent the current buffer"
+       (indent-region 0 (point-max)))
+     nil t))
+
   :hook
   (LaTeX-mode . TeX-PDF-mode)
   (LaTeX-mode . TeX-source-correlate-mode)
+  (LaTeX-mode . bc-ide-latex--set-tab-width)
+  (LaTeX-mode . bc-ide-latex--fix-indent)
   ;; (LaTeX-mode . bc-latex-load-bib-file)
 
   :general
@@ -129,10 +147,9 @@
 ;;    "c" 'ivy-bibtex))
 
 (use-package company-auctex
-  :after tex-site
+  :after auctex
   :hook
   (LaTeX-mode . company-auctex-init))
-
 
 
 (provide 'bc-ide-latex)
