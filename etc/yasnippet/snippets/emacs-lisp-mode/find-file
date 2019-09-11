@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: find-file
-# key: ff
-# --
-(find-file $0)
