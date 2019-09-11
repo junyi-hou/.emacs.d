@@ -36,8 +36,6 @@
    TeX-parse-self t
    TeX-auto-save t)
 
-  (add-to-list 'LaTeX-indent-environment-list '("aligned" LaTeX-indent-tabular))
-
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
 
@@ -64,6 +62,7 @@
 
   (defun bc-ide-latex--fix-indent ()
     "Fix indentation for the current buffer."
+    ;; fix indent for the whole buffer before save
     (add-hook
      'before-save-hook
      (defun indent-buffer ()
@@ -76,7 +75,6 @@
   (LaTeX-mode . TeX-source-correlate-mode)
   (LaTeX-mode . bc-ide-latex--set-tab-width)
   (LaTeX-mode . bc-ide-latex--fix-indent)
-  ;; (LaTeX-mode . bc-latex-load-bib-file)
 
   :general
   (:keymaps 'LaTeX-mode-map
@@ -89,7 +87,7 @@
    "rr" 'bc-ide-latex-complie))
 
 ;; (use-package reftex
-;;   :after 'tex-site
+;;   :after 'auctex
 ;;   :defer t
 ;;   :hook (LaTeX-mode . reftex-mode)
 ;;   :config
@@ -107,44 +105,44 @@
 ;;    "l" 'reftex-label
 ;;    "i" 'reftex-reference))
 
-;; (use-package ivy-bibtex
-;;   :after tex-site
-;;   :defer t
-;;   :init
-;;   (defun bc-latex-load-bib-file ()
-;;     "Add bibtex file to `ivy-bibtex' library for the current .tex file.
+(use-package ivy-bibtex
+  :after auctex
+  :defer t
+  :hook
+  (LaTeX-mode . bc-latex-load-bib-file)
+  :init
+  (defun bc-latex-load-bib-file ()
+    "Add bibtex file to `ivy-bibtex' library for the current .tex file.
 
-;; It search the current directory for a bib file named \"example-bib.bib\". If such file exists, it will automatically add it to `bibtex-completion-bibliography'. If such file does not exists, it prompt to ask you whether you want to choose the bib file manually."
-;;     (let* ((bib-file
-;;             (concat
-;;              (expand-file-name (file-name-base (buffer-file-name)))
-;;              "-bib.bib")))
-;;       (if (file-exists-p bib-file)
-;;           (setq-local bibtex-completion-bibliography bib-file)
-;;         (if (y-or-n-p "Cannot find bib file, feed one? ")
-;;             (ivy-read "bib file:"
-;;                       #'read-file-name-internal
-;;                       :action
-;;                       (lambda (x)
-;;                         (setq-local bibtex-completion-bibliography x)))))))
+It search the current directory for a bib file named \"example-bib.bib\". If such file exists, it will automatically add it to `bibtex-completion-bibliography'. If such file does not exists, it prompt to ask you whether you want to choose the bib file manually."
+    (let* ((bib-file
+            (concat
+             (expand-file-name (file-name-base (buffer-file-name)))
+             "-bib.bib")))
+      (if (file-exists-p bib-file)
+          (setq-local bibtex-completion-bibliography bib-file)
+        (if (y-or-n-p "Cannot find bib file, feed one? ")
+            (ivy-read "bib file:"
+                      #'read-file-name-internal
+                      :action
+                      (lambda (x)
+                        (setq-local bibtex-completion-bibliography x)))))))
 
-;;   :config
-;;   (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
-;;                                 (t . ivy--regex-plus))
-;;         ivy-bibtex-default-action 'ivy-bibtex-insert-citation
-;;         bibtex-completion-cite-commands '("citep" "citet" "citep*" "citet*")
-;;         bibtex-completion-cite-default-command "citep"
-;;         bibtex-completion-cite-prompt-for-optional-arguments nil)
-;;   :general
-;;   (:keymaps 'LaTeX-mode-map
-;;    :states '(normal visual motion)
-;;    :prefix "SPC"
-;;    "rc" 'ivy-bibtex)
+  :config
+  (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation
+        bibtex-completion-cite-commands '("citep" "citet" "citep*" "citet*")
+        bibtex-completion-cite-default-command "citep"
+        bibtex-completion-cite-prompt-for-optional-arguments nil)
+  :general
+  (:keymaps 'LaTeX-mode-map
+   :states '(normal visual motion)
+   :prefix "SPC"
+   "rc" 'ivy-bibtex)
 
-;;   (:keymaps 'LaTeX-mode-map
-;;    :states 'insert
-;;    :prefix "C-c"
-;;    "c" 'ivy-bibtex))
+  (:keymaps 'LaTeX-mode-map
+   :states 'insert
+   :prefix "C-c"
+   "c" 'ivy-bibtex))
 
 (use-package company-auctex
   :after auctex
