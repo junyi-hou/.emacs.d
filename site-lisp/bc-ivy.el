@@ -24,13 +24,11 @@
    "M-k" 'ivy-previous-line))
 
 (use-package counsel
-    :after ivy
-    :general
-    (:keymaps '(normal visual motion)
-     :prefix "SPC"
-     "js" 'counsel-ag
-     "jr" (lambda () (interactive)
-            (counsel-ag (symbol-name (symbol-at-point))))))
+  :after ivy
+  :general
+  (:keymaps '(normal visual motion)
+   :prefix "SPC"
+   "js" 'counsel-ag))
 
 ;; (use-package ivy-posframe
 ;;     :after ivy
