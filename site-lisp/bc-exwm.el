@@ -92,8 +92,11 @@
     (ivy-read
      "swtich to: "
      (mapcar 'buffer-name (bc-exwm--get-xwindow-buffer))
-     :action 'identity)))
-  (exwm-workspace-switch-to-buffer xwindow))
+     :action (lambda (x) (get-buffer x)))))
+  (let ((buffer (seq-find (lambda (x)
+                            (string= (buffer-name x) xwindow))
+                          (bc-exwm--get-xwindow-buffer))))
+    (exwm-workspace-move-window exwm-workspace-current-index (exwm--buffer->id buffer))))
 
 ;;; ===============================
 ;;  multi-monitor setup
@@ -256,7 +259,12 @@
 ;; simulation key
 (setq exwm-input-simulation-keys
       '(;; c-g = esc
-        ([?\C-g] . [escape])))
+        ([?\C-g] . [escape])
+        ;; mouse clicks
+        ([left-click] . [left-click])
+        ([right-click] . [right-click])
+        ([\C-right-click] . [\C-right-click])
+        ([\C-left-click] . [\C-left-click])))
 
 ;; line-mode keybinding
 (general-define-key
