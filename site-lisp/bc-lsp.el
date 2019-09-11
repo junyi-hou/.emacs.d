@@ -10,26 +10,16 @@
 (use-package eglot
   :hook
   (python-mode . eglot-ensure)
+  (python-mode . bc-lsp--reformat-buffer)
+
+  :init
+  (defun bc-lsp--reformat-buffer ()
+    "Run `eglot-format' before save in the eglot powered buffer."
+    (add-hook 'before-save-hook 'eglot-format nil t))
 
   :config
   (setq eglot-autoreconnect t
         eglot-put-doc-in-help-buffer t)
-
-  (add-hook 'before-save-hook 'eglot-format nil t)
-
-  ;; TODO: figure out a way to silent eglot
-  ;; use delight?
-  ;; (defun bc-lsp--silent-eglot (&optional string)
-  ;;   "Do not show eglot info with eldoc."
-  ;;   (let ((string
-  ;;          (if (string-match-p "^\\[eglot\\]" string)
-  ;;              ""
-  ;;            string)))
-  ;;     (apply 'eldoc-message string)))
-
-  ;; :config
-  ;; (advice-add 'eldoc-message :before #'bc-lsp--silent-eglot)
-  ;; (advice-remove 'eldoc-message #'bc-lsp--silent-eglot)
 
   :general
   (:keymaps '(normal visual motion)
