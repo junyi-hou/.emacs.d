@@ -26,7 +26,7 @@
    font-latex-fontify-sectioning 1.0
 
    ;; latex command - enable syntax and shell-escape
-   LaTeX-command "latex -syntax=1 --shell-escape -interaction=nonstopmode"
+   LaTeX-command "latex -syntax=1 --shell-escape"
 
    ;; auto-close
    LaTeX-electric-left-right-brace t
