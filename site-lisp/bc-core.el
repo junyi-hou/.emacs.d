@@ -84,9 +84,17 @@
   (advice-add #'hs-show-block :before #'beginning-of-visual-line)
   ;; don't fold comments
   (setq hs-hide-comments-when-hiding-all nil)
+
+  ;; ediff mode integration
+  ;; see http://web.mit.edu/~yandros/elisp/hideshow.el
+  (defun bc-core--turn-off-hs ()
+    "Turn off `hs-minor-mode'."
+    (hs-minor-mode -1))
+
   :hook
   (prog-mode . hs-hide-all)
-  (prog-mode . hs-minor-mode))
+  (prog-mode . hs-minor-mode)
+  (ediff-prepare-buffer . bc-core--turn-off-hs))
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
@@ -102,7 +110,7 @@
     gc-cons-percentage 0.6)
 
 (add-hook 'after-init-hook
-          (defun bc-core-set-gc ()
+          (defun bc-core--reset-gc ()
             (setq gc-cons-threshold 16777216
                   gc-cons-percentage 0.2)))
 

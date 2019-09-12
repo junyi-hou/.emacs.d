@@ -35,8 +35,8 @@
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal)
    "SPC" nil
-   ;; "C-d" 'magit-section-forward-sibling
-   ;; "C-u" 'magit-section-backward-sibling
+   "C-e" 'magit-section-forward-sibling
+   "C-y" 'magit-section-backward-sibling
    "zo" 'magit-section-show
    "zc" 'magit-section-hide
    "?" 'magit-dispatch
@@ -48,8 +48,9 @@
 
   (:keymaps 'magit-status-mode-map
    :states '(motion normal)
-   "d" 'magit-discard
-   "s" 'magit-show-commit
+   "k" 'magit-discard
+   "d" 'magit-show-commit
+   "E" 'magit-ediff
    "V" 'magit-revert
    "c" 'magit-commit
    "p" 'magit-push
@@ -59,7 +60,7 @@
 
   (:keymaps 'magit-log-mode-map
    :states '(normal motion)
-   "s" (lambda () (interactive)
+   "d" (lambda () (interactive)
            (magit-diff-show-or-scroll-down)
            (other-window 1)))
 
@@ -77,6 +78,97 @@
   :general
   (:keymaps 'magit-todos-section-map
             "j" 'evil-next-visual-line))
+
+(use-package ediff
+  :ensure nil
+  :hook (ediff-keymap-setup . bc-vcs-ediff-modify-keys)
+  :init
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (evil-set-initial-state 'ediff-mode 'motion)
+
+  ;; these functions are taken from bc-vcs
+  ;; https://github.com/emacs-evil/evil-collection/blob/master/evil-collection-ediff.el
+  (defun bc-vcs-ediff-scroll-left (&optional arg)
+    "Scroll left."
+    (interactive "P")
+    (let ((last-command-event ?>))
+      (ediff-scroll-horizontally arg)))
+
+  (defun bc-vcs-ediff-scroll-right (&optional arg)
+    "Scroll right."
+    (interactive "P")
+    (let ((last-command-event ?<))
+      (ediff-scroll-horizontally arg)))
+
+  (defun bc-vcs-ediff-scroll-up (&optional arg)
+    "Scroll up by half of a page."
+    (interactive "P")
+    (let ((last-command-event ?V))
+      (ediff-scroll-vertically arg)))
+
+  (defun bc-vcs-ediff-scroll-down (&optional arg)
+    "Scroll down by half of a page."
+    (interactive "P")
+    (let ((last-command-event ?v))
+      (ediff-scroll-vertically arg)))
+
+  (defun bc-vcs-ediff-scroll-down-1 ()
+    "Scroll down by a line."
+    (interactive)
+    (let ((last-command-event ?v))
+      (ediff-scroll-vertically 1)))
+
+  (defun bc-vcs-ediff-scroll-up-1 ()
+    "Scroll down by a line."
+    (interactive)
+    (let ((last-command-event ?V))
+      (ediff-scroll-vertically 1)))
+
+  (defun bc-vcs-ediff-first-difference ()
+    "Jump to first difference."
+    (interactive)
+    (ediff-jump-to-difference 1))
+
+  (defun bc-vcs-ediff-last-difference ()
+    "Jump to last difference."
+    (interactive)
+    (ediff-jump-to-difference ediff-number-of-differences))
+
+  (defun bc-vcs-ediff-modify-keys ()
+    "Due to the wired way `ediff-mode' sets up its keymap, need to wrap this in a function and run it in `ediff-keymap-setup-hook'."
+    (general-define-key
+     :keymaps 'ediff-mode-map
+     :states 'motion
+     "?" 'ediff-toggle-help
+     "n" 'ediff-next-difference
+     "N" 'ediff-previous-difference
+     "G" 'ediff-jump-to-difference
+     "gg" 'bc-vcs-ediff-first-difference
+
+     "j" 'bc-vcs-ediff-scroll-down-1
+     "k" 'bc-vcs-ediff-scroll-up-1
+     "h" 'bc-vcs-ediff-scroll-left
+     "l" 'bc-vcs-ediff-scroll-right
+     "C-d" 'bc-vcs-ediff-scroll-down
+     "C-u" 'bc-vcs-ediff-scroll-up
+
+     "a" 'ediff-copy-A-to-C
+     "b" 'ediff-copy-B-to-C
+
+     "C-e" 'ediff-next-difference
+     "C-y" 'ediff-previous-difference
+
+     "q" 'ediff-quit)
+
+    ;; if it is only a two-window job
+    (unless (or ediff-3way-comparison-job
+                (eq ediff-split-window-function 'split-window-vertically))
+      (general-define-key
+       :keymaps 'ediff-mode-map
+       :states 'motion
+       "a" 'ediff-copy-A-to-B
+       "b" 'ediff-copy-B-to-A)
+      )))
 
 (provide 'bc-vcs)
 ;;; bc-vcs.el ends here
