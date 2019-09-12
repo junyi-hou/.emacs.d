@@ -14,7 +14,7 @@
   :init
   (setq
    ;; use zathura to view pdf
-   TeX-view-program-selection '((output-pdf "Zathura"))
+   TeX-view-program-selection '((output-pdf "PDF Tools"))
    TeX-source-correlate-start-server t
 
    ;; do not mess up my indentation
@@ -38,23 +38,6 @@
 
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
-
-  (defun bc-ide-latex-complie ()
-    "Compile current tex file using `TeX-command-run-all'.  This function is required because exwm opens zathura in the selected window displaying the tex source file.  Instead, I want to open zathura in a new window."
-    (interactive)
-    (save-excursion
-      (let* ((fname (file-name-sans-extension (buffer-file-name)))
-             (pdf-fname (concat fname ".pdf"))
-             (code-buffer (current-buffer))
-             (pdf-buffer (get-buffer pdf-fname)))
-        (cond
-         (pdf-buffer (with-current-buffer code-buffer
-                       (TeX-command-run-all nil)
-                       (switch-to-buffer-other-window pdf-buffer)))
-         (t (progn
-              (bc-core--split-window)
-              (other-window 1)
-              (TeX-command-run-all nil)))))))
 
   (defun bc-ide-latex--set-tab-width ()
     "Set tab width in latex buffer."
@@ -84,7 +67,39 @@
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
    :prefix "SPC"
-   "rr" 'bc-ide-latex-complie))
+   "rr" 'TeX-command-run-all))
+
+;; use eaf instead?
+(use-package pdf-tools
+  :defer t
+  :config
+  (setq pdf-view-display-size 'fit-page)
+  (evil-set-initial-state 'pdf-view-mode 'motion)
+  :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
+  :mode ("\\.pdf\\'" . pdf-tools-install)
+
+  :general
+  (:keymaps 'pdf-view-mode-map
+   :states '(motion normal visual)
+   "j" 'pdf-view-scroll-up-or-next-page
+   "k" 'pdf-view-scroll-down-or-previous-page
+   "J" 'pdf-view-next-page
+   "K" 'pdf-view-previous-page
+   "gg" 'pdf-view-first-page
+   "G" 'pdf-view-last-page
+   "/" 'isearch-forward
+   "?" 'isearch-backward
+   "n" 'isearch-repeat-forward
+   "N" 'isearch-repeat-backward
+   "o" 'pdf-outline
+   "+" 'pdf-view-enlarge
+   "-" 'pdf-view-shrink
+   "SPC" nil)
+
+  (:keymaps 'pdf-view-mode-map
+   :states '(motion normal visual)
+   :prefix "SPC"
+   "q" 'kill-buffer-and-window))
 
 ;; (use-package reftex
 ;;   :after 'auctex
