@@ -51,19 +51,6 @@
 (add-hook 'kill-buffer-query-functions
           #'bc-core--unkillable-scratch)
 
-;; encoding
-(use-package mule
-  :ensure nil
-  :config
-  (set-language-environment "UTF-8")
-  (set-buffer-file-coding-system 'utf-8-unix)
-  (set-clipboard-coding-system 'utf-8-unix)
-  (set-file-name-coding-system 'utf-8-unix)
-  (set-keyboard-coding-system 'utf-8-unix)
-  (set-next-selection-coding-system 'utf-8-unix)
-  (set-selection-coding-system 'utf-8-unix)
-  (set-terminal-coding-system 'utf-8-unix))
-
 ;; disable menu tool and scroll bars
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -85,16 +72,9 @@
   ;; don't fold comments
   (setq hs-hide-comments-when-hiding-all nil)
 
-  ;; ediff mode integration
-  ;; see http://web.mit.edu/~yandros/elisp/hideshow.el
-  (defun bc-core--turn-off-hs ()
-    "Turn off `hs-minor-mode'."
-    (hs-minor-mode -1))
-
   :hook
   (prog-mode . hs-hide-all)
-  (prog-mode . hs-minor-mode)
-  (ediff-prepare-buffer . bc-core--turn-off-hs))
+  (prog-mode . hs-minor-mode))
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil

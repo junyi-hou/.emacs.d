@@ -48,8 +48,8 @@
 
   (:keymaps 'magit-status-mode-map
    :states '(motion normal)
-   "k" 'magit-discard
-   "d" 'magit-show-commit
+   "d" 'magit-discard
+   "D" 'magit-show-commit
    "E" 'magit-ediff
    "V" 'magit-revert
    "c" 'magit-commit
@@ -60,7 +60,7 @@
 
   (:keymaps 'magit-log-mode-map
    :states '(normal motion)
-   "d" (lambda () (interactive)
+   "D" (lambda () (interactive)
            (magit-diff-show-or-scroll-down)
            (other-window 1)))
 
@@ -81,10 +81,19 @@
 
 (use-package ediff
   :ensure nil
-  :hook (ediff-keymap-setup . bc-vcs-ediff-modify-keys)
+  :hook
+  (ediff-keymap-setup . bc-vcs-ediff-modify-keys)
+  (ediff-prepare-buffer . bc-vcs-ediff--turn-off-hs)
+
   :init
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
   (evil-set-initial-state 'ediff-mode 'motion)
+
+  ;; ediff mode integration
+  ;; see http://web.mit.edu/~yandros/elisp/hideshow.el
+  (defun bc-vcs-ediff--turn-off-hs ()
+    "Turn off `hs-minor-mode'."
+    (hs-minor-mode -1))
 
   ;; these functions are taken from bc-vcs
   ;; https://github.com/emacs-evil/evil-collection/blob/master/evil-collection-ediff.el
@@ -139,6 +148,7 @@
     (general-define-key
      :keymaps 'ediff-mode-map
      :states 'motion
+     "SPC" nil
      "?" 'ediff-toggle-help
      "n" 'ediff-next-difference
      "N" 'ediff-previous-difference
@@ -158,6 +168,13 @@
      "C-e" 'ediff-next-difference
      "C-y" 'ediff-previous-difference
 
+     "q" 'ediff-quit)
+
+    ;; fool-proving
+    (general-define-key
+     :keymaps 'ediff-mode-map
+     :states 'motion
+     :prefix "SPC"
      "q" 'ediff-quit)
 
     ;; if it is only a two-window job
