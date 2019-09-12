@@ -75,29 +75,103 @@
   :config
   (setq pdf-view-display-size 'fit-page)
   (evil-set-initial-state 'pdf-view-mode 'motion)
+
+  (defun bc-ide-latex-inverse-search ()
+    "Inverse search the center of the window."
+    (interactive)
+    (let* ((corner (window-absolute-pixel-edges))
+           (left (car corner))
+           (top (cadr corner))
+           (right (caddr corner))
+           (bottom (cadddr corner))
+           (x (/ (+ left right) 2))
+           (y (/ (+ top bottom) 2)))
+      (set-mouse-absolute-pixel-position x y)
+      (pdf-sync-backward-search-mouse nil)))
+
+  ;; the following 4 functions are taken from evil-collection
+  ;; see https://github.com/emacs-evil/evil-collection/blob/master/evil-collection-pdf.el
+  (defun bc-ide-latex-pdf-view-next-line-or-next-page (&optional count)
+    "'evil' wrapper include a count argument to `pdf-view-next-line-or-next-page'"
+    (interactive "P")
+    (if count
+        (dotimes (_ count nil)
+	        (pdf-view-next-line-or-next-page 1))
+      (pdf-view-next-line-or-next-page 1)))
+
+  (defun bc-ide-latex-pdf-view-previous-line-or-previous-page (&optional count)
+    "'evil' wrapper include a count argument to `pdf-view-previous-line-or-previous-page'"
+    (interactive "P")
+    (if count
+        (dotimes (_ count nil)
+	        (pdf-view-previous-line-or-previous-page 1))
+      (pdf-view-previous-line-or-previous-page 1)))
+
+  (defun bc-ide-latex-pdf-view-goto-page (&optional page)
+    "`evil' wrapper around `pdf-view-last-page'."
+    (interactive "P")
+    (if page
+        (pdf-view-goto-page page)
+      (pdf-view-last-page)
+      (image-eob)))
+
+  (defun bc-ide-latex-pdf-view-goto-first-page (&optional page)
+    "`evil' wrapper around `pdf-view-first-page'."
+    (interactive "P")
+    (if page
+        (pdf-view-goto-page page)
+      (pdf-view-first-page)
+      (image-bob)))
+
   :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
   :mode ("\\.pdf\\'" . pdf-tools-install)
 
   :general
   (:keymaps 'pdf-view-mode-map
-   :states '(motion normal visual)
-   "j" 'pdf-view-scroll-up-or-next-page
-   "k" 'pdf-view-scroll-down-or-previous-page
+   :states 'motion
+   "j" 'bc-ide-latex-pdf-view-next-line-or-next-page
+   "k" 'bc-ide-latex-pdf-view-previous-line-or-previous-page
+   "h" 'image-backward-hscroll
+   "l" 'image-forward-hscroll
+
+   "H" 'image-bol
+   "L" 'image-eol
    "J" 'pdf-view-next-page
    "K" 'pdf-view-previous-page
-   "gg" 'pdf-view-first-page
-   "G" 'pdf-view-last-page
+
+   "C-d" (lambda () (interactive)
+           (pdf-view-scroll-down-or-previous-page 20))
+   "C-u" (lambda () (interactive)
+           (pdf-view-scroll-up-or-next-page 20))
+
+   "gg" 'bc-ide-latex-pdf-view-goto-first-page
+   "gl" 'pdf-view-goto-label
+   "G" 'bc-ide-latex-pdf-view-goto-page
+
+   (kbd "<C-down-mouse-1>") 'pdf-view-mouse-extend-region
+   (kbd "<M-down-mouse-1>") 'pdf-view-mouse-set-region-rectangle
+   (kbd "<down-mouse-1>")  'pdf-view-mouse-set-region
+
+   (kbd "<C-return>") 'bc-ide-latex-inverse-search
+
    "/" 'isearch-forward
    "?" 'isearch-backward
    "n" 'isearch-repeat-forward
    "N" 'isearch-repeat-backward
+
    "o" 'pdf-outline
    "+" 'pdf-view-enlarge
    "-" 'pdf-view-shrink
+   "=" 'pdf-view-fit-page-to-window
    "SPC" nil)
 
   (:keymaps 'pdf-view-mode-map
-   :states '(motion normal visual)
+   :states 'visual
+   "SPC" nil
+   "y" 'pdf-view-kill-ring-save)
+
+  (:keymaps 'pdf-view-mode-map
+   :states '(motion visual)
    :prefix "SPC"
    "q" 'kill-buffer-and-window))
 
