@@ -107,6 +107,19 @@
 (defconst bc-exwm--default-monitor "eDP1"
   "The internal screen output.")
 
+(defvar bc-exwm--relative-layout nil
+  "How the position of external monitor relates to `bc-exwm--default-monitor'.")
+
+(defvar bc-exwm--external-monitor-workspace-index nil
+  "The index of the workspace displayed on the external monitor.")
+
+(defconst bc-exwm--direction-pairs-alist
+  '(("left" . "right")
+    ("right" . "left")
+    ("up" . "down")
+    ("down" . "up"))
+  "Pairs of direction, arranged as (dir . dir-opposite).")
+
 (defun bc-exwm--external-monitor-p (status)
   "Return the list of external monitor port with status STATUS (connected or disconnected).  If there is no, return nil."
   (let* ((xrandr-output-regexp (concat "\n\\([^ ]+\\) " (symbol-name status)))
@@ -153,31 +166,6 @@
          (mapcar (lambda (i) `(,i ,ext-mon)) (number-sequence 1 8))
          `(0 ,bc-exwm--default-monitor))))
 
-;; automatically adjust display when external monitor plug in/out
-(defun bc-exwm--auto-adjust-display ()
-  "Automatically adjust display by calling `bc-exwm--turn-off-external-monitor' and `bc-exwm-turn-on-external-monitor'."
-(bc-exwm--turn-off-external-monitor)
-(call-interactively 'bc-exwm-turn-on-external-monitor))
-
-(add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
-
-;;; ===============================
-;;  construction site below
-;;; ===============================
-
-
-(defvar bc-exwm--relative-layout nil
-  "How the position of external monitor relates to `bc-exwm--default-monitor'.")
-
-(defvar bc-exwm--external-monitor-workspace-index nil
-  "The index of the workspace displayed on the external monitor.")
-
-(defconst bc-exwm--direction-opposites-plist
-  '((left . right)
-    (right . left)
-    (up . down)
-    (down . up)))
-
 (defun bc-exwm--tracking-external-monitor-workspace-index (index &optional index-range)
   "Update `bc-exwm--external-monitor-workspace-index' to INDEX if INDEX is in INDEX-RANGE.
 
@@ -189,10 +177,20 @@ This function should be called after `exwm-workspace-switch' is called."
 
 (advice-add 'exwm-workspace-switch :after 'bc-exwm--tracking-external-monitor-workspace-index)
 
+(defun bc-exwm--xrandr-to-direction (xrandr-argument)
+  "Translate XRANDR-ARGUMENT to direction"
+  (string-match "\\(right\\|left\\|above\\|below\\)" xrandr-argument)
+  (let ((result (match-string 1 xrandr-argument)))
+    (cond
+     ((string= result "above") "up")
+     ((string= result "below") "down")
+     (t result))))
+
 (defun bc-exwm--windmove-most (dir)
   "Move to the DIR most window of the `selected-frame'."
-  (while t
-    (windmove-do-window-select dir)))
+  (ignore-errors
+    (while t
+      (windmove-do-window-select (obarray-get obarray dir)))))
 
 (defun bc-exwm--adviced-p (predicates fun)
   "Return FUN's advices that satisfies PREDICATES.  If there is no advice that satisfies PREDICATES or there is no advice at all, return nil.
@@ -215,41 +213,46 @@ Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an
       (when advice
         (advice-remove fun advice)))))
 
-;; advicing windmove
-;; need 4 groups (for left, right, up, down arrangement), each with two advices (e.g., for right arrangement, need to advice `windmove-left' and `windmove-right')
+(defun bc-exwm--windmove-advice-add (position)
+  "Generate functions based on external monitor's relative POSITION and advicing them to windmove-{left, right, up, down}."
+  (let* ((dir (bc-exwm--xrandr-to-symbol position))
+         (opp-dir (cdr (assoc dir bc-exwm--direction-pairs-alist)))
+         (windmove-same (obarray-get obarray (concat "windmove-" dir)))
+         (windmove-oppo (obarray-get obarray (concat "windmove-" opp-dir))))
 
-(defun bc-exwm--right-advice-windmove-left (windmove &rest args)
-  (if (eq exwm-workspace-current-index 0)
-      (apply windmove args)
-    ;; in external monitor (right-one)
-    (condition-case nil
-        ;; if not error, business as usual
-        (apply windmove args)
-      ;; if there is error -- at the left-most window of the external monitor,
-      ;; need to move to the right-most window of the internal monitor
-      (error
-       (progn
-         (exwm-workspace-switch-create 0)
-         (bc-exwm--windmove-most 'right))))))
+    (defun bc-exwm--advice-windmove-same (windmove &rest args)
+      (if (eq exwm-workspace-current-index 0)
+          ;; in internal monitor
+          (condition-case nil
+              ;; if not error, business as usual
+              (apply windmove args)
+            ;; if there is error -- at the boundary window of the external monitor,
+            ;; need to move to the opposite-most window of the internal monitor
+            (error
+             (progn
+               (exwm-workspace-switch bc-exwm--external-monitor-workspace-index)
+               (bc-exwm--windmove-most opp-dir))))
+        ;; in external monitor, not affected
+        (apply windmove args)))
 
-(defun bc-exwm--right-advice-windmove-right (windmove &rest args)
-  (if (eq exwm-workspace-current-index 0)
-      ;; in internal monitor (left one)
-      (condition-case nil
-          ;; if not error, business as usual
+    (defun bc-exwm--advice-windmove-oppo (windmove &rest args)
+      (if (eq exwm-workspace-current-index 0)
+          ;; in internal monitor, not affected
           (apply windmove args)
-        ;; if there is error -- at the right-most window of the external monitor,
-        ;; need to move to the left-most window of the internal monitor
-        (error
-         (progn
-           (exwm-workspace-switch-create bc-exwm--external-monitor-workspace-index)
-           (bc-exwm--windmove-most 'left))))
-    ;; in external monitor, not affected
-      (apply windmove args)))
+        ;; in external monitor
+        (condition-case nil
+            ;; if not error, business as usual
+            (apply windmove args)
+          ;; if there is error -- at the boundary window of the internal monitor,
+          ;; need to move to the opposite-most window of the external monitor
+          (error
+           (progn
+             (exwm-workspace-switch 0)
+             (bc-exwm--windmove-most dir))))))
 
+    (advice-add windmove-same :around #'bc-exwm--advice-windmove-same)
+    (advice-add windmove-oppo :around #'bc-exwm--advice-windmove-oppo)))
 
-(defun bc-exwm--windmove-advice-add ()
-  "Advicing the windmove commands."
   (bc-exwm--windmove-advice-remove)
   (cond
    ((string-match-p "right" bc-exwm--relative-layout)
