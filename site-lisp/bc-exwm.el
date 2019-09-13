@@ -172,12 +172,29 @@
 (defvar bc-exwm--external-monitor-workspace-index nil
   "The index of the workspace displayed on the external monitor.")
 
+(defconst bc-exwm--direction-opposites-plist
+  '((left . right)
+    (right . left)
+    (up . down)
+    (down . up)))
+
+(defun bc-exwm--tracking-external-monitor-workspace-index (index &optional index-range)
+  "Update `bc-exwm--external-monitor-workspace-index' to INDEX if INDEX is in INDEX-RANGE.
+
+This function should be called after `exwm-workspace-switch' is called."
+  (let ((index-range (or index-range (number-sequence 2 8))))
+    (when (and (bc-exwm--external-monitor-p 'connected)
+               (member index index-range))
+      (setq bc-exwm--external-monitor-workspace-index index))))
+
+(advice-add 'exwm-workspace-switch :after 'bc-exwm--tracking-external-monitor-workspace-index)
+
 (defun bc-exwm--windmove-most (dir)
   "Move to the DIR most window of the `selected-frame'."
   (while t
     (windmove-do-window-select dir)))
 
-(defun bc-exwm--adviced (predicates fun)
+(defun bc-exwm--adviced-p (predicates fun)
   "Return FUN's advices that satisfies PREDICATES.  If there is no advice that satisfies PREDICATES or there is no advice at all, return nil.
 
 Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an-unnamed-advice/33021#33021."
@@ -192,7 +209,7 @@ Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an
 (defun bc-exwm--windmove-advice-remove ()
   "Remove advice of windmove-{left,right,up,down} so it is what it was."
   (dolist (fun '(windmove-left windmove-right windmove-up windmove-down))
-    (let ((advice (bc-exwm--adviced
+    (let ((advice (bc-exwm--adviced-p
                   (lambda (f) (string-match-p "bc-exwm--" (symbol-name f)))
                   fun)))
       (when advice
@@ -207,7 +224,7 @@ Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an
     ;; in external monitor (right-one)
     (condition-case nil
         ;; if not error, business as usual
-        (windmove-left)
+        (apply windmove args)
       ;; if there is error -- at the left-most window of the external monitor,
       ;; need to move to the right-most window of the internal monitor
       (error
@@ -220,7 +237,7 @@ Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an
       ;; in internal monitor (left one)
       (condition-case nil
           ;; if not error, business as usual
-          (windmove-right)
+          (apply windmove args)
         ;; if there is error -- at the right-most window of the external monitor,
         ;; need to move to the left-most window of the internal monitor
         (error
