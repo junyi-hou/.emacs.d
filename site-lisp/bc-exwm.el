@@ -62,7 +62,7 @@
        (concat "/sudo:root@localhost:" bl-file)))
     (message (concat "brightness " (symbol-name direction)))))
 
-(defun bc-exwm-switch-to-workplace-confirm (index)
+(defun bc-exwm-switch-to-workspace-confirm (index)
   "Switch to workspace INDEX, if it doesn't exists, ask whether to create it."
   (interactive
    (list
@@ -83,7 +83,7 @@
    (lambda (buffer)
      (with-current-buffer buffer
        (equal major-mode 'exwm-mode)))
-  (buffer-list)))
+   (buffer-list)))
 
 (defun bc-exwm-switch-to-xwindow (xwindow)
   "Display XWINDOW in the current window."
@@ -106,31 +106,28 @@
 
 (defconst bc-exwm--default-monitor "eDP1"
   "The internal screen output.")
-(defvar bc-exwm--relative-layout nil
-  "How the position of external monitor relates to `bc-exwm--default-monitor'.")
 
-(defun bc-exwm--external-monitor-p ()
-  "Return the name of (first) attached external monitor.  If there is no, return nil."
-  (let* ((xrandr-output-regexp "\n\\([^ ]+\\) connected "))
+(defun bc-exwm--external-monitor-p (status)
+  "Return the list of external monitor port with status STATUS (connected or disconnected).  If there is no, return nil."
+  (let* ((xrandr-output-regexp (concat "\n\\([^ ]+\\) " (symbol-name status)))
+         (monitor))
     (with-temp-buffer
       (call-process "xrandr" nil t nil)
       (goto-char (point-min))
-      (re-search-forward xrandr-output-regexp nil 'noerror 2)
-      (let* ((output (match-string 1)))
-        (unless (string-equal bc-exwm--default-monitor output)
-          output)))))
+      (while (re-search-forward xrandr-output-regexp (point-max) 'noerror)
+        (push (match-string 1) monitor))
+      (seq-filter
+       (lambda (mon)
+         (not (string= mon bc-exwm--default-monitor)))
+       monitor))))
 
 (defun bc-exwm--turn-off-external-monitor ()
-  "Turn off all external monitors."
-  (let ((xrandr-output-regexp "\n\\([^ ]+\\) disconnected "))
-    (with-temp-buffer
-      (call-process "xrandr" nil t nil)
-      (goto-char (point-min))
-      (while (and (re-search-forward xrandr-output-regexp nil 'noerror)
-                  (not (string-equal (match-string 1) bc-exwm--default-monitor)))
-        (call-process
-         "xrandr" nil nil nil
-         "--output" (match-string 1) "--off")))))
+  "Turn off all disconnected external monitor ports."
+  (mapc (lambda (monitor)
+          (call-process
+           "xrandr" nil nil nil
+           "--output" monitor "--off"))
+        (bc-exwm--external-monitor-p 'disconnected)))
 
 (defun bc-exwm-turn-on-external-monitor (position)
   "Turn on the monitor identified by `bc-exwm--external-monitor-p'.  POSITION determines the relative position of the new monitor to the builtin monitor `bc-exwm--default-monitor'.  If POSITION is given, use it, otherwise read it from input."
@@ -140,7 +137,7 @@
           '("--right-of" "--left-of" "--above" "--below" "--same-as")
           :action 'identity)))
   (setq bc-exwm--relative-layout position)
-  (let ((ext-mon (bc-exwm--external-monitor-p)))
+  (let ((ext-mon (car (bc-exwm--external-monitor-p 'connected))))
     (when ext-mon
       (bc-exwm--assign-workspaces ext-mon)
       (call-process
@@ -159,15 +156,25 @@
 ;; automatically adjust display when external monitor plug in/out
 (defun bc-exwm--auto-adjust-display ()
   "Automatically adjust display by calling `bc-exwm--turn-off-external-monitor' and `bc-exwm-turn-on-external-monitor'."
-  (sleep-for 0.5)
-  (if (bc-exwm--external-monitor-p)
-      (call-interactively 'bc-exwm-turn-on-external-monitor)
-    (bc-exwm--turn-off-external-monitor)))
+(bc-exwm--turn-off-external-monitor)
+(call-interactively 'bc-exwm-turn-on-external-monitor))
 
 (add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
 ;; TODO use C-{hjkl} to move across workspaces as well
 ;; (defmacro bc-exwm--switch-workspaces (switch-window-fn))
+
+(defvar bc-exwm--relative-layout nil
+  "How the position of external monitor relates to `bc-exwm--default-monitor'.")
+
+(defvar bc-exwm--external-monitor-workspace-index nil
+  "The index of the workspace displayed on the external monitor.")
+
+(defun bc-exwm--windmove-most (dir)
+  "move to the DIR most window of the selected-frame."
+  (while t
+    (windmove-do-window-select dir)))
+
 
 ;;; ===============================
 ;;  org-integration
@@ -244,7 +251,7 @@
                     `(,(kbd (format "s-%d" i)) .
                       (lambda ()
                         (interactive)
-                        (bc-exwm-switch-to-workplace-confirm (- ,i 1)))))
+                        (bc-exwm-switch-to-workspace-confirm (- ,i 1)))))
                   (number-sequence 1 9))
         ;; multimedia keys
         ([XF86AudioLowerVolume] . (lambda () (interactive)
