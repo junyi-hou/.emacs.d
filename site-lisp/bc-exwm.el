@@ -161,8 +161,10 @@
 
 (add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
-;; TODO use C-{hjkl} to move across workspaces as well
-;; (defmacro bc-exwm--switch-workspaces (switch-window-fn))
+;;; ===============================
+;;  construction site below
+;;; ===============================
+
 
 (defvar bc-exwm--relative-layout nil
   "How the position of external monitor relates to `bc-exwm--default-monitor'.")
@@ -171,9 +173,81 @@
   "The index of the workspace displayed on the external monitor.")
 
 (defun bc-exwm--windmove-most (dir)
-  "move to the DIR most window of the selected-frame."
+  "Move to the DIR most window of the `selected-frame'."
   (while t
     (windmove-do-window-select dir)))
+
+(defun bc-exwm--adviced (predicates fun)
+  "Return FUN's advices that satisfies PREDICATES.  If there is no advice that satisfies PREDICATES or there is no advice at all, return nil.
+
+Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an-unnamed-advice/33021#33021."
+  (let (result)
+    (advice-mapc
+     (lambda (ad props)
+       (when (funcall predicates ad)
+         (push ad result)))
+     fun)
+    (nreverse result)))
+
+(defun bc-exwm--windmove-advice-remove ()
+  "Remove advice of windmove-{left,right,up,down} so it is what it was."
+  (dolist (fun '(windmove-left windmove-right windmove-up windmove-down))
+    (let ((advice (bc-exwm--adviced
+                  (lambda (f) (string-match-p "bc-exwm--" (symbol-name f)))
+                  fun)))
+      (when advice
+        (advice-remove fun advice)))))
+
+;; advicing windmove
+;; need 4 groups (for left, right, up, down arrangement), each with two advices (e.g., for right arrangement, need to advice `windmove-left' and `windmove-right')
+
+(defun bc-exwm--right-advice-windmove-left (windmove &rest args)
+  (if (eq exwm-workspace-current-index 0)
+      (apply windmove args)
+    ;; in external monitor (right-one)
+    (condition-case nil
+        ;; if not error, business as usual
+        (windmove-left)
+      ;; if there is error -- at the left-most window of the external monitor,
+      ;; need to move to the right-most window of the internal monitor
+      (error
+       (progn
+         (exwm-workspace-switch-create 0)
+         (bc-exwm--windmove-most 'right))))))
+
+(defun bc-exwm--right-advice-windmove-right (windmove &rest args)
+  (if (eq exwm-workspace-current-index 0)
+      ;; in internal monitor (left one)
+      (condition-case nil
+          ;; if not error, business as usual
+          (windmove-right)
+        ;; if there is error -- at the right-most window of the external monitor,
+        ;; need to move to the left-most window of the internal monitor
+        (error
+         (progn
+           (exwm-workspace-switch-create bc-exwm--external-monitor-workspace-index)
+           (bc-exwm--windmove-most 'left))))
+    ;; in external monitor, not affected
+      (apply windmove args)))
+
+
+(defun bc-exwm--windmove-advice-add ()
+  "Advicing the windmove commands."
+  (bc-exwm--windmove-advice-remove)
+  (cond
+   ((string-match-p "right" bc-exwm--relative-layout)
+    (progn
+      (advice-add 'windmove-left :around #'bc-exwm--right-advice-windmove-left)
+      (advice-add 'windmove-right :around #'bc-exwm--right-advice-windmove-right)
+      ))
+   ((string-match-p "left" bc-exwm--relative-layout)
+    (progn
+      ))
+   ))
+
+;;; ===============================
+;;  construction site above
+;;; ===============================
 
 
 ;;; ===============================
