@@ -274,7 +274,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
          (interactive)
          (eval-buffer)
          (message "%s %s %s" "buffer" (buffer-name) "evaluated!"))
-  "ei" 'ivy-resume
 
   ;; helps
   "hf" 'describe-function
@@ -286,7 +285,9 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   ;; basic function
   "w" 'evil-write
   "k" 'delete-window
+  "K" 'delete-frame
   "q" 'kill-current-buffer
+  "Q" 'exit-emacs
   "b" 'balance-windows
 
   ;; buffer related
