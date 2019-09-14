@@ -10,32 +10,9 @@
 ;;  functions
 ;;; ===============================
 
-(defun bc-exwm--flatten (l)
-  "Flatten list L."
-  (mapcan (lambda (x) (if (listp x) x nil)) l))
-
-(defun bc-exwm--get-all-bins ()
-  "Traverse the $PATH variable and collect all executable"
-  (bc-exwm--flatten
-   (seq-concatenate
-    'list
-    (mapcar
-     (lambda (path)
-       (if (file-exists-p path)
-           (mapcar
-            #'car
-            (directory-files-and-attributes path nil "^[^\.]"))
-         '()))
-     (split-string (getenv "PATH") ":")))))
-
-(defun bc-exwm-launch-x-with-ivy ()
-  "Use `ivy-mode' as interface for launching x applications in exwm."
-  ;; TODO: some bins need to be called with arguments, how to deal with that?
-  (interactive)
-  (ivy-read "run: "
-            (bc-exwm--get-all-bins)
-            :action (lambda (x)
-                      (start-process-shell-command x nil x))))
+(defun bc-exwm-launch (execatuable)
+  "Launch EXECATUABLE in exwm."
+  (start-process-shell-command execatuable nil execatuable))
 
 (defun bc-exwm-amixer-adjust-volume (&optional up x)
   "Change volume by X percent, increase volume if UP is not-nil, otherwise decrease volume.  If X is nil, change by 5%."
@@ -239,9 +216,7 @@
 (setq exwm-input-prefix-keys (delete ?\C-u exwm-input-prefix-keys))
 
 (setq exwm-input-global-keys
-      `(;; app launcher
-        ([?\s-d] . bc-exwm-launch-x-with-ivy)
-        ;; to line mode
+      `(;; to line mode
         ([?\s-r] . exwm-reset)
         ;; toggle between line and char mode
         ([?\s-x] . exwm-input-toggle-keyboard)

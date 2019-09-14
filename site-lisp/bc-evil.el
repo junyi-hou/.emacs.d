@@ -323,6 +323,22 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   "pc" 'password-store-copy
   "pg" 'bc-password-store-generate
 
+  ;; launch X programs
+  "lb" (lambda () (interactive)
+         "TODO: use ivy to parse and present bash autocomplete file?"
+         (bc-exwm-launch "qutebrowser"))
+  "lp" (lambda () (interactive)
+         (let ((file (ivy-read
+                      "open pdf file: "
+                      #'read-file-name-internal
+                      ;; use predicate to filter out non-pdfs
+                      :predicate
+                      (lambda (x)
+                        (or (string= "pdf" (file-name-extension x))
+                            (string= (substring x (1- (length x))) "/")))
+                      :action 'identity)))
+           (bc-exwm-launch (concat "zathura" file))))
+
   ;; mail
   "m" 'mu4e
 
