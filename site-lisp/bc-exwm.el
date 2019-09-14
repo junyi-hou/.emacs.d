@@ -160,7 +160,7 @@
 This function should be called after `exwm-workspace-switch' is called.
 
 HACK: only work in conjecture of `bc-exwm--assign-workspaces' and with 1 external monitors."
-  (let ((index-range (or index-range (number-sequence 2 8))))
+  (let ((index-range (or index-range (number-sequence 1 8))))
     (when (and (car (bc-exwm--monitor-status))
                (member index index-range))
       (setq bc-exwm--external-monitor-workspace-index index))))
