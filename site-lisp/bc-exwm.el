@@ -144,7 +144,7 @@
   (setq exwm-randr-workspace-monitor-plist
         (seq-reduce
          'append
-         (mapcar (lambda (i) `(,i ,ext-mon)) (number-sequence 1 8))
+         (mapcar (lambda (i) `(,i ,monitor)) (number-sequence 1 8))
          `(0 ,bc-exwm--default-monitor))))
 
 (defun bc-exwm--turn-on-external-monitor (monitor position)
@@ -201,11 +201,11 @@ Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an
                   (lambda (f) (string-match-p "bc-exwm--" (symbol-name f)))
                   fun)))
       (when advice
-        (advice-remove fun advice)))))
+        (advice-remove fun (car advice))))))
 
 (defun bc-exwm--windmove-advice-add (position)
   "Generate functions based on external monitor's relative POSITION and advicing them to windmove-{left, right, up, down}."
-  (let* ((dir (bc-exwm--xrandr-to-symbol position))
+  (let* ((dir (bc-exwm--xrandr-to-direction position))
          (opp-dir (cdr (assoc dir bc-exwm--direction-pairs-alist)))
          (windmove-same (obarray-get obarray (concat "windmove-" dir)))
          (windmove-oppo (obarray-get obarray (concat "windmove-" opp-dir))))
@@ -250,7 +250,7 @@ Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an
 This function first scan for video port status via `bc-exwm--monitor-status', then use xrandr to turn on/off screens, finally, according to the relative position of the internal/external monitor, advice windmove functions."
   (let* ((port-status (bc-exwm--monitor-status))
          (connected (caar port-status))
-         (disconnected (cdr port-status)))
+         (disconnected (cadr port-status)))
 
     (mapc (lambda (monitor)
             (call-process
