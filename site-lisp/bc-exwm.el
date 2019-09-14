@@ -84,73 +84,169 @@
 (defconst bc-exwm--default-monitor "eDP1"
   "The internal screen output.")
 
-(defun bc-exwm--external-monitor-p (status)
-  "Return the list of external monitor port with status STATUS (connected or disconnected).  If there is no, return nil."
-  (let* ((xrandr-output-regexp (concat "\n\\([^ ]+\\) " (symbol-name status)))
-         (monitor))
-    (with-temp-buffer
-      (call-process "xrandr" nil t nil)
-      (goto-char (point-min))
-      (while (re-search-forward xrandr-output-regexp (point-max) 'noerror)
-        (push (match-string 1) monitor))
-      (seq-filter
-       (lambda (mon)
-         (not (string= mon bc-exwm--default-monitor)))
-       monitor))))
-
-(defun bc-exwm--turn-off-external-monitor ()
-  "Turn off all disconnected external monitor ports."
-  (mapc (lambda (monitor)
-          (call-process
-           "xrandr" nil nil nil
-           "--output" monitor "--off"))
-        (bc-exwm--external-monitor-p 'disconnected)))
-
-(defun bc-exwm-turn-on-external-monitor (position)
-  "Turn on the monitor identified by `bc-exwm--external-monitor-p'.  POSITION determines the relative position of the new monitor to the builtin monitor `bc-exwm--default-monitor'.  If POSITION is given, use it, otherwise read it from input."
-  (interactive
-   (list (ivy-read
-          "Relative position: "
-          '("--right-of" "--left-of" "--above" "--below" "--same-as")
-          :action 'identity)))
-  (setq bc-exwm--relative-layout position)
-  (let ((ext-mon (car (bc-exwm--external-monitor-p 'connected))))
-    (when ext-mon
-      (bc-exwm--assign-workspaces ext-mon)
-      (call-process
-       "xrandr" nil nil nil
-       "--output" "eDP1" "--auto"
-       "--output" ext-mon position "eDP1" "--auto"))))
-
-(defun bc-exwm--assign-workspaces (ext-mon)
-  "Assigning workspaces 1 - 8 to EXT-MON and 0 to eDP1."
-  (setq exwm-randr-workspace-monitor-plist
-        (seq-reduce
-         'append
-         (mapcar (lambda (i) `(,i ,ext-mon)) (number-sequence 1 8))
-         `(0 ,bc-exwm--default-monitor))))
-
-;; automatically adjust display when external monitor plug in/out
-(defun bc-exwm--auto-adjust-display ()
-  "Automatically adjust display by calling `bc-exwm--turn-off-external-monitor' and `bc-exwm-turn-on-external-monitor'."
-(bc-exwm--turn-off-external-monitor)
-(call-interactively 'bc-exwm-turn-on-external-monitor))
-
-(add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
-
-;; TODO use C-{hjkl} to move across workspaces as well
-;; (defmacro bc-exwm--switch-workspaces (switch-window-fn))
-
 (defvar bc-exwm--relative-layout nil
   "How the position of external monitor relates to `bc-exwm--default-monitor'.")
 
 (defvar bc-exwm--external-monitor-workspace-index nil
   "The index of the workspace displayed on the external monitor.")
 
+(defconst bc-exwm--direction-pairs-alist
+  '(("left" . "right")
+    ("right" . "left")
+    ("up" . "down")
+    ("down" . "up"))
+  "Pairs of direction, arranged as (dir . dir-opposite).")
+
+(defun bc-exwm--monitor-status ()
+  "Return lists of external monitor ports separately according to whether they are connected or not, i.e., (list of connected ports, list of disconnected ports)."
+  (let* ((xrandr-output-regexp "\n\\([^ ]+\\) \\(dis\\)?connected ")
+         (connected)
+         (disconnected))
+    (with-temp-buffer
+      (call-process "xrandr" nil t nil)
+      (goto-char (point-min))
+      (while (re-search-forward xrandr-output-regexp (point-max) 'noerror)
+        (if (string-match-p "disconnected" (match-string 0))
+            (push (match-string 1) disconnected)
+          (push (match-string 1) connected)))
+      ;; return
+      `(,(seq-filter
+          (lambda (mon)
+            (not (string= mon bc-exwm--default-monitor)))
+          connected)
+        ,disconnected))))
+
+(defun bc-exwm--assign-workspaces (monitor)
+  "Assigning workspaces 1 - 8 to MONITOR and 0 to `bc-exwm--default-monitor'."
+  (setq exwm-randr-workspace-monitor-plist
+        (seq-reduce
+         'append
+         (mapcar (lambda (i) `(,i ,monitor)) (number-sequence 1 8))
+         `(0 ,bc-exwm--default-monitor))))
+
+(defun bc-exwm--turn-on-external-monitor (monitor position)
+  "Turn on external MONITOR.  POSITION determines the relative position of MONITOR to the builtin monitor `bc-exwm--default-monitor'."
+  (bc-exwm--assign-workspaces monitor)
+  (call-process
+   "xrandr" nil nil nil
+   "--output" monitor position "eDP1" "--auto"))
+
+(defun bc-exwm--tracking-external-monitor-workspace-index (index &optional index-range)
+  "Update `bc-exwm--external-monitor-workspace-index' to INDEX if INDEX is in INDEX-RANGE.
+
+This function should be called after `exwm-workspace-switch' is called.
+
+HACK: only work in conjecture of `bc-exwm--assign-workspaces' and with 1 external monitors."
+  (let ((index-range (or index-range (number-sequence 1 8))))
+    (when (and (car (bc-exwm--monitor-status))
+               (member index index-range))
+      (setq bc-exwm--external-monitor-workspace-index index))))
+
+(advice-add 'exwm-workspace-switch :after 'bc-exwm--tracking-external-monitor-workspace-index)
+
+(defun bc-exwm--xrandr-to-direction (xrandr-argument)
+  "Translate XRANDR-ARGUMENT to direction"
+  (string-match "\\(right\\|left\\|above\\|below\\)" xrandr-argument)
+  (let ((result (match-string 1 xrandr-argument)))
+    (cond
+     ((string= result "above") "up")
+     ((string= result "below") "down")
+     (t result))))
+
 (defun bc-exwm--windmove-most (dir)
-  "move to the DIR most window of the selected-frame."
-  (while t
-    (windmove-do-window-select dir)))
+  "Move to the DIR most window of the `selected-frame'."
+  (ignore-errors
+    (while t
+      (windmove-do-window-select (obarray-get obarray dir)))))
+
+(defun bc-exwm--adviced-p (predicates fun)
+  "Return FUN's advices that satisfies PREDICATES.  If there is no advice that satisfies PREDICATES or there is no advice at all, return nil.
+
+Adapted from https://emacs.stackexchange.com/questions/33020/how-can-i-remove-an-unnamed-advice/33021#33021."
+  (let (result)
+    (advice-mapc
+     (lambda (ad props)
+       (when (funcall predicates ad)
+         (push ad result)))
+     fun)
+    (nreverse result)))
+
+(defun bc-exwm--windmove-advice-remove ()
+  "Remove advice of windmove-{left,right,up,down} so it is what it was."
+  (dolist (fun '(windmove-left windmove-right windmove-up windmove-down))
+    (let ((advice (bc-exwm--adviced-p
+                  (lambda (f) (string-match-p "bc-exwm--" (symbol-name f)))
+                  fun)))
+      (when advice
+        (advice-remove fun (car advice))))))
+
+(defun bc-exwm--windmove-advice-add (position)
+  "Generate functions based on external monitor's relative POSITION and advicing them to windmove-{left, right, up, down}."
+  (let* ((dir (bc-exwm--xrandr-to-direction position))
+         (opp-dir (cdr (assoc dir bc-exwm--direction-pairs-alist)))
+         (windmove-same (obarray-get obarray (concat "windmove-" dir)))
+         (windmove-oppo (obarray-get obarray (concat "windmove-" opp-dir))))
+
+    (defun bc-exwm--advice-windmove-same (windmove &rest args)
+      (if (eq exwm-workspace-current-index 0)
+          ;; in internal monitor
+          (condition-case nil
+              ;; if not error, business as usual
+              (apply windmove args)
+            ;; if there is error -- at the boundary window of the external monitor,
+            ;; need to move to the opposite-most window of the internal monitor
+            (error
+             (progn
+               (exwm-workspace-switch bc-exwm--external-monitor-workspace-index)
+               (bc-exwm--windmove-most opp-dir))))
+        ;; in external monitor, not affected
+        (apply windmove args)))
+
+    (defun bc-exwm--advice-windmove-oppo (windmove &rest args)
+      (if (eq exwm-workspace-current-index 0)
+          ;; in internal monitor, not affected
+          (apply windmove args)
+        ;; in external monitor
+        (condition-case nil
+            ;; if not error, business as usual
+            (apply windmove args)
+          ;; if there is error -- at the boundary window of the internal monitor,
+          ;; need to move to the opposite-most window of the external monitor
+          (error
+           (progn
+             (exwm-workspace-switch 0)
+             (bc-exwm--windmove-most dir))))))
+
+    (advice-add windmove-same :around #'bc-exwm--advice-windmove-same)
+    (advice-add windmove-oppo :around #'bc-exwm--advice-windmove-oppo)))
+
+;; automatically adjust display when external monitor plug in/out
+(defun bc-exwm--auto-adjust-display ()
+  "Automatically adjust display.
+
+This function first scan for video port status via `bc-exwm--monitor-status', then use xrandr to turn on/off screens, finally, according to the relative position of the internal/external monitor, advice windmove functions."
+  (let* ((port-status (bc-exwm--monitor-status))
+         (connected (caar port-status))
+         (disconnected (cadr port-status)))
+
+    (mapc (lambda (monitor)
+            (call-process
+             "xrandr" nil nil nil
+             "--output" monitor "--off"))
+          disconnected)
+
+    (bc-exwm--windmove-advice-remove)
+
+    (when connected
+      (let ((position (ivy-read
+                    "Relative position: "
+                    '("--right-of" "--left-of" "--above" "--below" "--same-as")
+                    :action 'identity)))
+        (setq bc-exwm--relative-layout position)
+        (bc-exwm--turn-on-external-monitor connected position)
+        (bc-exwm--windmove-advice-add position)))))
+
+(add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
 
 ;;; ===============================
