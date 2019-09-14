@@ -269,7 +269,7 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
         (bc-exwm--turn-on-external-monitor connected position)
         (bc-exwm--windmove-advice-add position)))))
 
-;; (add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
+(add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
 
 ;;; ===============================
