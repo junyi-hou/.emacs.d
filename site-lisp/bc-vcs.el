@@ -162,8 +162,8 @@
      "C-d" 'bc-vcs-ediff-scroll-down
      "C-u" 'bc-vcs-ediff-scroll-up
 
-     "a" 'ediff-copy-A-to-C
-     "b" 'ediff-copy-B-to-C
+     "a" 'ediff-copy-A-to-B
+     "b" 'ediff-copy-B-to-A
 
      "C-e" 'ediff-next-difference
      "C-y" 'ediff-previous-difference
@@ -177,15 +177,13 @@
      :prefix "SPC"
      "q" 'ediff-quit)
 
-    ;; if it is only a two-window job
-    (unless (or ediff-3way-comparison-job
-                (eq ediff-split-window-function 'split-window-vertically))
+    ;; if it is a three-window job
+    (unless ediff-3way-comparison-job
       (general-define-key
        :keymaps 'ediff-mode-map
        :states 'motion
-       "a" 'ediff-copy-A-to-B
-       "b" 'ediff-copy-B-to-A)
-      )))
+       "a" 'ediff-copy-A-to-C
+       "b" 'ediff-copy-B-to-C))))
 
 (provide 'bc-vcs)
 ;;; bc-vcs.el ends here
