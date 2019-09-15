@@ -3,3 +3,4 @@
 !site-lisp/**
 !.gitignore
 !etc/yasnippet/*
+!etc/mbsync.conf
