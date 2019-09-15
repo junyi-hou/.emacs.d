@@ -2,5 +2,6 @@
 !site-lisp/
 !site-lisp/**
 !.gitignore
-!etc/yasnippet/*
-!etc/mbsync.conf
+!etc/
+!etc/**
+etc/custom.el
