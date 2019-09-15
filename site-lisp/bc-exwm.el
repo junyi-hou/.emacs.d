@@ -62,18 +62,20 @@
        (equal major-mode 'exwm-mode)))
    (buffer-list)))
 
-(defun bc-exwm-switch-to-xwindow (xwindow)
-  "Display XWINDOW in the current window."
-  (interactive
-   (list
-    (ivy-read
-     "swtich to: "
-     (mapcar 'buffer-name (bc-exwm--get-xwindow-buffer))
-     :action (lambda (x) (get-buffer x)))))
-  (let ((buffer (seq-find (lambda (x)
-                            (string= (buffer-name x) xwindow))
-                          (bc-exwm--get-xwindow-buffer))))
-    (exwm-workspace-move-window exwm-workspace-current-index (exwm--buffer->id buffer))))
+(defun bc-exwm-switch-to-xwindow ()
+  "Choose a xwindow from `ivy-read' and display it in the current window or a new window in the current frame."
+  (interactive)
+  (ivy-read
+   "swtich to: "
+   (mapcar 'buffer-name (bc-exwm--get-xwindow-buffer))
+   :action
+   (lambda (x)
+     (when ivy-current-prefix-arg
+       (bc-core--split-window)
+       (other-window 1))
+     (exwm-workspace-move-window
+      (selected-frame)
+      (exwm--buffer->id (get-buffer x))))))
 
 ;;; ===============================
 ;;  multi-monitor setup

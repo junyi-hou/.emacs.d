@@ -315,30 +315,30 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
          (dired default-directory))
   ;; x windows
   "ox" 'bc-exwm-switch-to-xwindow
-  "oX" (lambda () (interactive)
-         (bc-core--split-window)
-         (other-window 1)
-         (call-interactively 'bc-exwm-switch-to-xwindow))
 
   ;; pass
   "pc" 'password-store-copy
   "pg" 'bc-password-store-generate
 
   ;; launch X programs
-  "lb" (lambda () (interactive)
-         "TODO: use ivy to parse and present bash autocomplete file?"
+  "lb" (lambda () "TODO: use ivy to parse and present bash autocomplete file?"
+         (interactive)
          (bc-exwm-launch "qutebrowser"))
-  "lp" (lambda () (interactive)
-         (let ((file (ivy-read
-                      "open pdf file: "
-                      #'read-file-name-internal
-                      ;; use predicate to filter out non-pdfs
-                      :predicate
-                      (lambda (x)
-                        (or (string= "pdf" (file-name-extension x))
-                            (string= (substring x (1- (length x))) "/")))
-                      :action 'identity)))
-           (bc-exwm-launch (concat "zathura" file))))
+  "lp" (lambda () "Open a pdf file, with `ivy-current-prefix-arg', open the file in zathura, otherwise open file in pdf-tools."
+         (interactive)
+         (ivy-read
+          "open pdf file: "
+          #'read-file-name-internal
+          ;; use predicate to filter out non-pdfs
+          :predicate
+          (lambda (x)
+            (or (string= "pdf" (file-name-extension x))
+                (string= (substring x (1- (length x))) "/")))
+          :action
+          (lambda (x)
+            (if ivy-current-prefix-arg
+                (bc-exwm-launch (concat "zathura " x))
+              (find-file x)))))
 
   ;; mail
   "m" 'mu4e
