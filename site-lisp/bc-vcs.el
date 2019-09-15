@@ -84,6 +84,7 @@
   :hook
   (ediff-keymap-setup . bc-vcs-ediff-modify-keys)
   (ediff-prepare-buffer . bc-vcs-ediff--turn-off-hs)
+  (ediff-quit . bc-vcs-ediff--turn-on-hs)
 
   :init
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -94,6 +95,10 @@
   (defun bc-vcs-ediff--turn-off-hs ()
     "Turn off `hs-minor-mode'."
     (hs-minor-mode -1))
+
+  (defun bc-vcs-ediff--turn-on-hs ()
+    "Turn on `hs-minor-mode', run after finishing ediffing."
+    (hs-minor-mode 1))
 
   ;; these functions are taken from bc-vcs
   ;; https://github.com/emacs-evil/evil-collection/blob/master/evil-collection-ediff.el

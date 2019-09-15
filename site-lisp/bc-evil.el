@@ -290,10 +290,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   "Q" 'exit-emacs
   "b" 'balance-windows
 
-  ;; buffer related
-  "n" 'bc-evil-next-user-buffer
-  "N" 'bc-evil-previous-user-buffer
-
   ;; split
   "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
   "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
@@ -302,11 +298,17 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   "oo" 'counsel-find-file
   "or" 'counsel-recentf
   "of" 'projectile-find-file
-  "ob" 'ivy-switch-buffer
-  "oB" (lambda () (interactive)
-         (bc-core--split-window)
-         (other-window 1)
-         (call-interactively 'ivy-switch-buffer))
+  "ob" (lambda () "Switch to buffer, with `ivy-current-prefix-arg', open in new window, otherwise open in the same buffer"
+         (interactive)
+         (ivy-read "Switch to buffer: " #'internal-complete-buffer
+                   :preselect (buffer-name (other-buffer (current-buffer)))
+                   :matcher #'ivy--switch-buffer-matcher
+                   :caller 'ivy-switch-buffer
+                   :action
+                   (lambda (buffer)
+                     (if ivy-current-prefix-arg
+                         (switch-to-buffer-other-window buffer)
+                       (switch-to-buffer buffer nil 'force-same-window)))))
   "os" 'bc-eshell-open-here
   "oS" 'bc-eshell-open-home
   "op" 'projectile-switch-project
@@ -355,7 +357,7 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
          (unless magit-todos-mode
            (magit-todos-mode))
          (magit-status))
-  "gd" 'magit-diff-buffer-file
+  "gd" 'magit-ediff-show-working-tree
   "gl" 'magit-log-buffer-file
 
   ;; search and replace
