@@ -140,9 +140,9 @@
    "K" 'pdf-view-previous-page
 
    "C-d" (lambda () (interactive)
-           (pdf-view-scroll-down-or-previous-page 20))
-   "C-u" (lambda () (interactive)
            (pdf-view-scroll-up-or-next-page 20))
+   "C-u" (lambda () (interactive)
+           (pdf-view-scroll-down-or-previous-page 20))
 
    "gg" 'bc-ide-latex-pdf-view-goto-first-page
    "gl" 'pdf-view-goto-label
