@@ -343,7 +343,9 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
               (find-file x)))))
 
   ;; mail
-  "m" 'mu4e
+  "ms" 'bc-mail-update-and-search
+  "mi" 'bc-mail-update-and-open-inbox
+  "mn" 'bc-mail-update-and-new
 
   ;; focus mode
   "f" 'bc-evil-toggle-one-window
