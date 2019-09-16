@@ -5,7 +5,7 @@
 ;;; Code:
 (use-package notmuch
   :ensure nil
-  :commands bc-mail-update-and-search
+  :defer t
   :init
   (setenv "NOTMUCH_CONFIG" (no-littering-expand-etc-file-name "notmuch.conf"))
 
@@ -85,6 +85,7 @@
    "A" 'notmuch-tree-archive-thread))
 
 (use-package org-notmuch
+  ;; require to emerge `app-emacs/org-mode' with `contrib' flag
   :ensure nil
   :after notmuch)
 
