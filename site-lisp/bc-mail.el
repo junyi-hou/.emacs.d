@@ -6,11 +6,10 @@
 (use-package notmuch
   :ensure nil
   :commands bc-mail-update-and-search
-  :hook
   :init
-  (setq notmuch-init-file (no-littering-expand-etc-file-name "notmuch.conf"))
+  (setenv "NOTMUCH_CONFIG" (no-littering-expand-etc-file-name "notmuch.conf"))
 
-  (dolist (mode '(notmuch-hello notmuch-search notmuch-show notmuch-tree))
+  (dolist (mode '(notmuch-hello-mode notmuch-search-mode notmuch-show-mode notmuch-tree-mode))
     (evil-set-initial-state mode 'motion))
 
   (defun bc-mail-update-and-search (query)
@@ -38,7 +37,7 @@
    "s" 'notmuch-search)
 
   (:keymaps 'notmuch-search-mode-map
-   :states 'motion
+   :states '(motion visual)
    "q" 'kill-buffer-and-window
    "s" 'notmuch-search
    "S" 'notmuch-search-filter
@@ -48,7 +47,7 @@
    "-" 'notmuch-search-remove-tag
    "+" 'notmuch-search-add-tag
    "gr" 'notmuch-poll-and-refresh-this-buffer
-   "return" 'notmuch-search-show-thread
+   "RET" 'notmuch-search-show-thread
    "t" (lambda () (interactive)
          (notmuch-search-show-thread)
          (notmuch-tree-from-show-current-query))
@@ -60,8 +59,8 @@
    "s" 'notmuch-search
    "t" 'notmuch-tree-from-show-current-query
    "gr" 'notmuch-show-refresh-view
-   "tab" 'notmuch-show-next-button
-   "backtab" 'notmuch-show-previous-button
+   "<tab>" 'notmuch-show-next-button
+   "<backtab>" 'notmuch-show-previous-button
 
    "f" 'notmuch-show-forward-message
    "F" 'notmuch-show-forward-open-messages
@@ -83,9 +82,11 @@
    "S" 'notmuch-search-from-tree-current-query
    "RET" 'notmuch-tree-show-message
    "a" 'notmuch-tree-archive-message-then-next
-   "A" 'notmuch-tree-archive-thread
-   )
-  )
+   "A" 'notmuch-tree-archive-thread))
+
+(use-package org-notmuch
+  :ensure nil
+  :after notmuch)
 
 (provide 'bc-mail)
 ;;; bc-mail.el ends here
