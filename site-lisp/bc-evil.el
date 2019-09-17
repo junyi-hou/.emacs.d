@@ -105,6 +105,24 @@
             (set-visited-file-name new-name)
             (set-buffer-modified-p nil))))))
 
+  (defun bc-evil-move-buffer-file (new-location)
+    "Move `buffer-file-name' to NEW-LOCATION."
+    (interactive
+     (list
+      (ivy-read
+       "Move to: "
+       #'read-file-name-internal
+       :predicate
+       (lambda (x)
+         (string= x (file-name-as-directory x)))
+       :action 'identity)))
+    (let* ((file-name (buffer-file-name))
+           (cmd (concat "mv " file-name " " new-location (file-name-nondirectory file-name))))
+      (unless file-name
+        (user-error "Current buffer is not associated with any file"))
+      (start-process-shell-command
+       "move" nil cmd)))
+
   (evil-define-motion bc-evil-next-three-lines ()
     (interactive)
     (evil-next-visual-line 3))
