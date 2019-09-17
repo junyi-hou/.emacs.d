@@ -21,7 +21,7 @@
   (defun bc-mail-update-and-new ()
     "Open unread email list."
     (interactive)
-    (bc-mail-update-and-search "tag:unread"))
+    (bc-mail-update-and-search "tag:unread and tag:inbox"))
 
   (defun bc-mail-update-and-open-inbox ()
     "Open inbox"
@@ -31,6 +31,14 @@
   (defun bc-mail-compose ())
 
   :general
+  (:keymaps '(motion normal visual emacs insert)
+  :prefix "SPC"
+  :non-normal-prefix "s-SPC"
+  "ms" 'bc-mail-update-and-search
+  "mi" 'bc-mail-update-and-open-inbox
+  "mu" 'bc-mail-update-and-new
+  "mn" 'bc-mail-compose)
+
   (:keymaps 'notmuch-hello-mode-map
    :states 'motion
    "q" 'kill-buffer-and-window
