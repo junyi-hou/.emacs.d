@@ -354,6 +354,7 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
           (lambda (x)
             (or (string= "pdf" (file-name-extension x))
                 (string= (substring x (1- (length x))) "/")))
+          :initial-input "~/downloads/"
           :action
           (lambda (x)
             (if ivy-current-prefix-arg
