@@ -60,8 +60,6 @@
     (interactive)
     (bc-mail-update-and-search "tag:inbox"))
 
-  (defun bc-mail-compose ())
-
   :general
   (:keymaps '(motion normal visual emacs insert)
   :prefix "SPC"
@@ -69,7 +67,7 @@
   "ms" 'bc-mail-update-and-search
   "mi" 'bc-mail-update-and-open-inbox
   "mu" 'bc-mail-update-and-new
-  "mn" 'bc-mail-compose)
+  "mn" 'notmuch-mua-new-mail)
 
   (:keymaps 'notmuch-hello-mode-map
    :states 'motion
