@@ -18,6 +18,16 @@
     (notmuch-poll)
     (notmuch-search query))
 
+  (defun bc-mail-flag ()
+    "Flagged selected threads."
+    (interactive)
+    (notmuch-search-tag '("+flagged")))
+
+  (defun bc-mail-unflag ()
+    "Unflagged selected threads."
+    (interactive)
+    (notmuch-search-tag '("-flagged")))
+
   (defun bc-mail-update-and-new ()
     "Open unread email list."
     (interactive)
@@ -41,17 +51,21 @@
 
   (:keymaps 'notmuch-hello-mode-map
    :states 'motion
-   "q" 'kill-buffer-and-window
+   "q" 'notmuch-bury-or-kill-this-buffer
    "s" 'notmuch-search)
 
   (:keymaps 'notmuch-search-mode-map
    :states '(motion visual)
-   "q" 'kill-buffer-and-window
+   "q" 'notmuch-bury-or-kill-this-buffer
    "s" 'notmuch-search
    "S" 'notmuch-search-filter
+
    "a" 'notmuch-search-archive-thread
    "A" (lambda () (interactive)
          (notmuch-search-archive-thread 'unarchive))
+   "f" 'bc-mail-flag
+   "F" 'bc-mail-unflag
+
    "-" 'notmuch-search-remove-tag
    "+" 'notmuch-search-add-tag
    "gr" 'notmuch-poll-and-refresh-this-buffer
@@ -63,7 +77,7 @@
 
   (:keymaps 'notmuch-show-mode-map
    :states 'motion
-   "q" 'kill-buffer-and-window
+   "q" 'notmuch-bury-or-kill-this-buffer
    "s" 'notmuch-search
    "t" 'notmuch-tree-from-show-current-query
    "gr" 'notmuch-show-refresh-view
