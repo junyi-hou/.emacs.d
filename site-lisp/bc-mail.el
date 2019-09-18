@@ -75,8 +75,8 @@
    "r" 'notmuch-show-reply-sender
    "R" 'notmuch-show-reply
 
-   "C-y" 'notmuch-show-next-message
-   "C-e" 'notmuch-show-previous-message
+   "C-y" 'notmuch-show-previous-message
+   "C-e" 'notmuch-show-next-message
    "a" 'notmuch-show-archive-thread-then-next
    "A" 'notmuch-show-archive-message-then-next-or-next-thread
 
