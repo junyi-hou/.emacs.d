@@ -6,8 +6,13 @@
 (use-package notmuch
   :ensure nil
   :defer t
+  :commands notmuch-poll
   :init
   (setenv "NOTMUCH_CONFIG" (no-littering-expand-etc-file-name "notmuch.conf"))
+
+  ;; sending mails
+  (setq smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587)
 
   (dolist (mode '(notmuch-hello-mode notmuch-search-mode notmuch-show-mode notmuch-tree-mode))
     (evil-set-initial-state mode 'motion))
@@ -17,6 +22,15 @@
     (interactive "sSearching Mail: ")
     (notmuch-poll)
     (notmuch-search query))
+
+  (defun bc-mail-sync ()
+    "Sync with the remote server using gmailieer.  Use in cronjob with emacsclient -e \"(emacsclient -e bc-mail-sync)\"."
+    (let ((default-directory "~/.emacs.d/var/maildir/personal/"))
+      (start-process-shell-command
+       "lieer" "*lieer-status*" "gmi sync"))
+    (let ((default-directory "~/.emacs.d/var/maildir/berkeley/"))
+      (start-process-shell-command
+       "lieer" "*lieer-status*" "gmi sync")))
 
   (defun bc-mail-flag ()
     "Flagged selected threads."
@@ -91,8 +105,8 @@
 
    "C-y" 'notmuch-show-previous-message
    "C-e" 'notmuch-show-next-message
-   "a" 'notmuch-show-archive-thread-then-next
-   "A" 'notmuch-show-archive-message-then-next-or-next-thread
+   "A" 'notmuch-show-archive-thread-then-next
+   "a" 'notmuch-show-archive-message-then-next-or-next-thread
 
    "M-j" 'notmuch-show-advance
    "M-k" 'notmuch-show-rewind)
