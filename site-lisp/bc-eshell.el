@@ -26,8 +26,7 @@
      :keymaps 'eshell-mode-map
      "A" 'bc-eshell-goto-prompt
      "H" 'eshell-bol
-     "S" 'bc-eshell-toggle-sudo
-     "cc" 'bc-eshell-replace-current-prompt)
+     "S" 'bc-eshell-toggle-sudo)
 
     (general-define-key
      :states '(normal visual motion)
@@ -126,7 +125,8 @@
     (evil-insert 1))
 
   (defun bc-eshell-replace-current-prompt ()
-    "Like cc in evil mode, but takes into account the prompt."
+    "Like cc in evil mode, but takes into account the prompt.
+FIXME: binding this to cc overshadows all other c-bindings"
     (interactive)
     (eshell-bol)
     (kill-region (point) (line-end-position))
