@@ -13,6 +13,10 @@
   ;; sending mails
   (setq auth-sources `(,(concat
                          (no-littering-expand-var-file-name "maildir/auto-info.gpg"))))
+
+  (setq message-default-headers "Cc: \nBcc: \n"
+        message-kill-buffer-on-exit t)
+
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 587
         smtpmail-stream-type 'ssl
