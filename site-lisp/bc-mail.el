@@ -11,8 +11,12 @@
   (setenv "NOTMUCH_CONFIG" (no-littering-expand-etc-file-name "notmuch.conf"))
 
   ;; sending mails
+  (setq auth-sources `(,(concat
+                         (no-littering-expand-var-file-name "maildir/auto-info.gpg"))))
   (setq smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587)
+        smtpmail-smtp-service 587
+        smtpmail-stream-type 'ssl
+        message-send-mail-function 'message-smtpmail-send-it)
 
   (dolist (mode '(notmuch-hello-mode notmuch-search-mode notmuch-show-mode notmuch-tree-mode))
     (evil-set-initial-state mode 'motion))
@@ -115,10 +119,25 @@
    :states 'motion
    "q" 'notmuch-tree-quit
    "s" 'notmuch-search
+   "M-j" 'notmuch-tree-next-message
+   "M-k" 'notmuch-tree-prev-message
    "S" 'notmuch-search-from-tree-current-query
    "RET" 'notmuch-tree-show-message
    "a" 'notmuch-tree-archive-message-then-next
-   "A" 'notmuch-tree-archive-thread))
+   "A" 'notmuch-tree-archive-thread)
+
+  ;; fool-proving
+  (:keymap '(notmuch-search-mode-map
+             notmuch-show-mode-map
+             notmuch-hello-mode-map)
+   :states '(motion visual)
+   :prefix "SPC"
+   "q" 'notmuch-bury-or-kill-this-buffer)
+
+  (:keymap 'notmuch-tree-mode-map
+           :states '(motion visual)
+           :prefix "SPC"
+           "q" 'notmuch-tree-quit))
 
 (use-package org-notmuch
   ;; require to emerge `app-emacs/org-mode' with `contrib' flag
