@@ -12,7 +12,7 @@
 
   ;; sending mails
   (setq auth-sources `(,(concat
-                         (no-littering-expand-var-file-name "maildir/auto-info.gpg"))))
+                         (no-littering-expand-var-file-name "maildir/autoinfo.gpg"))))
 
   (setq message-default-headers "Cc: \nBcc: \n"
         message-kill-buffer-on-exit t)
@@ -34,10 +34,10 @@
     "Sync with the remote server using gmailieer.  Use in cronjob with emacsclient -e \"(emacsclient -e bc-mail-sync)\"."
     (let ((default-directory "~/.emacs.d/var/maildir/personal/"))
       (start-process-shell-command
-       "lieer" "*lieer-status*" "gmi sync"))
+       "lieer-personal" "*lieer-status*" "gmi sync"))
     (let ((default-directory "~/.emacs.d/var/maildir/berkeley/"))
       (start-process-shell-command
-       "lieer" "*lieer-status*" "gmi sync")))
+       "lieer-berkeley" "*lieer-status*" "gmi sync")))
 
   (advice-add 'notmuch-poll :before #'bc-mail-sync)
 
