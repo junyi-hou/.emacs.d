@@ -31,7 +31,7 @@
     (notmuch-poll)
     (notmuch-search query))
 
-  (defun bc-mail-sync ()
+  (defun bc-mail-sync (&rest _)
     "Sync with the remote server using gmailieer.  Use in cronjob with emacsclient -e \"(emacsclient -e bc-mail-sync)\"."
     (let ((default-directory "~/.emacs.d/var/maildir/personal/"))
       (start-process-shell-command
@@ -39,6 +39,8 @@
     (let ((default-directory "~/.emacs.d/var/maildir/berkeley/"))
       (start-process-shell-command
        "lieer" "*lieer-status*" "gmi sync")))
+
+  (advice-add 'notmuch-poll :before #'bc-mail-sync)
 
   (defun bc-mail-flag ()
     "Flagged selected threads."
@@ -60,6 +62,11 @@
     (interactive)
     (bc-mail-update-and-search "tag:inbox"))
 
+  (defun bc-mail-seminar-list ()
+    "Search for seminar information"
+    (interactive)
+    (bc-mail-update-and-search "tag:seminar"))
+
   :general
   (:keymaps '(motion normal visual emacs insert)
   :prefix "SPC"
@@ -67,6 +74,7 @@
   "ms" 'bc-mail-update-and-search
   "mi" 'bc-mail-update-and-open-inbox
   "mu" 'bc-mail-update-and-new
+  "mt" 'bc-mail-seminar-list
   "mn" 'notmuch-mua-new-mail)
 
   (:keymaps 'notmuch-hello-mode-map
@@ -88,7 +96,6 @@
 
    "-" 'notmuch-search-remove-tag
    "+" 'notmuch-search-add-tag
-   "gr" 'notmuch-poll-and-refresh-this-buffer
    "RET" 'notmuch-search-show-thread
    "t" (lambda () (interactive)
          (notmuch-search-show-thread)
@@ -134,12 +141,14 @@
              notmuch-hello-mode-map)
    :states '(motion visual)
    :prefix "SPC"
-   "q" 'notmuch-bury-or-kill-this-buffer)
+   "q" 'notmuch-bury-or-kill-this-buffer
+   "r" 'notmuch-poll-and-refresh-this-buffer)
 
   (:keymap 'notmuch-tree-mode-map
-           :states '(motion visual)
-           :prefix "SPC"
-           "q" 'notmuch-tree-quit))
+   :states '(motion visual)
+   :prefix "SPC"
+   "q" 'notmuch-tree-quit
+   "r" 'notmuch-poll-and-refresh-this-buffer))
 
 (use-package org-notmuch
   ;; require to emerge `app-emacs/org-mode' with `contrib' flag
