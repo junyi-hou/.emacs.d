@@ -19,7 +19,6 @@
 
   (setq smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 587
-        smtpmail-stream-type 'ssl
         message-send-mail-function 'message-smtpmail-send-it)
 
   (dolist (mode '(notmuch-hello-mode notmuch-search-mode notmuch-show-mode notmuch-tree-mode))
@@ -142,13 +141,15 @@
    :states '(motion visual)
    :prefix "SPC"
    "q" 'notmuch-bury-or-kill-this-buffer
-   "r" 'notmuch-poll-and-refresh-this-buffer)
+   "rr" 'notmuch-poll-and-refresh-this-buffer
+   "rR" 'notmuch-refresh-all-buffers)
 
   (:keymap 'notmuch-tree-mode-map
    :states '(motion visual)
    :prefix "SPC"
    "q" 'notmuch-tree-quit
-   "r" 'notmuch-poll-and-refresh-this-buffer))
+   "rr" 'notmuch-poll-and-refresh-this-buffer
+   "rR" 'notmuch-refresh-all-buffers))
 
 (use-package org-notmuch
   ;; require to emerge `app-emacs/org-mode' with `contrib' flag
