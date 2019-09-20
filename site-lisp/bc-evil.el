@@ -292,6 +292,7 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
          (interactive)
          (eval-buffer)
          (message "%s %s %s" "buffer" (buffer-name) "evaluated!"))
+  "er" 'bc-evil-replace-word-at-point-all
 
   ;; helps
   "hf" 'describe-function
@@ -336,10 +337,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   ;; x windows
   "ox" 'bc-exwm-switch-to-xwindow
 
-  ;; pass
-  "pc" 'password-store-copy
-  "pg" 'bc-password-store-generate
-
   ;; launch X programs
   "lb" (lambda () "TODO: use ivy to parse and present bash autocomplete file?"
          (interactive)
@@ -375,9 +372,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
          (magit-status))
   "gd" 'magit-ediff-show-working-tree
   "gl" 'magit-log-buffer-file
-
-  ;; search and replace
-  "er" 'bc-evil-replace-word-at-point-all
 
   ;; other uses
   "t" 'evilnc-comment-or-uncomment-lines)

@@ -12,7 +12,7 @@
 
   ;; sending mails
   (setq auth-sources `(,(concat
-                         (no-littering-expand-var-file-name "maildir/autoinfo.gpg"))))
+                         (no-littering-expand-var-file-name "maildir/authinfo.gpg"))))
 
   (setq message-default-headers "Cc: \nBcc: \n"
         message-kill-buffer-on-exit t)
@@ -74,7 +74,7 @@
   "mi" 'bc-mail-update-and-open-inbox
   "mu" 'bc-mail-update-and-new
   "mt" 'bc-mail-seminar-list
-  "mn" 'notmuch-mua-new-mail)
+  "mn" (lambda () (interactive) (notmuch-mua-new-mail t)))
 
   (:keymaps 'notmuch-hello-mode-map
    :states 'motion

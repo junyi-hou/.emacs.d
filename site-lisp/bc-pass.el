@@ -4,17 +4,16 @@
 
 ;;; Code:
 
+(use-package epa
+  :ensure nil
+  :init
+  (setq epg-pinentry-mode 'loopback))
+
 (use-package password-store
   :commands password-store--run-generate
   :config
 
   (setq password-store-password-length 16)
-
-  ;; use emacs minibuffer as pinentry frontend
-  (defun pinentry-emacs (desc prompt ok error)
-    "Use emacs as frontend of pinentry for gpg"
-    (let ((str (read-passwd (concat (replace-regexp-in-string "%22" "\"" (replace-regexp-in-string "%0A" "\n" desc)) prompt ": "))))
-      str))
 
   ;; better password-store-generate -- warn if overriding
   (defun bc-password-store-generate (entry &optional password-length)
@@ -50,7 +49,14 @@
            (entry (ivy-read "account: " candidates :action 'identity)))
        (concat (bc-pass--get-entry entry "account")
                " "
-               (bc-pass--get-entry entry "passwd")))))
+               (bc-pass--get-entry entry "passwd"))))
+
+  :general
+  (:keymaps '(normal visual motion emacs insert)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   "pc" 'password-store-copy
+   "pg" 'bc-password-store-generate))
 
 (provide 'bc-pass)
 ;;; bc-pass.el ends here
