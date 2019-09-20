@@ -137,5 +137,12 @@
      'default (selected-frame)
      :height new-size)))
 
+(defun bc-fontsize-reset ()
+  "Reset the current frame font size."
+  (interactive)
+  (set-face-attribute
+   'default (selected-frame) :height 150))
+
+
 (provide 'bc-theme)
 ;;; bc-theme.el ends here
