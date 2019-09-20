@@ -32,12 +32,16 @@
 
   (defun bc-mail-sync (&rest _)
     "Sync with the remote server using gmailieer.  Use in cronjob with emacsclient -e \"(emacsclient -e bc-mail-sync)\"."
-    (let ((default-directory "~/.emacs.d/var/maildir/personal/"))
-      (start-process-shell-command
-       "lieer-personal" "*lieer-status*" "gmi sync"))
-    (let ((default-directory "~/.emacs.d/var/maildir/berkeley/"))
-      (start-process-shell-command
-       "lieer-berkeley" "*lieer-status*" "gmi sync")))
+    (let* ((default-directory "~/.emacs.d/var/maildir/personal/")
+           (output (shell-command-to-string "gmi sync")))
+      (with-current-buffer (get-buffer-create "*lieer-status*")
+        (goto-char (point-max))
+        (insert output)))
+    (let* ((default-directory "~/.emacs.d/var/maildir/berkeley/")
+           (output (shell-command-to-string "gmi sync")))
+      (with-current-buffer (get-buffer-create "*lieer-status*")
+        (goto-char (point-max))
+        (insert output))))
 
   (advice-add 'notmuch-poll :before #'bc-mail-sync)
 
