@@ -24,6 +24,20 @@
   (dolist (mode '(notmuch-hello-mode notmuch-search-mode notmuch-show-mode notmuch-tree-mode))
     (evil-set-initial-state mode 'motion))
 
+  (defun bc-mail-prompt-for-sender ()
+    "Prompt for a sender address, using `ivy-read'."
+    (let* ((name (notmuch-user-name))
+           (addrs (cons (notmuch-user-primary-email)
+                        (notmuch-user-other-email)))
+           (address
+            (ivy-read
+             (concat "Sender address for " name ": ")
+             addrs
+             :action 'identity)))
+      (message-make-from name address)))
+
+  (defalias 'notmuch-mua-prompt-for-sender #'bc-mail-prompt-for-sender)
+
   (defun bc-mail-update-and-search (query)
     "Poll from the server and start searching QUERY"
     (interactive "sSearching Mail: ")
