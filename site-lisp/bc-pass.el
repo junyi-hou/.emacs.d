@@ -12,7 +12,6 @@
 (use-package password-store
   :commands password-store--run-generate
   :config
-
   (setq password-store-password-length 16)
 
   ;; better password-store-generate -- warn if overriding

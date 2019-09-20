@@ -15,9 +15,9 @@
 (require 'bc-pkgmgmt)
 
 (require 'bc-core)
-(require 'bc-pass)
 (require 'bc-theme)
 (require 'bc-evil)
+(require 'bc-pass)
 (require 'bc-exwm)
 
 (require 'bc-eshell)
