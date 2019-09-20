@@ -19,17 +19,24 @@
               scroll-conservatively 10000
               auto-window-vscroll nil)
 
-;; first try to split window side-by-side, if window width is < 90, split it top-and-down
-;; TODO: better split window function
-(defun bc-core--split-window (&optional window)
+(defun bc-core--split-vertical (window)
+  "Return t if should split WINDOW vertically, otherwise return nil."
+  (let* ((h (window-height window))
+         (w (window-width window))
+         (ratio (/ (float h) w)))
+    (cond
+     ((< w 100) nil)
+     ((< ratio 0.15) t)
+     (t t))))
+
+(defun bc-core-split-window (&optional window)
   "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down."
   (let ((window (or window (selected-window))))
-    (or (and (window-splittable-p window t)
-             (with-selected-window window
-               (split-window-right)))
-        (split-window-below))))
+    (if (bc-core--split-vertical window)
+        (split-window-right)
+      (split-window-below))))
 
-(setq-default split-window-preferred-function 'bc-core--split-window)
+(setq-default split-window-preferred-function 'bc-core-split-window)
 
 ;; always use y-or-n-p
 (defalias 'yes-or-no-p 'y-or-n-p)
