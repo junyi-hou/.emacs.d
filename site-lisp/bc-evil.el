@@ -65,30 +65,6 @@
         (indent-region (region-beginning) (region-end))
       (evilmi-select-items)))
 
-  (defun bc-evil--is-user-buffer ()
-    "Determine whether the current buffer is a user-buffer by looking at the first char.  Return t if current buffer is not a dired tree or is a user-buffer (include *scratch* buffer)."
-    (let ((name (buffer-name)))
-      (cond ((string-equal "*scratch*" name) t)
-            ((string-equal "*" (substring name 0 1)) nil)
-            ((string-equal " " (substring name 0 1)) nil)
-            ((string-equal major-mode "dired-mode") nil)
-            ((string-equal "magit" (substring name 0 5)) nil)
-            (t t))))
-
-  (defun bc-evil-next-user-buffer ()
-    "Jump to the next user buffer."
-    (interactive)
-    (next-buffer)
-    (if (not (bc-evil--is-user-buffer))
-        (bc-evil-next-user-buffer)))
-
-  (defun bc-evil-previous-user-buffer ()
-    "Jump to the previous user buffer."
-    (interactive)
-    (previous-buffer)
-    (if (not (bc-evil--is-user-buffer))
-        (bc-evil-previous-user-buffer)))
-
   ;; borrow from http://steve.yegge.googlepages.com/my-dot-emacs-file
   (defun bc-evil-rename-file-and-buffer (new-name)
     "Renames both current buffer and file it's visiting to NEW-NAME."
