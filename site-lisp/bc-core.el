@@ -25,8 +25,8 @@
          (w (window-width window))
          (ratio (/ (float h) w)))
     (cond
-     ((< w 100) nil)
      ((< ratio 0.15) t)
+     ((< (/ (float w) 2) 80) nil)
      (t t))))
 
 (defun bc-core-split-window (&optional window)
