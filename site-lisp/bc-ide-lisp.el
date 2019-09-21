@@ -28,7 +28,11 @@
 ;;    :height 35
 ;;    ))
 
-(add-hook 'emacs-lisp-mode-hook (lambda () (setq-local tab-width 2)))
+(use-package elisp-mode
+  :ensure nil
+  :hook
+  (emacs-lisp-mode . (lambda () (setq-local tab-width 2)))
+  (lisp-interaction-mode . (lambda () (setq-local tab-width 2))))
 
 (provide 'bc-ide-lisp)
 ;;; bc-ide-lisp.el ends here
