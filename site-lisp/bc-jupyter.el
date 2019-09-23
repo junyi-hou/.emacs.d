@@ -51,10 +51,8 @@ If REMOTE is provided, start an remote kernel and connect to it."
     (seq-filter
      (lambda (buffer)
        (with-current-buffer buffer
-         (and (bc-evil--is-user-buffer)
-              jupyter-current-client
-              (string-equal (buffer-name (oref jupyter-current-client buffer)) repl))
-         ))
+         (and jupyter-current-client
+              (string-equal (buffer-name (oref jupyter-current-client buffer)) repl))))
      (buffer-list)))
 
   (defun bc-jupyter--strip-repl-identifier (&optional code-buffer)
