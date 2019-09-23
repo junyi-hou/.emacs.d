@@ -10,12 +10,11 @@
 
 (setq-default package-archives
               '(("org" . "http://orgmode.org/elpa/")
-                ("melpa" . "http://melpa.org/packages/")
+                ("melpa" . "https://melpa.org/packages/")
                 ("elpy" . "https://jorgenschaefer.github.io/packages/")
                 ("gnu" . "https://elpa.gnu.org/packages/")))
 
 (setq package-enable-at-startup nil)
-;; (package-initialize)
 
 ;; package loader
 (unless (package-installed-p 'quelpa-use-package)
@@ -25,6 +24,7 @@
 (eval-when-compile
   (require 'use-package)
   (require 'quelpa-use-package))
+  ;; (package-initialize)
 
 ;; use package settings
 (setq use-package-always-ensure t

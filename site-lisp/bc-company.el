@@ -73,15 +73,6 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
         (save-excursion
           (indent-region (line-beginning-position) (line-end-position))))))
 
-  (defun bc-company-add-backends (bkends)
-    "Prepend BKENDS to the first element of `company-backends'.  BKENDS can be either a single backend or a list of backends (grouped-backend)."
-    (let* ((backends company-backends)
-           (car (car backends))
-           (cdr (cdr backends)))
-      (if (listp bkends)
-          (append (list `(,@bkends ,@car)) cdr)
-        (append (list `(,bkends ,@car) cdr)))))
-
   :general
   (:keymaps 'company-active-map
    "<tab>" 'bc-company-unified-tab

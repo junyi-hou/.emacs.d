@@ -25,10 +25,17 @@
 
 (use-package counsel
   :after ivy
+  :init
+  (defun bc-ivy-grep-at-point ()
+    "Call `counsel-ag' on the `symbol-at-point'."
+    (interactive)
+    (counsel-ag (symbol-name (symbol-at-point))))
+
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
-   "js" 'counsel-ag))
+   "rs" 'bc-ivy-grep-at-point
+   "rS" 'counsel-ag))
 
 ;; (use-package ivy-posframe
 ;;     :after ivy
