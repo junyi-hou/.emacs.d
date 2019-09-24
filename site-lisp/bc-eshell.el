@@ -26,7 +26,11 @@
      :keymaps 'eshell-mode-map
      "A" 'bc-eshell-goto-prompt
      "H" 'eshell-bol
-     "S" 'bc-eshell-toggle-sudo)
+     "S" 'bc-eshell-toggle-sudo
+     "c" 'eshell/evil-change
+     "C" 'eshell/evil-change-line
+     "d" 'eshell/evil-delete
+     "D" 'eshell/evil-delete-line)
 
     (general-define-key
      :states '(normal visual motion)
@@ -124,19 +128,43 @@
     (goto-char (point-max))
     (evil-insert 1))
 
-  (defun bc-eshell-replace-current-prompt ()
-    "Like cc in evil mode, but takes into account the prompt.
-FIXME: binding this to cc overshadows all other c-bindings"
-    (interactive)
-    (eshell-bol)
-    (kill-region (point) (line-end-position))
-    (evil-insert 1))
-
   (defun bc-eshell-clear-buffer ()
     "Eshell version of `cls'."
     (interactive)
     (let ((inhibit-read-only t))
-      (erase-buffer))))
+      (erase-buffer)))
+
+  ;; taken from doom-emacs at https://github.com/hlissner/doom-emacs/blob/develop/modules/term/eshell/autoload/evil.el
+  (evil-define-operator eshell/evil-change (beg end type register yank-handler delete-func)
+    "Like `evil-change' but will not delete/copy the prompt."
+    (interactive "<R><x><y>")
+    (save-restriction
+      (narrow-to-region eshell-last-output-end (point-max))
+      (evil-change (max beg (point-min))
+                   (if (eq type 'line) (point-max) (min (or end (point-max)) (point-max)))
+                   type register yank-handler delete-func)))
+
+  (evil-define-operator eshell/evil-change-line (beg end type register yank-handler)
+    "Change to end of line."
+    :motion evil-end-of-line
+    (interactive "<R><x><y>")
+    (eshell/evil-change beg end type register yank-handler #'evil-delete-line))
+
+  (evil-define-operator eshell/evil-delete (beg end type register yank-handler)
+    "Like `evil-delete' but will not delete/copy the prompt."
+    (interactive "<R><x><y>")
+    (save-restriction
+      (narrow-to-region eshell-last-output-end (point-max))
+      (evil-delete (if beg (max beg (point-min)) (point-min))
+                   (if (eq type 'line) (point-max) (min (or end (point-max)) (point-max)))
+                   type register yank-handler)))
+
+  (evil-define-operator eshell/evil-delete-line (_beg end type register yank-handler)
+    "Change to end of line."
+    :motion nil
+    :keep-visual t
+    (interactive "<R><x>")
+    (+eshell/evil-delete (point) end type register yank-handler)))
 
 (use-package em-term
   :ensure nil
