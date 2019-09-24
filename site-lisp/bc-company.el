@@ -85,5 +85,16 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
     :after company
     :hook (company-mode . company-posframe-mode))
 
+(use-package company-quickhelp-posframe
+  :quelpa (company-quickhelp-posframe
+           :repo "junyi-hou/company-quickhelp-posframe"
+           :fetcher github)
+  :hook (company-mode . company-quickhelp-posframe-local-mode)
+  :init
+  (setq company-quickhelp-posframe-delay nil)
+  :general
+  (:keymaps 'company-active-map
+   "M-h" 'company-quickhelp-posframe-manual-begin))
+
 (provide 'bc-company)
 ;;; bc-company.el ends here
