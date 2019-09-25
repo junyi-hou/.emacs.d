@@ -149,6 +149,9 @@
   ;; bind esc to normal state in all cases
   (global-set-key (kbd "<escape>") 'bc-evil-normal-state-if-not-motion)
 
+  ;; rebind universal-argument (i.e., prefix key)
+  (global-set-key (kbd "M-u") 'universal-argument)
+
   (defun bc-evil-better-newline (newline-fun &rest args)
     "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline' for the first call.  Delete the auto-inserted comment for the second call.  Otherwise call `newline' as default."
     (let* (
@@ -175,10 +178,10 @@
 
   (advice-add 'newline :around #'bc-evil-better-newline)
 
-  (defun bc-evil-open-file-at-point (&optional other-window)
-    "Try to open file at point.  If not file is found, fallback to `evil-ret'.  If OTHER-WINDOW is t, open the file in other window."
-    (interactive)
-    (let ((fn (if other-window 'find-file-other-window 'find-file))
+  (defun bc-evil-open-file-at-point (prefix)
+    "Try to open file at point.  If not file is found, fallback to `evil-ret'.  If PREFIX is t, open the file in other window."
+    (interactive "P")
+    (let ((fn (if prefix 'find-file-other-window 'find-file))
           (filename (symbol-name (symbol-at-point))))
       (cond
        ((file-readable-p filename)
@@ -232,7 +235,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
    "L" 'evil-end-of-visual-line
 
    "RET" 'bc-evil-open-file-at-point
-   "S-RET" (lambda () (interactive) (bc-evil-open-file-at-point t))
 
    "SPC" nil
    "S-SPC" nil)
