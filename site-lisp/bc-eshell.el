@@ -115,7 +115,7 @@
   (defun bc-eshell-open-home ()
     "Open a new shell in ~ using a new window.  If there is already a eshell buffer open for that directory, switch to that buffer."
     (interactive)
-    (bc-core--split-window)
+    (bc-core-split-window)
     (other-window 1)
     (let ((default-directory "~"))
       (eshell 'Z)
