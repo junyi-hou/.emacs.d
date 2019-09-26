@@ -266,11 +266,11 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
 
   ;; execute
   "ee" 'execute-extended-command
-  "el" 'eval-last-sexp
-  "eL" (lambda ()
-         (interactive)
-         (eval-buffer)
-         (message "%s %s %s" "buffer" (buffer-name) "evaluated!"))
+  "el" (lambda (arg) (interactive "P")
+         (if (null arg)
+             (eval-last-sexp)
+           (eval-buffer)
+           (message "%s %s %s" "buffer" (buffer-name) "evaluated!")))
   "er" 'bc-evil-replace-word-at-point-all
 
   ;; helps
@@ -307,7 +307,11 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
                      (if ivy-current-prefix-arg
                          (switch-to-buffer-other-window buffer)
                        (switch-to-buffer buffer nil 'force-same-window)))))
-  "os" 'bc-eshell-open-here
+  "os" (lambda (arg)
+         (interactive "P")
+         (if (null arg)
+             (bc-eshell-open-here)
+           (bc-eshell-open-home)))
   "oS" 'bc-eshell-open-home
   "op" 'projectile-switch-project
   ;; dired
