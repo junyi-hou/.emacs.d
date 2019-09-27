@@ -114,9 +114,7 @@ If REMOTE is provided, start an remote kernel and connect to it."
        (t (user-error "Cannot determine project root")))))
 
   (defun bc-jupyter-log--get-cell-content (&optional formatted)
-    "Format jupyter repl workspace cell by cell.
-
-HACK: won't export the last cell, as `jupyter-repl-cell-finalized-p' is nil in that cell."
+    "Format jupyter repl workspace cell by cell."
     (let* ((formatted (or formatted "")))
       (jupyter-repl-next-cell)
       (if (not (jupyter-repl-cell-finalized-p))
