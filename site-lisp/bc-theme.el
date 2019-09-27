@@ -56,26 +56,13 @@
   (telephone-line-mode 1))
 
 ;; indentation guide
-(use-package highlight-indentation
-  :hook (prog-mode . highlight-indentation-mode))
-
-(defun bc-theme--set-highlight-stipple ()
-  "Define custom stipple for highlight-indentation.  See https://github.com/antonj/Highlight-Indentation-for-Emacs/issues/16."
-  (let* ((char-width (frame-char-width (selected-frame)))
-        (hl-stipple (if (> char-width 8)
-                        (list char-width 4 (string 16 0 0 0 0 0 0 0))
-                      (list char-width 4 (string 16 0 0 0)))))
-    (set-face-attribute
-     'highlight-indentation-face
-     nil
-     :background (face-background 'default)
-     :stipple hl-stipple)))
-
-;; Patch highlight-indentation-mode to set/update a stipple attribute
-(defadvice highlight-indentation-mode
-    (before set-highlight-indentation-stipple activate)
-  "Set the stipple used by indentation highlighting."
-  (bc-theme--set-highlight-stipple))
+(use-package highlight-indent-guides
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :init
+  (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-character ?\┆
+        highlight-indent-guides-responsive 'stack)
+  )
 
 ;; line numbers
 (use-package display-line-numbers
