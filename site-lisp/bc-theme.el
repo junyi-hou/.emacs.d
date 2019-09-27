@@ -57,18 +57,20 @@
 
 ;; indentation guide
 (use-package highlight-indent-guides
-  :hook (prog-mode . highlight-indent-guides-mode)
+  :hook
+  (prog-mode . highlight-indent-guides-mode)
+  (LaTeX-mode . highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character
         highlight-indent-guides-character ?\┆
-        highlight-indent-guides-responsive 'stack)
-  )
+        highlight-indent-guides-responsive 'stack))
 
 ;; line numbers
 (use-package display-line-numbers
-  :hook (prog-mode . display-line-numbers-mode)
-        (org-mode . display-line-numbers-mode)
-        (LaTeX-mode . display-line-numbers-mode)
+  :hook
+  (prog-mode . display-line-numbers-mode)
+  (org-mode . display-line-numbers-mode)
+  (LaTeX-mode . display-line-numbers-mode)
   :config
   (setq-default
    display-line-numbers-type 'visual
