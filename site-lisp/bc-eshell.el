@@ -15,7 +15,10 @@
         eshell-save-history-on-exit t
         eshell-prefer-lisp-functions nil
         eshell-list-files-after-cd t
-        eshell-destroy-buffer-when-process-dies t)
+        eshell-destroy-buffer-when-process-dies t
+        password-cache t
+        password-cache-expiry 3600
+        tramp-histfile-override "/dev/null")
 
   (setenv "PAGER" "cat")
 
@@ -122,6 +125,18 @@
       (goto-char (point-max))
       (evil-insert-state)))
 
+  ;; HACK: the eshell/sudo from `em-tramp' is somehow conflicting with `jupyter-tramp',
+  ;; use this simplified version instead
+  (defun eshell/sudo (&rest args)
+    "docstring"
+    (interactive)
+    (throw
+     'eshell-external
+     (let* ((dir (file-local-name (expand-file-name default-directory)))
+            (default-directory (concat "/sudo:root@localhost:" dir))
+            (args (eshell-flatten-list args)))
+       (eshell-named-command (car args) (cdr args)))))
+
   (defun bc-eshell-goto-prompt ()
     "Goto current prompt and continue editting."
     (interactive)
@@ -172,16 +187,6 @@
   :config
   (dolist (p '("alsamixer" "htop" "ssh" "top"))
       (add-to-list 'eshell-visual-commands p)))
-
-(use-package em-tramp
-  :ensure nil
-  :after eshell
-  :init
-  (setq password-cache t
-        password-cache-expiry 3600)
-  ;; wired, why do I start requiring this?
-  (setq tramp-histfile-override "/dev/null")
-  (add-to-list 'eshell-modules-list #'eshell-tramp))
 
 (use-package xterm-color
   :after eshell
