@@ -125,14 +125,15 @@
       (goto-char (point-max))
       (evil-insert-state)))
 
-  ;; HACK: the eshell/sudo from `em-tramp' is somehow conflicting with `jupyter-tramp',
-  ;; use this simplified version instead
   (defun eshell/sudo (&rest args)
-    "docstring"
+    "Use Tramp to re-implement sudo.
+
+TODO: implement this for remote hosts"
     (interactive)
     (throw
      'eshell-external
-     (let* ((dir (file-local-name (expand-file-name default-directory)))
+     (let* ((host (or (file-remote-p default-directory 'host) "localhost"))
+            (dir (file-local-name (expand-file-name default-directory)))
             (default-directory (concat "/sudo:root@localhost:" dir))
             (args (eshell-flatten-list args)))
        (eshell-named-command (car args) (cdr args)))))
@@ -179,7 +180,7 @@
     :motion nil
     :keep-visual t
     (interactive "<R><x>")
-    (+eshell/evil-delete (point) end type register yank-handler)))
+    (eshell/evil-delete (point) end type register yank-handler)))
 
 (use-package em-term
   :ensure nil
