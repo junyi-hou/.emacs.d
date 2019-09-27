@@ -15,6 +15,7 @@
                 ("gnu" . "https://elpa.gnu.org/packages/")))
 
 (setq package-enable-at-startup nil)
+;; (package-initialize)
 
 ;; package loader
 (unless (package-installed-p 'quelpa-use-package)
@@ -24,7 +25,6 @@
 (eval-when-compile
   (require 'use-package)
   (require 'quelpa-use-package))
-  ;; (package-initialize)
 
 ;; use package settings
 (setq use-package-always-ensure t
@@ -48,6 +48,7 @@
   (setq auto-package-update-prompt-before-update t
         auto-package-update-delete-old-versions t)
   (auto-package-update-maybe))
+(use-package gnu-elpa-keyring-update)
 
 (setq load-prefer-newer t)
 
