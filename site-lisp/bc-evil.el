@@ -266,11 +266,10 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
 
   ;; execute
   "ee" 'execute-extended-command
-  "el" (lambda (arg) (interactive "P")
-         (if (null arg)
-             (eval-last-sexp)
-           (eval-buffer)
-           (message "%s %s %s" "buffer" (buffer-name) "evaluated!")))
+  "el" 'eval-last-sexp
+  "eL" (lambda () (interactive)
+         (eval-buffer)
+         (message "buffer %s evaluated!" (buffer-name)))
   "er" 'bc-evil-replace-word-at-point-all
 
   ;; helps
@@ -285,7 +284,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   "k" 'delete-window
   "K" 'delete-frame
   "q" 'kill-current-buffer
-  "Q" 'exit-emacs
   "b" 'balance-windows
 
   ;; split
