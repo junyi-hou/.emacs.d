@@ -19,16 +19,7 @@
 
   :config
   (setq eglot-autoreconnect t
-        eglot-put-doc-in-help-buffer t)
-
-  :general
-  (:keymaps '(normal visual motion)
-   :prefix "SPC"
-   "rh" 'eglot-posframe-show-help
-   "jd" 'eglot-posframe-show-definition
-   "jr" 'eglot-posframe-show-reference
-   "rn" 'eglot-rename
-   "jb" 'bc-lsp-switch-to-previous-buffer))
+        eglot-put-doc-in-help-buffer t))
 
 ;; (use-package eglot-posframe
 ;;   :after eglot

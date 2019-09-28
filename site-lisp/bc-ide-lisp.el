@@ -48,8 +48,8 @@
    :poshandler 'posframe-poshandler-point-bottom-left-corner
    :internal-border-width 3
    :internal-border-color "gray80"
-   :left-fringe 1
-   :right-fringe 1
+   :left-fringe 4
+   :right-fringe 4
    :width 60
    :min-width 60
    :height 15
@@ -80,9 +80,9 @@
 
 (general-define-key
  :keymaps '(lisp-interaction-mode-map emacs-lisp-mode-map)
- :state '(normal visual motion)
+ :states '(normal visual motion)
  :prefix "SPC"
- "hr" 'bc-ide-lisp-describe-function-or-variable)
+ "rh" 'bc-ide-lisp-describe-function-or-variable)
 
 (defun bc-ide-lisp--set-tab-width ()
   (setq-local tab-width 2))
