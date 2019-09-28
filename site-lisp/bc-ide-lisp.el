@@ -78,6 +78,12 @@
             (intern sym))))))
     (bc-ide-lisp--help-show)))
 
+(general-define-key
+ :keymaps '(lisp-interaction-mode-map emacs-lisp-mode-map)
+ :state '(normal visual motion)
+ :prefix "SPC"
+ "hr" 'bc-ide-lisp-describe-function-or-variable)
+
 (defun bc-ide-lisp--set-tab-width ()
   (setq-local tab-width 2))
 
