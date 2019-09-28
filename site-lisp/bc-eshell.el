@@ -126,14 +126,11 @@
       (evil-insert-state)))
 
   (defun eshell/sudo (&rest args)
-    "Use Tramp to re-implement sudo.
-
-TODO: implement this for remote hosts"
+    "Use Tramp to re-implement sudo."
     (interactive)
     (throw
      'eshell-external
-     (let* ((host (or (file-remote-p default-directory 'host) "localhost"))
-            (dir (file-local-name (expand-file-name default-directory)))
+     (let* ((dir (file-local-name (expand-file-name default-directory)))
             (default-directory (concat "/sudo:root@localhost:" dir))
             (args (eshell-flatten-list args)))
        (eshell-named-command (car args) (cdr args)))))
