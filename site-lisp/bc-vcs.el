@@ -33,7 +33,7 @@
 
   :general
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
-   :states '(motion normal)
+   :states '(motion normal visual)
    "SPC" nil
    "C-e" 'magit-section-forward-sibling
    "C-y" 'magit-section-backward-sibling
@@ -68,7 +68,13 @@
    :states '(motion normal)
    :prefix "SPC"
    "q" 'kill-buffer-and-window
-   "r" (lambda () (interactive) (magit-refresh-buffer))))
+   "r" (lambda () (interactive) (magit-refresh-buffer)))
+
+  (:keymaps 'git-rebase-mode-map
+   :states '(normal visual motion)
+   "p" 'git-rebase-pick
+   "r" 'git-rebase-reword
+   "s" 'git-rebase-squash))
 
 (use-package magit-todos
   :after magit
