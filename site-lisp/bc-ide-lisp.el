@@ -36,10 +36,12 @@
     (button-activate (button-at (next-char-property-change 1))))
   (posframe-control-hide (help-buffer)))
 
-(defun bc-ide-lisp--posframe-frontend (&rest _)
-  "Use `posframe' to show *Help* buffer."
+(defun bc-ide-lisp--help-show (&rest _)
+  "Use `posframe' to display *Help* buffer."
   ;; step 1: hide help window
-  (delete-window (get-buffer-window (help-buffer)))
+  (let ((help-window-p (get-buffer-window (help-buffer))))
+    (when help-window-p
+        (delete-window help-window-p)))
   ;; step 2: show posframe tips
   (posframe-control-show
    (help-buffer)
@@ -55,8 +57,26 @@
    :hide-fn (lambda () (interactive)
               (posframe-control-hide (help-buffer)))))
 
-(advice-add 'describe-function :after #'bc-ide-lisp--posframe-frontend)
-(advice-add 'describe-variable :after #'bc-ide-lisp--posframe-frontend)
+(advice-add 'describe-function :after #'bc-ide-lisp--help-show)
+(advice-add 'describe-variable :after #'bc-ide-lisp--help-show)
+
+(defun bc-ide-lisp-describe-function-or-variable (&optional symbol)
+  "Describe the function or variable at point.  Place the result in a posframe.  If there is no function or variable at point, prompt user to select one."
+  (interactive)
+  (let ((symbol (or symbol (symbol-at-point))))
+    (cond
+     ((symbol-function symbol) (describe-function symbol))
+     ((symbol-value symbol) (describe-variable symbol))
+     ;; below means the symbol is neither a function nor a variable
+     ;; prompt user for it
+     (t (ivy-read
+         "describe: "
+         #'help--symbol-completion-table
+         :action
+         (lambda (sym)
+           (bc-ide-lisp-describe-function-or-variable
+            (intern sym))))))
+    (bc-ide-lisp--help-show)))
 
 (defun bc-ide-lisp--set-tab-width ()
   (setq-local tab-width 2))
