@@ -35,12 +35,6 @@
   (load custom-file 'noerror))
 (use-package auto-compile
   :config (auto-compile-on-load-mode))
-(use-package auto-package-update
-  :config
-  (setq auto-package-update-prompt-before-update t
-        auto-package-update-delete-old-versions t)
-  (auto-package-update-maybe))
-(use-package gnu-elpa-keyring-update)
 
 (provide 'bc-pkgmgmt)
 ;;; bc-pkgmgmt.el ends here
