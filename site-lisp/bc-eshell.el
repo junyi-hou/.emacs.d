@@ -180,7 +180,7 @@
     (eshell/evil-delete (point) end type register yank-handler)))
 
 (use-package em-term
-  :ensure nil
+  :straight (em-term :type built-in)
   :after eshell
   :config
   (dolist (p '("alsamixer" "htop" "ssh" "top"))

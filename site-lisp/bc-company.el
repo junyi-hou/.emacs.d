@@ -86,9 +86,10 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
     :hook (company-mode . company-posframe-mode))
 
 (use-package company-quickhelp-posframe
-  :quelpa (company-quickhelp-posframe
-           :repo "junyi-hou/company-quickhelp-posframe"
-           :fetcher github)
+  :straight
+  (company-quickhelp-posframe
+   :repo "junyi-hou/company-quickhelp-posframe"
+   :host github)
   :hook (company-mode . company-quickhelp-posframe-local-mode)
   :init
   (setq company-quickhelp-posframe-delay nil)

@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package dired
-  :ensure nil
+  :straight (dired :type built-in)
   :defer t
   :config
   (evil-set-initial-state 'dired-mode 'motion)

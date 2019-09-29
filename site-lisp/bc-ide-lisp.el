@@ -5,10 +5,10 @@
 ;;; Code:
 
 (use-package posframe-control
-  :quelpa
+  :straight
   (posframe-control
    :repo "junyi-hou/posframe-control"
-   :fetcher github))
+   :host github))
 
 (defconst bc-ide-lisp-help-keymap
   (let ((map (make-sparse-keymap)))

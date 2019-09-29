@@ -5,7 +5,9 @@
 ;;; Code:
 
 (use-package org
-  :demand t
+  :defer t
+  :straight
+  (:type built-in)
   :hook
   (org-mode . org-indent-mode)
   (org-mode . (lambda () (setq tab-width 2)))
@@ -88,6 +90,7 @@
 
   ;; babel
   ;; load interpreters
+  (require 'bc-jupyter)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)

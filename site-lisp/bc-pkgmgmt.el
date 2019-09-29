@@ -5,30 +5,23 @@
 
 ;;; Code:
 
-;; package manager
-(require 'package)
+;; bootstrapping straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(setq-default package-archives
-              '(("org" . "http://orgmode.org/elpa/")
-                ("melpa" . "https://melpa.org/packages/")
-                ("elpy" . "https://jorgenschaefer.github.io/packages/")
-                ("gnu" . "https://elpa.gnu.org/packages/")))
-
-(setq package-enable-at-startup nil)
-;; (package-initialize)
-
-;; package loader
-(unless (package-installed-p 'quelpa-use-package)
-  (package-refresh-contents)
-  (package-install 'quelpa-use-package))
-
-(eval-when-compile
-  (require 'use-package)
-  (require 'quelpa-use-package))
-
-;; use package settings
-(setq use-package-always-ensure t
-      quelpa-update-melpa-p nil)
+;; install use-package
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
 
 ;; do not litter my .emacs.d
 (use-package no-littering
@@ -40,7 +33,6 @@
    backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
    custom-file (no-littering-expand-etc-file-name "custom.el"))
   (load custom-file 'noerror))
-
 (use-package auto-compile
   :config (auto-compile-on-load-mode))
 (use-package auto-package-update
@@ -49,8 +41,6 @@
         auto-package-update-delete-old-versions t)
   (auto-package-update-maybe))
 (use-package gnu-elpa-keyring-update)
-
-(setq load-prefer-newer t)
 
 (provide 'bc-pkgmgmt)
 ;;; bc-pkgmgmt.el ends here

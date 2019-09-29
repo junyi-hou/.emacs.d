@@ -4,7 +4,7 @@
 
 ;;; Code:
 
-(require 'exwm)
+(use-package exwm)
 
 ;;; ===============================
 ;;  functions
@@ -364,10 +364,10 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
 
 (use-package exwm-edit
   ;; C-c ' in X windows
-  :quelpa (exwm-edit
-           :repo "junyi-hou/exwm-edit"
-           :fetcher github
-           :stable nil)
+  :straight
+  (exwm-edit
+   :repo "junyi-hou/exwm-edit"
+   :host github)
   :init
   (add-hook 'exwm-edit-compose-hook #'evil-insert-state)
 

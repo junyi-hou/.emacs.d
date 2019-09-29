@@ -171,7 +171,7 @@
 
 (use-package org-notmuch
   ;; require to emerge `app-emacs/org-mode' with `contrib' flag
-  :ensure nil
+  :straight (org-notmuch :type built-in)
   :after notmuch)
 
 (provide 'bc-mail)
