@@ -22,9 +22,9 @@
 ;; flymake frontend
 (use-package flymake-posframe
   :after flymake
-  :quelpa (flymake-posframe
-           :repo "junyi-hou/flymake-posframe"
-           :fetcher github)
+  :straight (flymake-posframe
+             :host github
+             :repo "junyi-hou/flymake-posframe")
   :hook (flymake-mode . flymake-posframe-mode)
   :init
   (setq flymake-posframe-prefix

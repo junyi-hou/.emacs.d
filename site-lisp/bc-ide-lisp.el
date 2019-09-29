@@ -5,10 +5,10 @@
 ;;; Code:
 
 (use-package posframe-control
-  :quelpa
+  :straight
   (posframe-control
    :repo "junyi-hou/posframe-control"
-   :fetcher github))
+   :host github))
 
 (defconst bc-ide-lisp-help-keymap
   (let ((map (make-sparse-keymap)))
@@ -80,7 +80,7 @@
 
 (general-define-key
  :keymaps '(lisp-interaction-mode-map emacs-lisp-mode-map)
- :state '(normal visual motion)
+ :states '(normal visual motion)
  :prefix "SPC"
  "rh" 'bc-ide-lisp-describe-function-or-variable)
 
