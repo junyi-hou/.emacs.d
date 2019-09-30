@@ -87,7 +87,8 @@
            (x (/ (+ left right) 2))
            (y (/ (+ top bottom) 2)))
       (set-mouse-absolute-pixel-position x y)
-      (pdf-sync-backward-search-mouse nil)))
+      (pdf-sync-backward-search-mouse nil)
+      (recenter nil)))
 
   ;; the following 4 functions are taken from evil-collection
   ;; see https://github.com/emacs-evil/evil-collection/blob/master/evil-collection-pdf.el
