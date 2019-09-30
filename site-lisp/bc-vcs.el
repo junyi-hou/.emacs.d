@@ -8,7 +8,6 @@
   :defer t
 
   :config
-
   ;; functions
   
   (defun bc-vcs-get-file-at-point (&optional file)
@@ -74,7 +73,9 @@
    :states '(normal visual motion)
    "p" 'git-rebase-pick
    "r" 'git-rebase-reword
-   "s" 'git-rebase-squash))
+   "s" 'git-rebase-squash
+   "M-j" 'git-rebase-move-line-down
+   "M-k" 'git-rebase-move-line-up))
 
 (use-package magit-todos
   :after magit
