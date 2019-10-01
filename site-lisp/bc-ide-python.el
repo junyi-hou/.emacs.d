@@ -8,11 +8,11 @@
 ;;; Code:
 
 ;;load pkgs
-(require 'bc-jupyter)
 
 (use-package python
   :defer t
   :config
+  (require 'bc-jupyter)
   (setq-default tab-width 4)
 
   (defalias 'bc-python-local-repl
