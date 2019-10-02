@@ -141,7 +141,7 @@
    "M-j" 'notmuch-show-advance
    "M-k" 'notmuch-show-rewind)
 
-  (:keymap 'notmuch-tree-mode-map
+  (:keymaps 'notmuch-tree-mode-map
    :states 'motion
    "q" 'notmuch-tree-quit
    "s" 'notmuch-search
@@ -153,7 +153,7 @@
    "A" 'notmuch-tree-archive-thread)
 
   ;; fool-proving
-  (:keymap '(notmuch-search-mode-map
+  (:keymaps '(notmuch-search-mode-map
              notmuch-show-mode-map
              notmuch-hello-mode-map)
    :states '(motion visual)
@@ -162,7 +162,7 @@
    "rr" 'notmuch-poll-and-refresh-this-buffer
    "rR" 'notmuch-refresh-all-buffers)
 
-  (:keymap 'notmuch-tree-mode-map
+  (:keymaps 'notmuch-tree-mode-map
    :states '(motion visual)
    :prefix "SPC"
    "q" 'notmuch-tree-quit
