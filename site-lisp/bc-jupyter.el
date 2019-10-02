@@ -13,6 +13,9 @@
         jupyter-repl-maximum-size 12000
         jupyter-repl-history-maximum-length 300)
 
+  ;; hotfix https://github.com/dzop/emacs-jupyter/issues/172
+  (jupyter-tramp-file-name-p "~/.bash_history")
+
   ;; functions
   (defun bc-jupyter--start-repl (kernel &optional remote)
     "Initiate a REPL for KERNEL and attach it to the current buffer.
