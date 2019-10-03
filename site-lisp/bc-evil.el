@@ -293,7 +293,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   ;; open stuffs
   "oo" 'counsel-find-file
   "or" 'counsel-recentf
-  "of" 'projectile-find-file
   "ob" (lambda () "Switch to buffer, with `ivy-current-prefix-arg', open in new window, otherwise open in the same buffer"
          (interactive)
          (ivy-read "Switch to buffer: " #'internal-complete-buffer
@@ -311,7 +310,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
              (bc-eshell-open-here)
            (bc-eshell-open-home)))
   "oS" 'bc-eshell-open-home
-  "op" 'projectile-switch-project
   ;; dired
   "od" (lambda () (interactive)
          (dired default-directory))
