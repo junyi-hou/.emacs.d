@@ -2,6 +2,8 @@
 !site-lisp/
 !site-lisp/**
 !.gitignore
+!bin/
+!bin/**
 !etc/
 !etc/**
 etc/custom.el

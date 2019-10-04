@@ -44,21 +44,6 @@
     (notmuch-poll)
     (notmuch-search query))
 
-  (defun bc-mail-sync (&rest _)
-    "Sync with the remote server using gmailieer.  Use in cronjob with emacsclient -e \"(emacsclient -e bc-mail-sync)\"."
-    (let* ((default-directory "~/.emacs.d/var/maildir/personal/")
-           (output (shell-command-to-string "gmi sync")))
-      (with-current-buffer (get-buffer-create "*lieer-status*")
-        (goto-char (point-max))
-        (insert output)))
-    (let* ((default-directory "~/.emacs.d/var/maildir/berkeley/")
-           (output (shell-command-to-string "gmi sync")))
-      (with-current-buffer (get-buffer-create "*lieer-status*")
-        (goto-char (point-max))
-        (insert output))))
-
-  (advice-add 'notmuch-poll :before #'bc-mail-sync)
-
   (defun bc-mail-flag ()
     "Flagged selected threads."
     (interactive)
@@ -78,6 +63,11 @@
     "Open inbox"
     (interactive)
     (bc-mail-update-and-search "tag:inbox"))
+
+  (defun bc-mail-sync ()
+    "Syncing the maildir."
+    (interactive)
+    (message (shell-command-to-string "syncmail.sh")))
 
   (defun bc-mail-seminar-list ()
     "Search for seminar information"
@@ -159,8 +149,9 @@
    :states '(motion visual)
    :prefix "SPC"
    "q" 'notmuch-bury-or-kill-this-buffer
-   "rr" 'notmuch-poll-and-refresh-this-buffer
-   "rR" 'notmuch-refresh-all-buffers)
+   "r" (lambda () (interactive)
+         (bc-mail-sync)
+         (notmuch-poll-and-refresh-this-buffer)))
 
   (:keymaps 'notmuch-tree-mode-map
    :states '(motion visual)
