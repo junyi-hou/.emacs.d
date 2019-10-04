@@ -4,12 +4,8 @@
 
 ;;; Code:
 
-;; temp fix bug 34341
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
 ;; set load path
 (add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory))
-
 
 ;; package loader and manager
 (require 'bc-pkgmgmt)
