@@ -138,7 +138,11 @@
   (defun eshell/su (&rest _)
     "cd to /sudo:root@localhost:`default-directory'."
     (interactive)
-    (eshell/cd (concat "/sudo:root@localhost:" default-directory)))
+    (let ((tramp-file-name-regexp "^/\\(\\(?:\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?|\\)+\\)?\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?:\\([^
+]*\\'\\)"))
+      (if (string-match tramp-file-name-regexp default-directory)
+          (eshell/cd (match-string 8 default-directory))
+        (eshell/cd (concat "/sudo:root@localhost:" default-directory)))))
 
   (defun bc-eshell-goto-prompt ()
     "Goto current prompt and continue editting."
