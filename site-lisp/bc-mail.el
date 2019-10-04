@@ -6,7 +6,6 @@
 (use-package notmuch
   :ensure nil
   :defer t
-  :commands notmuch-poll
   :init
   (setenv "NOTMUCH_CONFIG" (no-littering-expand-etc-file-name "notmuch.conf"))
 
