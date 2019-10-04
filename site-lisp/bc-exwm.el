@@ -250,6 +250,19 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
 
 (add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
+;;; ===============================
+;;  ivy-posframe-integration
+;;; ===============================
+
+(with-eval-after-load 'ivy-posframe
+  (progn
+    (defun bc-exwm--turn-off-ivy-posframe ()
+      (make-local-variable 'ivy-posframe-display-functions-alist)
+      (make-local-variable 'ivy-height)
+      (setq-local ivy-posframe-display-functions-alist '((t . nil)))
+      (setq-local ivy-height 5))
+
+    (add-hook 'exwm-manage-finish-hook #'bc-exwm--turn-off-ivy-posframe)))
 
 ;;; ===============================
 ;;  org-integration
