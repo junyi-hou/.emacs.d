@@ -25,7 +25,8 @@
     (define-key map (kbd "C-u") (lambda () (interactive)
                                   (posframe-control-scroll-up
                                    (help-buffer))))
-    (define-key map (kbd "RET") #'bc-ide-lisp-goto-def)
+    (define-key map (kbd "RET") #'bc-ide-lisp-goto-help-buffer)
+    (define-key map (kbd "C-<return>") #'bc-ide-lisp-goto-def)
     map)
   "Keymap for controlling help posframes.")
 
@@ -34,6 +35,18 @@
   (interactive)
   (with-current-buffer (help-buffer)
     (button-activate (button-at (next-char-property-change 1))))
+  (posframe-control-hide (help-buffer)))
+
+(defun bc-ide-lisp-goto-help-buffer ()
+  "Open the help buffer in a new window."
+  (interactive)
+  (switch-to-buffer-other-window (help-buffer))
+  (let ((mode-line
+         ;; according to my setting, scratch buffer always exists
+         (with-current-buffer "*scratch*"
+           mode-line-format)))
+    (with-current-buffer (help-buffer)
+      (setq-local mode-line-format mode-line)))
   (posframe-control-hide (help-buffer)))
 
 (defun bc-ide-lisp--help-show (&rest _)
