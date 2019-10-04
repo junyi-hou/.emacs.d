@@ -135,6 +135,11 @@
             (args (eshell-flatten-list args)))
        (eshell-named-command (car args) (cdr args)))))
 
+  (defun eshell/su (&rest _)
+    "cd to /sudo:root@localhost:`default-directory'."
+    (interactive)
+    (eshell/cd (concat "/sudo:root@localhost:" default-directory)))
+
   (defun bc-eshell-goto-prompt ()
     "Goto current prompt and continue editting."
     (interactive)
