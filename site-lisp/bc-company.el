@@ -81,6 +81,10 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
    "M-J" 'company-next-page
    "M-K" 'company-previous-page))
 
+(use-package company-prescient
+  :hook
+  (company-mode . company-prescient-mode))
+
 (use-package company-posframe
     :after company
     :hook (company-mode . company-posframe-mode))

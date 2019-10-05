@@ -6,6 +6,8 @@
 (use-package notmuch
   :ensure nil
   :defer t
+  ;; notmuch-poll is not autoloaded
+  :commands notmuch-poll
   :init
   (setenv "NOTMUCH_CONFIG" (no-littering-expand-etc-file-name "notmuch.conf"))
 
@@ -66,7 +68,7 @@
   (defun bc-mail-sync ()
     "Syncing the maildir."
     (interactive)
-    (message (shell-command-to-string "syncmail.sh")))
+    (message "%s" (shell-command-to-string "syncmail.sh")))
 
   (defun bc-mail-seminar-list ()
     "Search for seminar information"
@@ -156,8 +158,9 @@
    :states '(motion visual)
    :prefix "SPC"
    "q" 'notmuch-tree-quit
-   "rr" 'notmuch-poll-and-refresh-this-buffer
-   "rR" 'notmuch-refresh-all-buffers))
+   "r" (lambda () (interactive)
+         (bc-mail-sync)
+         (notmuch-poll-and-refresh-this-buffer))))
 
 (use-package org-notmuch
   ;; require to emerge `app-emacs/org-mode' with `contrib' flag

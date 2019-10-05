@@ -82,6 +82,11 @@
   :hook
   (prog-mode . hs-hide-all)
   (prog-mode . hs-minor-mode))
+(use-package prescient
+  :init
+  (setq prescient-save-file (concat no-littering-var-directory "prescient-save.el"))
+  :config
+  (prescient-persist-mode))
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil

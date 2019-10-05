@@ -15,6 +15,7 @@
         ivy-re-builders-alist '((t . ivy--regex-ignore-order))
         ivy-format-function #'ivy-format-function-line
         ivy-magic-slash-non-match-action nil)
+
   :init
   (ivy-mode 1)
   :general
@@ -41,6 +42,11 @@
   :config
   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point)))
   (ivy-posframe-mode 1))
+
+(use-package ivy-prescient
+    :after ivy
+    :config
+    (ivy-prescient-mode))
 
 
 (provide 'bc-ivy)
