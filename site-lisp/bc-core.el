@@ -87,6 +87,8 @@
   (setq prescient-save-file (concat no-littering-var-directory "prescient-save.el"))
   :config
   (prescient-persist-mode))
+(use-package page-break-lines
+  :config (global-page-break-lines-mode))
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
