@@ -124,6 +124,13 @@
       (pdf-view-first-page)
       (image-bob)))
 
+  (defun bc-ide-latex-pdf-view-in-zathura ()
+    "View the current file in zathura."
+    (interactive)
+    (let ((file buffer-file-name)
+          (page (pdf-view-current-page)))
+      (bc-exwm-launch (concat "zathura " file " -P " (format "%s" page)))))
+
   :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
   :mode ("\\.pdf\\'" . pdf-tools-install)
 
@@ -174,7 +181,8 @@
   (:keymaps 'pdf-view-mode-map
    :states '(motion visual)
    :prefix "SPC"
-   "q" 'kill-buffer-and-window))
+   "q" 'kill-buffer-and-window
+   "z" 'bc-ide-latex-pdf-view-in-zathura))
 
 ;; (use-package reftex
 ;;   :after 'auctex
