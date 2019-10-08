@@ -27,6 +27,19 @@
                                  (search-forward-regexp "\\(\\[\\([[:digit:]]+\\)%\\]\\)")
                                  (match-string 2))))))
 
+(defun bc-exwm-amixer-toggle-mute ()
+  "Toggle mute."
+  (interactive)
+  (let* ((volume-str (with-temp-buffer
+                      (insert (shell-command-to-string "amixer sget Master"))
+                      (goto-char 0)
+                      (search-forward-regexp "\\(\\[\\([[:digit:]]+\\)%\\]\\)")
+                      (match-string 2)))
+         (volume (string-to-number volume-str)))
+    (if (> volume 0)
+        (bc-exwm-amixer-adjust-volume nil 100)
+      (bc-exwm-amixer-adjust-volume 'up 40))))
+
 (defun bc-exwm-adjust-backlight (&optional up)
   "Adjust backlight, if UP is non-nil, increase the brightness, otherwise decrease."
   (let* ((bl-file "/sys/class/backlight/intel_backlight/brightness")
@@ -346,6 +359,7 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
         ;; multimedia keys
         ([XF86AudioLowerVolume] . (lambda () (interactive)
                                     (bc-exwm-amixer-adjust-volume)))
+        ([XF86AudioMute] . bc-exwm-amixer-toggle-mute)
         ([XF86AudioRaiseVolume] . (lambda () (interactive)
                                     (bc-exwm-amixer-adjust-volume t)))
         ([XF86MonBrightnessUp] . (lambda () (interactive)
