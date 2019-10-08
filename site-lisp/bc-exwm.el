@@ -21,7 +21,11 @@
     (let ((inhibit-message t))
       (shell-command
        (concat "amixer -q sset Master " (format "%d" x) "%" direction)))
-    (message (concat "volume " direction))))
+    (message (concat "volume: " (with-temp-buffer
+                                 (insert (shell-command-to-string "amixer sget Master"))
+                                 (goto-char 0)
+                                 (search-forward-regexp "\\(\\[\\([[:digit:]]+\\)%\\]\\)")
+                                 (match-string 2))))))
 
 (defun bc-exwm-adjust-backlight (&optional up)
   "Adjust backlight, if UP is non-nil, increase the brightness, otherwise decrease."
