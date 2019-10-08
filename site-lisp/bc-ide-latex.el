@@ -131,7 +131,7 @@
           (page (pdf-view-current-page)))
       (bc-exwm-launch (concat "zathura " file " -P " (format "%s" page)))))
 
-  :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
+  ;; :hook (pdf-view-mode . pdf-view-midnight-minor-mode)
   :mode ("\\.pdf\\'" . pdf-tools-install)
 
   :general
