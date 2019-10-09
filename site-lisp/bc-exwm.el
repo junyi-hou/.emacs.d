@@ -43,18 +43,26 @@
 (defun bc-exwm-adjust-backlight (&optional up)
   "Adjust backlight, if UP is non-nil, increase the brightness, otherwise decrease."
   (let* ((bl-file "/sys/class/backlight/intel_backlight/brightness")
+         (bl-max "/sys/class/backlight/intel_backlight/max_brightness")
          (current-level (string-to-number (with-temp-buffer
                                             (insert-file-contents bl-file)
                                             (buffer-string))))
          (direction (if up '+ '-))
-         (new-level (funcall direction current-level 25))
+         (new-level (funcall direction current-level 50))
          (new-level (if (> 0 new-level) 0 new-level)))
     (let ((inhibit-message t))
       (write-region
        (format "%d" new-level)
        nil
        (concat "/sudo:root@localhost:" bl-file)))
-    (message (concat "brightness " (symbol-name direction)))))
+    (message "brightness %2d"
+             (let ((current (with-temp-buffer
+                              (insert-file-contents bl-file)
+                              (string-to-number (buffer-string))))
+                   (max (with-temp-buffer
+                          (insert-file-contents bl-max)
+                          (float (string-to-number (buffer-string))))))
+               (* 100 (/ current max))))))
 
 (defun bc-exwm-switch-to-workspace-confirm (index)
   "Switch to workspace INDEX, if it doesn't exists, ask whether to create it."
