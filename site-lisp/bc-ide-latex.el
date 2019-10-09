@@ -86,6 +86,7 @@
            (bottom (cadddr corner))
            (x (/ (+ left right) 2))
            (y (/ (+ top bottom) 2)))
+      (ignore-errors (evil-previous-line))
       (set-mouse-absolute-pixel-position x y)
       (pdf-sync-backward-search-mouse nil)
       (recenter nil)))
