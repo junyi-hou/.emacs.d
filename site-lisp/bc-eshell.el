@@ -144,6 +144,12 @@
           (eshell/cd (match-string 8 default-directory))
         (eshell/cd (concat "/sudo:root@localhost:" default-directory)))))
 
+  (defun eshell/mkcd (dir &rest _)
+    "Run \"mkdir dir\" then \"cd dir\""
+    (interactive)
+    (eshell/mkdir dir)
+    (eshell/cd dir))
+
   (defun bc-eshell-goto-prompt ()
     "Goto current prompt and continue editting."
     (interactive)
