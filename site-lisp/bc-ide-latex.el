@@ -186,24 +186,25 @@
    "z" 'bc-ide-latex-pdf-view-in-zathura))
 
 ;; TODO: ivy-integrate this
-(use-package reftex
-  :after 'auctex
-  :defer t
-  :hook (LaTeX-mode . reftex-mode)
-  :config
-  (setq reftex-cite-prompt-optional-args t)
+;; (use-package reftex
+;;   :after 'auctex
+;;   :defer t
+;;   :hook (LaTeX-mode . reftex-mode)
+;;   :config
+;;   (setq reftex-cite-prompt-optional-args t)
 
-  :general
-  (:keymaps 'reftex-mode-map
-   :states '(motion normal visual)
-   :prefix "SPC"
-   "rl" 'reftex-label
-   "ri" 'reftex-reference)
-  (:keymaps 'reftex-mode-map
-   :states 'insert
-   :prefix "C-c"
-   "l" 'reftex-label
-   "i" 'reftex-reference))
+;;   :general
+;;   (:keymaps 'reftex-mode-map
+;;    :states '(motion normal visual)
+;;    :prefix "SPC"
+;;    "rl" 'reftex-label
+;;    "ri" 'reftex-reference)
+
+;;   (:keymaps 'reftex-mode-map
+;;    :states 'insert
+;;    :prefix "C-c"
+;;    "l" 'reftex-label
+;;    "i" 'reftex-reference))
 
 (use-package ivy-bibtex
   :after auctex
