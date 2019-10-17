@@ -13,11 +13,6 @@
   :config
   (global-evil-surround-mode 1))
 
-(use-package evil-matchit
-  :after evil
-  :config
-  (global-evil-matchit-mode))
-
 (use-package evil-indent-textobject :after evil)
 
 (use-package evil-nerd-commenter
@@ -59,11 +54,11 @@
 
   ;; functions:
   (defun bc-evil-visual-tab ()
-    "Indent region if in visual-line-mode, otherwise select contains inside a pair of tags via `evilmi-select-items'"
+    "Indent region if in visual-line-mode, otherwise select contains inside a pair of tags via `evil-jump-item'"
     (interactive)
     (if (eq evil-visual-selection 'line)
         (indent-region (region-beginning) (region-end))
-      (evilmi-select-items)))
+      (evil-jump-item)))
 
   ;; borrow from http://steve.yegge.googlepages.com/my-dot-emacs-file
   (defun bc-evil-rename-file-and-buffer (new-name)
@@ -361,7 +356,7 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
    "<tab>" 'bc-evil-visual-tab)
 
   (:keymaps '(normal motion)
-   "<tab>" 'evilmi-jump-items)
+   "<tab>" 'evil-jump-item)
 
   (:keymaps 'visual
    :prefix "SPC"
