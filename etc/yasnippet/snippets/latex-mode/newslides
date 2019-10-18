@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: newslides
+# condition: (string= (buffer-string) "")
 # key: newslides
 # --
 \documentclass[11pt]{beamer}

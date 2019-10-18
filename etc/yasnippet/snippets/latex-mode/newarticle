@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: newarticle
+# condition: (string= (buffer-string) "")
 # key: newarticle
 # --
 \documentclass[11pt]{article}
