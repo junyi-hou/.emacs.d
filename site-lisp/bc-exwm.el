@@ -281,13 +281,18 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
 
 (with-eval-after-load 'ivy-posframe
   (progn
-    (defun bc-exwm--turn-off-ivy-posframe ()
-      (make-local-variable 'ivy-posframe-display-functions-alist)
-      (make-local-variable 'ivy-height)
-      (setq-local ivy-posframe-display-functions-alist '((t . nil)))
-      (setq-local ivy-height 5))
+    (defun bc-exwm--turn-off-ivy-posframe (&rest _)
+      (if (seq-find
+           (lambda (window)
+             (with-current-buffer (window-buffer window) (eq major-mode 'exwm-mode)))
+           (window-list))
+          (progn
+            (make-local-variable 'ivy-posframe-display-functions-alist)
+            (setq-local ivy-posframe-display-functions-alist '((t . nil))))
+        (setq-local ivy-posframe-display-functions-alist
+                    '((t . ivy-posframe-display-at-point)))))
 
-    (add-hook 'exwm-manage-finish-hook #'bc-exwm--turn-off-ivy-posframe)))
+    (advice-add 'ivy-read :before #'bc-exwm--turn-off-ivy-posframe)))
 
 ;;; ===============================
 ;;  org-integration
