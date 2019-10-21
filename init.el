@@ -36,6 +36,7 @@
 (require 'bc-ide-lisp)
 (require 'bc-ide-gentoo)
 (require 'bc-ide-python)
+(require 'bc-ide-guile)
 (require 'bc-ide-latex)
 ;; (require 'bc-ide-matlab)
 
