@@ -27,12 +27,14 @@
 
   (setq geiser-repl-buffer-name-function #'bc-guile--repl-buffer-name)
 
+  (defun bc-guile--advicing-geiser-repl (geiser-cmd &rest _)
+    "1. Open geiser REPL only if there is no one attached to the current buffer;
+     2. automatically delete window after REPL is called."
+    (unless (get-buffer (bc-guile--repl-buffer-name))
+      (funcall geiser-cmd)
+      (delete-window)))
 
-  (defun bc-guile--delete-subprocess-repl-window (&rest _)
-    "Do not show the REPL window spanned by geiser."
-    (delete-window))
-
-  (advice-add 'run-guile :after #'bc-guile--delete-subprocess-repl-window)
+  (advice-add 'run-guile :around #'bc-guile--advicing-geiser-repl)
 
   (defun bc-guile--init ()
     "Init guile help and autocompletion."
@@ -45,7 +47,8 @@
                (memq (get-buffer (bc-guile--repl-buffer-name)) (buffer-list)))
       (cl-letf (((symbol-function 'y-or-n-p)
                  (lambda (&rest _) t)))
-        (kill-buffer-and-window (bc-guile--repl-buffer-name)))))
+        (with-current-buffer (bc-guile--repl-buffer-name)
+          (kill-buffer-and-window)))))
 
   (add-hook 'kill-buffer-hook #'bc-guile--quit-repl)
   
@@ -57,6 +60,7 @@
    "rb" 'jupyter-eval-buffer
    "rf" 'jupyter-eval-defun
    "rr" 'jupyter-eval-line-or-region
+   "rh" 'geiser-doc-symbol-at-point
 
    "ro" 'bc-guile-local-repl
    "rz" 'jupyter-repl-associate-buffer
