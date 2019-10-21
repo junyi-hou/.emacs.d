@@ -13,7 +13,6 @@
   (:keymaps 'yas-minor-mode-map
    "<tab>" nil
    "TAB" nil
-   "M-f" 'yas-expand
    "M-j" 'yas-next-field
    "M-k" 'yas-prev-field))
 
