@@ -67,23 +67,7 @@ If REMOTE is provided, start an remote kernel and connect to it."
     "Kill current repl, save workspace to log folder, reset names of all code buffers associated with it."
     (interactive)
     (bc-jupyter-log--save-workspace)
-    (mapc
-     (lambda (buffer)
-       (with-current-buffer buffer
-         (rename-buffer (bc-jupyter--strip-repl-identifier))))
-     (bc-jupyter--list-attached-buffer (buffer-name)))
     (kill-buffer-and-window))
-
-  (defun bc-jupyter--rename-code-buffer (fun &rest args)
-    "Rename code buffer to reflect the repl it attaches to."
-    (let* ((code-buffer (current-buffer)))
-      (apply fun args)
-      (with-current-buffer code-buffer
-        (let* ((repl-name
-                (buffer-name (oref (buffer-local-value 'jupyter-current-client code-buffer) buffer)))
-               (repl-no (if (string-match "<\\([0-9]+\\)>" repl-name) (match-string 1 repl-name) "1"))
-               (code-buffer-name (bc-jupyter--strip-repl-identifier)))
-          (rename-buffer (concat code-buffer-name "<repl-" repl-no ">" ))))))
 
   (defun bc-jupyter-clear-buffer ()
     "Jupyter REPL version of `cls'."
@@ -139,8 +123,6 @@ If REMOTE is provided, start an remote kernel and connect to it."
 
   (advice-add #'jupyter-eval-region :after #'bc-jupyter--deactivate-mark)
   (advice-add #'jupyter-eval-line-or-region :before #'bc-jupyter--pop-repl)
-  (advice-add #'jupyter-repl-associate-buffer :around #'bc-jupyter--rename-code-buffer)
-  (advice-add #'bc-jupyter--start-repl :around #'bc-jupyter--rename-code-buffer)
 
   :general
   (:keymaps

@@ -38,8 +38,9 @@
 
   (defun bc-guile--init ()
     "Init guile help and autocompletion."
-    (geiser-mode)
-    (run-at-time 0.01 nil #'run-guile))
+    (unless (string-match-p "jupyter-repl" (buffer-name))
+      (geiser-mode)
+      (run-at-time 0.5 nil #'run-guile)))
 
   (defun bc-guile--quit-repl ()
     "Quit the corresponding geiser REPL associated with BUFFER-OR-NAME"
