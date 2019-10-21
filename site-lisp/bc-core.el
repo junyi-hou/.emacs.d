@@ -70,8 +70,10 @@
 (show-paren-mode 1)          ; highlight matching paren
 (global-visual-line-mode 1)  ; word wrapping
 (global-subword-mode 1)      ; better camelCase support
-(recentf-mode 1)             ; recent files
 (global-auto-revert-mode 1)  ; automatically refresh file when it changes
+(use-package recentf
+  :init
+  (setq recentf-save-file (concat no-littering-var-directory "recentf")))
 (use-package hideshow
   :init
   ;; don't make me move to the beginning of line before expanding the block
