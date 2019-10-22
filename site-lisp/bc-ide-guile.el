@@ -40,6 +40,7 @@
     "Init guile help and autocompletion."
     (unless (string-match-p "jupyter-repl" (buffer-name))
       (geiser-mode)
+      ;; HACK: the REPL fire up too quick I am still in the last buffer
       (run-at-time 0.5 nil #'run-guile)))
 
   (defun bc-guile--quit-repl ()
