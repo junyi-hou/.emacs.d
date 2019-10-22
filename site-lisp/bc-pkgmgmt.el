@@ -25,6 +25,7 @@
 
 ;; do not litter my .emacs.d
 (use-package no-littering
+  :demand t
   :config
   (setq-default
    no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
