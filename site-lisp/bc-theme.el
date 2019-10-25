@@ -78,6 +78,14 @@
    display-line-numbers-width 3
    display-line-numbers-widen nil))
 
+;; dim windows out of focus
+(use-package dimmer
+  :demand t
+  :config
+  (dimmer-mode)
+  (setq dimmer-fraction 0.35
+        dimmer-exclusion-regexp "posframe-buffer"))
+
 ;; display time
 (use-package time
   :config
