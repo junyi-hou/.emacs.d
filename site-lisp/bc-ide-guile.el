@@ -9,8 +9,9 @@
   :hook
   (scheme-mode . bc-guile--init)
   :init
-
   (require 'bc-jupyter)
+
+  (setq-local tab-width 2)
 
   (defalias 'bc-guile-local-repl
     (lambda () (interactive)
@@ -20,6 +21,27 @@
   (defalias 'bc-guile-reconnect
     #'jupyter-repl-restart-kernel
     "Reconnect to the current REPL.")
+
+  ;; when eval, send it to both the geiser REPL (for autocompletion)
+  ;; and jupyter REPL
+
+  (defun bc-guile--eval-region (beg end)
+    "Evaluate region between BEG and END."
+    (geiser-eval-region beg end nil nil 'nomsg)
+    (jupyter-eval-region beg end))
+
+  (defun bc-guile--eval-sexp ()
+    "Evaluate the sexp at point.  TODO: support [] as well."
+    (save-excursion
+      (let* ((beg (re-search-backward "(" nil t))
+             (end (progn (forward-list 1) (point))))
+        (bc-guile--eval-region beg end))))
+
+  (defun bc-guile-eval-sexp-or-region ()
+    (interactive)
+    (if (region-active-p)
+        (bc-guile--eval-region (region-beginning) (region-end))
+      (bc-guile--eval-sexp)))
 
   (defun bc-guile--repl-buffer-name (&rest _)
     "Return the repl buffer name for the current buffer."
@@ -59,9 +81,7 @@
   (:states '(motion normal visual)
    :keymaps 'scheme-mode-map
    :prefix "SPC"
-   "rb" 'jupyter-eval-buffer
-   "rf" 'jupyter-eval-defun
-   "rr" 'jupyter-eval-line-or-region
+   "rr" 'bc-guile-eval-sexp-or-region
    "rh" 'geiser-doc-symbol-at-point
 
    "ro" 'bc-guile-local-repl
