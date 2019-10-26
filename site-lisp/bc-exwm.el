@@ -279,33 +279,7 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
 ;;  ivy-posframe-integration
 ;;; ===============================
 
-(with-eval-after-load 'ivy-posframe
-  (progn
-    (defun bc-ivy-posframe--display (str &optional poshandler)
-      "Show STR in ivy's posframe with POSHANDLER.  If exwm window exists, fallback to `ivy-display-function-fallback'."
-      (if (and (not (posframe-workable-p))
-               (seq-find
-                (lambda (window)
-                  (with-current-buffer (window-buffer window)
-                    (eq major-mode 'exwm-mode)))
-                (window-list exwm-workspace--current)))
-          (ivy-display-function-fallback str)
-        (with-ivy-window
-          (apply #'posframe-show
-                 ivy-posframe-buffer
-                 :font ivy-posframe-font
-                 :string str
-                 :position (point)
-                 :poshandler poshandler
-                 :background-color (face-attribute 'ivy-posframe :background nil t)
-                 :foreground-color (face-attribute 'ivy-posframe :foreground nil t)
-                 :internal-border-width ivy-posframe-border-width
-                 :internal-border-color (face-attribute 'ivy-posframe-border :background nil t)
-                 :override-parameters ivy-posframe-parameters
-                 (funcall ivy-posframe-size-function))
-          (ivy-posframe--add-prompt 'ignore))))
-
-    (advice-add #'ivy-posframe--display :override #'bc-ivy-posframe--display)))
+;; TODO
 
 ;;; ===============================
 ;;  org-integration
