@@ -82,9 +82,7 @@
 (use-package dimmer
   :demand t
   :config
-  (dimmer-mode)
-  (setq dimmer-fraction 0.35
-        dimmer-exclusion-regexp "posframe-buffer"))
+  (dimmer-mode))
 
 ;; display time
 (use-package time
