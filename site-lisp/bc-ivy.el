@@ -29,13 +29,13 @@
   (defun bc-ivy-grep-at-point ()
     "Call `counsel-ag' on the `symbol-at-point'."
     (interactive)
-    (counsel-ag (symbol-name (symbol-at-point))))
+    (counsel-rg (symbol-name (symbol-at-point))))
 
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
    "rs" 'bc-ivy-grep-at-point
-   "rS" 'counsel-ag))
+   "rS" 'counsel-rg))
 
 ;; need to figure out a way to make this work with exwm-mode
 ;; (use-package ivy-posframe
@@ -48,7 +48,6 @@
     :after ivy
     :config
     (ivy-prescient-mode))
-
 
 (provide 'bc-ivy)
 ;;; bc-ivy.el ends here
