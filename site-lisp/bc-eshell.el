@@ -125,25 +125,6 @@
       (goto-char (point-max))
       (evil-insert-state)))
 
-  (defun eshell/sudo (&rest args)
-    "Use Tramp to re-implement sudo."
-    (interactive)
-    (throw
-     'eshell-external
-     (let* ((dir (file-local-name (expand-file-name default-directory)))
-            (default-directory (concat "/sudo:root@localhost:" dir))
-            (args (eshell-flatten-list args)))
-       (eshell-named-command (car args) (cdr args)))))
-
-  (defun eshell/su (&rest _)
-    "cd to /sudo:root@localhost:`default-directory'."
-    (interactive)
-    (let ((tramp-file-name-regexp "^/\\(\\(?:\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?|\\)+\\)?\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?:\\([^
-]*\\'\\)"))
-      (if (string-match tramp-file-name-regexp default-directory)
-          (eshell/cd (match-string 8 default-directory))
-        (eshell/cd (concat "/sudo:root@localhost:" default-directory)))))
-
   (defun eshell/mkcd (dir &rest _)
     "Run \"mkdir dir\" then \"cd dir\""
     (interactive)
@@ -200,6 +181,24 @@
   :config
   (dolist (p '("alsamixer" "htop" "ssh" "top"))
       (add-to-list 'eshell-visual-commands p)))
+
+(use-package em-tramp
+  :straight (em-tramp :type built-in)
+  :after eshell
+  :init
+
+  (setq tramp-file-name-regexp "^/\\(\\(?:\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?|\\)+\\)?\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?:\\([^
+]*\\'\\)")
+
+  ;; override eshell/su
+  (defun bc-eshell-su (&rest _)
+    "cd to /sudo:root@localhost:`default-directory'."
+    (interactive)
+      (if (string-match tramp-file-name-regexp default-directory)
+          (eshell/cd (match-string 8 default-directory))
+        (eshell/cd (concat "/sudo:root@localhost:" default-directory))))
+
+  (advice-add #'eshell/su :override #'bc-eshell-su))
 
 (use-package xterm-color
   :after eshell
