@@ -54,6 +54,7 @@
     (eshell/alias "ll" "ls -Aloh --color=always"))
 
   ;; functions
+
   (defun eshell/x (file &rest args)
     "Unpack FILE with ARGS using default command."
     (let* ((command
@@ -190,6 +191,8 @@
   (setq tramp-file-name-regexp "^/\\(\\(?:\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?|\\)+\\)?\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?:\\([^
 ]*\\'\\)")
 
+  ;; (setq tramp-encoding-shell "/bin/bash")
+
   ;; override eshell/su
   (defun bc-eshell-su (&rest _)
     "cd to /sudo:root@localhost:`default-directory'."
@@ -198,7 +201,27 @@
           (eshell/cd (match-string 8 default-directory))
         (eshell/cd (concat "/sudo:root@localhost:" default-directory))))
 
-  (advice-add #'eshell/su :override #'bc-eshell-su))
+  (advice-add #'eshell/su :override #'bc-eshell-su)
+
+  ;; better `eshell/cd'
+  (defun bc-eshell-cd (cd &rest args)
+    "Make `eshell/cd' tramp-aware."
+    (if (and (not args)
+             (string-match tramp-file-name-regexp default-directory))
+        (let* ((user (match-string 6 default-directory))
+               (host (format "/%s:%s@%s:"
+                             (match-string 5 default-directory)
+                             user
+                             (match-string 7 default-directory)))
+               (home (format "%s/home/%s" host user)))
+          (if (file-exists-p home)
+              (funcall cd home)
+            (funcall cd (format "%s/" host))))
+      (funcall cd args)))
+
+  (advice-add #'eshell/cd :around #'bc-eshell-cd))
+
+
 
 (use-package xterm-color
   :after eshell
