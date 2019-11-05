@@ -27,10 +27,48 @@ If REMOTE is provided, start an remote kernel and connect to it."
                                 (current-buffer)))
       (jupyter-run-repl kernel kernel (current-buffer))))
 
+  (defun bc-jupyter--uniquify-connection-file (remote)
+    "Uniquify name of the jupyter kernel connection file at REMOTE."
+    (let* ((connection-file-regexp "remote-kernel-?\\([[:digit:]]\\)*\.json")
+           (connection-file-list
+            (directory-files
+             (apply #'format (cons "/ssh:%s@%s#%s:/tmp/" remote))
+             'full
+             connection-file-regexp))
+           (next-unique-connection-fname
+            (1+ (apply #'max
+                       (mapcar
+                        (lambda (file)
+                          (string-match connection-file-regexp file)
+                          (let ((number (match-string 1 file)))
+                            (if number
+                                (string-to-number number)
+                              0)))
+                        connection-file-list)))))
+      (replace-regexp-in-string
+       connection-file-regexp
+       (format "remote-kernel-%d.json" next-unique-connection-fname)
+       (car connection-file-list))))
+
   (defun bc-jupyter--start-remote-kernel (kernel remote)
-    "Start a remote KERNEL at REMOTE.  Return the tramp location of the connection file."
-    ;; TODO: implement this
-    )
+    "Start a remote KERNEL at REMOTE.  Return the tramp location of the connection file.
+REMOTE is a list of the user name, the server address, and the port number."
+    (let* ((default-directory
+             (apply #'format (cons "/ssh:%s@%s#%s:/" remote)))
+           (connection-file (bc-jupyter--uniquify-connection-file remote))
+           (remote-process-name (replace-string ".json" "" connection-file))
+           (remote-process-buffer (format "*%s*" remote-process-name)))
+      ;; start kernel
+      ;; by default, start kernel at /home/USER-NAME/.local/bin/jupyter-console
+      (start-file-process
+       remote-process-name
+       remote-process-buffer
+       (format "/home/%s/.local/bin/jupyter-console" (car remote))
+       "--kernel"
+       kernel
+       "-f"
+       connection-file)
+      connection-file))
 
   (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
     "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is not nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
