@@ -14,10 +14,10 @@
   :config
   (require 'bc-jupyter)
   (setq-local tab-width 4)
+  (defconst bc-python-remote '("junyi" "10.10.10.106" "9127"))
 
   (defalias 'bc-python-local-repl
-    (lambda () (interactive)
-      (bc-jupyter-start-or-switch-to-repl "python"))
+    (apply-partially #'bc-jupyter-start-or-switch-to-repl "python")
     "Open a jupyter repl for python interpreter.")
 
   (defalias 'bc-python-reconnect
@@ -25,8 +25,8 @@
     "Reconnect to the current REPL.")
 
   (defalias 'bc-python-remote-repl
-    nil
-    "Open a remote jupyter repl for python interpreter, TODO: implement this")
+    (apply-partially #'bc-jupyter-start-or-switch-to-repl "python" bc-python-remote)
+    "Open a jupyter repl for python interpreter at remote/DIRECTORY.")
 
   (defalias 'bc-python--send
     (lambda (string) (bc-jupyter--send (bc-python--dedent string)))
@@ -53,6 +53,7 @@
    "rc" 'bc-python-eval-class
 
    "ro" 'bc-python-local-repl
+   "rO" 'bc-python-remote-repl
 
    "rz" 'jupyter-repl-associate-buffer
    "rZ" 'bc-python-reconnect))
