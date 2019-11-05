@@ -16,6 +16,10 @@
   ;; hotfix https://github.com/dzop/emacs-jupyter/issues/172
   (jupyter-tramp-file-name-p "~/.bash_history")
 
+  ;; fix tramp PATH issue
+  (require 'tramp)
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
   ;; functions
   (defun bc-jupyter--start-repl (kernel &optional remote)
     "Initiate a REPL for KERNEL and attach it to the current buffer.
@@ -42,31 +46,34 @@ If REMOTE is provided, start an remote kernel and connect to it.  Furthermore, i
            (connection-file-list
             (directory-files
              (apply #'format (cons "/ssh:%s@%s#%s:/tmp/" remote))
-             'full
-             connection-file-regexp))
-           (next-unique-connection-fname
-            (1+ (apply #'max
-                       (mapcar
-                        (lambda (file)
-                          (string-match connection-file-regexp file)
-                          (let ((number (match-string 1 file)))
-                            (if number
-                                (string-to-number number)
-                              0)))
-                        connection-file-list)))))
-      (replace-regexp-in-string
-       connection-file-regexp
-       (format "remote-kernel-%d.json" next-unique-connection-fname)
-       (car connection-file-list))))
+             nil
+             connection-file-regexp)))
+      (if connection-file-list
+          (let ((count (1+ (apply #'max
+                                  (mapcar
+                                   (lambda (file)
+                                     (string-match connection-file-regexp file)
+                                     (let ((number (match-string 1 file)))
+                                       (if number
+                                           (string-to-number number)
+                                         0)))
+                                   connection-file-list)))))
+            (replace-regexp-in-string
+             connection-file-regexp
+             (format "/tmp/remote-kernel-%d.json" count)
+             (car connection-file-list)))
+        "/tmp/remote-kernel.json")))
 
   (defun bc-jupyter--start-remote-kernel (kernel remote &optional directory)
     "Start a remote KERNEL at REMOTE.  If DIRECTORY is non-nil, cd to the DIRECTORY on the REMOTE.  Return the tramp location of the connection file.
 REMOTE is a list of the user name, the server address, and the port number."
-    (let* ((remote (append remote (if directory `(,directory) `(""))))
+    (let* ((remote-dir (append remote (if directory `(,directory) `(""))))
            (default-directory
-             (apply #'format (cons "/ssh:%s@%s#%s:%s" remote)))
+             (apply #'format (cons "/ssh:%s@%s#%s:%s" remote-dir)))
            (connection-file (bc-jupyter--uniquify-connection-file remote))
-           (remote-process-name (replace-string ".json" "" connection-file))
+           (remote-process-name
+            (if (string-match "remote-kernel-?[[:digit:]]*" connection-file)
+                (match-string 0 connection-file)))
            (remote-process-buffer (format "*%s*" remote-process-name)))
       ;; start kernel
       ;; by default, start kernel at /home/USER-NAME/.local/bin/jupyter-console
@@ -78,7 +85,7 @@ REMOTE is a list of the user name, the server address, and the port number."
        kernel
        "-f"
        connection-file)
-      connection-file))
+      (apply #'format "/ssh:%s@%s#%s:%s" (append remote `(,connection-file)))))
 
   (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
     "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is non-nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."

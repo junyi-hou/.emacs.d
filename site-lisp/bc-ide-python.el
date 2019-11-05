@@ -17,7 +17,7 @@
   (defconst bc-python-remote '("junyi" "10.10.10.106" "9127"))
 
   (defalias 'bc-python-local-repl
-    (apply-partially #'bc-jupyter-start-or-switch-to-repl "python")
+    (lambda () (interactive) (bc-jupyter-start-or-switch-to-repl "python"))
     "Open a jupyter repl for python interpreter.")
 
   (defalias 'bc-python-reconnect
@@ -25,7 +25,8 @@
     "Reconnect to the current REPL.")
 
   (defalias 'bc-python-remote-repl
-    (apply-partially #'bc-jupyter-start-or-switch-to-repl "python" bc-python-remote)
+    (lambda () (interactive)
+      (bc-jupyter-start-or-switch-to-repl "python" bc-python-remote))
     "Open a jupyter repl for python interpreter at remote/DIRECTORY.")
 
   (defalias 'bc-python--send
