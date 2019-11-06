@@ -52,6 +52,7 @@
        (indent-region 0 (point-max)))
      nil t))
 
+  ;; home-made electric-mode
   (defun bc-ide-latex-electric-single-quote ()
     "Automatically close single quotes"
     (interactive)
@@ -64,6 +65,46 @@
     (backward-char 2))
 
   (advice-add #'TeX-insert-quote :after #'bc-ide-latex-electric-double-quote)
+
+  (defconst bc-ide-latex-pair-macro-regexp
+    "\\(.\\{1\\}\\(right\\|[bB]ig\\(g\\)?\\)\\)?")
+
+  (defconst bc-ide-latex-pair-regexp
+    "\\(.?}\\|)\\|\\]\\|'\\)")
+
+  (defconst bc-ide-latex-pairs
+    '(("\\}" . "\\\\{")
+      ("}" . "{")
+      (")" . "(")
+      ("]" . "[")
+      ("'" . "`")
+      ("$" . "$")))
+
+  ;; FIXME: when killing ``'' is problematic
+  (defun bc-ide-latex-electric-delete ()
+    "If point is inside an empty pair, delete the whole pair.  Otherwise call `backward-delete-char'."
+    (interactive)
+    (if (looking-at
+         (format "%s%s" bc-ide-latex-pair-macro-regexp bc-ide-latex-pair-regexp))
+        ;; now the point is just before the closing pairs
+        (let ((pair-end (match-end 0))
+              (empty? (save-excursion
+                        (re-search-backward
+                         (format "%s%s\\="
+                                 (if (match-string-no-properties 1)
+                                     (replace-regexp-in-string
+                                      "right" "left"
+                                      (format "\\%s" (match-string-no-properties 1)))
+                                   "")
+                                 (alist-get (match-string-no-properties 4)
+                                            bc-ide-latex-pairs
+                                            nil nil 'string=))
+                         (- (point) 10)
+                         'noerror))))
+          (if empty?
+              (delete-region (match-beginning 0) pair-end)
+            (call-interactively #'backward-delete-char-untabify)))
+      (call-interactively #'backward-delete-char-untabify)))
 
   :hook
   (LaTeX-mode . TeX-PDF-mode)
@@ -79,6 +120,7 @@
   (:keymaps 'LaTeX-mode-map
    :states 'insert
    "<return>" 'newline
+   "<backspace>" 'bc-ide-latex-electric-delete
    "`" 'bc-ide-latex-electric-single-quote)
 
   (:keymaps 'LaTeX-mode-map
