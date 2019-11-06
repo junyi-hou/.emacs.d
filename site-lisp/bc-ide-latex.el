@@ -4,6 +4,7 @@
 
 ;;; Code:
 
+;; FIXME: comments are wired in auctex mode
 (use-package auctex
   :defer t
 
