@@ -193,36 +193,41 @@
   ;; fix tramp PATH problem
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
-  (setq tramp-file-name-regexp "^/\\(\\(?:\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?|\\)+\\)?\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?:\\([^
-]*\\'\\)")
-
   ;; (setq tramp-encoding-shell "/bin/bash")
 
   ;; override eshell/su
   (defun bc-eshell-su (&rest _)
-    "cd to /sudo:root@localhost:`default-directory'."
-    (interactive)
-      (if (string-match tramp-file-name-regexp default-directory)
-          (eshell/cd (match-string 8 default-directory))
-        (eshell/cd (concat "/sudo:root@localhost:" default-directory))))
+    "toggle between `default-directory' and /sudo::`default-directory'."
+    (let ((user "root")
+          (host (or (file-remote-p default-directory 'host) "localhost"))
+          (dir (file-local-name (expand-file-name default-directory)))
+          (prefix (file-remote-p default-directory))
+          (sudo? (string-equal "sudo" (file-remote-p default-directory 'method))))
+      (if sudo?
+          ;; in sudo mode, go back to non-sudo
+          (let ((new-prefix (replace-regexp-in-string
+                             (format "[|/]sudo:root@%s" host) ""
+                             prefix)))
+            (eshell/cd (if (string= ":" new-prefix) dir (format "%s%s" new-prefix dir))))
+        ;; in non-sudo mode, go to sudo
+        (if prefix
+            (eshell/cd
+             (format "%s|sudo:%s@%s:%s" (substring prefix 0 -1) user host dir))
+          (eshell/cd (format "/sudo:%s@%s:%s" user host dir))))))
 
   (advice-add #'eshell/su :override #'bc-eshell-su)
 
   ;; better `eshell/cd'
   (defun bc-eshell-cd (cd &rest args)
     "Make `eshell/cd' tramp-aware."
-    (if (and (not args)
-             (string-match tramp-file-name-regexp default-directory))
-        (let* ((user (match-string 6 default-directory))
-               (host (format "/%s:%s@%s:"
-                             (match-string 5 default-directory)
-                             user
-                             (match-string 7 default-directory)))
-               (home (format "%s/home/%s" host user)))
+    (let* ((host (file-remote-p default-directory))
+           (home (format "%s/home/%s" host (file-remote-p default-directory 'user))))
+      (if (and (not args)
+               host)
           (if (file-exists-p home)
               (funcall cd home)
-            (funcall cd (format "%s/" host))))
-      (funcall cd args)))
+            (funcall cd (format "%s/" host)))
+        (funcall cd args))))
 
   (advice-add #'eshell/cd :around #'bc-eshell-cd))
 
