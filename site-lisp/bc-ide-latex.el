@@ -1,10 +1,8 @@
 ;;; bc-ide-latex.el --- ide for latex editing -*- lexical-binding: t; -*-
-
 ;;; Commentary:
 
 ;;; Code:
 
-;; FIXME: comments are wired in auctex mode
 (use-package auctex
   :defer t
 
@@ -31,7 +29,7 @@
 
    ;; auto-close
    LaTeX-electric-left-right-brace t
-   TeX-electric-sub-and-superscript t
+   TeX-electric-math (cons "$" "$")
 
    ;; other settings
    TeX-parse-self t
@@ -54,6 +52,19 @@
        (indent-region 0 (point-max)))
      nil t))
 
+  (defun bc-ide-latex-electric-single-quote ()
+    "Automatically close single quotes"
+    (interactive)
+    (insert "`'")
+    (backward-char 1))
+
+  (defun bc-ide-latex-electric-double-quote (&rest _)
+    "Automatically close single quotes"
+    (insert "''")
+    (backward-char 2))
+
+  (advice-add #'TeX-insert-quote :after #'bc-ide-latex-electric-double-quote)
+
   :hook
   (LaTeX-mode . TeX-PDF-mode)
   (LaTeX-mode . TeX-source-correlate-mode)
@@ -64,6 +75,11 @@
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
    "SPC" nil)
+
+  (:keymaps 'LaTeX-mode-map
+   :states 'insert
+   "<return>" 'newline
+   "`" 'bc-ide-latex-electric-single-quote)
 
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
