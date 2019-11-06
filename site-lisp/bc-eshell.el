@@ -187,6 +187,11 @@
   :straight (em-tramp :type built-in)
   :after eshell
   :init
+  ;; load tramp
+  (require 'tramp)
+
+  ;; fix tramp PATH problem
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
   (setq tramp-file-name-regexp "^/\\(\\(?:\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?|\\)+\\)?\\([a-zA-Z0-9-]+\\):\\(?:\\([^/|: 	]+\\)@\\)?\\(\\(?:[a-zA-Z0-9_.%-]+\\|\\[\\(?:\\(?:\\(?:[a-zA-Z0-9]+\\)?:\\)+[a-zA-Z0-9.]+\\)?]\\)\\(?:#[0-9]+\\)?\\)?:\\([^
 ]*\\'\\)")
@@ -220,8 +225,6 @@
       (funcall cd args)))
 
   (advice-add #'eshell/cd :around #'bc-eshell-cd))
-
-
 
 (use-package xterm-color
   :after eshell

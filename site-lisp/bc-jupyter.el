@@ -2,7 +2,6 @@
 
 ;;; Commentary:
 
-
 ;;; Code:
 
 (use-package jupyter
@@ -14,11 +13,7 @@
         jupyter-repl-history-maximum-length 300)
 
   ;; hotfix https://github.com/dzop/emacs-jupyter/issues/172
-  (jupyter-tramp-file-name-p "~/.bash_history")
-
-  ;; fix tramp PATH issue
-  (require 'tramp)
-  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  (jupyter-tramp-file-name-p "~/.bashrc")
 
   ;; functions
   (defun bc-jupyter--start-repl (kernel &optional remote)
