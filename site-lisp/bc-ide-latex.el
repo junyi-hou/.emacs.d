@@ -18,7 +18,6 @@
 
    ;; do not mess up my indentation
    LaTeX-item-indent 0
-
    ;; disable moving sub/super scripts
    tex-fontify-script nil
    font-latex-fontify-script nil
@@ -30,6 +29,7 @@
    ;; auto-close
    LaTeX-electric-left-right-brace t
    TeX-electric-math (cons "$" "$")
+   LaTeX-syntactic-comments nil
 
    ;; other settings
    TeX-parse-self t
@@ -80,7 +80,6 @@
       ("'" . "`")
       ("$" . "$")))
 
-  ;; FIXME: when killing ``'' is problematic
   (defun bc-ide-latex-electric-delete ()
     "If point is inside an empty pair, delete the whole pair.  Otherwise call `backward-delete-char'."
     (interactive)
@@ -127,6 +126,19 @@
    :states '(normal visual motion)
    :prefix "SPC"
    "rr" 'TeX-command-run-all))
+
+;; (use-package tex-fold
+;;   :straight
+;;   (:type built-in)
+;;   :hook
+;;   (LaTeX-mode . TeX-fold-mode)
+;;   :config
+;;   (setq TeX-fold-type-list 'env
+;;         TeX-fold-env-spec-list )
+;;   :general
+;;   (:keymaps 'LaTeX-mode-map
+;;    :states '(normal visual motion)
+;;    "zo" ))
 
 ;; use eaf instead?
 (use-package pdf-tools
