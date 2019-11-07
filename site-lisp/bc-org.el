@@ -10,11 +10,14 @@
   (:type built-in)
   :hook
   (org-mode . org-indent-mode)
-  (org-mode . (lambda () (setq tab-width 2)))
+  (org-mode . bc-org--fix-indent)
   (org-mode . bc-org--complete-keywords)
 
   :init
   ;; functions
+
+  (defun bc-org--fix-indent ()
+    (setq tab-width 2))
 
   ;; taken from https://github.com/dakra/dmacs/blob/master/init.org#org
   (defun bc-org-remove-all-results ()
@@ -53,14 +56,14 @@
                          (org-babel-with-temp-filebuffer filename
                            (bc-org--export-headline))
                          :action 'identity)))
-          (templates org-capture-templates))
+          (saved-templates org-capture-templates))
       (add-to-list
        'org-capture-templates
        `("t" "customized capture item" entry (file+headline ,filename ,headline)
          "* %t %?\n%a" :empty-lines 1))
       (org-capture nil "t")
       (evil-insert-state)
-      (setq org-capture-templates templates)))
+      (setq org-capture-templates saved-templates)))
 
   (defun bc-org-capture-todo ()
     "Capture to ~/org/todo.org."
@@ -102,7 +105,9 @@
   ;; src block settings
   (setq org-src-fontify-natively t
         org-src-tab-acts-natively t
-        org-confirm-babel-evaluate nil)
+        org-confirm-babel-evaluate nil
+        org-src-window-setup 'current-window
+        org-src-ask-before-returning-to-edit-buffer nil)
 
   ;; display/update images in the buffer after I evaluate
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images t)
@@ -145,37 +150,16 @@
    "rf" 'org-footnote
    "rc" 'bc-org-remove-all-results)
 
+  (:keymaps 'org-src-mode-map
+   :states '(normal visual motion insert emacs)
+   "C-c" 'org-edit-src-exit)
+
   (:keymaps 'org-mode-map
    :states '(normal visual motion insert)
    "C-e" 'org-next-visible-heading
    "C-y" 'org-previous-visible-heading
    "<up>" 'org-previous-visible-heading
    "<down>" 'org-next-visible-heading))
-
-;; (use-package calfw
-;;   :config
-;;   (setq calendar-month-name-array
-;;         '("January" "February" "March"     "April"   "May"      "June"
-;;           "July"    "August"   "September" "October" "November" "December")
-;;         calendar-day-name-array
-;;         '("Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday"
-;;           "Saturday")
-;;         calendar-week-start-day 1)
-
-;;   (setq cfw:render-line-breaker 'cfw:render-line-breaker-wordwrap)
-
-;;   ;; grid frame
-;;   (setq cfw:fchar-junction ?╋
-;;         cfw:fchar-vertical-line ?┃
-;;         cfw:fchar-horizontal-line ?━
-;;         cfw:fchar-left-junction ?┣
-;;         cfw:fchar-right-junction ?┫
-;;         cfw:fchar-top-junction ?┯
-;;         cfw:fchar-top-left-corner ?┏
-;;         cfw:fchar-top-right-corner ?┓))
-
-;; (use-package calfw-org
-;;   :after org)
 
 (provide 'bc-org)
 ;;; bc-org.el ends here
