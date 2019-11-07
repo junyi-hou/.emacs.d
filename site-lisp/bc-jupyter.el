@@ -35,6 +35,8 @@ If REMOTE is provided, start an remote kernel and connect to it.  Furthermore, i
                                   (current-buffer)))
         (jupyter-run-repl kernel kernel (current-buffer))))
 
+  ;; FIXME: how should I do remote editing?
+  ;; via tramp or via sshfs?
   (defun bc-jupyter--uniquify-connection-file (remote)
     "Uniquify name of the jupyter kernel connection file at REMOTE."
     (let* ((connection-file-regexp "remote-kernel-?\\([[:digit:]]\\)*\.json")
@@ -58,6 +60,27 @@ If REMOTE is provided, start an remote kernel and connect to it.  Furthermore, i
              (format "/tmp/remote-kernel-%d.json" count)
              (car connection-file-list)))
         "/tmp/remote-kernel.json")))
+
+  (defun bc-jupyter--uniquify-process-name ()
+    "Uniquify name of the jupyter kernel process name.  Return the process name"
+    (let* ((base-name "jupyter-remote-kernel")
+           (name-regexp (format "[[:blank:]]\*%s-?\\([[:digit:]]+\\)?\*" base-name))
+           (existing-remote-kernel-number
+            (car (seq-sort
+                  #'>
+                  (mapcar (lambda (buffer)
+                            (let ((buffer-name (buffer-name buffer)))
+                              (if (string-match name-regexp buffer-name)
+                                  (if (match-string 1 buffer-name)
+                                      (string-to-number (match-string 1 buffer-name))
+                                    0)
+                                -1)))
+                          (buffer-list))))))
+      (format "%s%s"
+              base-name
+              (if (> existing-remote-kernel-number -1)
+                  (format "-%d" (1+ existing-remote-kernel-number))
+                ""))))
 
   (defun bc-jupyter--start-remote-kernel (kernel remote &optional directory)
     "Start a remote KERNEL at REMOTE.  If DIRECTORY is non-nil, cd to the DIRECTORY on the REMOTE.  Return the tramp location of the connection file.
