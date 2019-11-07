@@ -30,15 +30,12 @@
 (defun bc-exwm-amixer-toggle-mute ()
   "Toggle mute."
   (interactive)
-  (let* ((volume-str (with-temp-buffer
-                      (insert (shell-command-to-string "amixer sget Master"))
+  (let* ((new-state (with-temp-buffer
+                      (insert (shell-command-to-string "amixer sset Master toggle"))
                       (goto-char 0)
-                      (search-forward-regexp "\\(\\[\\([[:digit:]]+\\)%\\]\\)")
-                      (match-string 2)))
-         (volume (string-to-number volume-str)))
-    (if (> volume 0)
-        (bc-exwm-amixer-adjust-volume nil 100)
-      (bc-exwm-amixer-adjust-volume 'up 40))))
+                      (re-search-forward "\\[\\(off\\|on\\)\\]")
+                      (match-string 1))))
+    (message "Master volume %s" new-state)))
 
 (defun bc-exwm-adjust-backlight (&optional up)
   "Adjust backlight, if UP is non-nil, increase the brightness, otherwise decrease."
