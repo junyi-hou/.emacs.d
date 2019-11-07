@@ -271,7 +271,10 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
                     :action 'identity)))
         (setq bc-exwm--relative-layout position)
         (bc-exwm--turn-on-external-monitor connected position)
-        (bc-exwm--windmove-advice-add position)))))
+        (bc-exwm--windmove-advice-add position)
+
+        ;; finally, init the default workspace on the external monitor
+        (setq bc-exwm--external-monitor-workspace-index 1)))))
 
 (add-hook 'exwm-randr-screen-change-hook #'bc-exwm--auto-adjust-display)
 
