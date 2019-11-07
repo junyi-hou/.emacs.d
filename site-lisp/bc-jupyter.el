@@ -35,32 +35,6 @@ If REMOTE is provided, start an remote kernel and connect to it.  Furthermore, i
                                   (current-buffer)))
         (jupyter-run-repl kernel kernel (current-buffer))))
 
-  ;; FIXME: how should I do remote editing?
-  ;; via tramp or via sshfs?
-  (defun bc-jupyter--uniquify-connection-file (remote)
-    "Uniquify name of the jupyter kernel connection file at REMOTE."
-    (let* ((connection-file-regexp "remote-kernel-?\\([[:digit:]]\\)*\.json")
-           (connection-file-list
-            (directory-files
-             (apply #'format (cons "/ssh:%s@%s#%s:/tmp/" remote))
-             nil
-             connection-file-regexp)))
-      (if connection-file-list
-          (let ((count (1+ (apply #'max
-                                  (mapcar
-                                   (lambda (file)
-                                     (string-match connection-file-regexp file)
-                                     (let ((number (match-string 1 file)))
-                                       (if number
-                                           (string-to-number number)
-                                         0)))
-                                   connection-file-list)))))
-            (replace-regexp-in-string
-             connection-file-regexp
-             (format "/tmp/remote-kernel-%d.json" count)
-             (car connection-file-list)))
-        "/tmp/remote-kernel.json")))
-
   (defun bc-jupyter--uniquify-process-name ()
     "Uniquify name of the jupyter kernel process name.  Return the process name"
     (let* ((base-name "jupyter-remote-kernel")
@@ -82,28 +56,29 @@ If REMOTE is provided, start an remote kernel and connect to it.  Furthermore, i
                   (format "-%d" (1+ existing-remote-kernel-number))
                 ""))))
 
+  (defun bc-jupyter--get-remote-connection-file (remote jupyter-remote-kernel-buffer)
+    "Return the connection file from JUPYTER-REMOTE-KERNEL-BUFFER located in REMOTE."
+    (with-current-buffer jupyter-remote-kernel-buffer
+      (goto-char 1)
+      (when (re-search-forward ":[[:blank:]]\\([/_\.0-9a-zA-Z-]+\.json\\)")
+        (apply #'format (cons "/ssh:%s@%s#%s:%s" (append remote (match-string 1)))))))
+
   (defun bc-jupyter--start-remote-kernel (kernel remote &optional directory)
     "Start a remote KERNEL at REMOTE.  If DIRECTORY is non-nil, cd to the DIRECTORY on the REMOTE.  Return the tramp location of the connection file.
 REMOTE is a list of the user name, the server address, and the port number."
     (let* ((remote-dir (append remote (if directory `(,directory) `(""))))
            (default-directory
              (apply #'format (cons "/ssh:%s@%s#%s:%s" remote-dir)))
-           (connection-file (bc-jupyter--uniquify-connection-file remote))
-           (remote-process-name
-            (if (string-match "remote-kernel-?[[:digit:]]*" connection-file)
-                (match-string 0 connection-file)))
-           (remote-process-buffer (format "*%s*" remote-process-name)))
+           (remote-process-name (bc-jupyter--uniquify-process-name))
+           (remote-process-buffer (format " *%s*" remote-process-name)))
       ;; start kernel
-      ;; by default, start kernel at /home/USER-NAME/.local/bin/jupyter-console
       (start-file-process
        remote-process-name
        remote-process-buffer
        (format "/home/%s/.local/bin/jupyter-console" (car remote))
        "--kernel"
-       kernel
-       "-f"
-       connection-file)
-      (apply #'format "/ssh:%s@%s#%s:%s" (append remote `(,connection-file)))))
+       kernel)
+      (bc-jupyter--get-remote-connection-file remote remote-process-buffer)))
 
   (defun bc-jupyter-start-or-switch-to-repl (kernel &optional remote)
     "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type.  If REMOTE is non-nil, open a remote kernel by calling `bc-jupyter--start-remote-kernel'."
