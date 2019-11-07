@@ -11,9 +11,15 @@
 
 (use-package python
   :defer t
+  :init
+  (defun bc-python--set-indent-width ()
+    (setq-local tab-width 4))
+
+  :hook
+  (python-mode . bc-python--set-indent-width)
+
   :config
   (require 'bc-jupyter)
-  (setq-local tab-width 4)
   (defconst bc-python-remote '("junyi" "10.10.10.106" "9127"))
 
   (defalias 'bc-python-local-repl
