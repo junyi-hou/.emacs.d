@@ -27,6 +27,9 @@
   (:keymaps 'dired-mode-map
    :states 'motion
 
+   ;; sort
+   "s" 'dired-sort-toggle-or-edit
+
    ;; movement
    "j" 'dired-next-line
    "k" 'dired-previous-line
@@ -49,8 +52,6 @@
          (bc-dired--mark-one 'dired-do-rename))
    "d" (lambda () (interactive)
          (bc-dired--mark-one 'dired-do-delete))
-   "s" (lambda () (interactive)
-         (bc-dired--mark-one 'dired-do-symlink))
    "o" (lambda () (interactive)
          (bc-dired--mark-one 'dired-do-chown))
    "m" (lambda () (interactive)
@@ -63,7 +64,6 @@
    "C" 'dired-do-copy
    "D" 'dired-do-delete
    "R" 'dired-do-rename
-   "S" 'dired-do-symlink
    "M" 'dired-do-chmod
    "O" 'dired-do-chown
    "Z" 'dired-compress
