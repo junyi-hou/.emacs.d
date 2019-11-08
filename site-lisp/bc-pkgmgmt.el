@@ -34,9 +34,6 @@
    backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
    custom-file (no-littering-expand-etc-file-name "custom.el"))
 
-  (require 'recentf)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-
   (load custom-file 'noerror))
 (use-package auto-compile
   :config (auto-compile-on-load-mode))

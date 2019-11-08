@@ -68,7 +68,14 @@
 (global-visual-line-mode 1)  ; word wrapping
 (global-subword-mode 1)      ; better camelCase support
 (global-auto-revert-mode 1)  ; automatically refresh file when it changes
-(recentf-mode 1)
+(use-package recentf
+  :hook (after-init . recentf-mode)
+  :init (setq
+         recentf-save-file       "~/.emacs.d/var/recentf"
+         recentf-max-saved-items 100
+         recentf-exclude         '("/tmp/" "/ssh:"))
+  :config
+  (add-to-list 'recentf-exclude no-littering-var-directory))
 (use-package hideshow
   :init
   ;; don't make me move to the beginning of line before expanding the block
