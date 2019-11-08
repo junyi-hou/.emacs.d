@@ -11,9 +11,6 @@
 ;; mini window should be mini
 (setq-default max-mini-window-height 1)
 
-;; tramp uses ssh
-(setq-default tramp-default-method "ssh")
-
 ;; smooth scroll
 (setq-default scroll-step 1
               scroll-conservatively 10000
