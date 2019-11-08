@@ -25,17 +25,7 @@
   :straight (flymake-posframe
              :host github
              :repo "junyi-hou/flymake-posframe")
-  :hook (flymake-mode . flymake-posframe-mode)
-  :init
-  (setq flymake-posframe-prefix
-        (let ((hash (make-hash-table :test 'equal)))
-          (puthash ':note "? " hash)
-          (puthash ':warning "! " hash)
-          (puthash ':error "!! " hash)
-          (puthash 'eglot-note "? " hash)
-          (puthash 'eglot-warning "! " hash)
-          (puthash 'eglot-error "!! " hash)
-          hash)))
+  :hook (flymake-mode . flymake-posframe-mode))
 
 (provide 'bc-flymake)
 ;;; bc-flymake.el ends here
