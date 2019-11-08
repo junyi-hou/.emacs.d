@@ -11,6 +11,7 @@
 (require 'bc-pkgmgmt)
 
 (require 'bc-core)
+(require 'bc-remote)
 (require 'bc-theme)
 (require 'bc-evil)
 (require 'bc-pass)
