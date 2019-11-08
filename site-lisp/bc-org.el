@@ -38,15 +38,20 @@
     "Return the first level headline of an org file."
     (set-mark (point-min))
     (goto-char (point-max))
-    (org-map-entries
-     (lambda ()
-       (let ((heading (org-heading-components)))
-         ;; return heading text if there is any, otherwise return the todo keyword
-         (if (nth 4 heading)
-             (nth 4 heading)
-           (nth 2 heading))))
-     nil
-     'region-start-level))
+    (prog1
+        (org-map-entries
+         (lambda ()
+           (let ((heading (org-heading-components)))
+             ;; return heading text if there is any, otherwise return the todo keyword
+             (if (nth 4 heading)
+                 (nth 4 heading)
+               (nth 2 heading))))
+         nil
+         'region-start-level)
+      ;; kill active region, and reset hs-mode
+      (deactivate-mark)
+      (hs-hide-all)
+      (goto-char 1)))
 
   (defun bc-org--capture (filename &optional headline)
     "Create a temporary org capture entry pointing to FILENAME under HEADLINE, capture the current content there and then"
@@ -113,18 +118,20 @@
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images t)
 
   ;; export to latex and other formats
-  (setq org-latex-packages-alist '(("" "setspace")
-                                   ;; https://github.com/gpoore/minted/issues/92
-                                   ("cache=false" "minted")
-                                   ("" "pdflscape")
-                                   ("" "multirow")
-                                   ("" "multicol")
-                                   ("" "booktabs")
-                                   ("" "amsthm")
-                                   ("" "amssymb")
-                                   ("" "listingsutf8")
-                                   ("top=1in, bottom=1in, left=1in, right=1in" "geometry")
-                                   ("" "natbib")))
+  (setq org-latex-packages-alist
+        '(("" "setspace")
+          ;; https://github.com/gpoore/minted/issues/92
+          ("cache=false" "minted")
+          ("" "pdflscape")
+          ("" "multirow")
+          ("" "multicol")
+          ("" "booktabs")
+          ("" "amsthm")
+          ("" "amssymb")
+          ("" "listingsutf8")
+          ("top=1in, bottom=1in, left=1in, right=1in" "geometry")
+          ("" "natbib")))
+
   (setq
    org-latex-listings 'minted
    org-latex-pdf-process
