@@ -94,6 +94,9 @@
   ;; general config
   (setq org-cycle-emulate-tab nil
         org-export-with-toc nil
+        org-use-sub-superscripts t
+        org-hide-leading-stars nil
+        org-indent-mode-turns-on-hiding-stars nil
         org-highlight-latex-and-related '(latex entities script))
 
   ;; babel
@@ -118,6 +121,9 @@
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images t)
 
   ;; export to latex and other formats
+  (setq org-export-backends '(ascii html latex md)
+        org-export-coding-system 'utf-8)
+
   (setq org-latex-packages-alist
         '(("" "setspace")
           ;; https://github.com/gpoore/minted/issues/92
