@@ -1,7 +1,17 @@
-;;; bc-ide-latex.el --- ide for latex editing -*- lexical-binding: t; -*-
+;;; bc-text.el --- text editing modes -*- lexical-binding: t; -*-
+
 ;;; Commentary:
 
 ;;; Code:
+
+(use-package markdown-mode
+  :defer t
+  :mode ("INSTALL\\'"
+         "CONTRIBUTORS\\'"
+         "LICENSE\\'"
+         "README\\'"
+         "\\.markdown\\'"
+         "\\.md\\'"))
 
 (use-package auctex
   :defer t
@@ -140,7 +150,6 @@
 ;;    :states '(normal visual motion)
 ;;    "zo" ))
 
-;; use eaf instead?
 (use-package pdf-tools
   :defer t
   :config
@@ -325,5 +334,5 @@
   :hook
   (LaTeX-mode . company-auctex-init))
 
-(provide 'bc-ide-latex)
-;;; bc-ide-latex.el ends here
+(provide 'bc-text)
+;;; bc-text.el ends here

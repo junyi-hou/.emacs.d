@@ -38,7 +38,7 @@
 (require 'bc-ide-gentoo)
 (require 'bc-ide-python)
 (require 'bc-ide-guile)
-(require 'bc-ide-latex)
+(require 'bc-text)
 ;; (require 'bc-ide-matlab)
 
 ;;; init.el ends here
