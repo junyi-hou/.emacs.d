@@ -4,6 +4,21 @@
 
 ;;; Code:
 
+;; GC
+(use-package gcmh
+  :straight
+  (gcmh :host gitlab :repo "koral/gcmh")
+  :init
+  (setq gc-cons-threshold 402653184
+        gc-cons-percentage 0.6)
+
+  (add-hook 'after-init-hook
+            (defun bc-core--reset-gc ()
+              (setq gc-cons-threshold 16777216
+                    gc-cons-percentage 0.2)))
+
+  (gcmh-mode 1))
+
 ;; turn off bell
 (setq-default visible-bell t
               ring-bell-function 'ignore)
@@ -102,15 +117,6 @@
               indicate-empty-lines nil)
 
 (setq-default backward-delete-char-untabify-method 'hungry)  ; bs kill whole tab
-
-;; use doom-emacs gc setting
-(setq gc-cons-threshold 402653184
-    gc-cons-percentage 0.6)
-
-(add-hook 'after-init-hook
-          (defun bc-core--reset-gc ()
-            (setq gc-cons-threshold 16777216
-                  gc-cons-percentage 0.2)))
 
 (provide 'bc-core)
 ;;; bc-core.el ends here
