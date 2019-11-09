@@ -8,21 +8,42 @@
   '(("junyi" "10.10.10.106#9127"))
   "A list of remote servers, with car being the user name and cdr the host")
 
-(defmacro with-remote-temp-buffer (&optional server body)
-  "Execute BODY in remote SERVER.")
+(defvar bc-default-remote-server (car bc-remote-servers)
+  "The default remote server.")
+
+(defmacro with-remote-server (server &rest body)
+  "Run BODY in SERVER."
+  `(let ((default-directory ,server))
+     ,@body))
+
+(defmacro with-default-remote-server (&rest body)
+  "Run BODY on `bc-default-remote-server'."
+  `(let* ((server ,(apply #'format (cons "/ssh:%s@%s:" bc-default-remote-server))))
+     (with-remote-server server ,@body)))
 
 ;; eshell integration
 (with-eval-after-load 'eshell
-  (defun eshell/ssh (&rest args)
+  (progn
+    (defvar-local bc-remote--eshell-local-dir nil)
+
+    (defun eshell/ssh (&rest args)
     "ssh into a server if given.  If not, prompt user to pick one from `bc-remote-servers'."
-    (unless args
-      (setq args `(,(ivy-read "connecting to: "
-                             (mapcar
-                              (lambda (remote)
-                                (apply #'format (cons "/ssh:%s@%s:" remote)))
-                              bc-remote-servers)
-                             :action 'identity))))
-    (eshell-named-command "cd" args)))
+    (if (file-remote-p default-directory)
+        (if bc-remote--eshell-local-dir
+            (eshell-named-command "cd" `(,bc-remote--eshell-local-dir))
+          (eshell-named-command "cd"))
+      (unless args
+        (setq args `(,(ivy-read "connecting to: "
+                                (mapcar
+                                 (lambda (remote)
+                                   (apply #'format (cons "/ssh:%s@%s:" remote)))
+                                 bc-remote-servers)
+                                :action 'identity))))
+      (setq bc-remote--eshell-local-dir default-directory)
+      (eshell-named-command "cd" args)))
+
+    ))
+
 
 (provide 'bc-remote)
 ;;; bc-remote.el ends here
