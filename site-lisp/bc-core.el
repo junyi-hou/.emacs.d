@@ -108,6 +108,10 @@
   (prescient-persist-mode))
 (use-package page-break-lines
   :config (global-page-break-lines-mode))
+(use-package eldoc-box
+  :hook ((text-mode prog-mode) . eldoc-box-hover-at-point-mode)
+  :config
+  (setq eldoc-idle-delay 1.5))
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
