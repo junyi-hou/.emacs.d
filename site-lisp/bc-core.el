@@ -109,9 +109,16 @@
 (use-package page-break-lines
   :config (global-page-break-lines-mode))
 (use-package eldoc-box
-  :hook ((text-mode prog-mode) . eldoc-box-hover-at-point-mode)
+  :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
   :config
-  (setq eldoc-idle-delay 1.5))
+  (defun bc-eldoc--box-position (_ height)
+    "Display `eldoc-box' in the bottom left corner of the `selected-window'."
+    (let* ((window (selected-window))
+           (y (- (nth 3 (window-inside-pixel-edges window)) 5  height))
+           (x (window-pixel-left window)))
+      (cons x y)))
+
+  (setq eldoc-box-position-function #'bc-eldoc--box-position))
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
