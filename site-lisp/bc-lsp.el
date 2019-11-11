@@ -21,14 +21,5 @@
   (setq eglot-autoreconnect t
         eglot-put-doc-in-help-buffer t))
 
-;; (use-package eglot-posframe
-;;   :after eglot
-;;   :init
-;;   ;; functions
-;;   :quelpa (eglot-posframe :repo "junyi-hou/eglot-posframe" :fetcher github)
-;;   :config
-;;   ;; fix unpleasant underline in the doc
-;;   (set-face-attribute 'nobreak-space nil :underline nil))
-
 (provide 'bc-lsp)
 ;;; bc-lsp.el ends here
