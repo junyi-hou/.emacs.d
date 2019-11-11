@@ -79,10 +79,6 @@
    display-line-numbers-width 3
    display-line-numbers-widen nil))
 
-;; dim windows out of focus
-(use-package dimmer
-  :hook (after-init . dimmer-mode))
-
 ;; display time
 (use-package time
   :config
