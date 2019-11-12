@@ -135,6 +135,15 @@
     (interactive)
     (bc-evil--search-visually-selected-text nil))
 
+  (defun bc-evil--central-cursor-line (&rest _)
+    "Thin wrapper around `evil-scroll-line-to-center' for advice purpose."
+    (recenter nil))
+
+  (advice-add #'evil-search-next :after #'bc-evil--central-cursor-line)
+  (advice-add #'evil-search-previous :after #'bc-evil--central-cursor-line)
+  (advice-add #'bc-evil-search-visually-forward :after #'bc-evil--central-cursor-line)
+  (advice-add #'bc-evil-search-visually-backward :after #'bc-evil--central-cursor-line)
+
   (defun bc-evil-normal-state-if-not-motion ()
     "Switch to evil normal state if the current state is not motion state."
     (interactive)
