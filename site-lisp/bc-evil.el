@@ -144,6 +144,14 @@
   (advice-add #'bc-evil-search-visually-forward :after #'bc-evil--central-cursor-line)
   (advice-add #'bc-evil-search-visually-backward :after #'bc-evil--central-cursor-line)
 
+  (defun bc-evil--recenter-after-goto-point-max (count)
+    "Thin wrapper around `evil-scroll-line-to-center' so center the end-of-buffer after a G motion."
+    (unless count
+      (recenter nil)))
+
+  (advice-add #'evil-goto-line :after #'bc-evil--recenter-after-goto-point-max)
+
+
   (defun bc-evil-normal-state-if-not-motion ()
     "Switch to evil normal state if the current state is not motion state."
     (interactive)
@@ -374,7 +382,12 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   (:keymaps 'insert
    "<tab>" 'bc-company-unified-tab)
 
-  (:keymaps '(help-mode-map message-mode-map)
+  (:keymaps 'message-mode-map
+   :states 'motion
+   :prefix "SPC"
+   "q" 'delete-window)
+
+  (:keymaps 'help-mode-map
    :states 'motion
    :prefix "SPC"
    "q" 'delete-window))
