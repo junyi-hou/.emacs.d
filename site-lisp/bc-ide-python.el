@@ -13,7 +13,8 @@
   :defer t
   :init
   (defun bc-python--set-indent-width ()
-    (setq-local tab-width 4))
+    (setq-local tab-width 4)
+    (setq python-indent-offset 4))
 
   :hook
   (python-mode . bc-python--set-indent-width)
