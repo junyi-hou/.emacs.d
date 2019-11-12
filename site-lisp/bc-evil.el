@@ -390,7 +390,9 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
   (:keymaps 'help-mode-map
    :states 'motion
    :prefix "SPC"
-   "q" 'delete-window))
+   "q" 'delete-window
+   "M-j" 'help-go-forward
+   "M-k" 'help-go-back))
 
 (provide 'bc-evil)
 ;;; bc-evil.el ends here
