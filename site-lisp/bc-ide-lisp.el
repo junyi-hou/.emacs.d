@@ -2,6 +2,10 @@
 
 ;;; Commentary:
 
+;; TODO: drop posframe dependency
+;; 1. do not directly operate on the help buffer
+;; 2. write a wrapper over help-go-back/forward so can do that in childframe
+
 ;;; Code:
 
 (use-package posframe-control
