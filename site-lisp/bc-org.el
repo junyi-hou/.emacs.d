@@ -12,7 +12,7 @@
   (org-mode . org-indent-mode)
   (org-mode . bc-org--fix-indent)
   (org-mode . bc-org--complete-keywords)
-
+  :commands org-babel-with-temp-filebuffer
   :init
   ;; functions
 
