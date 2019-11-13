@@ -135,14 +135,27 @@
     (interactive)
     (bc-evil--search-visually-selected-text nil))
 
-  (defun bc-evil--central-cursor-line (&rest _)
+  (defun bc-evil--center-cursor-line (&rest _)
     "Thin wrapper around `evil-scroll-line-to-center' for advice purpose."
     (recenter nil))
 
-  (advice-add #'evil-search-next :after #'bc-evil--central-cursor-line)
-  (advice-add #'evil-search-previous :after #'bc-evil--central-cursor-line)
-  (advice-add #'bc-evil-search-visually-forward :after #'bc-evil--central-cursor-line)
-  (advice-add #'bc-evil-search-visually-backward :after #'bc-evil--central-cursor-line)
+  (advice-add #'evil-search-next :after #'bc-evil--center-cursor-line)
+  (advice-add #'evil-search-previous :after #'bc-evil--center-cursor-line)
+  (advice-add #'bc-evil-search-visually-forward :after #'bc-evil--center-cursor-line)
+  (advice-add #'bc-evil-search-visually-backward :after #'bc-evil--center-cursor-line)
+
+  (defun bc-evil--center-after-jump (jump-fn &rest args)
+    "Center the jumpped line if it is too far away."
+    (let ((first-line (line-number-at-pos (window-start)))
+          (last-line (- (line-number-at-pos (window-end)) 2)) ;; minibuffer and modeline
+          after-line)
+      (apply jump-fn args)
+      (setq after-line (line-number-at-pos (point)))
+      (when (or (<= after-line first-line)
+                (>= after-line last-line))
+        (recenter nil))))
+
+  (advice-remove #'evil-jump-item  #'bc-evil--central-after-jump)
 
   (defun bc-evil--recenter-after-goto-point-max (count)
     "Thin wrapper around `evil-scroll-line-to-center' so center the end-of-buffer after a G motion."
