@@ -14,5 +14,16 @@
   :hook
   (emacs-lisp-mode . bc-lisp--set-tab-width))
 
+(use-package helpful
+  :init
+  (evil-set-initial-state 'helpful-mode 'motion)
+  :general
+  (:keymaps 'emacs-lisp-mode-map
+   :states '(visual normal motion)
+   :prefix "SPC"
+   "rh" 'helpful-at-point
+   "hf" 'helpful-callable
+   "hv" 'helpful-variable))
+
 (provide 'bc-ide-lisp)
 ;;; bc-ide-lisp.el ends here
