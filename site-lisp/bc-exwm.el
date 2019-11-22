@@ -100,6 +100,25 @@
       (exwm--buffer->id (get-buffer x))))))
 
 ;;; ===============================
+;;  wifi integration
+;;; ===============================
+
+(defconst bc-exwm-default-network-interface "wlp3s0"
+  "The default network interface, choose from \"ip addr\".")
+
+(defun bc-exwm-connect-to-wifi (save?)
+  "Scan all available wifi connections, pick one to connect.  If the prefix argument SAVE? is non-nil, also save the connection to /etc/wpa_supplicant/wpa_suppliant.conf."
+  (interactive "P")
+  (let* ((connection (ivy-read "select"
+                               (get-conn-list)
+                               :action 'identity))
+         (passwd (if (required-passwd? connection)
+                     (read-from-minibuffer "passwd: ")
+                   "")))
+    (when save?
+      (save))))
+
+;;; ===============================
 ;;  multi-monitor setup
 ;;; ===============================
 
