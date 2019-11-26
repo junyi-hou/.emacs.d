@@ -15,7 +15,7 @@
 (require 'bc-theme)
 (require 'bc-evil)
 (require 'bc-pass)
-(require 'bc-exwm)
+(require 'bc-os)
 
 (require 'bc-eshell)
 (require 'bc-vcs)
