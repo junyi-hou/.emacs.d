@@ -21,5 +21,11 @@
   (setq eglot-autoreconnect t
         eglot-put-doc-in-help-buffer t))
 
+(use-package eglot-childframe
+  :after eglot
+  :straight (eglot-childframe
+             :host github
+             :repo "junyi-hou/eglot-childframe"))
+
 (provide 'bc-lsp)
 ;;; bc-lsp.el ends here
