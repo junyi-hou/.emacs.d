@@ -6,8 +6,6 @@
 
 ;; load pkgs
 
-(use-package general)
-
 (use-package evil-surround
   :after evil
   :config
@@ -273,10 +271,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
 
    "C-u" 'evil-scroll-up
    "C-d" 'evil-scroll-down
-
-   "C-+" 'bc-fontsize-up
-   "C--" 'bc-fontsize-down
-   "C-=" 'bc-fontsize-reset
 
    "M-l" 'right-char
    "M-h" 'left-char

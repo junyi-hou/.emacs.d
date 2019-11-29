@@ -119,6 +119,7 @@
       (cons x y)))
 
   (setq eldoc-box-position-function #'bc-eldoc--box-position))
+(use-package general)
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
