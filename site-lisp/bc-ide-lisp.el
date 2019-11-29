@@ -14,6 +14,10 @@
   :hook
   (emacs-lisp-mode . bc-lisp--set-tab-width))
 
+(use-package aggressive-indent
+  :hook
+  (emacs-lisp-mode . aggressive-indent-mode))
+
 (use-package helpful
   :init
   (evil-set-initial-state 'helpful-mode 'motion)
