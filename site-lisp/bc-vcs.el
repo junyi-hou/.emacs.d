@@ -195,7 +195,8 @@
        :keymaps 'ediff-mode-map
        :states 'motion
        "a" 'ediff-copy-A-to-C
-       "b" 'ediff-copy-B-to-C))))
+       "b" 'ediff-copy-B-to-C
+       "+" 'ediff-combine-diffs))))
 
 (provide 'bc-vcs)
 ;;; bc-vcs.el ends here
