@@ -51,9 +51,9 @@
 
   :general
   (:keymaps '(motion normal visual emacs insert)
-            "C-+" 'bc-theme-fontsize-up
-            "C--" 'bc-theme-fontsize-down
-            "C-=" 'bc-theme-fontsize-reset))
+   "C-+" 'bc-theme-fontsize-up
+   "C--" 'bc-theme-fontsize-down
+   "C-=" 'bc-theme-fontsize-reset))
 
 ;; mode line
 (use-package telephone-line

@@ -226,10 +226,10 @@
         (user-error "No word at point found"))
       (save-excursion
         (let ((to-string (or to-string
-                          (ivy-read
-                           (concat "replacing " from-string " with: ")
-                           '()
-                           :action 'identity))))
+                             (ivy-read
+                              (concat "replacing " from-string " with: ")
+                              '()
+                              :action 'identity))))
           (goto-char 1)
           (while (search-forward from-string nil t)
             (replace-match to-string nil t))))))
@@ -280,99 +280,99 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
 
   ;; leader key
   (:keymaps '(motion normal visual emacs insert)
-  :prefix "SPC"
-  :non-normal-prefix "s-SPC"
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
 
-  ;; execute
-  "ee" 'execute-extended-command
-  "el" 'eval-last-sexp
-  "eL" (lambda () (interactive)
-         (eval-buffer)
-         (message "buffer %s evaluated!" (buffer-name)))
-  "er" 'bc-evil-replace-word-at-point-all
+   ;; execute
+   "ee" 'execute-extended-command
+   "el" 'eval-last-sexp
+   "eL" (lambda () (interactive)
+          (eval-buffer)
+          (message "buffer %s evaluated!" (buffer-name)))
+   "er" 'bc-evil-replace-word-at-point-all
 
-  ;; helps
-  "hf" 'describe-function
-  "hk" 'describe-key
-  "hv" 'describe-variable
-  "hm" 'describe-mode
-  "hh" 'help-for-help
+   ;; helps
+   "hf" 'describe-function
+   "hk" 'describe-key
+   "hv" 'describe-variable
+   "hm" 'describe-mode
+   "hh" 'help-for-help
 
-  ;; basic function
-  "w" 'evil-write
-  "k" 'delete-window
-  "K" 'delete-frame
-  "q" 'kill-current-buffer
-  "b" 'balance-windows
+   ;; basic function
+   "w" 'evil-write
+   "k" 'delete-window
+   "K" 'delete-frame
+   "q" 'kill-current-buffer
+   "b" 'balance-windows
 
-  ;; split
-  "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
-  "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
+   ;; split
+   "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
+   "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
 
-  ;; open stuffs
-  "oo" 'counsel-find-file
-  "or" 'counsel-recentf
-  "ob" (lambda () "Switch to buffer, with `ivy-current-prefix-arg', open in new window, otherwise open in the same buffer"
-         (interactive)
-         (ivy-read "Switch to buffer: " #'internal-complete-buffer
-                   :preselect (buffer-name (other-buffer (current-buffer)))
-                   :matcher #'ivy--switch-buffer-matcher
-                   :caller 'ivy-switch-buffer
-                   :action
-                   (lambda (buffer)
-                     (if ivy-current-prefix-arg
-                         (switch-to-buffer-other-window buffer)
-                       (switch-to-buffer buffer nil 'force-same-window)))))
-  "os" (lambda (arg)
-         (interactive "P")
-         (if (null arg)
-             (bc-eshell-open-here)
-           (bc-eshell-open-home)))
-  "oS" 'bc-eshell-open-home
-  ;; dired
-  "od" (lambda () (interactive)
-         (dired default-directory))
-  ;; x windows
-  "ox" 'bc-exwm-switch-to-xwindow
+   ;; open stuffs
+   "oo" 'counsel-find-file
+   "or" 'counsel-recentf
+   "ob" (lambda () "Switch to buffer, with `ivy-current-prefix-arg', open in new window, otherwise open in the same buffer"
+          (interactive)
+          (ivy-read "Switch to buffer: " #'internal-complete-buffer
+                    :preselect (buffer-name (other-buffer (current-buffer)))
+                    :matcher #'ivy--switch-buffer-matcher
+                    :caller 'ivy-switch-buffer
+                    :action
+                    (lambda (buffer)
+                      (if ivy-current-prefix-arg
+                          (switch-to-buffer-other-window buffer)
+                        (switch-to-buffer buffer nil 'force-same-window)))))
+   "os" (lambda (arg)
+          (interactive "P")
+          (if (null arg)
+              (bc-eshell-open-here)
+            (bc-eshell-open-home)))
+   "oS" 'bc-eshell-open-home
+   ;; dired
+   "od" (lambda () (interactive)
+          (dired default-directory))
+   ;; x windows
+   "ox" 'bc-exwm-switch-to-xwindow
 
-  ;; launch X programs
-  "lb" (lambda () "TODO: use ivy to parse and present bash autocomplete file?"
-         (interactive)
-         (bc-exwm-launch "qutebrowser"))
-  "lp" (lambda () "Open a pdf file, with `ivy-current-prefix-arg', open the file in zathura, otherwise open file in pdf-tools."
-         (interactive)
-         (ivy-read
-          "open pdf file: "
-          #'read-file-name-internal
-          ;; use predicate to filter out non-pdfs
-          :predicate
-          (lambda (x)
-            (or (string= "pdf" (file-name-extension x))
-                (string= (substring x (1- (length x))) "/")))
-          :initial-input "~/downloads/"
-          :action
-          (lambda (x)
-            (if ivy-current-prefix-arg
-                (bc-exwm-launch (concat "zathura " x))
-              (find-file x)))))
+   ;; launch X programs
+   "lb" (lambda () "TODO: use ivy to parse and present bash autocomplete file?"
+          (interactive)
+          (bc-exwm-launch "qutebrowser"))
+   "lp" (lambda () "Open a pdf file, with `ivy-current-prefix-arg', open the file in zathura, otherwise open file in pdf-tools."
+          (interactive)
+          (ivy-read
+           "open pdf file: "
+           #'read-file-name-internal
+           ;; use predicate to filter out non-pdfs
+           :predicate
+           (lambda (x)
+             (or (string= "pdf" (file-name-extension x))
+                 (string= (substring x (1- (length x))) "/")))
+           :initial-input "~/downloads/"
+           :action
+           (lambda (x)
+             (if ivy-current-prefix-arg
+                 (bc-exwm-launch (concat "zathura " x))
+               (find-file x)))))
 
-  ;; focus mode
-  "f" 'bc-evil-toggle-one-window
+   ;; focus mode
+   "f" 'bc-evil-toggle-one-window
 
-  ;; org-capture
-  "ct" 'bc-org-capture-todo
-  "cr" 'bc-org-capture-project-notes
+   ;; org-capture
+   "ct" 'bc-org-capture-todo
+   "cr" 'bc-org-capture-project-notes
 
-  ;; magit
-  "gg" (lambda () (interactive)
-         (unless magit-todos-mode
-           (magit-todos-mode))
-         (magit-status))
-  "gd" 'magit-ediff-show-working-tree
-  "gl" 'magit-log-buffer-file
+   ;; magit
+   "gg" (lambda () (interactive)
+          (unless magit-todos-mode
+            (magit-todos-mode))
+          (magit-status))
+   "gd" 'magit-ediff-show-working-tree
+   "gl" 'magit-log-buffer-file
 
-  ;; other uses
-  "t" 'evilnc-comment-or-uncomment-lines)
+   ;; other uses
+   "t" 'evilnc-comment-or-uncomment-lines)
 
   (:keymaps 'visual
    "*" 'bc-evil-search-visually-forward
