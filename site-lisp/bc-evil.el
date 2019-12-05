@@ -1,6 +1,7 @@
 ;;; bc-evil.el --- evil mode related settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
+;;; FIXME: evil-repeat-command (".") is buggy
 
 ;;; Code:
 
@@ -145,7 +146,7 @@
   (defun bc-evil--center-after-jump (jump-fn &rest args)
     "Center the jumpped line if it is too far away."
     (let ((first-line (line-number-at-pos (window-start)))
-          (last-line (- (line-number-at-pos (window-end)) 2)) ;; minibuffer and modeline
+          (last-line (- (line-number-at-pos (window-end)) 2)) ;; minibuffer, modeline and eldoc-box
           after-line)
       (apply jump-fn args)
       (setq after-line (line-number-at-pos (point)))
@@ -153,7 +154,7 @@
                 (>= after-line last-line))
         (recenter nil))))
 
-  (advice-remove #'evil-jump-item  #'bc-evil--central-after-jump)
+  (advice-add #'evil-jump-item :around #'bc-evil--center-after-jump)
 
   (defun bc-evil--recenter-after-goto-point-max (count)
     "Thin wrapper around `evil-scroll-line-to-center' so center the end-of-buffer after a G motion."
@@ -312,22 +313,8 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
    ;; open stuffs
    "oo" 'counsel-find-file
    "or" 'counsel-recentf
-   "ob" (lambda () "Switch to buffer, with `ivy-current-prefix-arg', open in new window, otherwise open in the same buffer"
-          (interactive)
-          (ivy-read "Switch to buffer: " #'internal-complete-buffer
-                    :preselect (buffer-name (other-buffer (current-buffer)))
-                    :matcher #'ivy--switch-buffer-matcher
-                    :caller 'ivy-switch-buffer
-                    :action
-                    (lambda (buffer)
-                      (if ivy-current-prefix-arg
-                          (switch-to-buffer-other-window buffer)
-                        (switch-to-buffer buffer nil 'force-same-window)))))
-   "os" (lambda (arg)
-          (interactive "P")
-          (if (null arg)
-              (bc-eshell-open-here)
-            (bc-eshell-open-home)))
+   "ob" 'switch-to-buffer
+   "os" 'bc-eshell-open-here
    "oS" 'bc-eshell-open-home
    ;; dired
    "od" (lambda () (interactive)
