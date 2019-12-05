@@ -14,11 +14,11 @@
     "Get file at point in magit buffers."
     (cond
      ((magit-section-match [* todos])
-        (let* ((todo-item (oref (magit-current-section) value))
-               (file (or file (magit-todos-item-filename todo-item))))
-          (unless file
-            (error "No file at point"))
-          (expand-file-name file (magit-toplevel))))
+      (let* ((todo-item (oref (magit-current-section) value))
+             (file (or file (magit-todos-item-filename todo-item))))
+        (unless file
+          (error "No file at point"))
+        (expand-file-name file (magit-toplevel))))
      (t (let ((file (or file (magit-file-at-point t))))
           (unless file
             (error "No file at point"))
@@ -60,8 +60,8 @@
   (:keymaps 'magit-log-mode-map
    :states '(normal motion)
    "D" (lambda () (interactive)
-           (magit-diff-show-or-scroll-down)
-           (other-window 1)))
+         (magit-diff-show-or-scroll-down)
+         (other-window 1)))
 
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal)
@@ -74,6 +74,7 @@
    "p" 'git-rebase-pick
    "r" 'git-rebase-reword
    "s" 'git-rebase-squash
+   "d" 'git-rebase-kill-line
    "M-j" 'git-rebase-move-line-down
    "M-k" 'git-rebase-move-line-up))
 
