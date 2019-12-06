@@ -47,10 +47,11 @@
 
   (:keymaps 'magit-status-mode-map
    :states '(motion normal)
+   "`" 'magit-dispatch
    "d" 'magit-discard
    "D" 'magit-show-commit
    "E" 'magit-ediff
-   "V" 'magit-revert
+   "v" 'magit-revert
    "c" 'magit-commit
    "p" 'magit-push
    "f" 'magit-fetch
