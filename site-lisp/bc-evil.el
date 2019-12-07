@@ -293,11 +293,10 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
    "er" 'bc-evil-replace-word-at-point-all
 
    ;; helps
-   "hf" 'describe-function
-   "hk" 'describe-key
-   "hv" 'describe-variable
+   "hf" 'helpful-callable
+   "hk" 'helpful-key
+   "hv" 'helpful-variable
    "hm" 'describe-mode
-   "hh" 'help-for-help
 
    ;; basic function
    "w" 'evil-write
