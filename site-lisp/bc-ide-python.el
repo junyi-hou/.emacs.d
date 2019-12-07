@@ -23,6 +23,8 @@
   (require 'bc-jupyter)
   (defconst bc-python-remote '("junyi" "10.10.10.106" "9127"))
 
+  (set-face-attribute 'nobreak-space nil :underline nil)
+
   (defalias 'bc-python-local-repl
     (lambda () (interactive) (bc-jupyter-start-or-switch-to-repl "python"))
     "Open a jupyter repl for python interpreter.")
