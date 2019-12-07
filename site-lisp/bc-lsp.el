@@ -22,12 +22,15 @@
         eglot-put-doc-in-help-buffer t))
 
 (use-package eglot-childframe
-  :after eglot
   :hook
   (eglot--managed-mode . eglot-childframe-mode)
+  (emacs-lisp-mode . eglot-childframe-mode)
+  (lisp-interaction-mode . eglot-childframe-mode)
+
   :straight (eglot-childframe
              :host github
-             :repo "junyi-hou/eglot-childframe")
+             :repo "junyi-hou/eglot-childframe"
+             :branch "elisp-backend-support")
   :general
   (:keymaps 'eglot-childframe-mode-map
    :states '(normal visual motion)
