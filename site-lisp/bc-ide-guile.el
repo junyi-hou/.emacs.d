@@ -31,9 +31,9 @@
     (jupyter-eval-region beg end))
 
   (defun bc-guile--eval-sexp ()
-    "Evaluate the sexp at point.  TODO: support [] as well."
+    "Evaluate the sexp at point."
     (save-excursion
-      (let* ((beg (re-search-backward "(" nil t))
+      (let* ((beg (re-search-backward "[(\\[]" nil t))
              (end (progn (forward-list 1) (point))))
         (bc-guile--eval-region beg end))))
 

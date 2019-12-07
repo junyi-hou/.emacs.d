@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: racket-block
+# key: racket
+# --
+#+begin_src jupyter-racket ${1::session ${2:name}}
+$0
+#+end_src
