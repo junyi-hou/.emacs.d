@@ -19,15 +19,9 @@
   (emacs-lisp-mode . aggressive-indent-mode))
 
 (use-package helpful
+  :demand t
   :init
-  (evil-set-initial-state 'helpful-mode 'motion)
-  :general
-  (:keymaps 'emacs-lisp-mode-map
-   :states '(visual normal motion)
-   :prefix "SPC"
-   "rh" 'helpful-at-point
-   "hf" 'helpful-callable
-   "hv" 'helpful-variable))
+  (evil-set-initial-state 'helpful-mode 'motion))
 
 (provide 'bc-ide-lisp)
 ;;; bc-ide-lisp.el ends here
