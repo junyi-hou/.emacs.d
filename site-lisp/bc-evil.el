@@ -143,18 +143,13 @@
   (advice-add #'bc-evil-search-visually-forward :after #'bc-evil--center-cursor-line)
   (advice-add #'bc-evil-search-visually-backward :after #'bc-evil--center-cursor-line)
 
-  (defun bc-evil--center-after-jump (jump-fn &rest args)
-    "Center the jumpped line if it is too far away."
-    (let ((first-line (line-number-at-pos (window-start)))
-          (last-line (- (line-number-at-pos (window-end)) 2)) ;; minibuffer, modeline and eldoc-box
-          after-line)
-      (apply jump-fn args)
-      (setq after-line (line-number-at-pos (point)))
-      (when (or (<= after-line first-line)
-                (>= after-line last-line))
-        (recenter nil))))
+  (defun bc-evil--move-up-after-jump (&rest _)
+    "Move up 1 line after `evil-jump-item' so the last line is not covered by eldoc-box."
+    (when (and (not (= (window-end) (point-max)))
+               (<= (- (line-number-at-pos (window-end)) (line-number-at-pos)) 2))
+      (evil-scroll-line-down 2)))
 
-  (advice-add #'evil-jump-item :around #'bc-evil--center-after-jump)
+  (advice-add #'evil-jump-item :after #'bc-evil--move-up-after-jump)
 
   (defun bc-evil--recenter-after-goto-point-max (count)
     "Thin wrapper around `evil-scroll-line-to-center' so center the end-of-buffer after a G motion."
