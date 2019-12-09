@@ -21,7 +21,8 @@
   ;;; ===============================
 
   (defconst bc-org-foldable
-    '(example-block export-block src-block table))
+    '(example-block export-block src-block table)
+    "A list of `org-element' that are consider foldable, and hence can be folded/expanded by `bc-org-hide-block' and `bc-org-show-block'.")
   
   (defun bc-org-hide-block ()
     "Hide current block, if it is inside element defined in `bc-org-foldable', first try to fold the element.  Fall back to `evil-close-fold'."
