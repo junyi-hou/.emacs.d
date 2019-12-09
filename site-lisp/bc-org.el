@@ -16,8 +16,29 @@
   :init
   ;; functions
 
-  (defun bc-org--fix-indent ()
-    (setq tab-width 2))
+  ;;; ===============================
+  ;;  my stuffs
+  ;;; ===============================
+
+  (defconst bc-org-foldable
+    '(example-block export-block src-block table))
+  
+  (defun bc-org-hide-block ()
+    "Hide current block, if it is inside element defined in `bc-org-foldable', first try to fold the element.  Fall back to `evil-close-fold'."
+    (interactive)
+    (let ((element (org-element-at-point)))
+      (if (memq (car element) bc-org-foldable)
+          (progn
+            (goto-char (plist-get (cadr element) :begin))
+            (org-hide-block-toggle t))
+        (evil-close-fold))))
+
+  (defun bc-org-show-block ()
+    "Show current block."
+    (interactive)
+    (condition-case _
+        (org-hide-block-toggle 'off)
+      (error (evil-open-fold))))
 
   ;; taken from https://github.com/dakra/dmacs/blob/master/init.org#org
   (defun bc-org-remove-all-results ()
@@ -28,11 +49,22 @@
       (while (re-search-forward org-babel-src-block-regexp nil t)
         (org-babel-remove-result))))
 
+  ;;; ===============================
+  ;;  hooks
+  ;;; ===============================
+  
+  (defun bc-org--fix-indent ()
+    (setq tab-width 2))
+
   (defun bc-org--complete-keywords ()
     "Allow company to complete org keywords after ^#+"
     (add-hook
      'completion-at-point-functions
      'pcomplete-completions-at-point nil t))
+
+  ;;; ===============================
+  ;;  org capture related
+  ;;; ===============================
 
   (defun bc-org--export-headline ()
     "Return the first level headline of an org file."
@@ -162,6 +194,11 @@
    "rr" 'org-ctrl-c-ctrl-c
    "rf" 'org-footnote
    "rc" 'bc-org-remove-all-results)
+
+  (:keymaps 'org-mode-map
+   :states '(normal visual motion)
+   "zo" 'bc-org-show-block
+   "zc" 'bc-org-hide-block)
 
   (:keymaps 'org-src-mode-map
    :states '(normal visual motion insert emacs)
