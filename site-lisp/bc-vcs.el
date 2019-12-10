@@ -47,11 +47,11 @@
 
   (:keymaps 'magit-status-mode-map
    :states '(motion normal)
+   ;; TODO: use SPC prefix
    "`" 'magit-dispatch
    "d" 'magit-discard
    "D" 'magit-show-commit
    "E" 'magit-ediff
-   "v" 'magit-revert
    "c" 'magit-commit
    "p" 'magit-push
    "f" 'magit-fetch
