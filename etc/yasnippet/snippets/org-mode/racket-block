@@ -2,6 +2,6 @@
 # name: racket-block
 # key: racket
 # --
-#+begin_src jupyter-racket ${1::session ${2:name}}
+#+begin_src jupyter-racket ${1::session ${2:name}} ${3::results ${4:silent}}
 $0
 #+end_src

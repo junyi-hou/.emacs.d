@@ -2,6 +2,6 @@
 # name: latex-block
 # key: latex
 # --
-#+begin_src latex
+#+begin_src latex ${1::results ${2:silent}}
 $0
 #+end_src

@@ -2,6 +2,6 @@
 # name: elisp-block
 # key: lisp
 # --
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp ${1::results ${2:silent}}
 $0
 #+end_src
