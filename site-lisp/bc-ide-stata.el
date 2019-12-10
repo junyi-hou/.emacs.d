@@ -21,7 +21,7 @@
 
   :general
   (:states '(motion normal visual)
-   :keymaps 'python-mode-map
+   :keymaps 'stata-mode-map
    :prefix "SPC"
    "rb" 'jupyter-eval-buffer
    "rf" 'jupyter-eval-defun
