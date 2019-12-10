@@ -197,12 +197,22 @@
    "rc" 'bc-org-remove-all-results)
 
   (:keymaps 'org-mode-map
+   :states '(normal visual motion emacs insert)
+   :prefix "C-c"
+   "C-'" 'org-edit-special)
+
+  (:keymaps 'org-mode-map
    :states '(normal visual motion)
    "zo" 'bc-org-show-block
    "zc" 'bc-org-hide-block)
 
   (:keymaps 'org-src-mode-map
    :states '(normal visual motion insert emacs)
+   "C-c" nil)
+
+  (:keymaps 'org-src-mode-map
+   :states '(normal visual motion insert emacs)
+   :prefix "C-c"
    "C-c" 'org-edit-src-exit)
 
   (:keymaps 'org-mode-map
