@@ -16,8 +16,6 @@
         eshell-prefer-lisp-functions nil
         eshell-list-files-after-cd t
         eshell-destroy-buffer-when-process-dies t
-        password-cache t
-        password-cache-expiry 3600
         tramp-histfile-override "/dev/null")
 
   (setenv "PAGER" "cat")

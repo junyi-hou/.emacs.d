@@ -5,9 +5,11 @@
 ;;; Code:
 
 (use-package epa
-  :ensure nil
   :init
-  (setq epg-pinentry-mode 'loopback))
+  (setq epg-pinentry-mode 'loopback
+        auth-sources `(,(concat no-littering-var-directory "authinfo.gpg"))
+        password-cache t
+        password-cache-expiry 1800))
 
 (use-package password-store
   :defer t
@@ -46,9 +48,9 @@
                             (substring-no-properties folder-name 0 1))))
                         (directory-files "~/.password-store/")))
            (entry (ivy-read "account: " candidates :action 'identity)))
-       (concat (bc-pass--get-entry entry "account")
-               " "
-               (bc-pass--get-entry entry "passwd"))))
+      (concat (bc-pass--get-entry entry "account")
+              " "
+              (bc-pass--get-entry entry "passwd"))))
 
   :general
   (:keymaps '(normal visual motion emacs insert)
