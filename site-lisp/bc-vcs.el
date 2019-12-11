@@ -86,7 +86,8 @@
   :commands magit-todos-mode
   :general
   (:keymaps 'magit-todos-section-map
-            "j" 'evil-next-visual-line))
+   "j" 'evil-next-visual-line
+   "b" 'magit-branch))
 
 (use-package ediff
   :ensure nil
