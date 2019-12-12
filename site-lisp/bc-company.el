@@ -87,8 +87,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   :hook (company-mode . company-posframe-mode)
   :init
   (setq company-posframe-show-metadata nil
-        company-posframe-show-indicator nil)
-  )
+        company-posframe-show-indicator nil))
 
 (provide 'bc-company)
 ;;; bc-company.el ends here
