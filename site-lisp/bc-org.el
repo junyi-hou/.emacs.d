@@ -213,7 +213,7 @@
   (:keymaps 'org-src-mode-map
    :states '(normal visual motion insert emacs)
    :prefix "C-c"
-   "C-c" 'org-edit-src-exit)
+   "C-'" 'org-edit-src-exit)
 
   (:keymaps 'org-mode-map
    :states '(normal visual motion insert)
