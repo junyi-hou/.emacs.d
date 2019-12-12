@@ -6,6 +6,18 @@
 
 (use-package pyim
   :demand t
+  :init
+
+  ;; enable pinyin search in ivy-read
+  (with-eval-after-load 'ivy
+    (progn
+      (defun bc-pyim--ivy-cregexp (str)
+        "taken from https://emacs-china.org/t/ivy-read/2432/5"
+        (concat
+         (ivy--regex-plus str) "\\|" (pyim-cregexp-build str)))
+
+      (setq ivy-re-builders-alist '((t . bc-pyim--ivy-cregexp)))))
+
   :config
 
   (setq default-input-method "pyim"
