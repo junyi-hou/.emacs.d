@@ -18,10 +18,8 @@
 
 (use-package company
   :hook
+  (prog-mode . company-mode)
   (LaTeX-mode . company-mode)
-  (python-mode . company-mode)
-  (emacs-lisp-mode . company-mode)
-  (lisp-interaction-mode . company-mode)
   (jupyter-repl-mode . company-mode)
   (eshell-mode . company-mode)
   (org-mode . company-mode)

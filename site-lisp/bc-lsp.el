@@ -19,7 +19,8 @@
 
   :config
   (setq eglot-autoreconnect t
-        eglot-put-doc-in-help-buffer t))
+        eglot-put-doc-in-help-buffer t
+        eglot-stay-out-of '(company)))
 
 (use-package eglot-childframe
   :hook
