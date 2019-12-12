@@ -21,8 +21,6 @@
           org-babel-default-header-args:jupyter-racket 
           (append bc-jupyter-default-header-args '((:kernel . "racket")))))
 
-  
-
   (setq jupyter-repl-echo-eval-p t
         jupyter-repl-maximum-size 12000
         jupyter-repl-history-maximum-length 300)
