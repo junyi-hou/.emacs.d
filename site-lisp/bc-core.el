@@ -98,6 +98,14 @@
   ;; don't fold comments
   (setq hs-hide-comments-when-hiding-all nil)
 
+  ;; after revert-buffer, properly hide blocks
+  (defun bc-core--hs-fix (&rest _)
+    "Advising `revert-buffer' to properly show/hide blocks."
+    (hs-show-all)
+    (hs-hide-all))
+
+  (advice-add #'revert-buffer :after #'bc-core--hs-fix)
+
   :hook
   (prog-mode . hs-hide-all)
   (prog-mode . hs-minor-mode))
