@@ -16,6 +16,10 @@
     (setq-local tab-width 4)
     (setq python-indent-offset 4))
 
+  (when (and (featurep 'ob-async)
+             (featurep 'jupyter))
+    (add-to-list 'ob-async-no-async-languages-alist "jupyter-python"))
+
   :hook
   (python-mode . bc-python--set-indent-width)
 

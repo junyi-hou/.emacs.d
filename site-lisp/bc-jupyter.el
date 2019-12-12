@@ -8,6 +8,21 @@
   :defer t
 
   :init
+
+  (defconst bc-jupyter-default-header-args
+    '((:async . "yes")
+      (:session . "master")))
+
+  (with-eval-after-load 'org
+    (setq org-babel-default-header-args:jupyter-stata
+          (append bc-jupyter-default-header-args '((:kernel . "stata")))
+          org-babel-default-header-args:jupyter-python
+          (append bc-jupyter-default-header-args '((:kernel . "python")))
+          org-babel-default-header-args:jupyter-racket 
+          (append bc-jupyter-default-header-args '((:kernel . "racket")))))
+
+  
+
   (setq jupyter-repl-echo-eval-p t
         jupyter-repl-maximum-size 12000
         jupyter-repl-history-maximum-length 300)

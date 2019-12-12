@@ -220,5 +220,8 @@
    "<up>" 'org-previous-visible-heading
    "<down>" 'org-next-visible-heading))
 
+(use-package ob-async
+  :after 'org)
+
 (provide 'bc-org)
 ;;; bc-org.el ends here
