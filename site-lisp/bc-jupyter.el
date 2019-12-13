@@ -37,7 +37,12 @@
     "Switch to REPL associated the current buffer.  If there is no REPL associated with the current buffer, start one according to KERNEL type."
     (interactive)
     (if jupyter-current-client
-        (jupyter-repl-pop-to-buffer)
+        (condition-case _
+         (jupyter-repl-pop-to-buffer)
+         (error
+          (progn
+            (setq-local jupyter-current-client nil)
+            (bc-jupyter-start-or-switch-to-repl kernel))))
       (let ((code-buffer (current-buffer)))
         (jupyter-run-repl kernel kernel (current-buffer))
         (jupyter-repl-pop-to-buffer)
