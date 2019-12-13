@@ -16,6 +16,18 @@
     (setq-local tab-width 4)
     (setq python-indent-offset 4))
 
+  (defun bc-python--get-python-version ()
+    "Infer python versions from shebang.  If there is no shebang, promote the user for python's version."
+    (interactive)
+    (let* ((shebang (save-excursion (goto-char 1) (thing-at-point 'line)))
+           (py-exec (when (string-match "#!/usr/bin/env\s+\\(python.?\\)" shebang)
+                      (match-string 1 shebang))))
+      (message (or py-exec
+                   (ivy-read "Cannot infer python interpreter, please select: "
+                             '("python2" "python3")
+                             :action 'identity)))))
+
+
   (when (and (featurep 'ob-async)
              (featurep 'jupyter))
     (add-to-list 'ob-async-no-async-languages-alist "jupyter-python"))
@@ -30,7 +42,8 @@
   (set-face-attribute 'nobreak-space nil :underline nil)
 
   (defalias 'bc-python-local-repl
-    (lambda () (interactive) (bc-jupyter-start-or-switch-to-repl "python"))
+    (lambda () (interactive)
+      (bc-jupyter-start-or-switch-to-repl (bc-python--get-python-version)))
     "Open a jupyter repl for python interpreter.")
 
   (defalias 'bc-python-reconnect
