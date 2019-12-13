@@ -1,0 +1,10 @@
+map q quit
+map r reload
+map [ rotate rotate-cw
+map ] rotate rotate-ccw
+unmap <C-j>
+unmap <C-k>
+unmap <Space>
+
+set font "monospace normal 12"
+set selection-clipboard clipboard

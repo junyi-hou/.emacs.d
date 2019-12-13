@@ -16,6 +16,7 @@
 (require 'bc-evil)
 (require 'bc-pass)
 (require 'bc-os)
+(require 'bc-config)
 
 (require 'bc-eshell)
 (require 'bc-vcs)
