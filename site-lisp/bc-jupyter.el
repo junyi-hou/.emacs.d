@@ -38,11 +38,11 @@
     (interactive)
     (if jupyter-current-client
         (condition-case _
-         (jupyter-repl-pop-to-buffer)
-         (error
-          (progn
-            (setq-local jupyter-current-client nil)
-            (bc-jupyter-start-or-switch-to-repl kernel))))
+            (jupyter-repl-pop-to-buffer)
+          (error
+           (progn
+             (setq-local jupyter-current-client nil)
+             (bc-jupyter-start-or-switch-to-repl kernel))))
       (let ((code-buffer (current-buffer)))
         (jupyter-run-repl kernel kernel (current-buffer))
         (jupyter-repl-pop-to-buffer)
@@ -92,6 +92,8 @@
    "A" (lambda () (interactive)
          (goto-char (point-max))
          (evil-insert 1))
+   "/" 'evil-search-forward
+   "?" 'evil-search-backward
    "SPC" nil)
 
   (:keymaps 'jupyter-repl-mode-map
