@@ -12,10 +12,14 @@
          (user-error "config file at %s already existed" to))
         (t (make-symbolic-link from to))))
 
+(defun bc-config--expand-home (path)
+  "Expand ~ in PATH to $HOME."
+  (replace-regexp-in-string "^~" (getenv "HOME") path))
 
 (defun bc-config--init-xdg-config (pkg)
   "Symlink config file of PKG to XDG_CONFIG_HOME or \"~/.config/\" if XDG_CONFIG_HOME is not set."
-  (let* ((source (format "%s/config/%s" user-emacs-directory pkg))
+  (let* ((source (bc-config--expand-home
+                  (format "%sconfig/%s" user-emacs-directory pkg)))
          (target (format "%s/%s"
                          (or (getenv "XDG_CONFIG_HOME")
                              (format "%s/.config" (getenv "HOME")))
@@ -24,7 +28,8 @@
 
 (defun bc-config--init-home-config (pkg)
   "Symlink config file of PKG to \"$HOME\"."
-  (let* ((source (format "%s/config/home/%s" user-emacs-directory pkg))
+  (let* ((source (bc-config--expand-home
+                  (format "%sconfig/home/%s" user-emacs-directory pkg)))
          (target (format "%s/%s" (getenv "HOME") pkg)))
     (bc-config--create-symlink source target)))
 
@@ -32,12 +37,11 @@
   "Init config using config files found at `user-emacs-directory/config'."
   (interactive)
   (mapc 'bc-config--init-xdg-config
-        (directory-files (format "%s/config" user-emacs-directory) nil "[^.home]"))
+        (directory-files (format "%sconfig" user-emacs-directory) nil "[^.home]"))
   (mapc 'bc-config--init-home-config
-        (directory-files (format "%s/config/home" user-emacs-directory)
+        (directory-files (format "%sconfig/home" user-emacs-directory)
                          nil
                          "\\.[a-zA-Z0-9]+")))
-
 
 (provide 'bc-config)
 ;;; bc-config.el ends here
