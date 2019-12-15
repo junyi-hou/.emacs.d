@@ -21,29 +21,46 @@
   (font-latex-slide-title-face ((t (:height 1.0 :inherit 'font-lock-function-name-face))))
 
   :init
-  (setq
-   ;; use zathura to view pdf
-   TeX-view-program-selection '((output-pdf "PDF Tools"))
-   TeX-source-correlate-start-server t
+  (setq TeX-view-program-selection '((output-pdf "Zathura"))
+        TeX-source-correlate-start-server t
 
-   ;; do not mess up my indentation
-   LaTeX-item-indent 0
-   ;; disable moving sub/super scripts
-   tex-fontify-script nil
-   font-latex-fontify-script nil
-   font-latex-fontify-sectioning 1.0
+        ;; do not mess up my indentation
+        LaTeX-item-indent 0
+        ;; disable moving sub/super scripts
+        tex-fontify-script nil
+        font-latex-fontify-script nil
+        font-latex-fontify-sectioning 1.0
 
-   ;; latex command - enable syntax and shell-escape
-   LaTeX-command "latex -syntax=1 --shell-escape"
+        ;; latex command - enable syntax and shell-escape
+        LaTeX-command "latex -syntax=1 --shell-escape"
 
-   ;; auto-close
-   LaTeX-electric-left-right-brace t
-   TeX-electric-math (cons "$" "$")
-   LaTeX-syntactic-comments nil
+        ;; auto-close
+        LaTeX-electric-left-right-brace t
+        TeX-electric-math (cons "$" "$")
+        LaTeX-syntactic-comments nil
 
-   ;; other settings
-   TeX-parse-self t
-   TeX-auto-save t)
+        ;; other settings
+        TeX-parse-self t
+        TeX-auto-save t)
+
+  ;; External pdf-viewer and exwm integration
+  (when (and (featurep 'exwm)
+             (not (eq (cadr (assq 'output-pdf TeX-view-program-selection))
+                      "PDF Tools")))
+    (defun bc-ide-latex-compile (&rest _)
+      "Open a new buffer to display complied pdf."
+      (unless (member (concat (file-name-sans-extension (buffer-file-name))
+                              ".pdf")
+                      (mapcar (lambda (wd)
+                                (buffer-name (window-buffer wd)))
+                              (window-list)))
+        (bc-core-split-window)
+        (other-window 1)))
+
+    (advice-add #'TeX-command-run-all :before #'bc-ide-latex-compile))
+
+  ;; use xelatex for chinese support
+  ;; (setq-default TeX-engine 'xetex)
 
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)

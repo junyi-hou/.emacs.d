@@ -8,3 +8,6 @@ unmap <Space>
 
 set font "monospace normal 12"
 set selection-clipboard clipboard
+
+set synctex true
+set synctex-editor-command "emacsclient --no-wait +%{line} %{input}"
