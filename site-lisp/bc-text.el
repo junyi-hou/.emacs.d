@@ -137,19 +137,6 @@
    :prefix "SPC"
    "rr" 'TeX-command-run-all))
 
-;; (use-package tex-fold
-;;   :straight
-;;   (:type built-in)
-;;   :hook
-;;   (LaTeX-mode . TeX-fold-mode)
-;;   :config
-;;   (setq TeX-fold-type-list 'env
-;;         TeX-fold-env-spec-list )
-;;   :general
-;;   (:keymaps 'LaTeX-mode-map
-;;    :states '(normal visual motion)
-;;    "zo" ))
-
 (use-package pdf-tools
   :defer t
   :config
