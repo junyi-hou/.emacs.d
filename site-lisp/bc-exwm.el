@@ -353,7 +353,15 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
 (add-hook
  'exwm-manage-finish-hook
  (defun bc-exwm--hook ()
-   (add-hook 'post-command-hook #'bc-exwm--back-emacs-state nil t)))
+   (add-hook 'post-command-hook #'bc-exwm--back-emacs-state nil t)
+
+   (defun bc-exwm--delete-window-when-kill ()
+     (when (< (length (window-list)) 2)
+       (switch-to-buffer-other-window "*scratch*")
+       (other-window -1))
+     (delete-window))
+
+   (add-hook 'kill-buffer-hook #'bc-exwm--delete-window-when-kill nil t)))
 
 ;; keys
 
