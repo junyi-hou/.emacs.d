@@ -60,7 +60,27 @@
         (bc-core-split-window)
         (other-window 1)))
 
-    (advice-add #'TeX-command-run-all :before #'bc-ide-latex-compile))
+    (defun bc-ide-latex-inverse-search ()
+      "Inverse search the center of the window."
+      (interactive)
+      (let* ((corner (window-absolute-pixel-edges))
+             (left (car corner))
+             (top (cadr corner))
+             (right (caddr corner))
+             (bottom (cadddr corner))
+             (x (/ (+ left right) 2))
+             (y (/ (+ top bottom) 2)))
+        (ignore-errors (evil-previous-line))
+        (set-mouse-absolute-pixel-position x y)
+        ;; TODO: get C-left-click's event number
+        (exwm-input--fake-key 'C-mouse-1)
+        (recenter nil)))
+
+    (advice-add #'TeX-command-run-all :before #'bc-ide-latex-compile)
+
+    (general-define-key
+     :keymaps 'exwm-mode-map
+     "<C-return>" 'bc-ide-latex-inverse-search))
 
   ;; use xelatex for chinese support
   ;; (setq-default TeX-engine 'xetex)
@@ -134,22 +154,6 @@
               (delete-region (match-beginning 0) pair-end)
             (call-interactively #'backward-delete-char-untabify)))
       (call-interactively #'backward-delete-char-untabify)))
-
-  (defun bc-ide-latex-inverse-search ()
-    "Inverse search the center of the window."
-    (interactive)
-    (let* ((corner (window-absolute-pixel-edges))
-           (left (car corner))
-           (top (cadr corner))
-           (right (caddr corner))
-           (bottom (cadddr corner))
-           (x (/ (+ left right) 2))
-           (y (/ (+ top bottom) 2)))
-      (ignore-errors (evil-previous-line))
-      (set-mouse-absolute-pixel-position x y)
-      ;; TODO: get C-left-click's event number
-      (exwm-input--fake-key 'C-mouse-1)
-      (recenter nil)))
 
   :hook
   (LaTeX-mode . TeX-PDF-mode)

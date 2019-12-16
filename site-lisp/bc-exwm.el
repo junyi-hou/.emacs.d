@@ -410,8 +410,7 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
  "C-h" 'evil-window-left
  "C-j" 'evil-window-down
  "C-k" 'evil-window-up
- "C-l" 'evil-window-right
- "<C-return>" 'bc-ide-latex-inverse-search)
+ "C-l" 'evil-window-right)
 
 ;;; ===============================
 ;;  launch exwm
