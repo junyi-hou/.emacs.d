@@ -177,8 +177,22 @@
    :prefix "SPC"
    "rr" 'TeX-command-run-all))
 
+(use-package man
+  :defer t
+  :general
+  (:keymaps 'Man-mode-map
+   :states 'motion
+   "zc" 'outline-hide-entry
+   "zo" 'outline-show-entry))
+
 (use-package outline
-  :hook (LaTeX-mode . outline-minor-mode)
+  ;; `hideshow' does not play well with some modes,
+  ;; use outline-minor-mode in those modes instead.
+  :hook
+  (LaTeX-mode . outline-hide-body)
+  (LaTeX-mode . outline-minor-mode)
+  (Man-mode . outline-hide-body)
+  (Man-mode . outline-minor-mode)
   :init
   (setq outline-blank-line t))
 

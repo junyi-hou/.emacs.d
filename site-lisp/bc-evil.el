@@ -158,7 +158,6 @@
 
   (advice-add #'evil-goto-line :after #'bc-evil--recenter-after-goto-point-max)
 
-
   (defun bc-evil-normal-state-if-not-motion ()
     "Switch to evil normal state if the current state is not motion state."
     (interactive)
