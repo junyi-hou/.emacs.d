@@ -122,6 +122,10 @@
           (user-error "notes.org does not exists, abort")))
       (bc-org--capture notes)))
 
+  ;; org capture/agenda
+  (setq org-directory "~/org"
+        org-default-notes-file (concat org-directory "/notes.org"))
+
   :config
 
   ;; general config
@@ -179,13 +183,6 @@
      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
-  ;; org capture/agenda
-  (setq org-directory "~/org"
-        org-default-notes-file (concat org-directory "/notes.org"))
-
-  (setq org-capture-templates
-        '(("m" "mail item" entry (file+headline "~/org/todo.org" "MAIL")
-           "* %t %?\n%a" :empty-lines 1)))
   :general
   (:keymaps 'org-mode-map
    :states '(normal visual motion)
