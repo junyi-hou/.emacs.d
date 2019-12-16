@@ -399,10 +399,10 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
       '(;; c-g = esc
         ([?\C-g] . [escape])
         ;; mouse clicks
-        ([left-click] . [left-click])
-        ([right-click] . [right-click])
-        ([\C-right-click] . [\C-right-click])
-        ([\C-left-click] . [\C-left-click])))
+        ([left-click] . 'mouse-1)
+        ([right-click] . 'mouse-2)
+        ([\C-right-click] . 'C-mouse-1)
+        ([\C-left-click] . 'C-mouse-2)))
 
 ;; line-mode keybinding
 (general-define-key
@@ -410,7 +410,8 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
  "C-h" 'evil-window-left
  "C-j" 'evil-window-down
  "C-k" 'evil-window-up
- "C-l" 'evil-window-right)
+ "C-l" 'evil-window-right
+ "<C-return>" 'bc-ide-latex-inverse-search)
 
 ;;; ===============================
 ;;  launch exwm
