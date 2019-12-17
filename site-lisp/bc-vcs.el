@@ -83,7 +83,8 @@
 (use-package magit-todos
   :after magit
   :init
-  (setq magit-todos-insert-at 'top)
+  (setq magit-todos-insert-at 'bottom
+        magit-todos-section-heading "Todo")
   :commands magit-todos-mode
   :general
   (:keymaps 'magit-todos-section-map
