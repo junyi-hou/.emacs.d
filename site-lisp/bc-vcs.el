@@ -43,7 +43,8 @@
            (let ((file (bc-vcs-get-file-at-point)))
              (when file
                (other-window -1)
-               (find-file file)))))
+               (find-file file))))
+   "<C-return>" 'magit-visit-thing)
 
   (:keymaps 'magit-status-mode-map
    :states '(motion normal)
@@ -88,6 +89,20 @@
   (:keymaps 'magit-todos-section-map
    "j" 'evil-next-visual-line
    "b" 'magit-branch))
+
+(use-package forge
+  :after magit
+  :init
+  (setq ghub-use-workaround-for-emacs-bug 'force)
+  :general
+  (:keymaps 'magit-status-mode-map
+   "@" 'forge-dispatch)
+
+  (:keymaps 'forge-topic-mode-map
+   :states '(normal visual motion)
+   :prefix "SPC"
+   "re" 'magit-edit-thing
+   "rr" 'forge-create-post))
 
 (use-package ediff
   :ensure nil
