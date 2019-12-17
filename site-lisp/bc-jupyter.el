@@ -21,6 +21,9 @@
           org-babel-default-header-args:jupyter-guile
           (append bc-jupyter-default-header-args '((:kernel . "guile")))))
 
+  (with-eval-after-load 'ob-async
+    (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-stata" "jupyter-guile")))
+
   (setq jupyter-repl-echo-eval-p t
         jupyter-repl-maximum-size 12000
         jupyter-repl-history-maximum-length 300)
