@@ -30,18 +30,19 @@
     (geiser-eval-region beg end nil nil 'nomsg)
     (jupyter-eval-region beg end))
 
-  (defun bc-guile--eval-sexp ()
-    "Evaluate the sexp at point."
+  (defun bc-guile--eval-last-sexp ()
+    "Evaluate the last sexp before point."
+    ;; HACK: depend on evil
     (save-excursion
-      (let* ((beg (re-search-backward "[(\\[]" nil t))
-             (end (progn (forward-list 1) (point))))
+      (let* ((end (1+ (re-search-backward "[\])]")))
+             (beg (1- (evil-jump-item))))
         (bc-guile--eval-region beg end))))
 
   (defun bc-guile-eval-sexp-or-region ()
     (interactive)
     (if (region-active-p)
         (bc-guile--eval-region (region-beginning) (region-end))
-      (bc-guile--eval-sexp)))
+      (bc-guile--eval-last-sexp)))
 
   (defun bc-guile--repl-buffer-name (&rest _)
     "Return the repl buffer name for the current buffer."
