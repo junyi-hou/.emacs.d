@@ -45,9 +45,11 @@
 ;;   (ivy-posframe-mode 1))
 
 (use-package ivy-prescient
-    :after ivy
-    :config
-    (ivy-prescient-mode))
+  :after ivy
+  :init
+  (setq ivy-prescient-sort-commands '(:not swiper ivy-switch-buffer counsel-recentf))
+  :config
+  (ivy-prescient-mode))
 
 (provide 'bc-ivy)
 ;;; bc-ivy.el ends here
