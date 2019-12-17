@@ -50,15 +50,26 @@
   (when (and (featurep 'exwm)
              (not (eq (cadr (assq 'output-pdf TeX-view-program-selection))
                       "PDF Tools")))
-    (defun bc-ide-latex-compile (&rest _)
+
+    (defun bc-ide-latex-compile (compile-fn &rest args)
       "Open a new buffer to display complied pdf."
-      (unless (member (concat (file-name-sans-extension (buffer-file-name))
-                              ".pdf")
-                      (mapcar (lambda (wd)
-                                (buffer-name (window-buffer wd)))
-                              (window-list)))
-        (bc-core-split-window)
-        (other-window 1)))
+      (let* ((pdf-file (concat (file-name-sans-extension (buffer-file-name)) ".pdf"))
+             (window-list (window-list))
+             (buffer-list (buffer-list)))
+        (cond ((member pdf-file
+                       (mapcar (lambda (wd) (buffer-name (window-buffer wd)))
+                               window-list))
+               ;; pdf-file exists and visible
+               (apply compile-fn args)
+               (switch-to-buffer-other-window (get-buffer pdf-file)))
+              ((member pdf-file (mapcar 'buffer-name buffer-list))
+               ;; pdf-file exists but not visible
+               (apply compile-fn args)
+               (pop-to-buffer (get-buffer pdf-file)))
+              (t ;; pdf-file has not been opened
+               (bc-core-split-window)
+               (other-window 1)
+               (apply compile-fn args)))))
 
     (defun bc-ide-latex-inverse-search ()
       "Inverse search the center of the window."
@@ -72,11 +83,10 @@
              (y (/ (+ top bottom) 2)))
         (ignore-errors (evil-previous-line))
         (set-mouse-absolute-pixel-position x y)
-        ;; TODO: get C-left-click's event number
-        (exwm-input--fake-key 'C-mouse-1)
-        (recenter nil)))
+        ;; FIXME: how to pass C-left-click?
+        (exwm-input--fake-key 'C-mouse-1)))
 
-    (advice-add #'TeX-command-run-all :before #'bc-ide-latex-compile)
+    (advice-add #'TeX-command-run-all :around #'bc-ide-latex-compile)
 
     (general-define-key
      :keymaps 'exwm-mode-map
