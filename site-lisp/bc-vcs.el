@@ -94,6 +94,7 @@
   :hook
   (ediff-keymap-setup . bc-vcs-ediff-modify-keys)
   (ediff-prepare-buffer . bc-vcs-ediff--turn-off-hs)
+  (ediff-prepare-buffer . org-show-all)
   (ediff-quit . bc-vcs-ediff--turn-on-hs)
 
   :init
