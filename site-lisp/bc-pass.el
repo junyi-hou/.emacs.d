@@ -8,6 +8,7 @@
   :init
   (setq epg-pinentry-mode 'loopback
         auth-sources `(,(concat no-littering-var-directory "authinfo.gpg"))
+        epa-file-cache-passphrase-for-symmetric-encryption t
         password-cache t
         password-cache-expiry 1800))
 
