@@ -75,8 +75,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
    "<tab>" 'bc-company-unified-tab
    "M-j" 'company-select-next
    "M-k" 'company-select-previous-or-abort
-   "M-J" 'company-next-page
-   "M-K" 'company-previous-page))
+   "C-g" 'company-abort))
 
 (use-package company-prescient
   :hook
@@ -87,7 +86,13 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   :hook (company-mode . company-posframe-mode)
   :init
   (setq company-posframe-show-metadata nil
-        company-posframe-show-indicator nil))
+        company-posframe-show-indicator nil
+        company-posframe-quickhelp-delay nil)
+  :general
+  (:keymaps 'company-active-map
+   "M-h" 'company-posframe-quickhelp-toggle
+   "J" 'company-posframe-quickhelp-scroll-down
+   "K" 'company-posframe-quickhelp-scroll-up))
 
 (provide 'bc-company)
 ;;; bc-company.el ends here
