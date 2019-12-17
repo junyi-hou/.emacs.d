@@ -18,8 +18,8 @@
           (append bc-jupyter-default-header-args '((:kernel . "stata")))
           org-babel-default-header-args:jupyter-python
           (append bc-jupyter-default-header-args '((:kernel . "python")))
-          org-babel-default-header-args:jupyter-racket 
-          (append bc-jupyter-default-header-args '((:kernel . "racket")))))
+          org-babel-default-header-args:jupyter-guile
+          (append bc-jupyter-default-header-args '((:kernel . "guile")))))
 
   (setq jupyter-repl-echo-eval-p t
         jupyter-repl-maximum-size 12000

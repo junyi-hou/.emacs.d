@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: racket-block
-# key: racket
-# --
-#+begin_src jupyter-racket ${1::results ${2:silent}}
-$0
-#+end_src

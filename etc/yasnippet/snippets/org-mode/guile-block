@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: guile-block
+# key: guile
+# --
+#+begin_src jupyter-guile ${1::results ${2:silent}}
+$0
+#+end_src
