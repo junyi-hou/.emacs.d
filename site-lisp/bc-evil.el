@@ -196,19 +196,6 @@
 
   (advice-add 'newline :around #'bc-evil-better-newline)
 
-  (defun bc-evil-open-file-at-point (prefix)
-    "Try to open file at point.  If not file is found, fallback to `evil-ret'.  If PREFIX is t, open the file in other window."
-    (interactive "P")
-    (let ((fn (if prefix 'find-file-other-window 'find-file))
-          (filename (symbol-name (symbol-at-point))))
-      (cond
-       ((file-readable-p filename)
-        (funcall fn filename))
-       ((file-readable-p (expand-file-name filename))
-        (funcall fn (expand-file-name filename)))
-       (t
-        (evil-ret)))))
-
   (defun bc-evil-replace-word-at-point-all (&optional to-string)
     "Replace the word at point with TO-STRING throughout the buffer.  If in visual state, replace the selection instead."
     (interactive)
@@ -251,8 +238,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
    "J" 'bc-evil-next-three-lines
    "K" 'bc-evil-previous-three-lines
    "L" 'evil-end-of-visual-line
-
-   "RET" 'bc-evil-open-file-at-point
 
    "SPC" nil
    "S-SPC" nil)

@@ -31,7 +31,8 @@
      "c" 'eshell/evil-change
      "C" 'eshell/evil-change-line
      "d" 'eshell/evil-delete
-     "D" 'eshell/evil-delete-line)
+     "D" 'eshell/evil-delete-line
+     "RET" 'bc-eshell-open-file-at-point)
 
     (general-define-key
      :states '(normal visual motion)
@@ -52,6 +53,29 @@
     (eshell/alias "ll" "ls -Aloh --color=always"))
 
   ;; functions
+
+  (defun bc-eshell--open-or-cd (path)
+    "Cd to PATH if path is a directory ((file-name-directory path) => t), otherwise open PATH via `find-file'."
+    (interactive)
+    (if (file-directory-p path)
+        (progn
+          (bc-eshell-goto-prompt)
+          (insert (concat "cd " path))
+          (eshell-send-input)
+          (evil-normal-state))
+      (find-file path)))
+
+  (defun bc-eshell-open-file-at-point ()
+    "Try to open file at point.  If not file is found, fallback to `evil-ret'."
+    (interactive)
+    (let ((filename (symbol-name (symbol-at-point))))
+      (cond
+       ((file-readable-p filename)
+        (bc-eshell--open-or-cd filename))
+       ((file-readable-p (expand-file-name filename))
+        (bc-eshell--open-or-cd (expand-file-name filename)))
+       (t
+        (evil-ret)))))
 
   (defun eshell/x (file &rest args)
     "Unpack FILE with ARGS using default command."
