@@ -9,20 +9,28 @@
 
   :init
 
+  (unless (executable-find "jupyter")
+    (user-error "Cannot find jupyter executable, please check jupyter is installed"))
+
   (defconst bc-jupyter-default-header-args
     '((:async . "yes")
       (:session . "master")))
 
+  (defconst bc-jupyter-available-kernels
+    (split-string
+     (shell-command-to-string "jupyter kernelspec list | awk 'NR>1 {print $1 }'")
+     "\n" t))
+
   (with-eval-after-load 'org
-    (setq org-babel-default-header-args:jupyter-stata
-          (append bc-jupyter-default-header-args '((:kernel . "stata")))
-          org-babel-default-header-args:jupyter-python
-          (append bc-jupyter-default-header-args '((:kernel . "python")))
-          org-babel-default-header-args:jupyter-guile
-          (append bc-jupyter-default-header-args '((:kernel . "guile")))))
+    (mapc (lambda (kernel)
+            (set (intern (format "org-babel-default-header-args:jupyter-%s" kernel))
+                 (append bc-jupyter-default-header-args `((:kernel . ,kernel)))))
+          bc-jupyter-available-kernels))
 
   (with-eval-after-load 'ob-async
-    (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-stata" "jupyter-guile")))
+    (setq ob-async-no-async-languages-alist
+          `(,@(mapcar (lambda (kernel) (format "jupyter-%s" kernel))
+                      bc-jupyter-available-kernels))))
 
   (setq jupyter-repl-echo-eval-p t
         jupyter-repl-maximum-size 12000
