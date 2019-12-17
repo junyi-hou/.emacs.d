@@ -19,7 +19,7 @@
   (defconst bc-jupyter-available-kernels
     (split-string
      (shell-command-to-string "jupyter kernelspec list | awk 'NR>1 {print $1 }'")
-     "\n" t))
+     "\n" 'omit-nulls))
 
   (with-eval-after-load 'org
     (mapc (lambda (kernel)
