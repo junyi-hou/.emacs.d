@@ -7,6 +7,9 @@
 ;; set load path
 (add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory))
 
+;; fix potential credential issues
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 ;; package loader and manager
 (require 'bc-pkgmgmt)
 
