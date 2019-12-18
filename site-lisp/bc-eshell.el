@@ -99,6 +99,13 @@
       (eshell/printnl "Unpack command: " unpack-command)
       (eshell-command-result unpack-command)))
 
+  (defun bc-eshell--change-buffer-title ()
+    "Change the title of eshell buffer to reflect $pwd."
+    (rename-buffer (format "%s: %s" eshell-buffer-name default-directory) 'unique))
+
+  (add-hook 'eshell-mode-hook #'bc-eshell--change-buffer-title)
+  (add-hook 'eshell-directory-change-hook #'bc-eshell--change-buffer-title)
+
   (defun bc-eshell-toggle-sudo ()
     "Add/Remove sudo in the begining of command line."
     (interactive)
