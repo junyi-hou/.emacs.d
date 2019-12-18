@@ -72,19 +72,22 @@
                (apply compile-fn args)))))
 
     (defun bc-ide-latex-inverse-search ()
-      "Inverse search the center of the window."
+      "Inverse search the center of the window.  This is an advice-like function to `exwm-input--fake-key': in Zathura, send key C-return, but make sure to recenter mouse first.  Otherwise just send C-return."
       (interactive)
-      (let* ((corner (window-absolute-pixel-edges))
+      ;; if in zathura window, set the mouse position
+      ;; otherwise do not need to
+      (when (eq exwm-class-name "Zathura")
+       (let* ((corner (window-absolute-pixel-edges))
              (left (car corner))
              (top (cadr corner))
              (right (caddr corner))
              (bottom (cadddr corner))
              (x (/ (+ left right) 2))
              (y (/ (+ top bottom) 2)))
-        (ignore-errors (evil-previous-line))
-        (set-mouse-absolute-pixel-position x y)
-        ;; FIXME: how to pass C-left-click?
-        (exwm-input--fake-key 'C-mouse-1)))
+        (set-mouse-absolute-pixel-position x y)))
+      ;; send C-return
+      ;; (read-char) C-Return => 67108877
+      (exwm-input--fake-key 67108877))
 
     (advice-add #'TeX-command-run-all :around #'bc-ide-latex-compile)
 
