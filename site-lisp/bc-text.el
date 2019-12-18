@@ -187,6 +187,11 @@
    :prefix "SPC"
    "rr" 'TeX-command-run-all))
 
+(use-package company-auctex
+  :after auctex
+  :hook
+  (LaTeX-mode . company-auctex-init))
+
 (use-package man
   :defer t
   :general
@@ -206,70 +211,65 @@
   :init
   (setq outline-blank-line t))
 
-(use-package reftex
-  ;; TODO: ivy-integrate this
-  :after 'auctex
-  :defer t
-  :hook (LaTeX-mode . reftex-mode)
-  :config
-  (setq reftex-cite-prompt-optional-args t)
+;; (use-package reftex
+;;   ;; TODO: ivy-integrate this
+;;   :after 'auctex
+;;   :defer t
+;;   :hook (LaTeX-mode . reftex-mode)
+;;   :config
+;;   (setq reftex-cite-prompt-optional-args t)
 
-  :general
-  (:keymaps 'reftex-mode-map
-   :states '(motion normal visual)
-   :prefix "SPC"
-   "rl" 'reftex-label
-   "ri" 'reftex-reference)
+;;   :general
+;;   (:keymaps 'reftex-mode-map
+;;    :states '(motion normal visual)
+;;    :prefix "SPC"
+;;    "rl" 'reftex-label
+;;    "ri" 'reftex-reference)
 
-  (:keymaps 'reftex-mode-map
-   :states 'insert
-   :prefix "C-c"
-   "l" 'reftex-label
-   "i" 'reftex-reference))
+;;   (:keymaps 'reftex-mode-map
+;;    :states 'insert
+;;    :prefix "C-c"
+;;    "l" 'reftex-label
+;;    "i" 'reftex-reference))
 
-(use-package ivy-bibtex
-  :after auctex
-  :defer t
-  :init
-  (defun bc-ide-latex--get-project-bib-file (proj_root)
-    "Scan PROJ_ROOT/reference directory and return a list of .bib files.  If PROJ_ROOT is not given, use the current project root returned by `project-current'."
-    (let ((proj_root (or proj_root (cdr (project-current)))))
-      (directory-files (concat proj_root "reference") nil ".*\\.bib")))
+;; (use-package ivy-bibtex
+;;   :after auctex
+;;   :defer t
+;;   :init
+;;   (defun bc-ide-latex--get-project-bib-file (proj_root)
+;;     "Scan PROJ_ROOT/reference directory and return a list of .bib files.  If PROJ_ROOT is not given, use the current project root returned by `project-current'."
+;;     (let ((proj_root (or proj_root (cdr (project-current)))))
+;;       (directory-files (concat proj_root "reference") nil ".*\\.bib")))
 
-  (defun bc-ide-latex-load-bib-file ()
-    "Add bibtex file to `ivy-bibtex' library for the current .tex file.  This function scans both the directory of the current .tex file and the PROJ_ROOT/reference/ directory for .bib file."
-    (let* ((proj? (cdr (project-current)))
-           (local-bib (concat
-                      (expand-file-name (file-name-base (buffer-file-name))) ".bib")))
-      (make-local-variable bibtex-completion-bibliography)
-      (when (file-exists-p local-bib)
-        (add-to-list 'bibtex-completion-bibliography local-bib))
-      (when proj?
-        (append
-         'bibtex-completion-bibliography
-         (bc-ide-latex--get-project-bib-file proj?)))))
+;;   (defun bc-ide-latex-load-bib-file ()
+;;     "Add bibtex file to `ivy-bibtex' library for the current .tex file.  This function scans both the directory of the current .tex file and the PROJ_ROOT/reference/ directory for .bib file."
+;;     (let* ((proj? (cdr (project-current)))
+;;            (local-bib (concat
+;;                       (expand-file-name (file-name-base (buffer-file-name))) ".bib")))
+;;       (make-local-variable bibtex-completion-bibliography)
+;;       (when (file-exists-p local-bib)
+;;         (add-to-list 'bibtex-completion-bibliography local-bib))
+;;       (when proj?
+;;         (append
+;;          'bibtex-completion-bibliography
+;;          (bc-ide-latex--get-project-bib-file proj?)))))
 
-  :config
-  (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation
-        bibtex-completion-cite-commands '("citep" "citet" "citep*" "citet*")
-        bibtex-completion-cite-default-command "citep"
-        bibtex-completion-cite-prompt-for-optional-arguments nil)
-  :general
-  (:keymaps 'LaTeX-mode-map
-   :states '(normal visual motion insert)
-   :prefix "SPC"
-   :non-normal-prefix "s-SPC"
-   "rc" 'ivy-bibtex)
+;;   :config
+;;   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation
+;;         bibtex-completion-cite-commands '("citep" "citet" "citep*" "citet*")
+;;         bibtex-completion-cite-default-command "citep"
+;;         bibtex-completion-cite-prompt-for-optional-arguments nil)
+;;   :general
+;;   (:keymaps 'LaTeX-mode-map
+;;    :states '(normal visual motion insert)
+;;    :prefix "SPC"
+;;    :non-normal-prefix "s-SPC"
+;;    "rc" 'ivy-bibtex)
 
-  (:keymaps 'LaTeX-mode-map
-   :states 'insert
-   :prefix "C-c"
-   "c" 'ivy-bibtex))
-
-(use-package company-auctex
-  :after auctex
-  :hook
-  (LaTeX-mode . company-auctex-init))
+;;   (:keymaps 'LaTeX-mode-map
+;;    :states 'insert
+;;    :prefix "C-c"
+;;    "c" 'ivy-bibtex))
 
 (provide 'bc-text)
 ;;; bc-text.el ends here
