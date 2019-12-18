@@ -83,8 +83,9 @@
              (y (/ (+ top bottom) 2)))
         (ignore-errors (evil-previous-line))
         (set-mouse-absolute-pixel-position x y)
-        ;; FIXME: how to pass C-left-click?
-        (exwm-input--fake-key 'C-mouse-1)))
+        ;; HACK: need to config 2 places: here and zathurarc
+        ;; I choose p because p is not mapped in zathura
+        (exwm-input--fake-key ?\p)))
 
     (advice-add #'TeX-command-run-all :around #'bc-ide-latex-compile)
 
