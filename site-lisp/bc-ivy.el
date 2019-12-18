@@ -37,12 +37,12 @@
    "rs" 'bc-ivy-grep-at-point
    "rS" 'counsel-rg))
 
-;; need to figure out a way to make this work with exwm-mode
-;; (use-package ivy-posframe
-;;   :after ivy
-;;   :config
-;;   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point)))
-;;   (ivy-posframe-mode 1))
+(use-package ivy-posframe
+  :after ivy
+  :config
+  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point))
+        ivy-posframe-parameters '((parent-frame nil)))
+  (ivy-posframe-mode 1))
 
 (use-package ivy-prescient
   :after ivy
