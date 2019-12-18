@@ -44,8 +44,6 @@
     (evil-set-initial-state mode 'motion))
   (evil-set-initial-state 'git-commit-mode 'insert)
 
-  (setq magit-log-auto-more t)
-
   :general
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal visual)
