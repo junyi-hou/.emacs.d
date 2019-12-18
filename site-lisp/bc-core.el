@@ -212,6 +212,17 @@ Lisp function does not specify a special indentation."
                                        indent-point normal-indent))
                 (method
                  (funcall method indent-point state)))))))))
+(use-package so-long
+  :straight
+  (emacs-so-long
+   :repo "hlissner/emacs-so-long"
+   :host github)
+  :config
+  (global-so-long-mode))
+(use-package beacon
+  :defer t
+  :config
+  (beacon-mode 1))
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil

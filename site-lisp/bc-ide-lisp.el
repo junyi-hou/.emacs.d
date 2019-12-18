@@ -19,9 +19,11 @@
   (emacs-lisp-mode . aggressive-indent-mode))
 
 (use-package helpful
-  :demand t
   :init
   (evil-set-initial-state 'helpful-mode 'motion))
+
+(use-package easy-escape
+  :hook ((emacs-lisp-mode lisp-mode) . easy-escape-minor-mode))
 
 (provide 'bc-ide-lisp)
 ;;; bc-ide-lisp.el ends here
