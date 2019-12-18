@@ -27,11 +27,6 @@
                              '("python2" "python3")
                              :action 'identity)))))
 
-
-  (when (and (featurep 'ob-async)
-             (featurep 'jupyter))
-    (add-to-list 'ob-async-no-async-languages-alist "jupyter-python"))
-
   :hook
   (python-mode . bc-python--set-indent-width)
 
