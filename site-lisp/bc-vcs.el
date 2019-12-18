@@ -9,20 +9,36 @@
 
   :config
   ;; functions
-  
-  (defun bc-vcs-get-file-at-point (&optional file)
+
+  (defun bc-vcs-visit-thing-at-point ()
     "Get file at point in magit buffers."
-    (cond
-     ((magit-section-match [* todos])
-      (let* ((todo-item (oref (magit-current-section) value))
-             (file (or file (magit-todos-item-filename todo-item))))
-        (unless file
-          (error "No file at point"))
-        (expand-file-name file (magit-toplevel))))
-     (t (let ((file (or file (magit-file-at-point t))))
-          (unless file
-            (error "No file at point"))
-          file))))
+    (interactive)
+    (cond ((magit-section-match [todos-item])
+           ;; for `magit-todos' block. visit corresponding files
+           (let ((file (magit-todos-item-filename
+                        (oref (magit-current-section) :value))))
+             (unless file
+               (error "No file at point"))
+             (other-window -1)
+             (find-file (expand-file-name file (magit-toplevel)))))
+          ((magit-section-match [file])
+           ;; file, visit the corresponding files
+           (let ((file (magit-file-at-point t)))
+             (unless file
+               (error "No file at point"))
+             (other-window -1)
+             (find-file file)))
+          ((magit-section-match [commit])
+           ;; commits: show the commit details
+           (call-interactively #'magit-show-commit))
+          ((magit-section-match [* error])
+           (magit-process-buffer))
+          ((and (magit-section-match '(issue pullreq))
+                (featurep 'forge))
+           ;; for `forge-issue' and `forge-pullreq' block, visit corresponding issue
+           (call-interactively #'forge-visit-topic))
+          ;; fallback - `magit-visit-thing'
+          (t 'magit-visit-thing)))
 
   (dolist (mode '(magit-status-mode magit-diff-mode magit-log-mode))
     (evil-set-initial-state mode 'motion))
@@ -39,31 +55,19 @@
    "zo" 'magit-section-show
    "zc" 'magit-section-hide
    "?" 'magit-dispatch
-   "RET" (lambda () (interactive)
-           (let ((file (bc-vcs-get-file-at-point)))
-             (when file
-               (other-window -1)
-               (find-file file))))
-   "<C-return>" 'magit-visit-thing)
+   "RET" 'bc-vcs-visit-thing-at-point)
 
   (:keymaps 'magit-status-mode-map
    :states '(motion normal)
    ;; TODO: use SPC prefix
    "`" 'magit-dispatch
    "d" 'magit-discard
-   "D" 'magit-show-commit
    "E" 'magit-ediff
    "c" 'magit-commit
    "p" 'magit-push
    "f" 'magit-fetch
    "F" 'magit-pull
    "b" 'magit-branch)
-
-  (:keymaps 'magit-log-mode-map
-   :states '(normal motion)
-   "D" (lambda () (interactive)
-         (magit-diff-show-or-scroll-down)
-         (other-window 1)))
 
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal)
