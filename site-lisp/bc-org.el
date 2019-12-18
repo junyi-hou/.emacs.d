@@ -145,6 +145,7 @@
      (latex . t)
      (shell . t)
      (python . t)
+     (scheme . t)
      (jupyter . t)))
 
   ;; src block settings

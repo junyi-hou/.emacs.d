@@ -11,6 +11,10 @@
   :init
   (require 'bc-jupyter)
 
+  ;; use guile
+  (setq scheme-program-name "guile"
+        geiser-default-implementation 'guile)
+
   (setq-local tab-width 2)
 
   (defalias 'bc-guile-local-repl
