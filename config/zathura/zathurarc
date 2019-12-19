@@ -6,9 +6,7 @@ unmap <C-j>
 unmap <C-k>
 unmap <Space>
 
-# choose p because of the function `bc-ide-latex-inverse-search' uses p
-unmap <C-Return>
-map <C-Return> feedkeys ":exec xdotool keydown Control_L click 1 keyup Control_L"<Return>
+map ` feedkeys ":exec xdotool keydown Control_L click 1 keyup Control_L"<Return>
 
 set font "monospace normal 12"
 set selection-clipboard clipboard
