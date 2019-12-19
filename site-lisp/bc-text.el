@@ -13,6 +13,14 @@
          "\\.markdown\\'"
          "\\.md\\'"))
 
+(use-package man
+  :defer t
+  :general
+  (:keymaps 'Man-mode-map
+   :states 'motion
+   "zc" 'outline-hide-entry
+   "zo" 'outline-show-entry))
+
 (use-package auctex
   :defer t
 
@@ -31,8 +39,8 @@
         font-latex-fontify-script nil
         font-latex-fontify-sectioning 1.0
 
-        ;; latex command - enable syntax and shell-escape
-        LaTeX-command "latex -syntax=1 --shell-escape"
+        ;; latex command - enable synctax and shell-escape
+        LaTeX-command "latex -synctax=1 --shell-escape"
 
         ;; auto-close
         LaTeX-electric-left-right-brace t
@@ -193,14 +201,6 @@
   :after auctex
   :hook
   (LaTeX-mode . company-auctex-init))
-
-(use-package man
-  :defer t
-  :general
-  (:keymaps 'Man-mode-map
-   :states 'motion
-   "zc" 'outline-hide-entry
-   "zo" 'outline-show-entry))
 
 (use-package outline
   ;; `hideshow' does not play well with some modes,
