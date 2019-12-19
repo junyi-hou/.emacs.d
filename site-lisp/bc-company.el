@@ -10,7 +10,7 @@
   (company-mode . yas-reload-all)
   (company-mode . yas-minor-mode)
   :general
-  (:keymaps 'yas-minor-mode-map
+  (:keymaps 'yas-keymap
    "<tab>" nil
    "TAB" nil
    "M-j" 'yas-next-field
