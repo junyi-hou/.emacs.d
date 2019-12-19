@@ -13,8 +13,14 @@
   (:keymaps 'yas-keymap
    "<tab>" nil
    "TAB" nil
-   "M-j" 'yas-next-field
-   "M-k" 'yas-prev-field))
+   "M-n" 'yas-next-field
+   "M-p" 'yas-prev-field)
+
+  ;; kill M-j/M-k so they won't show up when snippets are active
+  (:keymaps 'global-map
+   "M-j" nil
+   "M-k" nil))
+
 
 (use-package company
   :hook

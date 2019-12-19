@@ -44,6 +44,5 @@
 (require 'bc-ide-stata)
 (require 'bc-ide-guile)
 (require 'bc-text)
-;; (require 'bc-ide-matlab)
 
 ;;; init.el ends here
