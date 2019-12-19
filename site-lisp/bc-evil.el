@@ -1,7 +1,6 @@
 ;;; bc-evil.el --- evil mode related settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;;; FIXME: evil-repeat-command (".") is buggy
 
 ;;; Code:
 
@@ -323,10 +322,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
 
    ;; focus mode
    "f" 'bc-evil-toggle-one-window
-
-   ;; org-capture
-   "ct" 'bc-org-capture-todo
-   "cr" 'bc-org-capture-project-notes
 
    ;; magit
    "gg" (lambda () (interactive)

@@ -6,19 +6,15 @@
 
 (use-package org
   :defer t
-  :straight
-  (:type built-in)
+  :straight (:type built-in)
   :hook
   (org-mode . org-indent-mode)
   (org-mode . bc-org--fix-indent)
   (org-mode . bc-org--complete-keywords)
-  :commands org-babel-with-temp-filebuffer
-  :init
-  ;; functions
 
-  ;;; ===============================
-  ;;  my stuffs
-  ;;; ===============================
+  :init
+
+  ;; functions
 
   (defconst bc-org-foldable
     '(example-block export-block src-block table)
@@ -62,69 +58,6 @@
     (add-hook
      'completion-at-point-functions
      'pcomplete-completions-at-point nil t))
-
-  ;;; ===============================
-  ;;  org capture related
-  ;;; ===============================
-
-  (defun bc-org--export-headline ()
-    "Return the first level headline of an org file."
-    (set-mark (point-min))
-    (goto-char (point-max))
-    (prog1
-        (org-map-entries
-         (lambda ()
-           (let ((heading (org-heading-components)))
-             ;; return heading text if there is any, otherwise return the todo keyword
-             (if (nth 4 heading)
-                 (nth 4 heading)
-               (nth 2 heading))))
-         nil
-         'region-start-level)
-      ;; kill active region, and reset hs-mode
-      (deactivate-mark)
-      (hs-hide-all)
-      (goto-char 1)))
-
-  (defun bc-org--capture (filename &optional headline)
-    "Create a temporary org capture entry pointing to FILENAME under HEADLINE, capture the current content there and then"
-    (let ((headline (or headline
-                        (ivy-read
-                         "Headline: "
-                         (org-babel-with-temp-filebuffer filename
-                           (bc-org--export-headline))
-                         :action 'identity)))
-          (saved-templates org-capture-templates))
-      (add-to-list
-       'org-capture-templates
-       `("t" "customized capture item" entry (file+headline ,filename ,headline)
-         "* %t %?\n%a" :empty-lines 1))
-      (org-capture nil "t")
-      (evil-insert-state)
-      (setq org-capture-templates saved-templates)))
-
-  (defun bc-org-capture-todo ()
-    "Capture to ~/org/todo.org."
-    (interactive)
-    (bc-org--capture "~/org/todo.org"))
-
-  (defun bc-org-capture-project-notes ()
-    "Capture to current-project-root/notes.org."
-    (interactive)
-    (let* ((project-root (cdr (project-current)))
-           (notes (concat project-root "notes.org")))
-      (unless project-root
-        (user-error "No project found"))
-      (unless (file-exists-p notes)
-        (if (y-or-n-p "File notes.org does not exists, create? ")
-            (with-temp-buffer
-              (write-file notes))
-          (user-error "notes.org does not exists, abort")))
-      (bc-org--capture notes)))
-
-  ;; org capture/agenda
-  (setq org-directory "~/org"
-        org-default-notes-file (concat org-directory "/notes.org"))
 
   :config
 
@@ -218,8 +151,82 @@
    "<up>" 'org-previous-visible-heading
    "<down>" 'org-next-visible-heading))
 
+(use-package org-capture
+  :straight (:type built-in)
+  :commands (bc-org-capture-todo bc-org-capture-project-notes)
+
+  :init
+
+  (defun bc-org--export-headline ()
+    "Return the first level headline of an org file."
+    (set-mark (point-min))
+    (goto-char (point-max))
+    (prog1
+        (org-map-entries
+         (lambda ()
+           (let ((heading (org-heading-components)))
+             ;; return heading text if there is any, otherwise return the todo keyword
+             (if (nth 4 heading)
+                 (nth 4 heading)
+               (nth 2 heading))))
+         nil
+         'region-start-level)
+      ;; kill active region, and reset hs-mode
+      (deactivate-mark)
+      (hs-hide-all)
+      (goto-char 1)))
+
+  (defun bc-org--capture (filename &optional headline)
+    "Create a temporary org capture entry pointing to FILENAME under HEADLINE, capture the current content there and then"
+    (require 'org-capture)
+    (let ((headline (or headline
+                        (ivy-read
+                         "Headline: "
+                         (org-babel-with-temp-filebuffer filename
+                           (bc-org--export-headline))
+                         :action 'identity)))
+          (saved-templates org-capture-templates))
+      (add-to-list
+       'org-capture-templates
+       `("t" "customized capture item" entry (file+headline ,filename ,headline)
+         "* %t %?\n%a" :empty-lines 1))
+      (org-capture nil "t")
+      (evil-insert-state)
+      (setq org-capture-templates saved-templates)))
+
+  (defun bc-org-capture-todo ()
+    "Capture to ~/org/todo.org."
+    (interactive)
+    (bc-org--capture "~/org/todo.org"))
+
+  (defun bc-org-capture-project-notes ()
+    "Capture to current-project-root/notes.org."
+    (interactive)
+    (let* ((project-root (cdr (project-current)))
+           (notes (concat project-root "notes.org")))
+      (unless project-root
+        (user-error "No project found"))
+      (unless (file-exists-p notes)
+        (if (y-or-n-p "File notes.org does not exists, create? ")
+            (with-temp-buffer
+              (write-file notes))
+          (user-error "notes.org does not exists, abort")))
+      (bc-org--capture notes)))
+
+  ;; org capture/agenda
+  (setq org-directory "~/org"
+        org-default-notes-file (concat org-directory "/notes.org"))
+
+  :general
+  (:keymaps '(normal visual motion insert emacs)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   "ct" 'bc-org-capture-todo
+   "cr" 'bc-org-capture-project-notes))
+
 (use-package ob-async
   :after 'org)
+
 
 (provide 'bc-org)
 ;;; bc-org.el ends here
