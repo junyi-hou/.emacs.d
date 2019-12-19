@@ -171,16 +171,13 @@
 
   (defun bc-evil-better-newline (newline-fun &rest args)
     "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline' for the first call.  Delete the auto-inserted comment for the second call.  Otherwise call `newline' as default."
-    (let* (
-           ;; line - the current line as string
+    (let* (;; line - the current line as string
            (line (buffer-substring-no-properties
                   (line-beginning-position)
                   (line-end-position)))
            ;; only-comment - t if the current line starts with comment
-           (only-comment (string-match
-                          (concat "\\(^[\t ]*\\)\\("
-                                  comment-start-skip "\\)")
-                          line))
+           (only-comment (and comment-start-skip
+                              (string-match (concat "\\(^[\t ]*\\)\\(" comment-start-skip "\\)") line)))
            ;; newline-string - string insert into newline
            (newline-string (if only-comment
                                (match-string 2 line)
