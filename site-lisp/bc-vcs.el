@@ -8,7 +8,25 @@
   :defer t
 
   :init
+  (defcustom magit-push-protected-branch nil
+    "When set, ask for confirmation before pushing to this branch (e.g. master).  Set this in .dir-locals.el"
+    :type 'list
+    :safe #'listp
+    :group 'magit)
 
+  (defun magit-push--protected-branch (magit-push-fun &rest args)
+    "Ask for confirmation before pushing a protected branch."
+    (if (member (magit-get-current-branch) magit-push-protected-branch)
+        ;; Arglist is (BRANCH TARGET ARGS)
+        (if (yes-or-no-p (format "Push branch %s? " (magit-get-current-branch)))
+            (apply magit-push-fun args)
+          (error "Push aborted by user"))
+      (apply magit-push-fun args)))
+
+  (advice-add 'magit-push-current-to-pushremote :around #'magit-push--protected-branch)
+  (advice-add 'magit-push-current-to-upstream :around #'magit-push--protected-branch)
+
+  :config
   ;; always show recent commits, even when there are unpushed commit
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-recent-commits
@@ -19,6 +37,10 @@
                           'magit-insert-unpushed-to-upstream
                           'magit-insert-unpushed-to-pushremote
                           'append)
+
+  (dolist (mode '(magit-status-mode magit-diff-mode magit-log-mode))
+    (evil-set-initial-state mode 'motion))
+  (evil-set-initial-state 'git-commit-mode 'insert)
 
   ;; functions
 
@@ -51,10 +73,6 @@
            (call-interactively #'forge-visit-topic))
           ;; fallback - `magit-visit-thing'
           (t 'magit-visit-thing)))
-
-  (dolist (mode '(magit-status-mode magit-diff-mode magit-log-mode))
-    (evil-set-initial-state mode 'motion))
-  (evil-set-initial-state 'git-commit-mode 'insert)
 
   :general
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
