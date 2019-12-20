@@ -103,6 +103,10 @@
 
   (:keymaps 'forge-topic-mode-map
    :states '(normal visual motion)
+   "<return>" 'bc-vcs-visit-thing-at-point)
+
+  (:keymaps 'forge-topic-mode-map
+   :states '(normal visual motion)
    :prefix "SPC"
    "re" 'magit-edit-thing
    "rr" 'forge-create-post))
