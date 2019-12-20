@@ -7,7 +7,19 @@
 (use-package magit
   :defer t
 
-  :config
+  :init
+
+  ;; always show recent commits, even when there are unpushed commit
+  (magit-add-section-hook 'magit-status-sections-hook
+                          'magit-insert-recent-commits
+                          'magit-insert-unpushed-to-upstream-or-recent
+                          'replace)
+
+  (magit-add-section-hook 'magit-status-sections-hook
+                          'magit-insert-unpushed-to-upstream
+                          'magit-insert-unpushed-to-pushremote
+                          'append)
+
   ;; functions
 
   (defun bc-vcs-visit-thing-at-point ()
