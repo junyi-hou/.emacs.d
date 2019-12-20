@@ -15,17 +15,17 @@
   ;; get rid of the annoying underlines
   (dolist (face '(flymake-note flymake-warning flymake-error))
     (set-face-attribute face nil
-     :underline nil))
+                        :underline nil))
 
   (setq flymake-start-on-newline nil))
 
 ;; flymake frontend
-(use-package flymake-posframe
+(use-package flymake-childframe
   :after flymake
-  :straight (flymake-posframe
+  :straight (flymake-childframe
              :host github
-             :repo "junyi-hou/flymake-posframe")
-  :hook (flymake-mode . flymake-posframe-mode))
+             :repo "junyi-hou/flymake-childframe")
+  :hook (flymake-mode . flymake-childframe-mode))
 
 (provide 'bc-flymake)
 ;;; bc-flymake.el ends here
