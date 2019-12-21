@@ -210,7 +210,10 @@
   :after eshell
   :config
   (dolist (p '("alsamixer" "htop" "ssh" "top"))
-      (add-to-list 'eshell-visual-commands p)))
+    (add-to-list 'eshell-visual-commands p))
+
+  ;; TODO use vterm to replace ansi-term
+  )
 
 (use-package em-tramp
   :straight (em-tramp :type built-in)
