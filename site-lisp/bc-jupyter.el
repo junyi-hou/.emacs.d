@@ -87,19 +87,15 @@
   (advice-add #'jupyter-eval-region :after #'bc-jupyter--deactivate-mark)
 
   :general
-  (:keymaps
-   'jupyter-repl-mode-map
-   :states
-   '(insert normal visual motion emacs)
+  (:keymaps 'jupyter-repl-mode-map
+   :states '(insert normal visual motion emacs)
    (kbd "<up>") 'jupyter-repl-history-previous
    (kbd "<down>") 'jupyter-repl-history-next
    "C-y" 'jupyter-repl-backward-cell
    "C-e" 'jupyter-repl-forward-cell)
 
-  (:keymaps
-   'jupyter-repl-mode-map
-   :states
-   '(normal visual motion)
+  (:keymaps 'jupyter-repl-mode-map
+   :states '(normal visual motion)
    "A" (lambda () (interactive)
          (goto-char (point-max))
          (evil-insert 1))
