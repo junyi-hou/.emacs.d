@@ -12,13 +12,9 @@
          (user-error "config file at %s already existed" to))
         (t (make-symbolic-link from to))))
 
-(defun bc-config--expand-home (path)
-  "Expand ~ in PATH to $HOME."
-  (replace-regexp-in-string "^~" (getenv "HOME") path))
-
 (defun bc-config--init-xdg-config (pkg)
   "Symlink config file of PKG to XDG_CONFIG_HOME or \"~/.config/\" if XDG_CONFIG_HOME is not set."
-  (let* ((source (bc-config--expand-home
+  (let* ((source (expand-file-name
                   (format "%sconfig/%s" user-emacs-directory pkg)))
          (target (format "%s/%s"
                          (or (getenv "XDG_CONFIG_HOME")
@@ -28,7 +24,7 @@
 
 (defun bc-config--init-home-config (pkg)
   "Symlink config file of PKG to \"$HOME\"."
-  (let* ((source (bc-config--expand-home
+  (let* ((source (expand-file-name
                   (format "%sconfig/home/%s" user-emacs-directory pkg)))
          (target (format "%s/%s" (getenv "HOME") pkg)))
     (bc-config--create-symlink source target)))
