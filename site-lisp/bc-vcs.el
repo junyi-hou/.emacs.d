@@ -78,8 +78,8 @@
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal visual)
    "SPC" nil
-   "C-e" 'magit-section-forward-sibling
-   "C-y" 'magit-section-backward-sibling
+   "<up>" 'magit-section-forward-sibling
+   "<down>" 'magit-section-backward-sibling
    "zo" 'magit-section-show
    "zc" 'magit-section-hide
    "?" 'magit-dispatch
