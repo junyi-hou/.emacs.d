@@ -223,6 +223,16 @@ Lisp function does not specify a special indentation."
   :defer t
   :config
   (beacon-mode 1))
+(use-package comint
+  :straight (:type built-in)
+  :defer t
+  :config
+  (defun bc-comit-move-to-eol (&rest _)
+    (end-of-line))
+
+  (advice-add 'comint-previous-matching-input-from-input :after 'bc-comit-move-to-eol)
+  (advice-add 'comint-next-matching-input-from-input :after 'bc-comit-move-to-eol))
+
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
