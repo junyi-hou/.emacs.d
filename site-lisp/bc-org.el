@@ -67,7 +67,8 @@
         org-use-sub-superscripts t
         org-hide-leading-stars nil
         org-indent-mode-turns-on-hiding-stars nil
-        org-highlight-latex-and-related '(latex entities script))
+        org-highlight-latex-and-related '(latex entities script)
+        org-startup-with-latex-preview t)
 
   ;; babel
   ;; load interpreters
