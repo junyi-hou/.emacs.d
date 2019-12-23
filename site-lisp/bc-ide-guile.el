@@ -84,19 +84,21 @@
         (bc-guile--eval-region (region-beginning) (region-end))
       (bc-guile--eval-last-sexp)))
 
-  (defun bc-guile--reset-repl-buffer (&rest _)
+  (defun bc-guile--exit-repl (geiser-quit &rest args)
     "When quitting repl buffer, reset `bc-guile-repl-buffer' for all associated code buffers."
-    (let ((repl-buffer (current-buffer)))
+    (when-let ((_ (y-or-n-p "Really quit this REPL? "))
+               (repl-buffer (current-buffer)))
       (mapc (lambda (bf)
               (with-current-buffer bf
                 (setq-local bc-guile-repl-buffer nil)))
             (seq-filter (lambda (bf)
                           (with-current-buffer bf
                             (eq bc-guile-repl-buffer repl-buffer)))
-                        (buffer-list)))))
+                        (buffer-list)))
+      (funcall geiser-quit args)
+      (delete-window)))
 
-  (advice-add 'geiser-repl-exit :before 'bc-guile--reset-repl-buffer)
-  (advice-add 'geiser-repl-exit :after 'delete-window)
+  (advice-add 'geiser-repl-exit :around 'bc-guile--exit-repl)
 
   :general
 
