@@ -25,7 +25,7 @@
     (general-define-key
      :states '(normal visual motion)
      :keymaps 'eshell-mode-map
-     "A" 'bc-eshell-goto-prompt
+     "A" 'bc-comint-goto-last-prompt
      "H" 'eshell-bol
      "S" 'bc-eshell-toggle-sudo
      "c" 'eshell/evil-change
@@ -160,12 +160,6 @@
     (interactive)
     (eshell/mkdir dir)
     (eshell/cd dir))
-
-  (defun bc-eshell-goto-prompt ()
-    "Goto current prompt and continue editting."
-    (interactive)
-    (goto-char (point-max))
-    (evil-insert 1))
 
   (defun bc-eshell-clear-buffer ()
     "Eshell version of `cls'."

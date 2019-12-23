@@ -96,9 +96,7 @@
 
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)
-   "A" (lambda () (interactive)
-         (goto-char (point-max))
-         (evil-insert 1))
+   "A" 'bc-comint-goto-last-prompt
    "/" 'evil-search-forward
    "?" 'evil-search-backward
    "SPC" nil)

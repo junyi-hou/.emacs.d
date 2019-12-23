@@ -225,8 +225,13 @@ Lisp function does not specify a special indentation."
   (beacon-mode 1))
 (use-package comint
   :straight (:type built-in)
-  :defer t
-  :config
+  :init
+  (defun bc-comint-goto-last-prompt ()
+    "Goto current prompt and continue editting."
+    (interactive)
+    (goto-char (point-max))
+    (evil-insert 1))
+
   (defun bc-comit-move-to-eol (&rest _)
     (end-of-line))
 

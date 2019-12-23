@@ -112,9 +112,7 @@
    :state '(normal motion visual)
    "<up>" 'comint-previous-prompt
    "<down>" 'comint-next-prompt
-   "A" (lambda () (interactive)
-         (goto-char (point-max))
-         (evil-insert-state))
+   "A" 'bc-comint-goto-last-prompt
    "H" 'geiser-repl--bol
    "SPC" 'nil)
 
