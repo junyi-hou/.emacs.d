@@ -72,10 +72,10 @@
     "Evaluate the last sexp before point."
     ;; HACK: depend on evil
     (save-excursion
-      (let ((end (if (looking-at "[\])]")
-                     (1+ (point))
-                   (1+ (re-search-backward "[\])]"))))
-            (beg (1- (evil-jump-item))))
+      (let* ((end (if (looking-at "[\])]")
+                      (1+ (point))
+                    (1+ (re-search-backward "[\])]"))))
+             (beg (evil-jump-item)))
         (bc-guile--eval-region beg end))))
 
   (defun bc-guile-eval-sexp-or-region ()
