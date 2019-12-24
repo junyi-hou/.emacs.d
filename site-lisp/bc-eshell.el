@@ -59,7 +59,7 @@
     (interactive)
     (if (file-directory-p path)
         (progn
-          (bc-eshell-goto-prompt)
+          (bc-comint-goto-last-prompt)
           (insert (concat "cd " path))
           (eshell-send-input)
           (evil-normal-state))
