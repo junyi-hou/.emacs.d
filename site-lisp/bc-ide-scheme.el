@@ -1,4 +1,4 @@
-;;; bc-ide-guile.el --- IDE feature for GNU guile -*- lexical-binding: t; -*-
+;;; bc-ide-scheme.el --- IDE feature for GNU guile -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -19,30 +19,30 @@
   ;;  separable repl
   ;;; ===============================
 
-  (defvar-local bc-guile-repl-buffer nil
+  (defvar-local bc-scheme-repl-buffer nil
     "The geiser repl associated to the current buffer.")
 
-  (defun bc-guile--start-repl ()
+  (defun bc-scheme--start-repl ()
     "Start a geiser guile buffer."
     (let ((code-buffer (current-buffer)))
       (run-geiser geiser-default-implementation)
       (let ((repl-buffer (current-buffer)))
         (with-current-buffer code-buffer
-          (setq-local bc-guile-repl-buffer repl-buffer)))
+          (setq-local bc-scheme-repl-buffer repl-buffer)))
       (switch-to-buffer-other-window code-buffer)))
 
-  (defun bc-guile--pop-to-repl ()
-    "Switch to `bc-guile-repl-buffer' associated with the current buffer."
-    (pop-to-buffer bc-guile-repl-buffer))
+  (defun bc-scheme--pop-to-repl ()
+    "Switch to `bc-scheme-repl-buffer' associated with the current buffer."
+    (pop-to-buffer bc-scheme-repl-buffer))
 
-  (defun bc-guile-start-or-pop-to-repl ()
-    "Pop to `bc-guile-repl-buffer'.  If `bc-guile-repl-buffer' is nil, start a new repl."
+  (defun bc-scheme-start-or-pop-to-repl ()
+    "Pop to `bc-scheme-repl-buffer'.  If `bc-scheme-repl-buffer' is nil, start a new repl."
     (interactive)
-    (if bc-guile-repl-buffer
-        (bc-guile--pop-to-repl)
-      (bc-guile--start-repl)))
+    (if bc-scheme-repl-buffer
+        (bc-scheme--pop-to-repl)
+      (bc-scheme--start-repl)))
 
-  (defun bc-guile-associate-repl (repl-buffer)
+  (defun bc-scheme-associate-repl (repl-buffer)
     "Select a geiser repl and associate the current buffer to."
     (interactive
      (list (ivy-read "Choose REPL to associate to"
@@ -50,12 +50,12 @@
                                    (eq major-mode geiser-repl-mode)
                                    (buffer-list)))
                      :action 'identity)))
-    (setq bc-guile-repl-buffer repl-buffer))
+    (setq bc-scheme-repl-buffer repl-buffer))
 
-  (defun bc-guile--send-code-to-repl (string)
+  (defun bc-scheme--send-code-to-repl (string)
     "Send STRING to the associated buffer for evaluation."
-    (if bc-guile-repl-buffer
-        (with-current-buffer bc-guile-repl-buffer
+    (if bc-scheme-repl-buffer
+        (with-current-buffer bc-scheme-repl-buffer
           (goto-char (point-max))
           (let ((bol (save-excursion
                        (comint-bol))))
@@ -64,11 +64,11 @@
           (geiser-repl--maybe-send))
       (user-error "Associated geiser REPL not found")))
 
-  (defun bc-guile--eval-region (beg end)
-    (bc-guile--send-code-to-repl (buffer-substring-no-properties beg end))
+  (defun bc-scheme--eval-region (beg end)
+    (bc-scheme--send-code-to-repl (buffer-substring-no-properties beg end))
     (deactivate-mark))
 
-  (defun bc-guile--eval-last-sexp ()
+  (defun bc-scheme--eval-last-sexp ()
     "Evaluate the last sexp before point."
     ;; HACK: depend on evil
     (save-excursion
@@ -76,29 +76,29 @@
                       (1+ (point))
                     (1+ (re-search-backward "[\])]"))))
              (beg (evil-jump-item)))
-        (bc-guile--eval-region beg end))))
+        (bc-scheme--eval-region beg end))))
 
-  (defun bc-guile-eval-sexp-or-region ()
+  (defun bc-scheme-eval-sexp-or-region ()
     (interactive)
     (if (region-active-p)
-        (bc-guile--eval-region (region-beginning) (region-end))
-      (bc-guile--eval-last-sexp)))
+        (bc-scheme--eval-region (region-beginning) (region-end))
+      (bc-scheme--eval-last-sexp)))
 
-  (defun bc-guile--exit-repl (geiser-quit &rest args)
-    "When quitting repl buffer, reset `bc-guile-repl-buffer' for all associated code buffers."
+  (defun bc-scheme--exit-repl (geiser-quit &rest args)
+    "When quitting repl buffer, reset `bc-scheme-repl-buffer' for all associated code buffers."
     (when-let ((_ (y-or-n-p "Really quit this REPL? "))
                (repl-buffer (current-buffer)))
       (mapc (lambda (bf)
               (with-current-buffer bf
-                (setq-local bc-guile-repl-buffer nil)))
+                (setq-local bc-scheme-repl-buffer nil)))
             (seq-filter (lambda (bf)
                           (with-current-buffer bf
-                            (eq bc-guile-repl-buffer repl-buffer)))
+                            (eq bc-scheme-repl-buffer repl-buffer)))
                         (buffer-list)))
       (funcall geiser-quit args)
       (delete-window)))
 
-  (advice-add 'geiser-repl-exit :around 'bc-guile--exit-repl)
+  (advice-add 'geiser-repl-exit :around 'bc-scheme--exit-repl)
 
   :general
 
@@ -136,10 +136,10 @@
   (:keymaps 'scheme-mode-map
    :states '(motion normal visual)
    :prefix "SPC"
-   "rr" 'bc-guile-eval-sexp-or-region
+   "rr" 'bc-scheme-eval-sexp-or-region
    "rh" 'geiser-doc-symbol-at-point
-   "rz" 'bc-guile-associate-repl
-   "ro" 'bc-guile-start-or-pop-to-repl))
+   "rz" 'bc-scheme-associate-repl
+   "ro" 'bc-scheme-start-or-pop-to-repl))
 
-(provide 'bc-ide-guile)
-;;; bc-ide-guile.el ends here
+(provide 'bc-ide-scheme)
+;;; bc-ide-scheme.el ends here

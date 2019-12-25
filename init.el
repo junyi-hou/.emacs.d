@@ -42,7 +42,7 @@
 (require 'bc-ide-gentoo)
 (require 'bc-ide-python)
 (require 'bc-ide-stata)
-(require 'bc-ide-guile)
+(require 'bc-ide-scheme)
 (require 'bc-text)
 
 ;;; init.el ends here
