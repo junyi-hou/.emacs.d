@@ -38,11 +38,11 @@
 (require 'bc-pyim)
 
 ;;; language
-(require 'bc-ide-lisp)
-(require 'bc-ide-gentoo)
-(require 'bc-ide-python)
-(require 'bc-ide-stata)
-(require 'bc-ide-scheme)
+(require 'bc-lisp)
+(require 'bc-gentoo)
+(require 'bc-python)
+(require 'bc-stata)
+(require 'bc-scheme)
 (require 'bc-text)
 
 ;;; init.el ends here

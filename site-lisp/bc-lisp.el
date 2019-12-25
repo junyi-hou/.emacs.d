@@ -1,4 +1,4 @@
-;;; bc-ide-lisp.el --- setup ide features (auto-completion, code-jump, linter) for lisp -*- lexical-binding: t; -*-
+;;; bc-lisp.el --- setup ide features (auto-completion, code-jump, linter) for lisp -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -25,5 +25,5 @@
 (use-package easy-escape
   :hook ((emacs-lisp-mode lisp-mode) . easy-escape-minor-mode))
 
-(provide 'bc-ide-lisp)
-;;; bc-ide-lisp.el ends here
+(provide 'bc-lisp)
+;;; bc-lisp.el ends here

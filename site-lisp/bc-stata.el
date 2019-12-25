@@ -1,4 +1,4 @@
-;;; bc-ide-stata.el --- stata settings -*- lexical-binding: t; -*-
+;;; bc-stata.el --- stata settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -30,12 +30,10 @@
    "rb" 'jupyter-eval-buffer
    "rf" 'jupyter-eval-defun
    "rr" 'jupyter-eval-line-or-region
-   "rc" 'bc-python-eval-class
-
    "ro" 'bc-stata-local-repl
 
    "rz" 'jupyter-repl-associate-buffer
    "rZ" 'bc-stata-reconnect))
 
-(provide 'bc-ide-stata)
-;;; bc-ide-stata.el ends here
+(provide 'bc-stata)
+;;; bc-stata.el ends here

@@ -1,4 +1,4 @@
-;;; bc-ide-scheme.el --- IDE feature for GNU guile -*- lexical-binding: t; -*-
+;;; bc-scheme.el --- IDE feature for GNU guile -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -141,5 +141,5 @@
    "rz" 'bc-scheme-associate-repl
    "ro" 'bc-scheme-start-or-pop-to-repl))
 
-(provide 'bc-ide-scheme)
-;;; bc-ide-scheme.el ends here
+(provide 'bc-scheme)
+;;; bc-scheme.el ends here

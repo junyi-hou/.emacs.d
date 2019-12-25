@@ -1,4 +1,4 @@
-;;; bc-ide-python.el --- provide IDE features for editing python files -*- lexical-binding: t; -*-
+;;; bc-python.el --- provide IDE features for editing python files -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -81,5 +81,5 @@
    "rZ" 'bc-python-reconnect))
 
 
-(provide 'bc-ide-python)
-;;; bc-ide-python ends here
+(provide 'bc-python)
+;;; bc-python ends here
