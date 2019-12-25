@@ -75,6 +75,13 @@
           (t 'magit-visit-thing)))
 
   :general
+  (:keymaps '(motion normal visual emacs insert)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   "gg" 'magit-status
+   "gd" 'magit-ediff-show-working-tree
+   "gl" 'magit-log-buffer-file)
+
   (:keymaps '(magit-status-mode-map magit-diff-mode-map magit-log-mode-map)
    :states '(motion normal visual)
    "SPC" nil
@@ -113,7 +120,8 @@
    "M-k" 'git-rebase-move-line-up))
 
 (use-package magit-todos
-  :after magit
+  :hook
+  (magit-status-mode . magit-todos-mode)
   :init
   (setq magit-todos-insert-at 'bottom
         magit-todos-section-heading "Todo")

@@ -212,19 +212,6 @@
           (while (search-forward from-string nil t)
             (replace-match to-string nil t))))))
 
-  (defvar bc-evil--saved-window-config nil
-    "Saved window config from `current-window-configuration'.")
-
-  (defun bc-evil-toggle-one-window ()
-    "If there are more than 1 windows in the current frame, save the current window config and call `delete-other-windows'. If there is a saved config, restore that config.
-
-Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-all-but-one-window-and-then-revert-to-previous-window-setup."
-    (interactive)
-    (if (and bc-evil--saved-window-config (not (window-parent)))
-        (set-window-configuration bc-evil--saved-window-config)
-      (setq bc-evil--saved-window-config (current-window-configuration))
-      (delete-other-windows)))
-
   :general
   (:keymaps '(motion normal visual)
    "j" 'evil-next-visual-line
@@ -293,8 +280,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
    ;; dired
    "od" (lambda () (interactive)
           (dired default-directory))
-   ;; x windows
-   "ox" 'bc-exwm-switch-to-xwindow
 
    ;; launch X programs
    "lb" (lambda () "TODO: use ivy to parse and present bash autocomplete file?"
@@ -316,17 +301,6 @@ Taken from https://emacs.stackexchange.com/questions/20511/quick-way-to-close-al
              (if ivy-current-prefix-arg
                  (bc-exwm-launch (concat "zathura " x))
                (find-file x)))))
-
-   ;; focus mode
-   "f" 'bc-evil-toggle-one-window
-
-   ;; magit
-   "gg" (lambda () (interactive)
-          (unless magit-todos-mode
-            (magit-todos-mode))
-          (magit-status))
-   "gd" 'magit-ediff-show-working-tree
-   "gl" 'magit-log-buffer-file
 
    ;; other uses
    "t" 'evilnc-comment-or-uncomment-lines)
