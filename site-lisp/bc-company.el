@@ -21,7 +21,6 @@
    "M-j" nil
    "M-k" nil))
 
-
 (use-package company
   :hook
   (prog-mode . company-mode)
@@ -94,11 +93,60 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   (setq company-posframe-show-metadata nil
         company-posframe-show-indicator nil
         company-posframe-quickhelp-delay nil)
+
+  (defconst bc-company-posframe-quickhelp-height 10
+    "Height of the company-posframe-quickhelp frame.")
+
+  ;; place quickhelp frame side-by-side with the candidate frame
+  (defun bc-company-posframe-quickhelp-show ()
+    (company-posframe-quickhelp-cancel-timer)
+    (while-no-input
+      (let* ((selected (nth company-selection company-candidates))
+             (doc (let ((inhibit-message t))
+                    (company-posframe-quickhelp-doc selected)))
+             (height bc-company-posframe-quickhelp-height)
+             (header-line
+              (substitute-command-keys
+               (concat
+                "## "
+                "\\<company-posframe-active-map>\\[company-posframe-quickhelp-toggle]:Show/Hide  "
+                "\\<company-posframe-active-map>\\[company-posframe-quickhelp-scroll-up]:Scroll-Up  "
+                "\\<company-posframe-active-map>\\[company-posframe-quickhelp-scroll-down]:Scroll-Down "
+                "##"))))
+        (when doc
+          (with-current-buffer (get-buffer-create company-posframe-quickhelp-buffer)
+            (setq-local header-line-format header-line))
+          (apply #'posframe-show
+                 company-posframe-quickhelp-buffer
+                 :string (propertize doc 'face 'company-posframe-quickhelp)
+                 :width (let ((n (apply #'max (mapcar #'string-width
+                                                      (split-string doc "\n+")))))
+                          (max (length header-line) (min fill-column n)))
+                 :min-width (length header-line)
+                 :min-height height
+                 :height height
+                 :respect-header-line t
+                 ;; When first show quickhelp's posframe, it seem using wrong height,
+                 ;; maybe header-line's reason, just refresh again, ugly but useful :-).
+                 :refresh 0.5
+                 :background-color (face-attribute 'company-posframe-quickhelp :background nil t)
+                 :foreground-color (face-attribute 'company-posframe-quickhelp :foreground nil t)
+                 :position
+                 (with-current-buffer company-posframe-buffer
+                   (let ((pos posframe--last-posframe-pixel-position))
+                     (cons (+ (car pos) (frame-pixel-width posframe--frame))
+                           (cdr pos))))
+                 company-posframe-quickhelp-show-params)))))
+
+  (advice-add #'company-posframe-quickhelp-show
+              :override
+              #'bc-company-posframe-quickhelp-show)
+
   :general
   (:keymaps 'company-active-map
-   "M-h" 'company-posframe-quickhelp-toggle
-   "J" 'company-posframe-quickhelp-scroll-down
-   "K" 'company-posframe-quickhelp-scroll-up))
+   "M-n" 'company-posframe-quickhelp-toggle
+   "J" 'company-posframe-quickhelp-scroll-up
+   "K" 'company-posframe-quickhelp-scroll-down))
 
 (provide 'bc-company)
 ;;; bc-company.el ends here
