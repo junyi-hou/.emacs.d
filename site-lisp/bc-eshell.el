@@ -35,6 +35,12 @@
      "RET" 'bc-eshell-open-file-at-point)
 
     (general-define-key
+     :states '(normal visual motion emacs insert)
+     :keymaps 'eshell-mode-map
+     :prefix "C-c"
+     "C-k" 'bc-eshell-clear-buffer)
+
+    (general-define-key
      :states '(normal visual motion)
      :keymaps 'eshell-mode-map
      :prefix "SPC"

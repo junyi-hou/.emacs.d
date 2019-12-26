@@ -95,6 +95,11 @@
    "C-e" 'jupyter-repl-forward-cell)
 
   (:keymaps 'jupyter-repl-mode-map
+   :states '(insert normal visual motion emacs)
+   :prefix "C-c"
+   "C-k" 'jupyter-repl-clear-cells)
+
+  (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)
    "A" 'bc-comint-goto-last-prompt
    "/" 'evil-search-forward
