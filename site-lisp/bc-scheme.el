@@ -8,6 +8,7 @@
   ;; provide code-completion and documentation
   :hook (scheme-mode . geiser-mode)
   :init
+  (require 'bc-comint)
   ;; use guile
   (setq scheme-program-name "guile"
         geiser-default-implementation 'guile
