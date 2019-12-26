@@ -281,27 +281,6 @@
    "od" (lambda () (interactive)
           (dired default-directory))
 
-   ;; launch X programs
-   "lb" (lambda () "TODO: use ivy to parse and present bash autocomplete file?"
-          (interactive)
-          (bc-exwm-launch "qutebrowser"))
-   "lp" (lambda () "Open a pdf file, with `ivy-current-prefix-arg', open the file in zathura, otherwise open file in pdf-tools."
-          (interactive)
-          (ivy-read
-           "open pdf file: "
-           #'read-file-name-internal
-           ;; use predicate to filter out non-pdfs
-           :predicate
-           (lambda (x)
-             (or (string= "pdf" (file-name-extension x))
-                 (string= (substring x (1- (length x))) "/")))
-           :initial-input "~/downloads/"
-           :action
-           (lambda (x)
-             (if ivy-current-prefix-arg
-                 (bc-exwm-launch (concat "zathura " x))
-               (find-file x)))))
-
    ;; other uses
    "t" 'evilnc-comment-or-uncomment-lines)
 

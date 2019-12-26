@@ -10,10 +10,6 @@
 ;;  functions
 ;;; ===============================
 
-(defun bc-exwm-launch (execatuable)
-  "Launch EXECATUABLE in exwm."
-  (start-process-shell-command execatuable nil execatuable))
-
 (defun bc-exwm-amixer-adjust-volume (&optional up x)
   "Change volume by X percent, increase volume if UP is not-nil, otherwise decrease volume.  If X is nil, change by 5%."
   (let* ((x (or x 5))
@@ -22,10 +18,10 @@
       (shell-command
        (concat "amixer -q sset Master " (format "%d" x) "%" direction)))
     (message (concat "volume: " (with-temp-buffer
-                                 (insert (shell-command-to-string "amixer sget Master"))
-                                 (goto-char 0)
-                                 (search-forward-regexp "\\(\\[\\([[:digit:]]+\\)%\\]\\)")
-                                 (match-string 2))))))
+                                  (insert (shell-command-to-string "amixer sget Master"))
+                                  (goto-char 0)
+                                  (search-forward-regexp "\\(\\[\\([[:digit:]]+\\)%\\]\\)")
+                                  (match-string 2))))))
 
 (defun bc-exwm-amixer-toggle-mute ()
   "Toggle mute."
@@ -115,6 +111,31 @@
         (apply ff args))))
 
   (advice-add #'find-file :around #'bc-exwm--zathura-find-file))
+
+(with-eval-after-load 'evil
+  (general-define-key
+   :keymaps '(motion normal visual emacs insert)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   "lb" (lambda ()
+          (interactive)
+          (start-process-shell-command (getenv "BROWSER") nil (getenv "BROWSER")))
+   "lp" (lambda ()
+          "Open a pdf file, with `ivy-current-prefix-arg', open the file in zathura, otherwise open file in pdf-tools."
+          (interactive)
+          (ivy-read
+           "open pdf file: "
+           #'read-file-name-internal
+           ;; use predicate to filter out non-pdfs
+           :predicate
+           (lambda (x)
+             (or (string= "pdf" (file-name-extension x))
+                 (string= (substring x (1- (length x))) "/")))
+           :initial-input "~/downloads/"
+           :action
+           (lambda (x)
+             (find-file x))))))
+
 ;;; ===============================
 ;;  multi-monitor setup
 ;;; ===============================
