@@ -99,6 +99,22 @@
       (selected-frame)
       (exwm--buffer->id (get-buffer x))))))
 
+(when (executable-find "zathura")
+  (defun bc-exwm--zathura-find-file (ff &rest args)
+    "When open pdf files, use `Zathura' instead."
+    (let ((files (if (cdr args)
+                     (file-expand-wildcards (car args))
+                   (list (car args)))))
+      (if (seq-every-p (lambda (file)
+                         (equal "pdf" (file-name-extension file)))
+                       files)
+          (seq-do
+           (lambda (file)
+             (start-process-shell-command "zathura" nil (format "zathura %s" file)))
+           files)
+        (apply ff args))))
+
+  (advice-add #'find-file :around #'bc-exwm--zathura-find-file))
 ;;; ===============================
 ;;  multi-monitor setup
 ;;; ===============================
