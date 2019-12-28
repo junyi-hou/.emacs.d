@@ -37,6 +37,9 @@
    "rs" 'bc-ivy-grep-at-point
    "rS" 'counsel-rg))
 
+;; for counsel-search
+(use-package request :defer t)
+
 (use-package ivy-posframe
   :after ivy
   :config

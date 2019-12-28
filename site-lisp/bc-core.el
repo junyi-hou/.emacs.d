@@ -221,7 +221,8 @@ Lisp function does not specify a special indentation."
   (global-so-long-mode))
 (use-package beacon
   :init
-  (setq beacon-blink-when-window-scrolls nil)
+  (setq beacon-blink-when-window-scrolls nil
+        beacon-size 10)
   :config
   (beacon-mode 1))
 
