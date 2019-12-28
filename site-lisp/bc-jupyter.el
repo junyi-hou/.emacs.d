@@ -88,11 +88,9 @@
 
   :general
   (:keymaps 'jupyter-repl-mode-map
-   :states '(insert normal visual motion emacs)
-   (kbd "<up>") 'jupyter-repl-history-previous
-   (kbd "<down>") 'jupyter-repl-history-next
-   "C-y" 'jupyter-repl-backward-cell
-   "C-e" 'jupyter-repl-forward-cell)
+   :states 'insert
+   "<up>" 'jupyter-repl-history-previous
+   "<down>" 'jupyter-repl-history-next)
 
   (:keymaps 'jupyter-repl-mode-map
    :states '(insert normal visual motion emacs)
