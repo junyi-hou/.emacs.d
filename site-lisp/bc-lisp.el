@@ -14,9 +14,57 @@
   :hook
   (emacs-lisp-mode . bc-lisp--set-tab-width))
 
+(use-package ielm
+  :straight (:type built-in)
+  :init
+
+  (defun bc-lisp-start-or-pop-to-repl ()
+    "Pop to the associated REPL, if such REPL does not exist, start one."
+    (interactive)
+    (if bc-comint-repl-buffer
+        (bc-comint--pop-to-repl)
+      (bc-core-split-window)
+      (other-window 1)
+      (bc-comint--start-repl 'ielm)))
+
+  (defun bc-lisp-associate-repl ()
+    "Associate current buffer to a REPL"
+    (interactive)
+    (bc-comint-associate-repl 'inferior-emacs-lisp-mode))
+
+  (defun bc-lisp-eval-sexp-or-region ()
+    (interactive)
+    (if (region-active-p)
+        (bc-comint--eval-region 'ielm-return (region-beginning) (region-end))
+      (bc-comint--eval-last-sexp 'ielm-return)))
+
+  :general
+
+  (:keymaps '(emacs-lisp-mode-map
+              lisp-interaction-mode-map)
+   :states '(motion normal visual)
+   :prefix "SPC"
+   "rr" 'bc-lisp-eval-sexp-or-region
+   "rh" 'helpful-symbol
+   "rz" 'bc-comint-associate-repl
+   "ro" 'bc-lisp-start-or-pop-to-repl)
+
+  (:keymaps 'inferior-emacs-lisp-mode-map
+   :states '(normal motion visual)
+   "SPC" 'nil)
+
+  (:keymaps 'inferior-emacs-lisp-mode-map
+   :states 'insert
+   "<return>" 'ielm-return)
+
+  (:keymaps 'inferior-emacs-lisp-mode-map
+   :states '(normal motion visual)
+   :prefix "SPC"
+   "q" 'bc-comint-exit-repl))
+
 (use-package aggressive-indent
-  :hook
-  (emacs-lisp-mode . aggressive-indent-mode))
+:hook
+(emacs-lisp-mode . aggressive-indent-mode))
 
 (use-package helpful
   :init

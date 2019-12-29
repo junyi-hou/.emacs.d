@@ -9,6 +9,8 @@
 
   :init
 
+  (require 'bc-comint)
+
   (unless (executable-find "jupyter")
     (user-error "Cannot find jupyter executable, please check jupyter is installed"))
 
