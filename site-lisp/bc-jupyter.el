@@ -95,21 +95,19 @@
    "<down>" 'jupyter-repl-history-next)
 
   (:keymaps 'jupyter-repl-mode-map
-   :states '(insert normal visual motion emacs)
-   :prefix "C-c"
-   "C-k" 'jupyter-repl-clear-cells)
-
-  (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)
    "A" 'bc-comint-goto-last-prompt
    "/" 'evil-search-forward
    "?" 'evil-search-backward
+   "<up>" 'jupyter-repl-backward-cell
+   "<down>" 'jupyter-repl-forward-cell
    "SPC" nil)
 
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion insert)
    :prefix "C-c"
-   "C-c" 'jupyter-repl-interrupt-kernel)
+   "C-c" 'jupyter-repl-interrupt-kernel
+   "C-k" 'jupyter-repl-clear-cells)
 
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)
