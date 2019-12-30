@@ -16,6 +16,8 @@
 
 (use-package ielm
   :straight (:type built-in)
+  :hook (ielm-mode . company-mode)
+  :commands (bc-lisp-start-or-pop-to-repl)
   :init
 
   (defun bc-lisp-start-or-pop-to-repl ()
