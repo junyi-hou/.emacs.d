@@ -63,6 +63,8 @@ config.bind('k', 'scroll up')
 config.bind('l', 'scroll right')
 config.bind('d', 'scroll-page 0 0.5')
 config.bind('u', 'scroll-page 0 -0.5')
+config.bind('<Ctrl-y>', 'scroll-page 0 -0.3')
+config.bind('<Ctrl-e>', 'scroll-page 0 0.3')
 
 config.bind('p', 'tab-pin')
 
