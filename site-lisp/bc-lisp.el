@@ -48,7 +48,7 @@
    :prefix "SPC"
    "rr" 'bc-lisp-eval-sexp-or-region
    "rh" 'helpful-symbol
-   "rz" 'bc-comint-associate-repl
+   "rz" 'bc-lisp-associate-repl
    "ro" 'bc-lisp-start-or-pop-to-repl)
 
   (:keymaps 'inferior-emacs-lisp-mode-map

@@ -48,10 +48,12 @@
 
   (defun bc-comint-associate-repl (repl-mode)
     "Select a repl of mode REPL-MODE and associate the current buffer to that repl."
-    (let ((repl-buffer (ivy-read "Choose REPL to associate to"
-                                 (seq-filter (lambda (bf)
-                                               (eq major-mode repl-mode)
-                                               (buffer-list)))
+    (let ((repl-buffer (ivy-read "Choose REPL to associate to: "
+                                 (mapcar 'buffer-name
+                                         (seq-filter (lambda (bf)
+                                                       (with-current-buffer bf
+                                                         (eq major-mode repl-mode)))
+                                                     (buffer-list)))
                                  :action 'identity)))
       (setq bc-comint-repl-buffer repl-buffer)))
 
