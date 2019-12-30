@@ -65,8 +65,8 @@
    "q" 'bc-comint-exit-repl))
 
 (use-package aggressive-indent
-:hook
-(emacs-lisp-mode . aggressive-indent-mode))
+  :hook
+  (emacs-lisp-mode . aggressive-indent-mode))
 
 (use-package helpful
   :init
