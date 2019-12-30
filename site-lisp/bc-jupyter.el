@@ -6,11 +6,7 @@
 
 (use-package jupyter
   :defer t
-
   :init
-
-  (require 'bc-comint)
-
   (unless (executable-find "jupyter")
     (user-error "Cannot find jupyter executable, please check jupyter is installed"))
 
@@ -75,6 +71,12 @@
     ;; (bc-jupyter-log--save-workspace)
     (kill-buffer-and-window))
 
+  (defun bc-jupyter-goto-last-prompt ()
+    "Goto current prompt and continue editting."
+    (interactive)
+    (goto-char (point-max))
+    (evil-insert 1))
+
   (defun bc-jupyter-clear-buffer ()
     "Jupyter REPL version of `cls'."
     (interactive)
@@ -96,7 +98,7 @@
 
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)
-   "A" 'bc-comint-goto-last-prompt
+   "A" 'bc-jupyter-goto-last-prompt
    "/" 'evil-search-forward
    "?" 'evil-search-backward
    "<up>" 'jupyter-repl-backward-cell

@@ -25,7 +25,7 @@
     (general-define-key
      :states '(normal visual motion)
      :keymaps 'eshell-mode-map
-     "A" 'bc-comint-goto-last-prompt
+     "A" 'bc-eshell-goto-last-prompt
      "H" 'eshell-bol
      "S" 'bc-eshell-toggle-sudo
      "c" 'eshell/evil-change
@@ -59,6 +59,12 @@
     (eshell/alias "ll" "ls -Aloh --color=always"))
 
   ;; functions
+
+  (defun bc-eshell-goto-last-prompt ()
+    "Goto current prompt and continue editting."
+    (interactive)
+    (goto-char (point-max))
+    (evil-insert 1))
 
   (defun bc-eshell--open-or-cd (path)
     "Cd to PATH if path is a directory ((file-name-directory path) => t), otherwise open PATH via `find-file'."

@@ -17,9 +17,8 @@
   (defun bc-comint-cls ()
     "clear current REPL buffer."
     (interactive)
-    (let ((inhibit-read-only t))
-      (erase-buffer)
-      (comint-send-input)))
+    (let ((comint-buffer-maximum-size 0))
+      (comint-truncate-buffer)))
 
   (defun bc-comit--move-to-eol (&rest _)
     (end-of-line))
@@ -101,7 +100,7 @@
   (:keymaps 'comint-mode-map
    :states '(normal visual motion emacs insert)
    :prefix "C-c"
-   "C-k" 'bc-comit-cls
+   "C-k" 'bc-comint-cls
    "C-c" 'comint-interrupt-subjob)
 
   (:keymaps 'comint-mode-map
