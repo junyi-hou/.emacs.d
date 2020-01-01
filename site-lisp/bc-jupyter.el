@@ -109,7 +109,7 @@
    :states '(normal visual motion insert)
    :prefix "C-c"
    "C-c" 'jupyter-repl-interrupt-kernel
-   "C-k" 'jupyter-repl-clear-cells)
+   "C-l" 'jupyter-repl-clear-cells)
 
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)

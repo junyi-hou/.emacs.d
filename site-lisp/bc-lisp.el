@@ -73,7 +73,7 @@
   (evil-set-initial-state 'helpful-mode 'motion))
 
 (use-package easy-escape
-  :hook ((emacs-lisp-mode lisp-mode) . easy-escape-minor-mode))
+  :hook ((emacs-lisp-mode lisp-mode inferior-emacs-lisp-mode) . easy-escape-minor-mode))
 
 (provide 'bc-lisp)
 ;;; bc-lisp.el ends here

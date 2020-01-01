@@ -38,7 +38,7 @@
      :states '(normal visual motion emacs insert)
      :keymaps 'eshell-mode-map
      :prefix "C-c"
-     "C-k" 'bc-eshell-clear-buffer)
+     "C-l" 'bc-eshell-clear-buffer)
 
     (general-define-key
      :states '(normal visual motion)

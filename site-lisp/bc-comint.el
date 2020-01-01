@@ -102,7 +102,7 @@
   (:keymaps 'comint-mode-map
    :states '(normal visual motion emacs insert)
    :prefix "C-c"
-   "C-k" 'bc-comint-cls
+   "C-l" 'bc-comint-cls
    "C-c" 'comint-interrupt-subjob)
 
   (:keymaps 'comint-mode-map
