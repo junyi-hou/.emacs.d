@@ -119,18 +119,6 @@
    "M-j" 'git-rebase-move-line-down
    "M-k" 'git-rebase-move-line-up))
 
-(use-package magit-todos
-  :hook
-  (magit-status-mode . magit-todos-mode)
-  :init
-  (setq magit-todos-insert-at 'bottom
-        magit-todos-section-heading "Todo")
-  :commands magit-todos-mode
-  :general
-  (:keymaps 'magit-todos-section-map
-   "j" 'evil-next-visual-line
-   "b" 'magit-branch))
-
 (use-package forge
   :after magit
   :init
