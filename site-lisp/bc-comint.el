@@ -31,7 +31,7 @@
   ;;; ===============================
 
   (defvar-local bc-comint-repl-buffer nil
-    "The geiser repl associated to the current buffer.")
+    "The repl associated to the current buffer.")
 
   (defun bc-comint--start-repl (repl-fn &rest args)
     "Start a REPL buffer using REPL-FN with ARGS."
@@ -90,7 +90,7 @@
                (repl-buffer (current-buffer)))
       (mapc (lambda (bf)
               (with-current-buffer bf
-                (setq-local bc-comint-repl-buffer nil)))
+                (setq bc-comint-repl-buffer nil)))
             (seq-filter (lambda (bf)
                           (with-current-buffer bf
                             (eq bc-comint-repl-buffer repl-buffer)))

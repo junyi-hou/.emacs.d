@@ -222,10 +222,10 @@ Lisp function does not specify a special indentation."
 (use-package beacon
   ;; use chep's fork so it can grow backwards
   :straight (beacon :host github :repo "chep/beacon")
-  :init
-  (setq beacon-blink-when-window-scrolls nil
-        beacon-size 20)
   :config
+  (setq beacon-blink-when-window-scrolls nil
+        beacon-can-go-backwards t
+        beacon-size 20)
   (beacon-mode 1))
 
 ;; indentation settings
