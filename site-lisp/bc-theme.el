@@ -65,9 +65,9 @@
    :weight 'normal)
 
   (telephone-line-defsegment* bc-theme-pctg-buffer-position ()
-    (concat "LN " (format "%d/%d"
-                          (1+ (count-lines 1 (point)))
-                          (1+ (count-lines (point-min) (point-max))))))
+    (format "%d/%d"
+            (1+ (count-lines 1 (point)))
+            (1+ (count-lines (point-min) (point-max)))))
   (setq telephone-line-lhs
         '((evil     . (telephone-line-evil-tag-segment))
           (accent   . (telephone-line-vc-segment
@@ -77,6 +77,9 @@
         '((nil      . (telephone-line-misc-info-segment))
           (accent   . (telephone-line-major-mode-segment))
           (evil     . (bc-theme-pctg-buffer-position))))
+
+  (setq telephone-line-evil-use-short-tag t)
+
   :config
   (telephone-line-mode 1))
 
