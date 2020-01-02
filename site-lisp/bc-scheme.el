@@ -25,7 +25,7 @@
     (interactive)
     (if bc-comint-repl-buffer
         (bc-comint--pop-to-repl)
-      (bc-comint--start-repl 'geiser-run geiser-default-implementation)))
+      (bc-comint--start-repl 'run-geiser geiser-default-implementation)))
 
   (defun bc-scheme-associate-repl ()
     "Associate current buffer to a REPL"
@@ -41,15 +41,24 @@
   :general
 
   (:keymaps 'geiser-repl-mode-map
+   :states '(normal motion visual)
+   "SPC" 'nil)
+
+  (:keymaps 'geiser-repl-mode-map
    :states 'insert
    "<return>" 'geiser-repl--maybe-send)
+
+  (:keymaps 'geiser-repl-mode-map
+   :states '(normal motion visual)
+   :prefix "SPC"
+   "q" 'bc-comint-exit-repl)
 
   (:keymaps 'scheme-mode-map
    :states '(motion normal visual)
    :prefix "SPC"
    "rr" 'bc-scheme-eval-sexp-or-region
    "rh" 'geiser-doc-symbol-at-point
-   "rz" 'bc-comint-associate-repl
+   "rz" 'bc-scheme-associate-repl
    "ro" 'bc-scheme-start-or-pop-to-repl))
 
 (provide 'bc-scheme)

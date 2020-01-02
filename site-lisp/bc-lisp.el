@@ -41,7 +41,6 @@
       (bc-comint--eval-last-sexp 'ielm-return)))
 
   :general
-
   (:keymaps '(emacs-lisp-mode-map
               lisp-interaction-mode-map)
    :states '(motion normal visual)

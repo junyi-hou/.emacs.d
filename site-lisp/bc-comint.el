@@ -48,14 +48,14 @@
 
   (defun bc-comint-associate-repl (repl-mode)
     "Select a repl of mode REPL-MODE and associate the current buffer to that repl."
-    (let ((repl-buffer (ivy-read "Choose REPL to associate to: "
-                                 (mapcar 'buffer-name
-                                         (seq-filter (lambda (bf)
-                                                       (with-current-buffer bf
-                                                         (eq major-mode repl-mode)))
-                                                     (buffer-list)))
-                                 :action 'identity)))
-      (setq bc-comint-repl-buffer repl-buffer)))
+    (let ((repl-buffer-name (ivy-read
+                             "Choose REPL to associate to: "
+                             #'internal-complete-buffer
+                             :predicate (lambda (bf)
+                                          (with-current-buffer (cdr bf)
+                                            (eq major-mode repl-mode)))
+                             :action 'identity)))
+      (setq bc-comint-repl-buffer (get-buffer repl-buffer-name))))
 
   (defun bc-comint--send-code-to-repl (send-fn string)
     "Send STRING using SEND-FN to the associated buffer for evaluation."
@@ -90,7 +90,7 @@
                (repl-buffer (current-buffer)))
       (mapc (lambda (bf)
               (with-current-buffer bf
-                (setq bc-comint-repl-buffer nil)))
+                (setq-local bc-comint-repl-buffer nil)))
             (seq-filter (lambda (bf)
                           (with-current-buffer bf
                             (eq bc-comint-repl-buffer repl-buffer)))
