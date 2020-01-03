@@ -19,13 +19,14 @@
   (defun bc-python--get-python-version ()
     "Infer python versions from shebang.  If there is no shebang, promote the user for python's version."
     (interactive)
-    (let* ((shebang (save-excursion (goto-char 1) (thing-at-point 'line)))
-           (py-exec (when (string-match "#!/usr/bin/env\s+\\(python.?\\)" shebang)
-                      (match-string 1 shebang))))
-      (message (or py-exec
-                   (ivy-read "Cannot infer python interpreter, please select: "
-                             '("python2" "python3")
-                             :action 'identity)))))
+    (unless jupyter-current-client
+      (let* ((shebang (save-excursion (goto-char 1) (thing-at-point 'line)))
+             (py-exec (when (string-match "#!/usr/bin/env\s+\\(python.?\\)" shebang)
+                        (match-string 1 shebang))))
+        (message (or py-exec
+                     (ivy-read "Cannot infer python interpreter, please select: "
+                               '("python2" "python3")
+                               :action 'identity))))))
 
   :hook
   (python-mode . bc-python--set-indent-width)
