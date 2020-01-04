@@ -7,7 +7,6 @@
 (use-package pyim
   :demand t
   :init
-
   ;; enable pinyin search in ivy-read
   (with-eval-after-load 'ivy
     (progn
@@ -18,9 +17,8 @@
 
       (setq ivy-re-builders-alist '((t . bc-pyim--ivy-cregexp)))))
 
-  :config
-
   (setq default-input-method "pyim"
+        pyim-title "拼音"
         default-scheme 'quanpin
         pyim-page-tooltip 'posframe
         pyim-page-length 5)

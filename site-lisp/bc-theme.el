@@ -55,33 +55,65 @@
    "C--" 'bc-theme-fontsize-down
    "C-=" 'bc-theme-fontsize-reset))
 
-;; mode line
-(use-package telephone-line
+(use-package doom-modeline
   :init
-
-  (set-face-attribute
-   'mode-line-buffer-id
-   nil
-   :weight 'normal)
-
-  (telephone-line-defsegment* bc-theme-pctg-buffer-position ()
-    (format "%d/%d"
-            (1+ (count-lines 1 (point)))
-            (1+ (count-lines (point-min) (point-max)))))
-  (setq telephone-line-lhs
-        '((evil     . (telephone-line-evil-tag-segment))
-          (accent   . (telephone-line-vc-segment
-                       telephone-line-erc-modified-channels-segment))
-          (nil      . (telephone-line-buffer-segment))))
-  (setq telephone-line-rhs
-        '((nil      . (telephone-line-misc-info-segment))
-          (accent   . (telephone-line-major-mode-segment))
-          (evil     . (bc-theme-pctg-buffer-position))))
-
-  (setq telephone-line-evil-use-short-tag t)
+  (setq doom-modeline-project-detection 'project
+        doom-modeline-buffer-file-name-style 'relative-from-project
+        ;; if only I can disable all-the-icon dependency...
+        doom-modeline-icon nil
+        doom-modeline-percent-position nil
+        doom-modeline-vcs-max-length 20)
 
   :config
-  (telephone-line-mode 1))
+  (doom-modeline-mode 1)
+
+  (doom-modeline-def-segment current-line
+    (when (doom-modeline--active)
+      (format "%d/%d%s"
+              (line-number-at-pos (point))
+              (line-number-at-pos (point-max))
+              (doom-modeline-spc))))
+
+  (with-eval-after-load 'time
+    (doom-modeline-def-segment current-time
+      "Display time via `display-time-string'"
+      (if (doom-modeline--active)
+          '("" display-time-string))))
+
+  (doom-modeline-def-modeline 'main
+    '(modals vcs remote-host buffer-info checker)
+    '(input-method major-mode current-line current-time battery))
+
+  (doom-modeline-def-modeline 'project
+    '(modals vcs buffer-default-directory)
+    '(input-method major-mode current-time battery))
+
+  (doom-modeline-def-modeline 'message
+    '(modals buffer-info-simple)
+    '(input-method major-mode current-time battery))
+
+  (doom-modeline-def-modeline 'vcs
+    '(modals buffer-info)
+    '(input-method major-mode current-line current-time battery))
+
+  (with-eval-after-load 'exwm
+
+    (defvar bc-theme-exwm-title-max-length 45)
+
+    (doom-modeline-def-segment exwm-title
+      "exwm buffer title, truncated if too long."
+      (if-let ((title (buffer-name))
+               ((> (length title) bc-theme-exwm-title-max-length)))
+          (concat (substring title 0 bc-theme-exwm-title-max-length) "...")
+        title))
+
+    (doom-modeline-def-modeline 'exwm
+      '(modals exwm-title) '(major-mode current-time battery))
+
+    (defun bc-theme-set-exwm-modeline ()
+      (doom-modeline-set-modeline 'exwm))
+
+    (add-hook 'exwm-manage-finish-hook #'bc-theme-set-exwm-modeline)))
 
 ;; indentation guide
 (use-package highlight-indent-guides
@@ -92,6 +124,16 @@
   (setq highlight-indent-guides-method 'character
         highlight-indent-guides-character ?\┆
         highlight-indent-guides-responsive 'stack))
+
+;; visual cue of the cursor position
+(use-package beacon
+  ;; use chep's fork so it can grow backwards
+  :straight (beacon :host github :repo "chep/beacon")
+  :config
+  (setq beacon-blink-when-window-scrolls nil
+        beacon-can-go-backwards t
+        beacon-size 15)
+  (beacon-mode 1))
 
 ;; line numbers
 (use-package display-line-numbers
@@ -112,18 +154,18 @@
    display-line-numbers-width 3
    display-line-numbers-widen nil))
 
-;; display time
-(use-package time
-  :config
-  (setq display-time-load-average-threshold 2.0
-        display-time-24hr-format t)
-  (display-time-mode))
-
 ;; display battery level
 (use-package battery
   :config
-  (setq battery-mode-line-limit 30)
+  (setq battery-mode-line-limit 100)
   (display-battery-mode))
+
+;; display time
+(use-package time
+  :config
+  (setq display-time-default-load-average nil
+        display-time-24hr-format t)
+  (display-time-mode))
 
 ;; highlight keywords
 (use-package hl-todo

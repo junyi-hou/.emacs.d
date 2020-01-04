@@ -214,14 +214,7 @@ Lisp function does not specify a special indentation."
    :host github)
   :config
   (global-so-long-mode))
-(use-package beacon
-  ;; use chep's fork so it can grow backwards
-  :straight (beacon :host github :repo "chep/beacon")
-  :config
-  (setq beacon-blink-when-window-scrolls nil
-        beacon-can-go-backwards t
-        beacon-size 20)
-  (beacon-mode 1))
+
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil
