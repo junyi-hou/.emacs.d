@@ -11,10 +11,6 @@
   :init
   (require 'bc-jupyter)
 
-  (when (and (featurep 'ob-async)
-             (featurep 'jupyter))
-    (add-to-list 'ob-async-no-async-languages-alist "jupyter-stata"))
-
   (defalias 'bc-stata-local-repl
     (lambda () (interactive) (bc-jupyter-start-or-switch-to-repl "stata"))
     "Open a jupyter repl for stata interpreter.")
