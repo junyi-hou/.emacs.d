@@ -13,7 +13,6 @@
   (org-mode . bc-org--complete-keywords)
 
   :init
-
   ;; functions
 
   (defconst bc-org-foldable
