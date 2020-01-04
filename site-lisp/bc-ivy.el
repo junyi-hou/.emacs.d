@@ -50,7 +50,8 @@
 (use-package ivy-prescient
   :after ivy
   :init
-  (setq ivy-prescient-sort-commands '(:not swiper ivy-switch-buffer counsel-recentf))
+  (setq ivy-prescient-sort-commands
+        '(:not swiper ivy-switch-buffer counsel-recentf flyspell-correct-ivy))
   :config
   (ivy-prescient-mode))
 

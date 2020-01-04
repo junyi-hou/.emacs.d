@@ -13,12 +13,12 @@
   (setq flyspell-correct-interface #'flyspell-correct-ivy)
 
   ;; functions
-  (defun bc-style-correct (arg)
+  (defun bc-style-correct ()
     "Advising `flyspell-correct-wrapper' to go to previous cursor position."
-    (interactive "p")
+    (interactive)
     (save-excursion
       (forward-char)
-      (flyspell-correct-wrapper arg)))
+      (flyspell-correct-wrapper)))
 
   :hook
   (text-mode . flyspell-mode)
