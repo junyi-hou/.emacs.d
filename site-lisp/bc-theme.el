@@ -55,6 +55,19 @@
    "C--" 'bc-theme-fontsize-down
    "C-=" 'bc-theme-fontsize-reset))
 
+;; display battery level
+(use-package battery
+  :config
+  (setq battery-mode-line-limit 100)
+  (display-battery-mode))
+
+;; display time
+(use-package time
+  :config
+  (setq display-time-default-load-average nil
+        display-time-24hr-format t)
+  (display-time-mode))
+
 (use-package doom-modeline
   :init
   (setq doom-modeline-project-detection 'project
@@ -153,20 +166,6 @@
    display-line-numbers-current-absolute t
    display-line-numbers-width 3
    display-line-numbers-widen nil))
-
-;; display battery level
-(use-package battery
-  :config
-  (setq battery-mode-line-limit 100)
-  (display-battery-mode))
-
-;; display time
-(use-package time
-  :config
-  (setq display-time-default-load-average nil
-        display-time-24hr-format t)
-  (display-time-mode))
-
 ;; highlight keywords
 (use-package hl-todo
   :config
