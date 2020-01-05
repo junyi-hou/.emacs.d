@@ -74,7 +74,6 @@
         doom-modeline-buffer-file-name-style 'relative-from-project
         ;; if only I can disable all-the-icon dependency...
         doom-modeline-icon nil
-        doom-modeline-percent-position nil
         doom-modeline-vcs-max-length 20)
 
   :config
@@ -82,10 +81,10 @@
 
   (doom-modeline-def-segment current-line
     (when (doom-modeline--active)
-      (format "%d/%d%s"
+      (format "%s(%d/%d)"
+              (doom-modeline-spc)
               (line-number-at-pos (point))
-              (line-number-at-pos (point-max))
-              (doom-modeline-spc))))
+              (line-number-at-pos (point-max)))))
 
   (with-eval-after-load 'time
     (doom-modeline-def-segment current-time
@@ -94,8 +93,8 @@
           '("" display-time-string))))
 
   (doom-modeline-def-modeline 'main
-    '(modals vcs remote-host buffer-info checker)
-    '(input-method major-mode current-line current-time battery))
+    '(modals vcs remote-host buffer-info current-line checker)
+    '(input-method major-mode current-time battery))
 
   (doom-modeline-def-modeline 'project
     '(modals vcs buffer-default-directory)
@@ -110,8 +109,7 @@
     '(input-method major-mode current-line current-time battery))
 
   (with-eval-after-load 'exwm
-
-    (defvar bc-theme-exwm-title-max-length 45)
+    (defvar bc-theme-exwm-title-max-length 60)
 
     (doom-modeline-def-segment exwm-title
       "exwm buffer title, truncated if too long."
