@@ -18,7 +18,7 @@
       (setq ivy-re-builders-alist '((t . bc-pyim--ivy-cregexp)))))
 
   (setq default-input-method "pyim"
-        pyim-title "拼音"
+        pyim-title "pyim"
         default-scheme 'quanpin
         pyim-page-tooltip 'posframe
         pyim-page-length 5)

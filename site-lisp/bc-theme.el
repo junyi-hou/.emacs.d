@@ -71,7 +71,7 @@
 (use-package doom-modeline
   :init
   (setq doom-modeline-project-detection 'project
-        doom-modeline-buffer-file-name-style 'relative-from-project
+        doom-modeline-buffer-file-name-style 'relative-to-project
         ;; if only I can disable all-the-icon dependency...
         doom-modeline-icon nil
         doom-modeline-vcs-max-length 20)
