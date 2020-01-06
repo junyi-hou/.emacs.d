@@ -255,5 +255,14 @@
        "b" 'ediff-copy-B-to-C
        "+" 'ediff-combine-diffs))))
 
+(use-package vc-msg
+  :config
+  (setq vc-msg-newbie-friendly-msg "")
+
+  :general
+  (:keymaps '(normal visual motion)
+   :prefix "SPC"
+   "gs" 'vc-msg-show))
+
 (provide 'bc-vcs)
 ;;; bc-vcs.el ends here
