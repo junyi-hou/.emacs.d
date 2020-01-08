@@ -4,6 +4,10 @@
 
 ;;; Code:
 
+(use-package aggressive-indent
+  :hook
+  (scheme-mode . aggressive-indent-mode))
+
 (use-package geiser
   ;; provide code-completion and documentation
   :hook (scheme-mode . geiser-mode)
