@@ -82,7 +82,7 @@
   (doom-modeline-def-segment current-line
     (let ((face (if (doom-modeline--active)
                     'mode-line
-                  'doom-modeline-inactive)))
+                  'doom-modeline-bar-inactive)))
       (propertize (format "%s(%d/%d)"
                           (doom-modeline-spc)
                           (line-number-at-pos (point))
@@ -94,7 +94,7 @@
     (when (bound-and-true-p display-time-mode)
       (let ((face (if (doom-modeline--active)
                       'mode-line
-                    'doom-modeline-inactive)))
+                    'doom-modeline-bar-inactive)))
         (propertize display-time-string 'face face))))
 
   (doom-modeline-def-segment current-battery
@@ -102,7 +102,7 @@
     (when (bound-and-true-p display-battery-mode)
       (let ((face (if (doom-modeline--active)
                       'mode-line
-                    'doom-modeline-inactive)))
+                    'doom-modeline-bar-inactive)))
         (concat (doom-modeline-spc)
                 (propertize (concat
                              (car doom-modeline--battery-status)

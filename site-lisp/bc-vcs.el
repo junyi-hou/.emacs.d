@@ -11,7 +11,7 @@
   (defcustom magit-push-protected-branch nil
     "When set, ask for confirmation before pushing to this branch (e.g. master).  Set this in .dir-locals.el"
     :type 'list
-    :safe #'listp
+    :safe 'listp
     :group 'magit)
 
   (defun magit-push--protected-branch (magit-push-fun &rest args)
