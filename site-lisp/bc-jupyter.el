@@ -90,11 +90,19 @@
 
   (advice-add #'jupyter-eval-region :after #'bc-jupyter--deactivate-mark)
 
+  ;; advice jupyter-repl-history to go to the end
+  (defun bc-jupyter--move-to-line-end (&rest _)
+    (end-of-line))
+
+  (advice-add #'jupyter-repl-history-previous-matching
+              :after
+              #'bc-jupyter--move-to-line-end)
+
   :general
   (:keymaps 'jupyter-repl-mode-map
    :states 'insert
-   "<up>" 'jupyter-repl-history-previous
-   "<down>" 'jupyter-repl-history-next)
+   "<up>" 'jupyter-repl-history-previous-matching
+   "<down>" 'jupyter-repl-history-next-matching)
 
   (:keymaps 'jupyter-repl-mode-map
    :states '(normal visual motion)
