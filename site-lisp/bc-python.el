@@ -59,10 +59,10 @@
     "Eval the python class at `point'."
     (interactive)
     (let ((beg (save-excursion
-                 (word-search-backward "class")))
+                 (re-search-backward "^class[[:blank:]]+")))
           (end (condition-case nil
                    (save-excursion
-                     (- (word-search-forward "class") 5))
+                     (- (re-search-forward "^\\(class\\|def\\)") 5))
                  (error (point-max)))))
       (jupyter-eval-region beg end)))
 
