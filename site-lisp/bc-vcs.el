@@ -129,7 +129,9 @@
 
   (:keymaps 'forge-topic-mode-map
    :states '(normal visual motion)
-   "<return>" 'bc-vcs-visit-thing-at-point)
+   "<return>" 'bc-vcs-visit-thing-at-point
+   "zo" 'magit-section-show
+   "zc" 'magit-section-hide)
 
   (:keymaps 'forge-topic-mode-map
    :states '(normal visual motion)
