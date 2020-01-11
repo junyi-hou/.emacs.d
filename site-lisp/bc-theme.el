@@ -80,36 +80,25 @@
   (doom-modeline-mode 1)
 
   (doom-modeline-def-segment current-line
-    (let ((face (if (doom-modeline--active)
-                    'mode-line
-                  'doom-modeline-bar-inactive)))
-      (propertize (format "%s(%d/%d)"
-                          (doom-modeline-spc)
-                          (line-number-at-pos (point))
-                          (line-number-at-pos (point-max)))
-                  'face face)))
+    (format "%s(%d/%d)"
+            (doom-modeline-spc)
+            (line-number-at-pos (point))
+            (line-number-at-pos (point-max))))
 
   (doom-modeline-def-segment current-time
     "Display time via `display-time-string'"
     (when (bound-and-true-p display-time-mode)
-      (let ((face (if (doom-modeline--active)
-                      'mode-line
-                    'doom-modeline-bar-inactive)))
-        (propertize display-time-string 'face face))))
+      display-time-string))
 
   (doom-modeline-def-segment current-battery
     "Display battery status via `display-battery-mode'"
     (when (bound-and-true-p display-battery-mode)
-      (let ((face (if (doom-modeline--active)
-                      'mode-line
-                    'doom-modeline-bar-inactive)))
-        (concat (doom-modeline-spc)
-                (propertize (concat
-                             (car doom-modeline--battery-status)
-                             (doom-modeline-vspc)
-                             (cdr doom-modeline--battery-status))
-                            'face face)
-                (doom-modeline-spc)))))
+      (concat (doom-modeline-spc)
+              (concat
+               (car doom-modeline--battery-status)
+               (doom-modeline-vspc)
+               (cdr doom-modeline--battery-status))
+              (doom-modeline-spc))))
 
   (doom-modeline-def-modeline 'main
     '(modals vcs remote-host buffer-info current-line checker)
