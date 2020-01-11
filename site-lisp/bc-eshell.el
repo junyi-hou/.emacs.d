@@ -209,7 +209,14 @@
     :motion nil
     :keep-visual t
     (interactive "<R><x>")
-    (eshell/evil-delete (point) end type register yank-handler)))
+    (eshell/evil-delete (point) end type register yank-handler))
+
+  :general
+  (:keymaps '(motion normal visual emacs insert)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   "os" 'bc-eshell-open-here
+   "oS" 'bc-eshell-open-home))
 
 (use-package em-term
   :straight (em-term :type built-in)

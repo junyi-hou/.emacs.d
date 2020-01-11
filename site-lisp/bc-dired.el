@@ -12,7 +12,7 @@
   (setq dired-listing-switches "-alh")
 
   ;; functions
-    (defun bc-dired--mark-one (cmd)
+  (defun bc-dired--mark-one (cmd)
     "Run command CMD on the file under the cursor."
     (let ((inhibit-read-only t)
           (marked-files (mapcar (lambda (x) (cons x "*")) (dired-get-marked-files))))
@@ -24,6 +24,12 @@
       (dired-mark-remembered marked-files)))
 
   :general
+  (:keymaps '(motion normal visual emacs insert)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   "od" (lambda () (interactive)
+          (dired default-directory)))
+
   (:keymaps 'dired-mode-map
    :states 'motion
 

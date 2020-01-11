@@ -271,16 +271,6 @@
    "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
    "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
 
-   ;; open stuffs
-   "oo" 'counsel-find-file
-   "or" 'counsel-recentf
-   "ob" 'switch-to-buffer
-   "os" 'bc-eshell-open-here
-   "oS" 'bc-eshell-open-home
-   ;; dired
-   "od" (lambda () (interactive)
-          (dired default-directory))
-
    ;; other uses
    "t" 'evilnc-comment-or-uncomment-lines)
 

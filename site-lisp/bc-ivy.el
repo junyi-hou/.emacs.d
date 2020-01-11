@@ -4,8 +4,6 @@
 
 ;;; Code:
 
-(require 'bc-core)
-
 (use-package ivy
   :config
   (setq ivy-do-completion-in-region nil
@@ -35,7 +33,14 @@
   (:keymaps '(normal visual motion)
    :prefix "SPC"
    "rs" 'bc-ivy-grep-at-point
-   "rS" 'counsel-rg))
+   "rS" 'counsel-rg)
+
+  (:keymaps '(motion normal visual emacs insert)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   "oo" 'counsel-find-file
+   "or" 'counsel-recentf
+   "ob" 'switch-to-buffer))
 
 ;; for counsel-search
 (use-package request :defer t)
