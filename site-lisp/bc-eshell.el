@@ -283,11 +283,12 @@
     "Set TERM to term-256color."
     (setenv "TERM" "xterm-256color"))
   :config
-  (add-hook 'eshell-mode-hook #'bc-eshell--set-term-envvar)
-  (add-hook 'eshell-before-prompt-hook (lambda () (setq xterm-color-preserve-properties t)))
-  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-  (setq eshell-output-filter-functions
-        (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
+  (with-eval-after-load 'esh-mode
+    (add-hook 'eshell-mode-hook #'bc-eshell--set-term-envvar)
+    (add-hook 'eshell-before-prompt-hook (lambda () (setq xterm-color-preserve-properties t)))
+    (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+    (setq eshell-output-filter-functions
+          (remove 'eshell-handle-ansi-color eshell-output-filter-functions))))
 
 ;; sudo edit files
 (use-package sudo-edit
