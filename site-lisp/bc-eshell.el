@@ -113,7 +113,7 @@
 
   (defun bc-eshell--change-buffer-title ()
     "Change the title of eshell buffer to reflect $pwd."
-    (rename-buffer (format "%s: %s" eshell-buffer-name default-directory) 'unique))
+    (rename-buffer (format "%s: %s" eshell-buffer-name (directory-file-name default-directory)) 'unique))
 
   (add-hook 'eshell-mode-hook #'bc-eshell--change-buffer-title)
   (add-hook 'eshell-directory-change-hook #'bc-eshell--change-buffer-title)
