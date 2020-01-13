@@ -80,37 +80,45 @@
   (doom-modeline-mode 1)
 
   (doom-modeline-def-segment current-line
-    (format "%s(%d/%d)"
-            (doom-modeline-spc)
-            (line-number-at-pos (point))
-            (line-number-at-pos (point-max))))
+    (propertize (format "%s(%d/%d)"
+                        (doom-modeline-spc)
+                        (line-number-at-pos (point))
+                        (line-number-at-pos (point-max)))
+                'face (if (doom-modeline--active)
+                          'doom-modeline-active
+                        'mode-line-inactive)))
 
   (doom-modeline-def-segment current-time
     "Display time via `display-time-string'"
     (when (bound-and-true-p display-time-mode)
-      display-time-string))
+      (propertize display-time-string
+                  'face (if (doom-modeline--active)
+                            'doom-modeline-active
+                          'mode-line-inactive))))
 
   (doom-modeline-def-segment current-battery
     "Display battery status via `display-battery-mode'"
     (when (bound-and-true-p display-battery-mode)
       (concat (doom-modeline-spc)
-              (concat
-               (car doom-modeline--battery-status)
-               (doom-modeline-vspc)
-               (cdr doom-modeline--battery-status))
+              (propertize (concat
+                           (car doom-modeline--battery-status)
+                           (cdr doom-modeline--battery-status))
+                          'face (if (doom-modeline--active)
+                                    'doom-modeline-active
+                                  'mode-line-inactive))
               (doom-modeline-spc))))
 
   (doom-modeline-def-modeline 'main
-    '(modals vcs remote-host buffer-info current-line checker)
+    '(modals vcs remote-host buffer-info current-line)
     '(input-method major-mode current-time current-battery))
 
   (doom-modeline-def-modeline 'project
     '(modals vcs buffer-default-directory)
-    '(input-method major-mode current-time battery))
+    '(input-method major-mode current-time current-battery))
 
   (doom-modeline-def-modeline 'message
     '(modals buffer-info-simple)
-    '(input-method major-mode current-time battery))
+    '(input-method major-mode current-time current-battery))
 
   (doom-modeline-def-modeline 'vcs
     '(modals buffer-info)
