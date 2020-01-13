@@ -80,49 +80,42 @@
   (doom-modeline-mode 1)
 
   (doom-modeline-def-segment current-line
-    (propertize (format "%s(%d/%d)"
-                        (doom-modeline-spc)
-                        (line-number-at-pos (point))
-                        (line-number-at-pos (point-max)))
-                'face (if (doom-modeline--active)
-                          'doom-modeline-active
-                        'mode-line-inactive)))
+    (if-let ((line (format "%s(%d/%d)"
+                           (doom-modeline-spc)
+                           (line-number-at-pos (point))
+                           (line-number-at-pos (point-max))))
+             ((doom-modeline--active)))
+        line
+      (propertize line 'face 'mode-line-inactive)))
 
-  (doom-modeline-def-segment current-time
-    "Display time via `display-time-string'"
-    (when (bound-and-true-p display-time-mode)
-      (propertize display-time-string
-                  'face (if (doom-modeline--active)
-                            'doom-modeline-active
-                          'mode-line-inactive))))
-
-  (doom-modeline-def-segment current-battery
-    "Display battery status via `display-battery-mode'"
-    (when (bound-and-true-p display-battery-mode)
-      (concat (doom-modeline-spc)
-              (propertize (concat
-                           (car doom-modeline--battery-status)
-                           (cdr doom-modeline--battery-status))
-                          'face (if (doom-modeline--active)
-                                    'doom-modeline-active
-                                  'mode-line-inactive))
-              (doom-modeline-spc))))
+  (doom-modeline-def-segment time-battery
+    "Display time and battery"
+    (if-let ((time (if (bound-and-true-p display-time-mode)
+                       display-time-string ""))
+             (battery (if (bound-and-true-p display-battery-mode)
+                          (format "(%s)%s"
+                                  (car doom-modeline--battery-status)
+                                  (cdr doom-modeline--battery-status)) ""))
+             ((doom-modeline--active)))
+        (concat time (doom-modeline-spc) battery (doom-modeline-spc))
+      (propertize (concat time (doom-modeline-spc) battery (doom-modeline-spc))
+                  'face 'mode-line-inactive)))
 
   (doom-modeline-def-modeline 'main
     '(modals vcs remote-host buffer-info current-line)
-    '(input-method major-mode current-time current-battery))
+    '(input-method major-mode time-battery))
 
   (doom-modeline-def-modeline 'project
     '(modals vcs buffer-default-directory)
-    '(input-method major-mode current-time current-battery))
+    '(input-method major-mode time-battery))
 
   (doom-modeline-def-modeline 'message
     '(modals buffer-info-simple)
-    '(input-method major-mode current-time current-battery))
+    '(input-method major-mode time-battery))
 
   (doom-modeline-def-modeline 'vcs
-    '(modals buffer-info)
-    '(input-method major-mode current-line current-time battery))
+    '(modals buffer-info current-line)
+    '(input-method process time-battery))
 
   (with-eval-after-load 'exwm
     (defvar bc-theme-exwm-title-max-length 60)
@@ -135,7 +128,7 @@
         title))
 
     (doom-modeline-def-modeline 'exwm
-      '(modals exwm-title) '(major-mode current-time battery))
+      '(modals exwm-title) '(major-mode time-battery))
 
     (defun bc-theme-set-exwm-modeline ()
       (doom-modeline-set-modeline 'exwm))
