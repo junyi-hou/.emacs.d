@@ -21,7 +21,7 @@
       (comint-truncate-buffer)))
 
   (defun bc-comit--move-to-eol (&rest _)
-    (end-of-line))
+    (goto-char (point-max)))
 
   (advice-add 'comint-previous-matching-input-from-input :after 'bc-comit--move-to-eol)
   (advice-add 'comint-next-matching-input-from-input :after 'bc-comit--move-to-eol)
