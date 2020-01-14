@@ -133,7 +133,52 @@
     (defun bc-theme-set-exwm-modeline ()
       (doom-modeline-set-modeline 'exwm))
 
-    (add-hook 'exwm-manage-finish-hook #'bc-theme-set-exwm-modeline)))
+    (add-hook 'exwm-manage-finish-hook #'bc-theme-set-exwm-modeline))
+
+  ;;; ===============================
+  ;;  display time-battery only at the
+  ;;  bottom right window
+  ;;; ===============================
+
+  (defun bc-theme--doom-modeline (key-or-buffer)
+    "Return the doom-modeline structure for KEY-OR-BUFFER."
+    (if (bufferp key-or-buffer)
+        (thread-last key-or-buffer
+          (buffer-local-value 'mode-line-format)
+          cadr
+          cadr
+          eval)
+      (thread-last key-or-buffer
+        (format "doom-modeline-format--%s")
+        intern
+        list
+        eval)))
+
+  (defun bc-theme--append-segment (structure segment)
+    "Return doom-modeline structure with SEGMENT appended to STRUCTURE."
+    (let ((lhs (seq-take structure 2))
+          (rhs (nth 2 structure))
+          (segment (thread-last segment
+                     symbol-name
+                     (format "doom-modeline-segment--%s")
+                     intern
+                     list)))
+      (append lhs (list (append rhs `((:eval ,segment)))))))
+
+  (defun bc-theme--modify-modeline (buffer)
+    "Append `time-battery' to the modeline if BUFFER's window is at the bottom right corner, otherwise reset its modeline."
+    (interactive)
+    )
+
+
+  (defun bc-theme--rearrange-modeline (&rest _)
+    "When window config changes, loop over list of windows, append `time-battery'
+    segment to the modeline of the bottom right window while reset all other window
+    to their default config."
+    )
+
+
+  )
 
 ;; indentation guide
 (use-package highlight-indent-guides
