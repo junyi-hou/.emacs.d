@@ -395,6 +395,8 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
                         (interactive)
                         (bc-exwm-switch-to-workspace-confirm (- ,i 1)))))
                   (number-sequence 1 9))
+        ;; the last workspace (9) is s-h
+        ([?\s-h] . (lambda () (interactive) (bc-exwm-switch-to-workspace-confirm 9)))
         ;; multimedia keys
         ([XF86AudioLowerVolume] . (lambda () (interactive)
                                     (bc-exwm-amixer-adjust-volume)))
