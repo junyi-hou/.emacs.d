@@ -205,7 +205,7 @@
 
       (defun bc-eshell--use-zathura (ff &rest files)
         "Open FILES in emacs, for pdf files in FILES, use zathura to open them."
-        (setq files (eshell-flatten-list flies))
+        (setq files (eshell-flatten-list files))
         (let* ((separated-files (bc-eshell--separate-pdf files))
                (pdfs (car separated-files))
                (others (cdr separated-files)))
@@ -328,15 +328,14 @@
 
 (use-package xterm-color
   :after eshell
-  :init
+  :config
   (defun bc-eshell--set-term-envvar ()
     "Set TERM to term-256color."
     (setenv "TERM" "xterm-256color"))
-  :config
+
   (with-eval-after-load 'esh-mode
     (add-hook 'eshell-mode-hook #'bc-eshell--set-term-envvar)
-    (add-hook 'eshell-before-prompt-hook (lambda () (setq xterm-color-preserve-properties t)))
-    (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+    (add-hook 'eshell-preoutput-filter-functions #'xterm-color-filter)
     (setq eshell-output-filter-functions
           (remove 'eshell-handle-ansi-color eshell-output-filter-functions))))
 

@@ -374,8 +374,10 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
           ([left-click] . 'mouse-1)
           ([right-click] . 'mouse-2)
           ;; for tabbed
-          ([?\C-\S-j] . [?\C-\S-j])
-          ([?\C-\S-k] . [?\C-\S-k])))
+          ([?\C-\S-l] . [?\C-\S-l]) ;; next tab
+          ([?\C-\S-h] . [?\C-\S-h]) ;; prev tab
+          ([67108873] . [67108873]) ;; Ctrl-tab
+          ))
 
   ;; line-mode keybinding
   (general-define-key
