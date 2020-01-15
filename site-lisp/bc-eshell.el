@@ -180,6 +180,23 @@
       (erase-buffer)
       (eshell-send-input)))
 
+  ;; zathura integration
+  (when (executable-find "zathura")
+    (defun bc-exwm--zathura-find-file (ff &rest args)
+      "When open pdf files, use `Zathura' instead."
+      (let ((files (eshell-flatten-list args)))
+        (when (eq ff 'find-file-other-window)
+          (bc-core-split-window)
+          (other-window 1))
+        (if (seq-every-p (lambda (file)
+                           (equal "pdf" (file-name-extension file)))
+                         files)
+            (start-process-shell-command "zathura" nil (format "tabbed -c zathura %s -e" (string-join files " ")))
+          (apply ff args))))
+
+    (advice-add #'find-file-other-window :around #'bc-exwm--zathura-find-file)
+    (advice-add #'find-file :around #'bc-exwm--zathura-find-file))
+
   ;; taken from doom-emacs at https://github.com/hlissner/doom-emacs/blob/develop/modules/term/eshell/autoload/evil.el
   (evil-define-operator eshell/evil-change (beg end type register yank-handler delete-func)
     "Like `evil-change' but will not delete/copy the prompt."
