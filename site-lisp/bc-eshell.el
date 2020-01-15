@@ -326,19 +326,6 @@
 
   (advice-add #'eshell/cd :around #'bc-eshell-cd))
 
-(use-package xterm-color
-  :after eshell
-  :config
-  (defun bc-eshell--set-term-envvar ()
-    "Set TERM to term-256color."
-    (setenv "TERM" "xterm-256color"))
-
-  (with-eval-after-load 'esh-mode
-    (add-hook 'eshell-mode-hook #'bc-eshell--set-term-envvar)
-    (add-hook 'eshell-preoutput-filter-functions #'xterm-color-filter)
-    (setq eshell-output-filter-functions
-          (remove 'eshell-handle-ansi-color eshell-output-filter-functions))))
-
 ;; sudo edit files
 (use-package sudo-edit
   :defer t
