@@ -177,7 +177,8 @@
     "Eshell version of `cls'."
     (interactive)
     (let ((inhibit-read-only t))
-      (erase-buffer)))
+      (erase-buffer)
+      (eshell-send-input)))
 
   ;; taken from doom-emacs at https://github.com/hlissner/doom-emacs/blob/develop/modules/term/eshell/autoload/evil.el
   (evil-define-operator eshell/evil-change (beg end type register yank-handler delete-func)
