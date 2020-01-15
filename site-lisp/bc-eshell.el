@@ -53,8 +53,6 @@
     ;; if alias file does not exists, define aliases
     (eshell/alias "su" "eshell/su $*")
     (eshell/alias "sudo" "eshell/sudo $*")
-    (eshell/alias "ff" "find-file $1")
-    (eshell/alias "FF" "find-file-other-window $1")
     (eshell/alias "cls" "bc-eshell-clear-buffer")
     (eshell/alias "ll" "ls -Aloh --color=always"))
 
@@ -177,7 +175,59 @@
     "Eshell version of `cls'."
     (interactive)
     (let ((inhibit-read-only t))
-      (erase-buffer)))
+      (erase-buffer)
+      (eshell-send-input)))
+
+  ;; zathura integration
+  (defun eshell/ff (&rest files)
+    "Open FILES in emacs."
+    (setq files (eshell-flatten-list files))
+    (mapc 'find-file files))
+
+  (defun eshell/FF (&rest files)
+    "Open FILES in a new window in emacs."
+    (setq files (eshell-flatten-list files))
+    (bc-core-split-window)
+    (other-window 1)
+    (mapc 'find-file files))
+
+  (with-eval-after-load 'exwm
+    (when (executable-find "zathura")
+      (defun bc-eshell--separate-pdf (files)
+        "Separate pdf from other types of files in FILES. Return a cons cell of all pdf files and other files."
+        (let ((out (cons '() '())))
+          (mapc (lambda (file)
+                  (if (string= (file-name-extension file) "pdf")
+                      (push file (car out))
+                    (push file (cdr out))))
+                files)
+          out))
+
+      (defun bc-eshell--use-zathura (ff &rest files)
+        "Open FILES in emacs, for pdf files in FILES, use zathura to open them."
+        (setq files (eshell-flatten-list files))
+        (let* ((separated-files (bc-eshell--separate-pdf files))
+               (pdfs (car separated-files))
+               (others (cdr separated-files)))
+          (cond ((and pdfs others)
+                 (start-process-shell-command "zathura"
+                                              nil
+                                              (format "tabbed -c zathura %s -e"
+                                                      (string-join pdfs " ")))
+                 (bc-core-split-window)
+                 (other-window 1)
+                 (apply ff others))
+                (pdfs (start-process-shell-command "zathura"
+                                                   nil
+                                                   (format "tabbed -c zathura %s -e"
+                                                           (string-join pdfs " "))))
+                (others (when (eq ff 'eshell/FF)
+                          (bc-core-split-window)
+                          (other-window 1))
+                        (apply ff others)))))
+
+      (advice-add #'eshell/ff :around #'bc-eshell--use-zathura)
+      (advice-add #'eshell/FF :around #'bc-eshell--use-zathura)))
 
   ;; taken from doom-emacs at https://github.com/hlissner/doom-emacs/blob/develop/modules/term/eshell/autoload/evil.el
   (evil-define-operator eshell/evil-change (beg end type register yank-handler delete-func)
@@ -278,15 +328,14 @@
 
 (use-package xterm-color
   :after eshell
-  :init
+  :config
   (defun bc-eshell--set-term-envvar ()
     "Set TERM to term-256color."
     (setenv "TERM" "xterm-256color"))
-  :config
+
   (with-eval-after-load 'esh-mode
     (add-hook 'eshell-mode-hook #'bc-eshell--set-term-envvar)
-    (add-hook 'eshell-before-prompt-hook (lambda () (setq xterm-color-preserve-properties t)))
-    (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+    (add-hook 'eshell-preoutput-filter-functions #'xterm-color-filter)
     (setq eshell-output-filter-functions
           (remove 'eshell-handle-ansi-color eshell-output-filter-functions))))
 
