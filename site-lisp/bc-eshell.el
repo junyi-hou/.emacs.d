@@ -288,7 +288,29 @@
   ;; fix tramp PATH problem
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
-  ;; (setq tramp-encoding-shell "/bin/bash")
+  ;; override eshell/sudo
+  (defun bc-eshell-sudo (&rest commands)
+    "Use `tramp' run COMMAND in /sudo::`default-directory'.  Does not have any flags so won't get error if -i or --user is given."
+    (setq commands (eshell-flatten-list commands))
+    (if (not commands)
+        (bc-eshell-su)
+      (throw 'eshell-external
+             (let ((user "root")
+                   (host (or (file-remote-p default-directory 'host) "localhost"))
+                   (dir (file-local-name (expand-file-name default-directory)))
+                   (prefix (file-remote-p default-directory))
+                   (sudo? (string-equal "sudo" (file-remote-p default-directory 'method))))
+               (cond (sudo?
+                      (eshell-named-command (car commands) (cdr commands)))
+                     (prefix
+                      (let ((default-directory (format "%s|sudo:%s@%s:%s"
+                                                       (substring prefix 0 -1) user host dir)))
+                        (eshell-named-command (car commands) (cdr commands))))
+                     (t
+                      (let ((default-directory (format "/sudo:%s@%s:%s" user host dir)))
+                        (eshell-named-command (car commands) (cdr commands)))))))))
+
+  (advice-add #'eshell/sudo :override #'bc-eshell-sudo)
 
   ;; override eshell/su
   (defun bc-eshell-su (&rest _)
