@@ -412,9 +412,10 @@ This function first scan for video port status via `bc-exwm--monitor-status', th
              (or (string= "pdf" (file-name-extension x))
                  (string= (substring x (1- (length x))) "/")))
            :initial-input "~/downloads/"
-           :action
-           (lambda (x)
-             (find-file x))))))
+           :action (lambda (x)
+                     (start-process-shell-command "zathura"
+                                                  nil
+                                                  (format "zathura '%s'" x)))))))
 
 (use-package exwm-edit
   ;; C-c ' in X windows
