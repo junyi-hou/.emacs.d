@@ -13,6 +13,25 @@
             (setq gc-cons-threshold 16777216
                   gc-cons-percentage 0.2)))
 
+;; fix potential credential issues
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;; install use-package
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
 
 ;; turn off bell
 (setq-default visible-bell t
@@ -36,19 +55,19 @@
      ((< (/ (float w) 2) 80) nil)
      (t t))))
 
-(defun bc-core-split-window (&optional window)
-  "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down."
+(defun bc-core-split-window (&optional window switch)
+  "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down.  If SWITCH is non-nil, switch to the newly splitted window."
   (let ((window (or window (selected-window))))
     (if (bc-core--split-vertical window)
         (split-window-right)
-      (split-window-below))))
+      (split-window-below)))
+  (when switch (other-window 1)))
 
 (setq-default split-window-preferred-function 'bc-core-split-window)
 
 ;; always use y-or-n-p
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; in-house packages that needs to be enable at all time
 (setq-default inhibit-splash-screen t
               inhibit-startup-message t
               inhibit-startup-echo-area-message t)
@@ -65,27 +84,53 @@
 (add-hook 'kill-buffer-query-functions
           #'bc-core--unkillable-scratch)
 
-;; disable menu tool and scroll bars
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(horizontal-scroll-bar-mode -1)
-(tooltip-mode -1)
-(blink-cursor-mode -1)
+;; indentation settings
+(setq-default indent-tabs-mode nil
+              tab-width 4
+              python-indent-offset 4
+              electric-indent-inhibit t  ; don't change indentation for me
+              indicate-empty-lines nil)
 
-;; other minor modes I always want
-(show-paren-mode 1)          ; highlight matching paren
-(global-visual-line-mode 1)  ; word wrapping
-(global-subword-mode 1)      ; better camelCase support
-(global-auto-revert-mode 1)  ; automatically refresh file when it changes
+;; bs kill whole tab
+(setq-default backward-delete-char-untabify-method 'hungry)
+
+(use-package no-littering
+  ;; do not litter my .emacs.d
+  :demand t
+  :config
+  (setq-default
+   no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
+   no-littering-var-directory (expand-file-name "var/" user-emacs-directory)
+   auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+   backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
+   custom-file (no-littering-expand-etc-file-name "custom.el"))
+
+  (load custom-file 'noerror))
+(use-package paren
+  ;; highlight matching paren
+  :config
+  (show-paren-mode 1))
+(use-package subword
+  ;; better camelCase support
+  :config
+  (global-subword-mode 1))
+(use-package simple
+  ;; word wrapping
+  :straight (:type built-in)
+  :config
+  (global-visual-line-mode 1))
+(use-package autorevert
+  ;; automatically refresh file when it changes
+  :config
+  (global-auto-revert-mode 1))
 (use-package recentf
-  :hook (after-init . recentf-mode)
   :init (setq
          recentf-save-file       "~/.emacs.d/var/recentf"
          recentf-max-saved-items 100
          recentf-exclude         '("/tmp/" "/ssh:"))
   :config
-  (add-to-list 'recentf-exclude no-littering-var-directory))
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (recentf-mode 1))
 (use-package hideshow
   :init
   ;; don't make me move to the beginning of line before expanding the block
@@ -123,6 +168,7 @@
 
   (setq eldoc-box-position-function #'bc-eldoc--box-position))
 (use-package general
+  ;; for key binding
   :demand t
   :hook (emacs-lisp-mode . bc-lisp--fix-indent)
   :init
@@ -215,15 +261,13 @@ Lisp function does not specify a special indentation."
   :config
   (global-so-long-mode))
 
-
-;; indentation settings
-(setq-default indent-tabs-mode nil
-              tab-width 4
-              python-indent-offset 4
-              electric-indent-inhibit t  ; don't change indentation for me
-              indicate-empty-lines nil)
-
-(setq-default backward-delete-char-untabify-method 'hungry)  ; bs kill whole tab
+;; disable menu tool and scroll bars
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(horizontal-scroll-bar-mode -1)
+(tooltip-mode -1)
+(blink-cursor-mode -1)
 
 (provide 'bc-core)
 ;;; bc-core.el ends here
