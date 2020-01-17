@@ -3,6 +3,8 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'gatsby:core)
+(require 'gatsby:comint)
 
 (use-package aggressive-indent
   :hook
