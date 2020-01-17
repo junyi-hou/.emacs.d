@@ -1,4 +1,4 @@
-;;; bc-text.el --- text editing modes -*- lexical-binding: t; -*-
+;;; gatsby:text.el --- text editing modes -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -59,7 +59,7 @@
              (not (eq (cadr (assq 'output-pdf TeX-view-program-selection))
                       "PDF Tools")))
 
-    (defun bc-ide-latex-compile (compile-fn &rest args)
+    (defun gatsby:ide-latex-compile (compile-fn &rest args)
       "Open a new buffer to display complied pdf."
       (let* ((pdf-file (concat (file-name-sans-extension (buffer-file-name)) ".pdf"))
              (window-list (window-list))
@@ -75,11 +75,11 @@
                (apply compile-fn args)
                (pop-to-buffer (get-buffer pdf-file)))
               (t ;; pdf-file has not been opened
-               (bc-core-split-window)
+               (gatsby:core-split-window)
                (other-window 1)
                (apply compile-fn args)))))
 
-    (defun bc-ide-latex-inverse-search ()
+    (defun gatsby:ide-latex-inverse-search ()
       "Inverse search the center of the window.  If in Zathura, send key <return>, but make sure to recenter mouse first.  Otherwise just send <return> without moving mouse."
       (interactive)
       ;; if in zathura window, set the mouse position
@@ -96,11 +96,11 @@
       ;; get keycode using (read-char "x")
       (exwm-input--fake-key 96))
 
-    (advice-add #'TeX-command-run-all :around #'bc-ide-latex-compile)
+    (advice-add #'TeX-command-run-all :around #'gatsby:ide-latex-compile)
 
     (general-define-key
      :keymaps 'exwm-mode-map
-     "`" 'bc-ide-latex-inverse-search))
+     "`" 'gatsby:ide-latex-inverse-search))
 
   ;; use xelatex for chinese support
   ;; (setq-default TeX-engine 'xetex)
@@ -108,11 +108,11 @@
   (add-hook 'TeX-after-compilation-finished-functions
             #'TeX-revert-document-buffer)
 
-  (defun bc-ide-latex--set-tab-width ()
+  (defun gatsby:ide-latex--set-tab-width ()
     "Set tab width in latex buffer."
     (setq-local tab-width 2))
 
-  (defun bc-ide-latex--fix-indent ()
+  (defun gatsby:ide-latex--fix-indent ()
     "Fix indentation for the current buffer."
     ;; fix indent for the whole buffer before save
     (add-hook
@@ -123,26 +123,26 @@
      nil t))
 
   ;; home-made electric-mode
-  (defun bc-ide-latex-electric-single-quote ()
+  (defun gatsby:ide-latex-electric-single-quote ()
     "Automatically close single quotes"
     (interactive)
     (insert "`'")
     (backward-char 1))
 
-  (defun bc-ide-latex-electric-double-quote (&rest _)
+  (defun gatsby:ide-latex-electric-double-quote (&rest _)
     "Automatically close single quotes"
     (insert "''")
     (backward-char 2))
 
-  (advice-add #'TeX-insert-quote :after #'bc-ide-latex-electric-double-quote)
+  (advice-add #'TeX-insert-quote :after #'gatsby:ide-latex-electric-double-quote)
 
-  (defconst bc-ide-latex-pair-macro-regexp
+  (defconst gatsby:ide-latex-pair-macro-regexp
     "\\(.\\{1\\}\\(right\\|[bB]ig\\(g\\)?\\)\\)?")
 
-  (defconst bc-ide-latex-pair-regexp
+  (defconst gatsby:ide-latex-pair-regexp
     "\\(.?}\\|)\\|\\]\\|'\\)")
 
-  (defconst bc-ide-latex-pairs
+  (defconst gatsby:ide-latex-pairs
     '(("\\}" . "\\\\{")
       ("}" . "{")
       (")" . "(")
@@ -150,11 +150,11 @@
       ("'" . "`")
       ("$" . "$")))
 
-  (defun bc-ide-latex-electric-delete ()
+  (defun gatsby:ide-latex-electric-delete ()
     "If point is inside an empty pair, delete the whole pair.  Otherwise call `backward-delete-char'."
     (interactive)
     (if (looking-at
-         (format "%s%s" bc-ide-latex-pair-macro-regexp bc-ide-latex-pair-regexp))
+         (format "%s%s" gatsby:ide-latex-pair-macro-regexp gatsby:ide-latex-pair-regexp))
         ;; now the point is just before the closing pairs
         (let ((pair-end (match-end 0))
               (empty? (save-excursion
@@ -166,7 +166,7 @@
                                       (format "\\%s" (match-string-no-properties 1)))
                                    "")
                                  (alist-get (match-string-no-properties 4)
-                                            bc-ide-latex-pairs
+                                            gatsby:ide-latex-pairs
                                             nil nil 'string=))
                          (- (point) 10)
                          'noerror))))
@@ -178,8 +178,8 @@
   :hook
   (LaTeX-mode . TeX-PDF-mode)
   (LaTeX-mode . TeX-source-correlate-mode)
-  (LaTeX-mode . bc-ide-latex--set-tab-width)
-  (LaTeX-mode . bc-ide-latex--fix-indent)
+  (LaTeX-mode . gatsby:ide-latex--set-tab-width)
+  (LaTeX-mode . gatsby:ide-latex--fix-indent)
 
   :general
   (:keymaps 'LaTeX-mode-map
@@ -189,8 +189,8 @@
   (:keymaps 'LaTeX-mode-map
    :states 'insert
    "<return>" 'newline
-   "<backspace>" 'bc-ide-latex-electric-delete
-   "`" 'bc-ide-latex-electric-single-quote)
+   "<backspace>" 'gatsby:ide-latex-electric-delete
+   "`" 'gatsby:ide-latex-electric-single-quote)
 
   (:keymaps 'LaTeX-mode-map
    :states '(normal visual motion)
@@ -238,12 +238,12 @@
 ;;   :after auctex
 ;;   :defer t
 ;;   :init
-;;   (defun bc-ide-latex--get-project-bib-file (proj_root)
+;;   (defun gatsby:ide-latex--get-project-bib-file (proj_root)
 ;;     "Scan PROJ_ROOT/reference directory and return a list of .bib files.  If PROJ_ROOT is not given, use the current project root returned by `project-current'."
 ;;     (let ((proj_root (or proj_root (cdr (project-current)))))
 ;;       (directory-files (concat proj_root "reference") nil ".*\\.bib")))
 
-;;   (defun bc-ide-latex-load-bib-file ()
+;;   (defun gatsby:ide-latex-load-bib-file ()
 ;;     "Add bibtex file to `ivy-bibtex' library for the current .tex file.  This function scans both the directory of the current .tex file and the PROJ_ROOT/reference/ directory for .bib file."
 ;;     (let* ((proj? (cdr (project-current)))
 ;;            (local-bib (concat
@@ -254,7 +254,7 @@
 ;;       (when proj?
 ;;         (append
 ;;          'bibtex-completion-bibliography
-;;          (bc-ide-latex--get-project-bib-file proj?)))))
+;;          (gatsby:ide-latex--get-project-bib-file proj?)))))
 
 ;;   :config
 ;;   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation
@@ -273,5 +273,5 @@
 ;;    :prefix "C-c"
 ;;    "c" 'ivy-bibtex))
 
-(provide 'bc-text)
-;;; bc-text.el ends here
+(provide 'gatsby:text)
+;;; gatsby:text.el ends here
