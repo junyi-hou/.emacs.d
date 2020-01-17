@@ -1,12 +1,13 @@
-;;; bc-vcs.el --- version control software settings: mainly magit
+;;; gatsby:vcs.el --- version control software settings: mainly magit
 
 ;;; Commentary:
 
 ;;; Code:
 
+(require 'gatsby:core)
+
 (use-package magit
   :defer t
-
   :init
   (defcustom magit-push-protected-branch nil
     "When set, ask for confirmation before pushing to this branch (e.g. master).  Set this in .dir-locals.el"
@@ -44,7 +45,7 @@
 
   ;; functions
 
-  (defun bc-vcs-visit-thing-at-point ()
+  (defun gatsby:vcs-visit-thing-at-point ()
     "Get file at point in magit buffers."
     (interactive)
     (cond ((magit-section-match [todos-item])
@@ -67,6 +68,8 @@
            (call-interactively #'magit-show-commit))
           ((magit-section-match [* error])
            (magit-process-buffer))
+          ((magit-section-match [stash])
+           (call-interactively #'magit-ediff-show-stash))
           ((and (magit-section-match '(issue pullreq))
                 (featurep 'forge))
            ;; for `forge-issue' and `forge-pullreq' block, visit corresponding issue
@@ -90,7 +93,7 @@
    "zo" 'magit-section-show
    "zc" 'magit-section-hide
    "?" 'magit-dispatch
-   "RET" 'bc-vcs-visit-thing-at-point)
+   "RET" 'gatsby:vcs-visit-thing-at-point)
 
   (:keymaps 'magit-status-mode-map
    :states '(motion normal)
@@ -129,7 +132,7 @@
 
   (:keymaps 'forge-topic-mode-map
    :states '(normal visual motion)
-   "<return>" 'bc-vcs-visit-thing-at-point
+   "<return>" 'gatsby:vcs-visit-thing-at-point
    "zo" 'magit-section-show
    "zc" 'magit-section-hide)
 
@@ -142,10 +145,10 @@
 (use-package ediff
   :ensure nil
   :hook
-  (ediff-keymap-setup . bc-vcs-ediff-modify-keys)
-  (ediff-prepare-buffer . bc-vcs-ediff--turn-off-hs)
-  (ediff-prepare-buffer . bc-vcs-ediff--org-show-all)
-  (ediff-quit . bc-vcs-ediff--turn-on-hs)
+  (ediff-keymap-setup . gatsby:vcs-ediff-modify-keys)
+  (ediff-prepare-buffer . gatsby:vcs-ediff--turn-off-hs)
+  (ediff-prepare-buffer . gatsby:vcs-ediff--org-show-all)
+  (ediff-quit . gatsby:vcs-ediff--turn-on-hs)
 
   :init
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -153,68 +156,68 @@
 
   ;; ediff mode integration
   ;; see http://web.mit.edu/~yandros/elisp/hideshow.el
-  (defun bc-vcs-ediff--turn-off-hs ()
+  (defun gatsby:vcs-ediff--turn-off-hs ()
     "Turn off `hs-minor-mode'."
     (hs-minor-mode -1))
 
-  (defun bc-vcs-ediff--turn-on-hs ()
+  (defun gatsby:vcs-ediff--turn-on-hs ()
     "Turn on `hs-minor-mode', run after finishing ediffing."
     (hs-minor-mode 1))
 
-  (defun bc-vcs-ediff--org-show-all ()
+  (defun gatsby:vcs-ediff--org-show-all ()
     "Expand org blocks."
     (require 'org)
     (org-show-all))
 
-  ;; these functions are taken from bc-vcs
+  ;; these functions are taken from gatsby:vcs
   ;; https://github.com/emacs-evil/evil-collection/blob/master/evil-collection-ediff.el
-  (defun bc-vcs-ediff-scroll-left (&optional arg)
+  (defun gatsby:vcs-ediff-scroll-left (&optional arg)
     "Scroll left."
     (interactive "P")
     (let ((last-command-event ?>))
       (ediff-scroll-horizontally arg)))
 
-  (defun bc-vcs-ediff-scroll-right (&optional arg)
+  (defun gatsby:vcs-ediff-scroll-right (&optional arg)
     "Scroll right."
     (interactive "P")
     (let ((last-command-event ?<))
       (ediff-scroll-horizontally arg)))
 
-  (defun bc-vcs-ediff-scroll-up (&optional arg)
+  (defun gatsby:vcs-ediff-scroll-up (&optional arg)
     "Scroll up by half of a page."
     (interactive "P")
     (let ((last-command-event ?V))
       (ediff-scroll-vertically arg)))
 
-  (defun bc-vcs-ediff-scroll-down (&optional arg)
+  (defun gatsby:vcs-ediff-scroll-down (&optional arg)
     "Scroll down by half of a page."
     (interactive "P")
     (let ((last-command-event ?v))
       (ediff-scroll-vertically arg)))
 
-  (defun bc-vcs-ediff-scroll-down-1 ()
+  (defun gatsby:vcs-ediff-scroll-down-1 ()
     "Scroll down by a line."
     (interactive)
     (let ((last-command-event ?v))
       (ediff-scroll-vertically 1)))
 
-  (defun bc-vcs-ediff-scroll-up-1 ()
+  (defun gatsby:vcs-ediff-scroll-up-1 ()
     "Scroll down by a line."
     (interactive)
     (let ((last-command-event ?V))
       (ediff-scroll-vertically 1)))
 
-  (defun bc-vcs-ediff-first-difference ()
+  (defun gatsby:vcs-ediff-first-difference ()
     "Jump to first difference."
     (interactive)
     (ediff-jump-to-difference 1))
 
-  (defun bc-vcs-ediff-last-difference ()
+  (defun gatsby:vcs-ediff-last-difference ()
     "Jump to last difference."
     (interactive)
     (ediff-jump-to-difference ediff-number-of-differences))
 
-  (defun bc-vcs-ediff-modify-keys ()
+  (defun gatsby:vcs-ediff-modify-keys ()
     "Due to the wired way `ediff-mode' sets up its keymap, need to wrap this in a function and run it in `ediff-keymap-setup-hook'."
     (general-define-key
      :keymaps 'ediff-mode-map
@@ -224,14 +227,14 @@
      "n" 'ediff-next-difference
      "N" 'ediff-previous-difference
      "G" 'ediff-jump-to-difference
-     "gg" 'bc-vcs-ediff-first-difference
+     "gg" 'gatsby:vcs-ediff-first-difference
 
-     "j" 'bc-vcs-ediff-scroll-down-1
-     "k" 'bc-vcs-ediff-scroll-up-1
-     "h" 'bc-vcs-ediff-scroll-left
-     "l" 'bc-vcs-ediff-scroll-right
-     "C-d" 'bc-vcs-ediff-scroll-down
-     "C-u" 'bc-vcs-ediff-scroll-up
+     "j" 'gatsby:vcs-ediff-scroll-down-1
+     "k" 'gatsby:vcs-ediff-scroll-up-1
+     "h" 'gatsby:vcs-ediff-scroll-left
+     "l" 'gatsby:vcs-ediff-scroll-right
+     "C-d" 'gatsby:vcs-ediff-scroll-down
+     "C-u" 'gatsby:vcs-ediff-scroll-up
 
      "a" 'ediff-copy-A-to-B
      "b" 'ediff-copy-B-to-A
@@ -257,14 +260,5 @@
        "b" 'ediff-copy-B-to-C
        "+" 'ediff-combine-diffs))))
 
-(use-package vc-msg
-  :config
-  (setq vc-msg-newbie-friendly-msg "")
-
-  :general
-  (:keymaps '(normal visual motion)
-   :prefix "SPC"
-   "gs" 'vc-msg-show))
-
-(provide 'bc-vcs)
-;;; bc-vcs.el ends here
+(provide 'gatsby:vcs)
+;;; gatsby:vcs.el ends here
