@@ -1,8 +1,9 @@
-;;; bc-flymake.el --- init flymake for syntax check -*- lexical-binding: t; -*-
+;;; gatsby:flymake.el --- init flymake for syntax check -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
 ;;; Code:
+(require 'gatsby:core)
 
 (use-package flymake
   :hook
@@ -19,7 +20,7 @@
 
   (setq flymake-start-on-newline nil))
 
-;; flymake frontend
+;; flymake front-end
 (use-package flymake-childframe
   :after flymake
   :straight (flymake-childframe
@@ -27,5 +28,5 @@
              :repo "junyi-hou/flymake-childframe")
   :hook (flymake-mode . flymake-childframe-mode))
 
-(provide 'bc-flymake)
-;;; bc-flymake.el ends here
+(provide 'gatsby:flymake)
+;;; gatsby:flymake.el ends here
