@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(require 'bc-core)
+
 ;; theme
 (use-package gruvbox-theme
   :init
@@ -148,7 +150,7 @@
 ;; visual cue of the cursor position
 (use-package beacon
   ;; use chep's fork so it can grow backwards
-  :straight (beacon :host github :repo "chep/beacon")
+  :straight (beacon :host github :repo "junyi/beacon")
   :config
   (setq beacon-blink-when-window-scrolls nil
         beacon-can-go-backwards t
