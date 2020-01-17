@@ -4,7 +4,7 @@
 
 ;;; Code:
 
-;; load pkgs
+(require 'gatsby:core)
 
 (use-package evil
   ;;  welcome to the dark side
