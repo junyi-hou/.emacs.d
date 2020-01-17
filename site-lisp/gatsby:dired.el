@@ -1,18 +1,19 @@
-;;; bc-dired.el --- settings for dired mode -*- lexical-binding: t; -*-
+;;; gatsby:dired.el --- settings for dired mode -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
 ;;; Code:
+(require 'gatsby:core)
 
 (use-package dired
-  :straight (dired :type built-in)
+  :straight (:type built-in)
   :defer t
   :config
   (evil-set-initial-state 'dired-mode 'motion)
   (setq dired-listing-switches "-alh")
 
   ;; functions
-  (defun bc-dired--mark-one (cmd)
+  (defun gatsby:dired--mark-one (cmd)
     "Run command CMD on the file under the cursor."
     (let ((inhibit-read-only t)
           (marked-files (mapcar (lambda (x) (cons x "*")) (dired-get-marked-files))))
@@ -53,15 +54,15 @@
    "t" 'dired-show-file-type
    "y" 'dired-copy-filename-as-kill
    "c" (lambda () (interactive)
-         (bc-dired--mark-one 'dired-do-copy))
+         (gatsby:dired--mark-one 'dired-do-copy))
    "r" (lambda () (interactive)
-         (bc-dired--mark-one 'dired-do-rename))
+         (gatsby:dired--mark-one 'dired-do-rename))
    "d" (lambda () (interactive)
-         (bc-dired--mark-one 'dired-do-delete))
+         (gatsby:dired--mark-one 'dired-do-delete))
    "o" (lambda () (interactive)
-         (bc-dired--mark-one 'dired-do-chown))
+         (gatsby:dired--mark-one 'dired-do-chown))
    "m" (lambda () (interactive)
-         (bc-dired--mark-one 'dired-do-chmod))
+         (gatsby:dired--mark-one 'dired-do-chmod))
 
    ;; marks
    "m" 'dired-mark
@@ -105,8 +106,7 @@
   (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
   (dired-rainbow-define-chmod directory "#6cb2eb" "d.*"))
 
-(use-package dired-collapse
-  :hook (dired-mode . dired-collapse-mode))
+(use-package dired-collapse :hook (dired-mode . dired-collapse-mode))
 
-(provide 'bc-dired)
-;;; bc-dired.el ends here
+(provide 'gatsby:dired)
+;;; gatsby:dired.el ends here
