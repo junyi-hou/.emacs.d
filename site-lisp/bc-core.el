@@ -55,13 +55,12 @@
      ((< (/ (float w) 2) 80) nil)
      (t t))))
 
-(defun bc-core-split-window (&optional window switch)
+(defun bc-core-split-window (&optional window)
   "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down.  If SWITCH is non-nil, switch to the newly splitted window."
   (let ((window (or window (selected-window))))
     (if (bc-core--split-vertical window)
         (split-window-right)
-      (split-window-below)))
-  (when switch (other-window 1)))
+      (split-window-below))))
 
 (setq-default split-window-preferred-function 'bc-core-split-window)
 
