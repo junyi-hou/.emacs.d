@@ -1,4 +1,4 @@
-;;; bc-ivy.el --- config for ivy -*- lexical-binding: t; -*-
+;;; gatsby:ivy.el --- config for ivy -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -24,7 +24,7 @@
 (use-package counsel
   :after ivy
   :init
-  (defun bc-ivy-grep-at-point ()
+  (defun gatsby:ivy-grep-at-point ()
     "Call `counsel-ag' on the `symbol-at-point'."
     (interactive)
     (counsel-rg (symbol-name (symbol-at-point))))
@@ -32,7 +32,7 @@
   :general
   (:keymaps '(normal visual motion)
    :prefix "SPC"
-   "rs" 'bc-ivy-grep-at-point
+   "rs" 'gatsby:ivy-grep-at-point
    "rS" 'counsel-rg)
 
   (:keymaps '(motion normal visual emacs insert)
@@ -56,11 +56,10 @@
 
 (use-package ivy-prescient
   :after ivy
-  :init
+  :config
   (setq ivy-prescient-sort-commands
         '(:not swiper ivy-switch-buffer counsel-recentf flyspell-correct-ivy))
-  :config
   (ivy-prescient-mode))
 
-(provide 'bc-ivy)
-;;; bc-ivy.el ends here
+(provide 'gatsby:ivy)
+;;; gatsby:ivy.el ends here
