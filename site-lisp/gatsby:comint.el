@@ -1,4 +1,4 @@
-;;; bc-comint.el --- init comint for REPLs -*- lexical-binding: t; -*-
+;;; gatsby:comint.el --- init comint for REPLs -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -8,45 +8,45 @@
   :defer t
   :straight (:type built-in)
   :init
-  (defun bc-comint-goto-last-prompt ()
+  (defun gatsby:comint-goto-last-prompt ()
     "Goto current prompt and continue editting."
     (interactive)
     (goto-char (point-max))
     (evil-insert 1))
 
-  (defun bc-comint-cls ()
+  (defun gatsby:comint-cls ()
     "clear current REPL buffer."
     (interactive)
     (let ((comint-buffer-maximum-size 0))
       (comint-truncate-buffer)))
 
-  (defun bc-comit--move-to-eol (&rest _)
+  (defun gatsby:comit--move-to-eol (&rest _)
     (goto-char (point-max)))
 
-  (advice-add 'comint-previous-matching-input-from-input :after 'bc-comit--move-to-eol)
-  (advice-add 'comint-next-matching-input-from-input :after 'bc-comit--move-to-eol)
+  (advice-add 'comint-previous-matching-input-from-input :after 'gatsby:comit--move-to-eol)
+  (advice-add 'comint-next-matching-input-from-input :after 'gatsby:comit--move-to-eol)
 
   ;;; ===============================
   ;;  REPL settings
   ;;; ===============================
 
-  (defvar-local bc-comint-repl-buffer nil
+  (defvar-local gatsby:comint-repl-buffer nil
     "The repl associated to the current buffer.")
 
-  (defun bc-comint--start-repl (repl-fn &rest args)
+  (defun gatsby:comint--start-repl (repl-fn &rest args)
     "Start a REPL buffer using REPL-FN with ARGS."
     (let ((code-buffer (current-buffer)))
       (apply repl-fn args)
       (let ((repl-buffer (current-buffer)))
         (with-current-buffer code-buffer
-          (setq-local bc-comint-repl-buffer repl-buffer)))
+          (setq-local gatsby:comint-repl-buffer repl-buffer)))
       (switch-to-buffer-other-window code-buffer)))
 
-  (defun bc-comint--pop-to-repl ()
-    "Switch to `bc-comint-repl-buffer' associated with the current buffer."
-    (pop-to-buffer bc-comint-repl-buffer))
+  (defun gatsby:comint--pop-to-repl ()
+    "Switch to `gatsby:comint-repl-buffer' associated with the current buffer."
+    (pop-to-buffer gatsby:comint-repl-buffer))
 
-  (defun bc-comint-associate-repl (repl-mode)
+  (defun gatsby:comint-associate-repl (repl-mode)
     "Select a repl of mode REPL-MODE and associate the current buffer to that repl."
     (let ((repl-buffer-name (ivy-read
                              "Choose REPL to associate to: "
@@ -55,12 +55,12 @@
                                           (with-current-buffer (cdr bf)
                                             (eq major-mode repl-mode)))
                              :action 'identity)))
-      (setq bc-comint-repl-buffer (get-buffer repl-buffer-name))))
+      (setq gatsby:comint-repl-buffer (get-buffer repl-buffer-name))))
 
-  (defun bc-comint--send-code-to-repl (send-fn string)
+  (defun gatsby:comint--send-code-to-repl (send-fn string)
     "Send STRING using SEND-FN to the associated buffer for evaluation."
-    (if bc-comint-repl-buffer
-        (with-current-buffer bc-comint-repl-buffer
+    (if gatsby:comint-repl-buffer
+        (with-current-buffer gatsby:comint-repl-buffer
           (goto-char (point-max))
           (let ((bol (save-excursion
                        (comint-bol))))
@@ -69,11 +69,11 @@
           (funcall send-fn))
       (user-error "Associated REPL not found")))
 
-  (defun bc-comint--eval-region (send-fn beg end)
-    (bc-comint--send-code-to-repl send-fn (buffer-substring-no-properties beg end))
+  (defun gatsby:comint--eval-region (send-fn beg end)
+    (gatsby:comint--send-code-to-repl send-fn (buffer-substring-no-properties beg end))
     (deactivate-mark))
 
-  (defun bc-comint--eval-last-sexp (send-fn)
+  (defun gatsby:comint--eval-last-sexp (send-fn)
     "Evaluate the last sexp before point."
     ;; HACK: depend on evil
     (save-excursion
@@ -81,19 +81,19 @@
                       (1+ (point))
                     (1+ (re-search-backward "[\])]"))))
              (beg (evil-jump-item)))
-        (bc-comint--eval-region send-fn beg end))))
+        (gatsby:comint--eval-region send-fn beg end))))
 
-  (defun bc-comint-exit-repl ()
-    "When quitting repl buffer, reset `bc-comint-repl-buffer' for all associated code buffers."
+  (defun gatsby:comint-exit-repl ()
+    "When quitting repl buffer, reset `gatsby:comint-repl-buffer' for all associated code buffers."
     (interactive)
     (when-let ((_ (y-or-n-p "Really quit this REPL? "))
                (repl-buffer (current-buffer)))
       (mapc (lambda (bf)
               (with-current-buffer bf
-                (setq-local bc-comint-repl-buffer nil)))
+                (setq-local gatsby:comint-repl-buffer nil)))
             (seq-filter (lambda (bf)
                           (with-current-buffer bf
-                            (eq bc-comint-repl-buffer repl-buffer)))
+                            (eq gatsby:comint-repl-buffer repl-buffer)))
                         (buffer-list)))
       (kill-buffer)
       (delete-window)))
@@ -102,7 +102,7 @@
   (:keymaps 'comint-mode-map
    :states '(normal visual motion emacs insert)
    :prefix "C-c"
-   "C-l" 'bc-comint-cls
+   "C-l" 'gatsby:comint-cls
    "C-c" 'comint-interrupt-subjob)
 
   (:keymaps 'comint-mode-map
@@ -118,15 +118,15 @@
   (:keymaps 'comint-mode-map
    :states '(normal motion visual)
    :prefix "SPC"
-   "q" 'bc-comint-exit-repl)
+   "q" 'gatsby:comint-exit-repl)
 
   (:keymaps 'comint-mode-map
    :states '(normal motion visual)
    "<up>" 'comint-previous-prompt
    "<down>" 'comint-next-prompt
-   "A" 'bc-comint-goto-last-prompt
+   "A" 'gatsby:comint-goto-last-prompt
    "H" 'comint-bol
    "SPC" 'nil))
 
-(provide 'bc-comint)
-;;; bc-comint.el ends here
+(provide 'gatsby:comint)
+;;; gatsby:comint.el ends here
