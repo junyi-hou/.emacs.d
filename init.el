@@ -7,37 +7,35 @@
 ;; set load path
 (add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory))
 
-(require 'bc-core)
+(require 'gatsby:core)
 
-(require 'bc-remote)
-(require 'bc-theme)
-(require 'bc-evil)
-(require 'bc-pass)
-(require 'bc-exwm)
-(require 'bc-config)
+(require 'gatsby:theme)
+(require 'gatsby:evil)
+(require 'gatsby:pass)
+(require 'gatsby:exwm)
 
-(require 'bc-eshell)
-(require 'bc-vcs)
-(require 'bc-ivy)
-(require 'bc-project)
-(require 'bc-style)
-(require 'bc-org)
-(require 'bc-dired)
-;; (require 'bc-mail)
+(require 'gatsby:eshell)
+(require 'gatsby:vcs)
+(require 'gatsby:ivy)
+(require 'gatsby:project)
+(require 'gatsby:style)
+(require 'gatsby:org)
+(require 'gatsby:dired)
+;; (require 'gatsby:mail)
 
 ;; ide features
-(require 'bc-flymake)
-(require 'bc-company)
-(require 'bc-lsp)
+(require 'gatsby:flymake)
+(require 'gatsby:completion)
+(require 'gatsby:lsp)
 
-(require 'bc-pyim)
+(require 'gatsby:pyim)
 
 ;;; language
-(require 'bc-lisp)
-(require 'bc-gentoo)
-(require 'bc-python)
-(require 'bc-stata)
-(require 'bc-scheme)
-(require 'bc-text)
+(require 'gatsby:lisp)
+(require 'gatsby:gentoo)
+(require 'gatsby:python)
+(require 'gatsby:stata)
+(require 'gatsby:scheme)
+(require 'gatsby:text)
 
 ;;; init.el ends here
