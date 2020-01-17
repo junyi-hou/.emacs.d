@@ -1,19 +1,18 @@
-;;; bc-style.el --- sytle guide: spell and grammar check -*- lexical-binding: t; -*-
+;;; gatsby:style.el --- sytle guide: spell and grammar check -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
 ;;; Code:
 
-;; spell checker
-(use-package flyspell-correct-ivy
-  :after flyspell-correct)
+(require 'gatsby:core)
 
+;; TODO: better SPC-sp
 (use-package flyspell-correct
   :config
   (setq flyspell-correct-interface #'flyspell-correct-ivy)
 
   ;; functions
-  (defun bc-style-correct ()
+  (defun gatsby:style-correct ()
     "Advising `flyspell-correct-wrapper' to go to previous cursor position."
     (interactive)
     (save-excursion
@@ -27,10 +26,13 @@
   :general
   (:keymaps '(motion normal visual)
    :prefix "SPC"
-   "sp" 'bc-style-correct)
+   "sp" 'gatsby:style-correct)
   (:keymaps 'insert
    :prefix "C-c"
-   "s" 'bc-style-correct))
+   "s" 'gatsby:style-correct))
 
-(provide 'bc-style)
-;;; bc-style.el ends here
+(use-package flyspell-correct-ivy
+  :after flyspell-correct)
+
+(provide 'gatsby:style)
+;;; gatsby:style.el ends here
