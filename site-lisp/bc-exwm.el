@@ -92,6 +92,21 @@
         (selected-frame)
         (exwm--buffer->id (get-buffer x))))))
 
+  (when (executable-find "zathura")
+    (defun bc-exwm-open-pdf-in-zathura (ff &rest args)
+      "If selected file is a pdf, open in `zathura'. Otherwise open using FF."
+      (let ((filename (car args)))
+        (if (string= "pdf" (file-name-extension filename))
+            (progn
+              (bc-core-split-window)
+              (other-window 1)
+              (start-process-shell-command "zathura"
+                                           nil
+                                           (format "zathura '%s'" filename)))
+          (apply ff args))))
+
+    (advice-add #'find-file-noselect :around #'bc-exwm-open-pdf-in-zathura))
+
   :config
 
   ;;; ===============================

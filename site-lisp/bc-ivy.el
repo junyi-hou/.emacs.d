@@ -40,7 +40,9 @@
    :non-normal-prefix "s-SPC"
    "oo" 'counsel-find-file
    "or" 'counsel-recentf
-   "ob" 'switch-to-buffer))
+   "ob" 'switch-to-buffer
+   "om" (lambda () (interactive)
+          (switch-to-buffer-other-window (get-buffer-create "*Messages*")))))
 
 ;; for counsel-search
 (use-package request :defer t)
