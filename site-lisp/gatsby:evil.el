@@ -1,4 +1,4 @@
-;;; bc-evil.el --- evil mode related settings -*- lexical-binding: t; -*-
+;;; gatsby:evil.el --- evil mode related settings
 
 ;;; Commentary:
 
@@ -7,9 +7,9 @@
 ;; load pkgs
 
 (use-package evil
+  ;;  welcome to the dark side
   :init
-  ;; functions:
-  (defun bc-evil-visual-tab ()
+  (defun gatsby:evil-visual-tab ()
     "Indent region if in visual-line-mode, otherwise select contains inside a pair of tags via `evil-jump-item'"
     (interactive)
     (if (eq evil-visual-selection 'line)
@@ -17,7 +17,7 @@
       (evil-jump-item)))
 
   ;; borrow from http://steve.yegge.googlepages.com/my-dot-emacs-file
-  (defun bc-evil-rename-file-and-buffer (new-name)
+  (defun gatsby:evil-rename-file-and-buffer (new-name)
     "Renames both current buffer and file it's visiting to NEW-NAME."
     (interactive "sNew name: ")
     (let ((name (buffer-name))
@@ -32,7 +32,7 @@
             (set-visited-file-name new-name)
             (set-buffer-modified-p nil))))))
 
-  (defun bc-evil-move-buffer-file (new-location)
+  (defun gatsby:evil-move-buffer-file (new-location)
     "Move `buffer-file-name' to NEW-LOCATION."
     (interactive
      (list
@@ -50,15 +50,15 @@
       (start-process-shell-command
        "move" nil cmd)))
 
-  (evil-define-motion bc-evil-next-three-lines ()
+  (evil-define-motion gatsby:evil-next-three-lines ()
     (interactive)
     (evil-next-visual-line 3))
 
-  (evil-define-motion bc-evil-previous-three-lines ()
+  (evil-define-motion gatsby:evil-previous-three-lines ()
     (interactive)
     (evil-previous-visual-line 3))
 
-  (defun bc-evil--search-visually-selected-text (forward)
+  (defun gatsby:evil--search-visually-selected-text (forward)
     "Search visually selected test.  If FORWARD is t, search forward, otherwise search backward."
     (let* ((beg (region-beginning))
            (end (region-end))
@@ -77,57 +77,54 @@
       (evil-visual-state)
       (evil-forward-char search-str-length)))
 
-  (evil-define-motion bc-evil-search-visually-forward ()
+  (evil-define-motion gatsby:evil-search-visually-forward ()
     "Search forward for the visual selected text."
     :jump t
     :repeat nil
     (interactive)
-    (bc-evil--search-visually-selected-text t))
+    (gatsby:evil--search-visually-selected-text t))
 
-  (evil-define-motion bc-evil-search-visually-backward ()
+  (evil-define-motion gatsby:evil-search-visually-backward ()
     "Search backward for the visual selected text."
     :jump t
     :repeat nil
     (interactive)
-    (bc-evil--search-visually-selected-text nil))
+    (gatsby:evil--search-visually-selected-text nil))
 
-  (defun bc-evil--center-cursor-line (&rest _)
+  (defun gatsby:evil--center-cursor-line (&rest _)
     "Thin wrapper around `evil-scroll-line-to-center' for advice purpose."
     (recenter nil))
 
-  (advice-add #'evil-search-next :after #'bc-evil--center-cursor-line)
-  (advice-add #'evil-search-previous :after #'bc-evil--center-cursor-line)
-  (advice-add #'bc-evil-search-visually-forward :after #'bc-evil--center-cursor-line)
-  (advice-add #'bc-evil-search-visually-backward :after #'bc-evil--center-cursor-line)
+  (advice-add #'evil-search-next :after #'gatsby:evil--center-cursor-line)
+  (advice-add #'evil-search-previous :after #'gatsby:evil--center-cursor-line)
+  (advice-add #'gatsby:evil-search-visually-forward :after #'gatsby:evil--center-cursor-line)
+  (advice-add #'gatsby:evil-search-visually-backward :after #'gatsby:evil--center-cursor-line)
 
-  (defun bc-evil--move-up-after-jump (&rest _)
+  (defun gatsby:evil--move-up-after-jump (&rest _)
     "Move up 1 line after `evil-jump-item' so the last line is not covered by eldoc-box."
     (when (and (not (= (window-end) (point-max)))
                (<= (- (line-number-at-pos (window-end)) (line-number-at-pos)) 2))
       (evil-scroll-line-down 2)))
 
-  (advice-add #'evil-jump-item :after #'bc-evil--move-up-after-jump)
+  (advice-add #'evil-jump-item :after #'gatsby:evil--move-up-after-jump)
 
-  (defun bc-evil--recenter-after-goto-point-max (count)
+  (defun gatsby:evil--recenter-after-goto-point-max (count)
     "Thin wrapper around `evil-scroll-line-to-center' so center the end-of-buffer after a G motion."
     (unless count
       (recenter nil)))
 
-  (advice-add #'evil-goto-line :after #'bc-evil--recenter-after-goto-point-max)
+  (advice-add #'evil-goto-line :after #'gatsby:evil--recenter-after-goto-point-max)
 
-  (defun bc-evil-normal-state-if-not-motion ()
+  (defun gatsby:evil-normal-state-if-not-motion ()
     "Switch to evil normal state if the current state is not motion state."
     (interactive)
     (unless (evil-motion-state-p)
       (evil-normal-state)))
 
   ;; bind esc to normal state in all cases
-  (global-set-key (kbd "<escape>") 'bc-evil-normal-state-if-not-motion)
+  (global-set-key (kbd "<escape>") 'gatsby:evil-normal-state-if-not-motion)
 
-  ;; rebind universal-argument (i.e., prefix key)
-  (global-set-key (kbd "M-u") 'universal-argument)
-
-  (defun bc-evil-better-newline (newline-fun &rest args)
+  (defun gatsby:evil-better-newline (newline-fun &rest args)
     "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline' for the first call.  Delete the auto-inserted comment for the second call.  Otherwise call `newline' as default."
     (let* (;; line - the current line as string
            (line (buffer-substring-no-properties
@@ -148,9 +145,9 @@
         (apply newline-fun args)
         (insert newline-string))))
 
-  (advice-add 'newline :around #'bc-evil-better-newline)
+  (advice-add 'newline :around #'gatsby:evil-better-newline)
 
-  (defun bc-evil-replace-word-at-point-all (&optional to-string)
+  (defun gatsby:evil-replace-word-at-point-all (&optional to-string)
     "Replace the word at point with TO-STRING throughout the buffer.  If in visual state, replace the selection instead."
     (interactive)
     (let* ((from-string (if (evil-visual-state-p)
@@ -184,8 +181,8 @@
    "k" 'evil-previous-visual-line
 
    "H" 'evil-first-non-blank-of-visual-line
-   "J" 'bc-evil-next-three-lines
-   "K" 'bc-evil-previous-three-lines
+   "J" 'gatsby:evil-next-three-lines
+   "K" 'gatsby:evil-previous-three-lines
    "L" 'evil-end-of-visual-line
 
    "SPC" nil
@@ -218,7 +215,7 @@
    "eL" (lambda () (interactive)
           (eval-buffer)
           (message "buffer %s evaluated!" (buffer-name)))
-   "er" 'bc-evil-replace-word-at-point-all
+   "er" 'gatsby:evil-replace-word-at-point-all
 
    ;; helps
    "hf" 'helpful-callable
@@ -235,15 +232,12 @@
 
    ;; split
    "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))
-   "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1))
-
-   ;; other uses
-   "t" 'evilnc-comment-or-uncomment-lines)
+   "-"   (lambda () (interactive) (evil-window-split) (evil-window-down 1)))
 
   (:keymaps 'visual
-   "*" 'bc-evil-search-visually-forward
-   "#" 'bc-evil-search-visually-backward
-   "<tab>" 'bc-evil-visual-tab)
+   "*" 'gatsby:evil-search-visually-forward
+   "#" 'gatsby:evil-search-visually-backward
+   "<tab>" 'gatsby:evil-visual-tab)
 
   (:keymaps '(normal motion)
    "<tab>" 'evil-jump-item)
@@ -253,7 +247,7 @@
    "a" 'align-regexp)
 
   (:keymaps 'insert
-   "<tab>" 'bc-company-unified-tab)
+   "<tab>" 'gatsby:company-unified-tab)
 
   (:keymaps 'message-mode-map
    :states 'motion
@@ -266,30 +260,31 @@
    "q" 'delete-window
    "M-j" 'help-go-forward
    "M-k" 'help-go-back))
+
 (use-package evil-surround
+  ;; vim-surround ported to emacs
   :after evil
   :config
   (global-evil-surround-mode 1))
+
 (use-package evil-indent-textobject :after evil)
+
 (use-package evil-nerd-commenter
   :after evil
-  :commands evilnc-comment-or-uncomment-lines)
+  :commands evilnc-comment-or-uncomment-lines
+  :general
+  (:keymaps '(motion normal visual emacs insert)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   "t" 'evilnc-comment-or-uncomment-lines))
+
 (use-package expand-region
   :after evil
-  :commands (er/expand-region er/contract-region)
-  :init
-  (defun bc-expand-region--suppress-message (fun &rest args)
-    "Suppress the message when calling FUN with ARGS."
-    (let ((inhibit-message t))
-      (apply fun args)))
-
-  (advice-add 'er/expand-region :around #'bc-expand-region--suppress-message)
-  (advice-add 'er/contract-region :around #'bc-expand-region--suppress-message)
-
   :general
   (:keymaps 'visual
    "v" 'er/expand-region
    "V" 'er/contract-region))
+
 (use-package elec-pair
   :config
   (setq electric-pair-open-newline-between-pairs t
@@ -297,5 +292,10 @@
   :hook
   (prog-mode . electric-pair-mode))
 
-(provide 'bc-evil)
-;;; bc-evil.el ends here
+(provide 'gatsby:evil)
+
+;; Local Variables:
+;; lexical-binding: t
+;; End:
+
+;;; gatsby:evil.el ends here
