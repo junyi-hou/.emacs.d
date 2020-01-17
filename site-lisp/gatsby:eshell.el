@@ -1,8 +1,10 @@
-;;; bc-eshell.el --- my eshell setting -*- lexical-binding: t; -*-
+;;; gatsby:eshell.el --- my eshell setting
 
 ;;; Commentary:
 
 ;;; Code:
+
+(require 'gatsby:core)
 
 (use-package eshell
   :init
@@ -20,25 +22,25 @@
 
   (setenv "PAGER" "cat")
 
-  (defun bc-eshell--setkey ()
+  (defun gatsby:eshell--setkey ()
     "Customize key in eshell-mode."
     (general-define-key
      :states '(normal visual motion)
      :keymaps 'eshell-mode-map
-     "A" 'bc-eshell-goto-last-prompt
+     "A" 'gatsby:eshell-goto-last-prompt
      "H" 'eshell-bol
-     "S" 'bc-eshell-toggle-sudo
+     "S" 'gatsby:eshell-toggle-sudo
      "c" 'eshell/evil-change
      "C" 'eshell/evil-change-line
      "d" 'eshell/evil-delete
      "D" 'eshell/evil-delete-line
-     "RET" 'bc-eshell-open-file-at-point)
+     "RET" 'gatsby:eshell-open-file-at-point)
 
     (general-define-key
      :states '(normal visual motion emacs insert)
      :keymaps 'eshell-mode-map
      :prefix "C-c"
-     "C-l" 'bc-eshell-clear-buffer)
+     "C-l" 'gatsby:eshell-clear-buffer)
 
     (general-define-key
      :states '(normal visual motion)
@@ -46,44 +48,44 @@
      :prefix "SPC"
      "q" 'kill-buffer-and-window))
 
-  (add-hook 'eshell-mode-hook #'bc-eshell--setkey)
+  (add-hook 'eshell-mode-hook #'gatsby:eshell--setkey)
 
   (unless (file-exists-p (no-littering-expand-var-file-name "eshell/alias"))
     (require 'em-alias)
     ;; if alias file does not exists, define aliases
     (eshell/alias "su" "eshell/su $*")
     (eshell/alias "sudo" "eshell/sudo $*")
-    (eshell/alias "cls" "bc-eshell-clear-buffer")
+    (eshell/alias "cls" "gatsby:eshell-clear-buffer")
     (eshell/alias "ll" "ls -Aloh --color=always"))
 
   ;; functions
 
-  (defun bc-eshell-goto-last-prompt ()
+  (defun gatsby:eshell-goto-last-prompt ()
     "Goto current prompt and continue editting."
     (interactive)
     (goto-char (point-max))
     (evil-insert 1))
 
-  (defun bc-eshell--open-or-cd (path)
+  (defun gatsby:eshell--open-or-cd (path)
     "Cd to PATH if path is a directory ((file-name-directory path) => t), otherwise open PATH via `find-file'."
     (interactive)
     (if (file-directory-p path)
         (progn
-          (bc-comint-goto-last-prompt)
+          (gatsby:comint-goto-last-prompt)
           (insert (concat "cd " path))
           (eshell-send-input)
           (evil-normal-state))
       (find-file path)))
 
-  (defun bc-eshell-open-file-at-point ()
+  (defun gatsby:eshell-open-file-at-point ()
     "Try to open file at point.  If not file is found, fallback to `evil-ret'."
     (interactive)
     (let ((filename (symbol-name (symbol-at-point))))
       (cond
        ((file-readable-p filename)
-        (bc-eshell--open-or-cd filename))
+        (gatsby:eshell--open-or-cd filename))
        ((file-readable-p (expand-file-name filename))
-        (bc-eshell--open-or-cd (expand-file-name filename)))
+        (gatsby:eshell--open-or-cd (expand-file-name filename)))
        (t
         (evil-ret)))))
 
@@ -109,14 +111,14 @@
       (eshell/printnl "Unpack command: " unpack-command)
       (eshell-command-result unpack-command)))
 
-  (defun bc-eshell--change-buffer-title ()
+  (defun gatsby:eshell--change-buffer-title ()
     "Change the title of eshell buffer to reflect $pwd."
     (rename-buffer (format "%s: %s" eshell-buffer-name (directory-file-name default-directory)) 'unique))
 
-  (add-hook 'eshell-mode-hook #'bc-eshell--change-buffer-title)
-  (add-hook 'eshell-directory-change-hook #'bc-eshell--change-buffer-title)
+  (add-hook 'eshell-mode-hook #'gatsby:eshell--change-buffer-title)
+  (add-hook 'eshell-directory-change-hook #'gatsby:eshell--change-buffer-title)
 
-  (defun bc-eshell-toggle-sudo ()
+  (defun gatsby:eshell-toggle-sudo ()
     "Add/Remove sudo in the begining of command line."
     (interactive)
     (let ((commands (buffer-substring-no-properties
@@ -132,7 +134,7 @@
     (goto-char (point-max))
     (evil-insert-state))
 
-  (defun bc-eshell-open-here ()
+  (defun gatsby:eshell-open-here ()
     "Open a new shell in the pwd.  If there is already a eshell buffer open for that directory, switch to that buffer."
     (interactive)
     (let* ((dir (file-name-directory (or (buffer-file-name) default-directory)))
@@ -155,10 +157,10 @@
       (goto-char (point-max))
       (evil-insert-state)))
 
-  (defun bc-eshell-open-home ()
+  (defun gatsby:eshell-open-home ()
     "Open a new shell in ~ using a new window.  If there is already a eshell buffer open for that directory, switch to that buffer."
     (interactive)
-    (bc-core-split-window)
+    (gatsby:core-split-window)
     (other-window 1)
     (let ((default-directory "~"))
       (eshell 'Z)
@@ -171,7 +173,7 @@
     (eshell/mkdir dir)
     (eshell/cd dir))
 
-  (defun bc-eshell-clear-buffer ()
+  (defun gatsby:eshell-clear-buffer ()
     "Eshell version of `cls'."
     (interactive)
     (let ((inhibit-read-only t))
@@ -187,13 +189,13 @@
   (defun eshell/FF (&rest files)
     "Open FILES in a new window in emacs."
     (setq files (eshell-flatten-list files))
-    (bc-core-split-window)
+    (gatsby:core-split-window)
     (other-window 1)
     (mapc 'find-file files))
 
   (with-eval-after-load 'exwm
     (when (executable-find "zathura")
-      (defun bc-eshell--separate-pdf (files)
+      (defun gatsby:eshell--separate-pdf (files)
         "Separate pdf from other types of files in FILES. Return a cons cell of all pdf files and other files."
         (let ((out (cons '() '())))
           (mapc (lambda (file)
@@ -203,10 +205,10 @@
                 files)
           out))
 
-      (defun bc-eshell--use-zathura (ff &rest files)
+      (defun gatsby:eshell--use-zathura (ff &rest files)
         "Open FILES in emacs, for pdf files in FILES, use zathura to open them."
         (setq files (eshell-flatten-list files))
-        (let* ((separated-files (bc-eshell--separate-pdf files))
+        (let* ((separated-files (gatsby:eshell--separate-pdf files))
                (pdfs (car separated-files))
                (others (cdr separated-files)))
           (cond ((and pdfs others)
@@ -214,7 +216,7 @@
                                               nil
                                               (format "tabbed -c zathura %s -e"
                                                       (string-join pdfs " ")))
-                 (bc-core-split-window)
+                 (gatsby:core-split-window)
                  (other-window 1)
                  (apply ff others))
                 (pdfs (start-process-shell-command "zathura"
@@ -222,12 +224,12 @@
                                                    (format "tabbed -c zathura %s -e"
                                                            (string-join pdfs " "))))
                 (others (when (eq ff 'eshell/FF)
-                          (bc-core-split-window)
+                          (gatsby:core-split-window)
                           (other-window 1))
                         (apply ff others)))))
 
-      (advice-add #'eshell/ff :around #'bc-eshell--use-zathura)
-      (advice-add #'eshell/FF :around #'bc-eshell--use-zathura)))
+      (advice-add #'eshell/ff :around #'gatsby:eshell--use-zathura)
+      (advice-add #'eshell/FF :around #'gatsby:eshell--use-zathura)))
 
   ;; taken from doom-emacs at https://github.com/hlissner/doom-emacs/blob/develop/modules/term/eshell/autoload/evil.el
   (evil-define-operator eshell/evil-change (beg end type register yank-handler delete-func)
@@ -265,23 +267,21 @@
   (:keymaps '(motion normal visual emacs insert)
    :prefix "SPC"
    :non-normal-prefix "s-SPC"
-   "os" 'bc-eshell-open-here
-   "oS" 'bc-eshell-open-home))
+   "os" 'gatsby:eshell-open-here
+   "oS" 'gatsby:eshell-open-home))
 
+;; TODO use vterm to replace ansi-term
 (use-package em-term
   :straight (em-term :type built-in)
   :after eshell
   :config
   (dolist (p '("alsamixer" "htop" "ssh" "top"))
-    (add-to-list 'eshell-visual-commands p))
-
-  ;; TODO use vterm to replace ansi-term
-  )
+    (add-to-list 'eshell-visual-commands p)))
 
 (use-package em-tramp
-  :straight (em-tramp :type built-in)
+  :straight (:type built-in)
   :after eshell
-  :init
+  :config
   ;; load tramp
   (require 'tramp)
 
@@ -289,11 +289,11 @@
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
   ;; override eshell/sudo
-  (defun bc-eshell-sudo (&rest commands)
+  (defun gatsby:eshell-sudo (&rest commands)
     "Use `tramp' run COMMAND in /sudo::`default-directory'.  Does not have any flags so won't get error if -i or --user is given."
     (setq commands (eshell-flatten-list commands))
     (if (not commands)
-        (bc-eshell-su)
+        (gatsby:eshell-su)
       (throw 'eshell-external
              (let ((user "root")
                    (host (or (file-remote-p default-directory 'host) "localhost"))
@@ -310,10 +310,10 @@
                       (let ((default-directory (format "/sudo:%s@%s:%s" user host dir)))
                         (eshell-named-command (car commands) (cdr commands)))))))))
 
-  (advice-add #'eshell/sudo :override #'bc-eshell-sudo)
+  (advice-add #'eshell/sudo :override #'gatsby:eshell-sudo)
 
   ;; override eshell/su
-  (defun bc-eshell-su (&rest _)
+  (defun gatsby:eshell-su (&rest _)
     "toggle between `default-directory' and /sudo::`default-directory'."
     (let ((user "root")
           (host (or (file-remote-p default-directory 'host) "localhost"))
@@ -332,10 +332,10 @@
              (format "%s|sudo:%s@%s:%s" (substring prefix 0 -1) user host dir))
           (eshell/cd (format "/sudo:%s@%s:%s" user host dir))))))
 
-  (advice-add #'eshell/su :override #'bc-eshell-su)
+  (advice-add #'eshell/su :override #'gatsby:eshell-su)
 
   ;; better `eshell/cd'
-  (defun bc-eshell-cd (cd &rest args)
+  (defun gatsby:eshell-cd (cd &rest args)
     "Make `eshell/cd' tramp-aware."
     (let* ((host (file-remote-p default-directory))
            (home (format "%s/home/%s" host (file-remote-p default-directory 'user))))
@@ -346,13 +346,22 @@
             (funcall cd (format "%s/" host)))
         (funcall cd args))))
 
-  (advice-add #'eshell/cd :around #'bc-eshell-cd))
+  (advice-add #'eshell/cd :around #'gatsby:eshell-cd))
 
 ;; sudo edit files
 (use-package sudo-edit
   :defer t
   :config
-  (sudo-edit-indicator-mode))
+  (sudo-edit-indicator-mode)
+  :general
+  (:keymaps 'normal
+   :prefix "SPC"
+   "se" 'sudo-edit))
 
-(provide 'bc-eshell)
-;;; bc-eshell.el ends here
+(provide 'gatsby:eshell)
+
+;; Local Variables:
+;; lexical-binding: t
+;; End:
+
+;;; gatsby:eshell.el ends here
