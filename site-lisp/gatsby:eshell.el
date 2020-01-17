@@ -1,4 +1,4 @@
-;;; gatsby:eshell.el --- my eshell setting
+;;; gatsby:eshell.el --- my eshell setting -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -359,9 +359,4 @@
    "se" 'sudo-edit))
 
 (provide 'gatsby:eshell)
-
-;; Local Variables:
-;; lexical-binding: t
-;; End:
-
 ;;; gatsby:eshell.el ends here

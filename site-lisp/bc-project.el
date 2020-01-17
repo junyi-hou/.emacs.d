@@ -1,8 +1,10 @@
-;;; bc-project.el --- config to jump to definitions -*- lexical-binding: t; -*-
+;;; bc-project.el --- find-file-in-project -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
 ;;; Code:
+
+(require 'bc-core)
 
 (use-package project
   :init

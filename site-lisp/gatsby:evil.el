@@ -1,4 +1,4 @@
-;;; gatsby:evil.el --- evil mode related settings
+;;; gatsby:evil.el --- evil mode related settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -293,9 +293,4 @@
   (prog-mode . electric-pair-mode))
 
 (provide 'gatsby:evil)
-
-;; Local Variables:
-;; lexical-binding: t
-;; End:
-
 ;;; gatsby:evil.el ends here

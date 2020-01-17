@@ -1,4 +1,4 @@
-;;; gatsby:core.el --- settings that should be loaded for every buffer each time emacs starts
+;;; gatsby:core.el --- settings that should be loaded for every buffer each time emacs starts -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -272,9 +272,4 @@ Lisp function does not specify a special indentation."
   (global-so-long-mode))
 
 (provide 'gatsby:core)
-
-;; Local Variables:
-;; lexical-binding: t
-;; End:
-
 ;;; gatsby:core.el ends here

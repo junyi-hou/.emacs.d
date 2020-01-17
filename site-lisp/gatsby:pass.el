@@ -1,8 +1,10 @@
-;;; bc-pass.el --- GNU pass emacs integration -*- lexical-binding: t; -*-
+;;; gatsby:pass.el --- GNU pass emacs integration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
 ;;; Code:
+
+(require 'gatsby:core)
 
 (use-package epa
   :init
@@ -18,7 +20,7 @@
   (setq password-store-password-length 16)
 
   ;; better password-store-generate -- warn if overriding
-  (defun bc-password-store-generate (entry &optional password-length)
+  (defun gatsby:password-store-generate (entry &optional password-length)
     "Generate a new password for ENTRY with PASSWORD-LENGTH, checking for duplicates first."
     (interactive (list (read-string "Password entry: ")))
     (let ((password-length (or password-length password-store-password-length)))
@@ -35,11 +37,11 @@
    (lambda (entry &rest args)
      (password-store-copy entry)))
 
-  (defun bc-pass--get-entry (entry type)
+  (defun gatsby:pass--get-entry (entry type)
     "Retrieve secret TYPE from ENTRY."
     (password-store-get (concat entry "/" type)))
 
-  (defun bc-pass-qutebroswer ()
+  (defun gatsby:pass-qutebroswer ()
     "A qutebroswer userscript to retrieve secrets from gnu pass."
     (let* ((candidates (seq-filter
                         (lambda (folder-name)
@@ -49,16 +51,16 @@
                             (substring-no-properties folder-name 0 1))))
                         (directory-files "~/.password-store/")))
            (entry (ivy-read "account: " candidates :action 'identity)))
-      (concat (bc-pass--get-entry entry "account")
+      (concat (gatsby:pass--get-entry entry "account")
               " "
-              (bc-pass--get-entry entry "passwd"))))
+              (gatsby:pass--get-entry entry "passwd"))))
 
   :general
   (:keymaps '(normal visual motion emacs insert)
    :prefix "SPC"
    :non-normal-prefix "s-SPC"
    "pc" 'password-store-copy
-   "pg" 'bc-password-store-generate))
+   "pg" 'gatsby:password-store-generate))
 
-(provide 'bc-pass)
-;;; bc-pass.el ends here
+(provide 'gatsby:pass)
+;;; gatsby:pass.el ends here

@@ -1,4 +1,4 @@
-;;; gatsby:exwm.el --- emacs X windowm manager config
+;;; gatsby:exwm.el --- emacs X windowm manager config -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -440,9 +440,4 @@ This function first scan for video port status via `gatsby:exwm--monitor-status'
   (advice-add 'exwm-edit--compose :before #'gatsby:exwm--auto-select-all))
 
 (provide 'gatsby:exwm)
-
-;; Local Variables:
-;; lexical-binding: t
-;; End:
-
 ;;; gatsby:exwm.el ends here

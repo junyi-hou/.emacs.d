@@ -1,10 +1,10 @@
-;;; bc-theme.el --- setting themes -*- lexical-binding: t; -*-
+;;; gatsby:theme.el --- setting themes -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
 ;;; Code:
 
-(require 'bc-core)
+(require 'gatsby:core)
 
 ;; theme
 (use-package gruvbox-theme
@@ -12,7 +12,7 @@
   (setq custom-safe-themes t)
   (setq-default left-fringe-width 8)
 
-  (defun bc-theme-fontsize-up (&optional size)
+  (defun gatsby:theme-fontsize-up (&optional size)
     "Increase the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
     (interactive)
     (let* ((current-size (plist-get (custom-face-attributes-get 'default nil) :height))
@@ -21,7 +21,7 @@
        'default (selected-frame)
        :height new-size)))
 
-  (defun bc-theme-fontsize-down (&optional size)
+  (defun gatsby:theme-fontsize-down (&optional size)
     "Decrease the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
     (interactive)
     (let* ((current-size (plist-get (custom-face-attributes-get 'default nil) :height))
@@ -30,7 +30,7 @@
        'default (selected-frame)
        :height new-size)))
 
-  (defun bc-theme-fontsize-reset ()
+  (defun gatsby:theme-fontsize-reset ()
     "Reset the current frame font size."
     (interactive)
     (set-face-attribute
@@ -53,9 +53,9 @@
 
   :general
   (:keymaps '(motion normal visual emacs insert)
-   "C-+" 'bc-theme-fontsize-up
-   "C--" 'bc-theme-fontsize-down
-   "C-=" 'bc-theme-fontsize-reset))
+   "C-+" 'gatsby:theme-fontsize-up
+   "C--" 'gatsby:theme-fontsize-down
+   "C-=" 'gatsby:theme-fontsize-reset))
 
 ;; display battery level
 (use-package battery
@@ -71,15 +71,12 @@
   (display-time-mode))
 
 (use-package doom-modeline
-  :init
+  :config
   (setq doom-modeline-project-detection 'project
         doom-modeline-buffer-file-name-style 'relative-to-project
         ;; if only I can disable all-the-icon dependency...
         doom-modeline-icon nil
         doom-modeline-vcs-max-length 20)
-
-  :config
-  (doom-modeline-mode 1)
 
   (doom-modeline-def-segment current-line
     (if-let ((line (format "%s(%d/%d)"
@@ -120,29 +117,31 @@
     '(input-method process time-battery))
 
   (with-eval-after-load 'exwm
-    (defvar bc-theme-exwm-title-max-length 60)
+    (defvar gatsby:theme-exwm-title-max-length 60)
 
     (doom-modeline-def-segment exwm-title
       "exwm buffer title, truncated if too long."
       (if-let ((title (buffer-name))
-               ((> (length title) bc-theme-exwm-title-max-length)))
-          (concat (substring title 0 bc-theme-exwm-title-max-length) "...")
+               ((> (length title) gatsby:theme-exwm-title-max-length)))
+          (concat (substring title 0 gatsby:theme-exwm-title-max-length) "...")
         title))
 
     (doom-modeline-def-modeline 'exwm
       '(modals exwm-title) '(major-mode time-battery))
 
-    (defun bc-theme-set-exwm-modeline ()
+    (defun gatsby:theme-set-exwm-modeline ()
       (doom-modeline-set-modeline 'exwm))
 
-    (add-hook 'exwm-manage-finish-hook #'bc-theme-set-exwm-modeline)))
+    (add-hook 'exwm-manage-finish-hook #'gatsby:theme-set-exwm-modeline))
+
+  (doom-modeline-mode 1))
 
 ;; indentation guide
 (use-package highlight-indent-guides
   :hook
   (prog-mode . highlight-indent-guides-mode)
   (LaTeX-mode . highlight-indent-guides-mode)
-  :init
+  :config
   (setq highlight-indent-guides-method 'character
         highlight-indent-guides-character ?\┆
         highlight-indent-guides-responsive 'stack))
@@ -170,11 +169,11 @@
    nil
    :background (face-background 'default))
 
-  (setq-default
-   display-line-numbers-type 'visual
-   display-line-numbers-current-absolute t
-   display-line-numbers-width 3
-   display-line-numbers-widen nil))
+  (setq display-line-numbers-type 'visual
+        display-line-numbers-current-absolute t
+        display-line-numbers-width 3
+        display-line-numbers-widen nil))
+
 ;; highlight keywords
 (use-package hl-todo
   :config
@@ -188,5 +187,5 @@
           ("\\?\\?\\?+" . "#cc9393")))
   (global-hl-todo-mode))
 
-(provide 'bc-theme)
-;;; bc-theme.el ends here
+(provide 'gatsby:theme)
+;;; gatsby:theme.el ends here
