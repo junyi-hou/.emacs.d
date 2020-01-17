@@ -6,50 +6,8 @@
 
 ;; load pkgs
 
-(use-package evil-surround
-  :after evil
-  :config
-  (global-evil-surround-mode 1))
-
-(use-package evil-indent-textobject :after evil)
-
-(use-package evil-nerd-commenter
-  :after evil
-  :commands evilnc-comment-or-uncomment-lines)
-
-(use-package expand-region
-  :after evil
-  :commands (er/expand-region er/contract-region)
-  :init
-  (defun bc-expand-region--suppress-message (fun &rest args)
-    "Suppress the message when calling FUN with ARGS."
-    (let ((inhibit-message t))
-      (apply fun args)))
-
-  (advice-add 'er/expand-region :around #'bc-expand-region--suppress-message)
-  (advice-add 'er/contract-region :around #'bc-expand-region--suppress-message)
-
-  :general
-  (:keymaps 'visual
-   "v" 'er/expand-region
-   "V" 'er/contract-region))
-
-(use-package elec-pair
-  :config
-  (setq electric-pair-open-newline-between-pairs t
-        electric-pair-delete-adjacent-pairs t)
-  :hook
-  (prog-mode . electric-pair-mode))
-
 (use-package evil
   :init
-  (evil-mode 1)
-
-  ;; set normal state as default start state
-  (setq evil-normal-state-modes
-        (append evil-emacs-state-modes
-                evil-normal-state-modes))
-
   ;; functions:
   (defun bc-evil-visual-tab ()
     "Indent region if in visual-line-mode, otherwise select contains inside a pair of tags via `evil-jump-item'"
@@ -212,6 +170,14 @@
           (while (search-forward from-string nil t)
             (replace-match to-string nil t))))))
 
+  :config
+  (evil-mode 1)
+
+  ;; set normal state as default start state
+  (setq evil-normal-state-modes
+        (append evil-emacs-state-modes
+                evil-normal-state-modes))
+
   :general
   (:keymaps '(motion normal visual)
    "j" 'evil-next-visual-line
@@ -300,6 +266,36 @@
    "q" 'delete-window
    "M-j" 'help-go-forward
    "M-k" 'help-go-back))
+(use-package evil-surround
+  :after evil
+  :config
+  (global-evil-surround-mode 1))
+(use-package evil-indent-textobject :after evil)
+(use-package evil-nerd-commenter
+  :after evil
+  :commands evilnc-comment-or-uncomment-lines)
+(use-package expand-region
+  :after evil
+  :commands (er/expand-region er/contract-region)
+  :init
+  (defun bc-expand-region--suppress-message (fun &rest args)
+    "Suppress the message when calling FUN with ARGS."
+    (let ((inhibit-message t))
+      (apply fun args)))
+
+  (advice-add 'er/expand-region :around #'bc-expand-region--suppress-message)
+  (advice-add 'er/contract-region :around #'bc-expand-region--suppress-message)
+
+  :general
+  (:keymaps 'visual
+   "v" 'er/expand-region
+   "V" 'er/contract-region))
+(use-package elec-pair
+  :config
+  (setq electric-pair-open-newline-between-pairs t
+        electric-pair-delete-adjacent-pairs t)
+  :hook
+  (prog-mode . electric-pair-mode))
 
 (provide 'bc-evil)
 ;;; bc-evil.el ends here
