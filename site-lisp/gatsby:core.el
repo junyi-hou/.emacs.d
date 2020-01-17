@@ -1,4 +1,4 @@
-;;; bc-core.el --- settings that should be loaded for every buffer each time emacs starts -*- lexical-binding: t; -*-
+;;; gatsby:core.el --- settings that should be loaded for every buffer each time emacs starts
 
 ;;; Commentary:
 
@@ -9,12 +9,83 @@
       gc-cons-percentage 0.6)
 
 (add-hook 'after-init-hook
-          (defun bc-core--reset-gc ()
+          (defun gatsby:core--reset-gc ()
             (setq gc-cons-threshold 16777216
                   gc-cons-percentage 0.2)))
 
 ;; fix potential credential issues
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+;; turn off bell
+(setq-default visible-bell t
+              ring-bell-function 'ignore)
+
+;; mini window should be mini
+(setq-default max-mini-window-height 1)
+
+;; smooth scroll
+(setq-default scroll-step 1
+              scroll-conservatively 10000
+              auto-window-vscroll nil)
+
+(defun gatsby:core--split-vertical (window)
+  "Return t if should split WINDOW vertically, otherwise return nil."
+  (let* ((h (window-height window))
+         (w (window-width window))
+         (ratio (/ (float h) w)))
+    (cond
+     ((< ratio 0.15) t)
+     ((< (/ (float w) 2) 80) nil)
+     (t t))))
+
+(defun gatsby:core-split-window (&optional window)
+  "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down.  If SWITCH is non-nil, switch to the newly splitted window."
+  (let ((window (or window (selected-window))))
+    (if (gatsby:core--split-vertical window)
+        (split-window-right)
+      (split-window-below))))
+
+(setq-default split-window-preferred-function 'gatsby:core-split-window)
+
+;; always use y-or-n-p
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq-default inhibit-splash-screen t
+              inhibit-startup-message t
+              inhibit-startup-echo-area-message t)
+
+;; cannot delete *scratch* buffer
+(defun gatsby:core--unkillable-scratch ()
+  (if (string= (buffer-name (current-buffer)) "*scratch*")
+      (progn
+        (delete-region (point-min) (point-max))
+        (insert initial-scratch-message)
+        nil)
+    t))
+
+(add-hook 'kill-buffer-query-functions
+          #'gatsby:core--unkillable-scratch)
+
+;; indentation settings
+(setq-default indent-tabs-mode nil
+              tab-width 4
+              python-indent-offset 4
+              electric-indent-inhibit t  ; don't change indentation for me
+              indicate-empty-lines nil)
+
+;; bs kill whole tab
+(setq-default backward-delete-char-untabify-method 'hungry)
+
+;; disable menu tool and scroll bars
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(horizontal-scroll-bar-mode -1)
+(tooltip-mode -1)
+(blink-cursor-mode -1)
+
+
+;;; essential packages
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -32,66 +103,6 @@
 ;; install use-package
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
-
-;; turn off bell
-(setq-default visible-bell t
-              ring-bell-function 'ignore)
-
-;; mini window should be mini
-(setq-default max-mini-window-height 1)
-
-;; smooth scroll
-(setq-default scroll-step 1
-              scroll-conservatively 10000
-              auto-window-vscroll nil)
-
-(defun bc-core--split-vertical (window)
-  "Return t if should split WINDOW vertically, otherwise return nil."
-  (let* ((h (window-height window))
-         (w (window-width window))
-         (ratio (/ (float h) w)))
-    (cond
-     ((< ratio 0.15) t)
-     ((< (/ (float w) 2) 80) nil)
-     (t t))))
-
-(defun bc-core-split-window (&optional window)
-  "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down.  If SWITCH is non-nil, switch to the newly splitted window."
-  (let ((window (or window (selected-window))))
-    (if (bc-core--split-vertical window)
-        (split-window-right)
-      (split-window-below))))
-
-(setq-default split-window-preferred-function 'bc-core-split-window)
-
-;; always use y-or-n-p
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-(setq-default inhibit-splash-screen t
-              inhibit-startup-message t
-              inhibit-startup-echo-area-message t)
-
-;; cannot delete *scratch* buffer
-(defun bc-core--unkillable-scratch ()
-  (if (string= (buffer-name (current-buffer)) "*scratch*")
-      (progn
-        (delete-region (point-min) (point-max))
-        (insert initial-scratch-message)
-        nil)
-    t))
-
-(add-hook 'kill-buffer-query-functions
-          #'bc-core--unkillable-scratch)
-
-;; indentation settings
-(setq-default indent-tabs-mode nil
-              tab-width 4
-              python-indent-offset 4
-              electric-indent-inhibit t  ; don't change indentation for me
-              indicate-empty-lines nil)
-
-;; bs kill whole tab
-(setq-default backward-delete-char-untabify-method 'hungry)
 
 (use-package no-littering
   ;; do not litter my .emacs.d
@@ -138,12 +149,12 @@
   (setq hs-hide-comments-when-hiding-all nil)
 
   ;; after revert-buffer, properly hide blocks
-  (defun bc-core--hs-fix (&rest _)
+  (defun gatsby:core--hs-fix (&rest _)
     "Advising `revert-buffer' to properly show/hide blocks."
     (hs-show-all)
     (hs-hide-all))
 
-  (advice-add #'revert-buffer :after #'bc-core--hs-fix)
+  (advice-add #'revert-buffer :after #'gatsby:core--hs-fix)
 
   :hook
   (prog-mode . hs-hide-all)
@@ -158,26 +169,26 @@
 (use-package eldoc-box
   :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
   :config
-  (defun bc-eldoc--box-position (_ height)
+  (defun gatsby:eldoc--box-position (_ height)
     "Display `eldoc-box' in the bottom left corner of the `selected-window'."
     (let* ((window (selected-window))
            (y (- (nth 3 (window-inside-pixel-edges window)) 5  height))
            (x (window-pixel-left window)))
       (cons x y)))
 
-  (setq eldoc-box-position-function #'bc-eldoc--box-position))
+  (setq eldoc-box-position-function #'gatsby:eldoc--box-position))
 (use-package general
   ;; for key binding
   :demand t
-  :hook (emacs-lisp-mode . bc-lisp--fix-indent)
+  :hook (emacs-lisp-mode . gatsby:lisp--fix-indent)
   :init
 
-  (defun bc-lisp--fix-indent ()
+  (defun gatsby:lisp--fix-indent ()
     "Fix https://emacs.stackexchange.com/questions/10230/how-to-indent-keywords-aligned"
-    (setq-local lisp-indent-function #'bc-lisp-indent-function))
+    (setq-local lisp-indent-function #'gatsby:lisp-indent-function))
 
   ;; https://github.com/Fuco1/.emacs.d/blob/af82072196564fa57726bdbabf97f1d35c43b7f7/site-lisp/redef.el#L20-L94
-  (defun bc-lisp-indent-function (indent-point state)
+  (defun gatsby:lisp-indent-function (indent-point state)
     "This function is the normal value of the variable `lisp-indent-function'.
 The function `calculate-lisp-indent' calls this to determine
 if the arguments of a Lisp function call should be indented specially.
@@ -260,13 +271,10 @@ Lisp function does not specify a special indentation."
   :config
   (global-so-long-mode))
 
-;; disable menu tool and scroll bars
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(horizontal-scroll-bar-mode -1)
-(tooltip-mode -1)
-(blink-cursor-mode -1)
+(provide 'gatsby:core)
 
-(provide 'bc-core)
-;;; bc-core.el ends here
+;; Local Variables:
+;; lexical-binding: t
+;; End:
+
+;;; gatsby:core.el ends here
