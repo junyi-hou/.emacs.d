@@ -246,9 +246,6 @@
    :prefix "SPC"
    "a" 'align-regexp)
 
-  (:keymaps 'insert
-   "<tab>" 'gatsby:company-unified-tab)
-
   (:keymaps 'message-mode-map
    :states 'motion
    :prefix "SPC"

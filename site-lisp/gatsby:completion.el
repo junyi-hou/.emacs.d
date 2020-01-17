@@ -1,8 +1,9 @@
-;;; bc-company.el --- init company-mode -*- lexical-binding: t; -*-
+;;; gatsby:completion.el --- init company-mode -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
 ;;; Code:
+(require 'gatsby:core)
 
 (use-package yasnippet
   :commands (yas-minor-mode yas-reload-all)
@@ -47,7 +48,7 @@
                             company-abbrev)))
 
   ;; function
-  (defun bc-company-unified-tab ()
+  (defun gatsby:completion-unified-tab ()
     "Use tab for both company and indentation.
 
 In insert mode, first try `company-manual-begin'.  If there is no completion available at point, indent the current line by `tab-width' length."
@@ -66,7 +67,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
                  company-candidates))
           (if (or company-selection-changed
                   (memq last-command '(company-complete-common
-                                       bc-lsp-unified-tab)))
+                                       gatsby:lsp-unified-tab)))
               (call-interactively 'company-complete-selection)
             (call-interactively 'company-complete-common)
             (when company-candidates
@@ -76,8 +77,11 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
           (indent-region (line-beginning-position) (line-end-position))))))
 
   :general
+  (:keymaps 'insert
+   "<tab>" 'gatsby:completion-unified-tab)
+
   (:keymaps 'company-active-map
-   "<tab>" 'bc-company-unified-tab
+   "<tab>" 'gatsby:completion-unified-tab
    "M-j" 'company-select-next
    "M-k" 'company-select-previous-or-abort
    "C-g" 'company-abort))
@@ -100,5 +104,5 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
    "J" 'company-posframe-quickhelp-scroll-up
    "K" 'company-posframe-quickhelp-scroll-down))
 
-(provide 'bc-company)
-;;; bc-company.el ends here
+(provide 'gatsby:completion)
+;;; gatsby:completion.el ends here
