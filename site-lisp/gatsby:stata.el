@@ -1,4 +1,4 @@
-;;; bc-stata.el --- stata settings -*- lexical-binding: t; -*-
+;;; gatsby:stata.el --- stata settings -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -9,13 +9,13 @@
              :repo "junyi-hou/stata-mode"
              :host github)
   :init
-  (require 'bc-jupyter)
+  (require 'gatsby:jupyter)
 
-  (defalias 'bc-stata-local-repl
-    (lambda () (interactive) (bc-jupyter-start-or-switch-to-repl "stata"))
+  (defalias 'gatsby:stata-local-repl
+    (lambda () (interactive) (gatsby:jupyter-start-or-switch-to-repl "stata"))
     "Open a jupyter repl for stata interpreter.")
 
-  (defalias 'bc-stata-reconnect
+  (defalias 'gatsby:stata-reconnect
     #'jupyter-repl-restart-kernel
     "Reconnect to the current REPL.")
 
@@ -26,10 +26,10 @@
    "rb" 'jupyter-eval-buffer
    "rf" 'jupyter-eval-defun
    "rr" 'jupyter-eval-line-or-region
-   "ro" 'bc-stata-local-repl
+   "ro" 'gatsby:stata-local-repl
 
    "rz" 'jupyter-repl-associate-buffer
-   "rZ" 'bc-stata-reconnect))
+   "rZ" 'gatsby:stata-reconnect))
 
-(provide 'bc-stata)
-;;; bc-stata.el ends here
+(provide 'gatsby:stata)
+;;; gatsby:stata.el ends here

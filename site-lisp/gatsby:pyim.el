@@ -1,4 +1,4 @@
-;;; bc-pyim.el --- py input method support -*- lexical-binding: t; -*-
+;;; gatsby:pyim.el --- py input method support -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -10,12 +10,12 @@
   ;; enable pinyin search in ivy-read
   (with-eval-after-load 'ivy
     (progn
-      (defun bc-pyim--ivy-cregexp (str)
+      (defun gatsby:pyim--ivy-cregexp (str)
         "taken from https://emacs-china.org/t/ivy-read/2432/5"
         (concat
          (ivy--regex-plus str) "\\|" (pyim-cregexp-build str)))
 
-      (setq ivy-re-builders-alist '((t . bc-pyim--ivy-cregexp)))))
+      (setq ivy-re-builders-alist '((t . gatsby:pyim--ivy-cregexp)))))
 
   (setq default-input-method "pyim"
         pyim-title "pyim"
@@ -58,5 +58,5 @@
   :config
   (pyim-basedict-enable))
 
-(provide 'bc-pyim)
-;;; bc-pyim.el ends here
+(provide 'gatsby:pyim)
+;;; gatsby:pyim.el ends here

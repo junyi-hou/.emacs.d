@@ -9,46 +9,13 @@
 (use-package evil
   ;;  welcome to the dark side
   :init
-  (defun gatsby:evil-visual-tab ()
-    "Indent region if in visual-line-mode, otherwise select contains inside a pair of tags via `evil-jump-item'"
-    (interactive)
-    (if (eq evil-visual-selection 'line)
-        (indent-region (region-beginning) (region-end))
-      (evil-jump-item)))
+  (evil-mode)
 
-  ;; borrow from http://steve.yegge.googlepages.com/my-dot-emacs-file
-  (defun gatsby:evil-rename-file-and-buffer (new-name)
-    "Renames both current buffer and file it's visiting to NEW-NAME."
-    (interactive "sNew name: ")
-    (let ((name (buffer-name))
-          (filename (buffer-file-name)))
-      (if (not filename)
-          (message "Buffer '%s' is not visiting a file!" name)
-        (if (get-buffer new-name)
-            (message "A buffer named '%s' already exists!" new-name)
-          (progn
-            (rename-file filename new-name 1)
-            (rename-buffer new-name)
-            (set-visited-file-name new-name)
-            (set-buffer-modified-p nil))))))
+  ;; set normal state as default start state
 
-  (defun gatsby:evil-move-buffer-file (new-location)
-    "Move `buffer-file-name' to NEW-LOCATION."
-    (interactive
-     (list
-      (ivy-read
-       "Move to: "
-       #'read-file-name-internal
-       :predicate
-       (lambda (x)
-         (string= x (file-name-as-directory x)))
-       :action 'identity)))
-    (let* ((file-name (buffer-file-name))
-           (cmd (concat "mv " file-name " " new-location (file-name-nondirectory file-name))))
-      (unless file-name
-        (user-error "Current buffer is not associated with any file"))
-      (start-process-shell-command
-       "move" nil cmd)))
+  (setq evil-normal-state-modes
+        (append evil-emacs-state-modes
+                evil-normal-state-modes))
 
   (evil-define-motion gatsby:evil-next-three-lines ()
     (interactive)
@@ -90,6 +57,47 @@
     :repeat nil
     (interactive)
     (gatsby:evil--search-visually-selected-text nil))
+
+  (defun gatsby:evil-visual-tab ()
+    "Indent region if in visual-line-mode, otherwise select contains inside a pair of tags via `evil-jump-item'"
+    (interactive)
+    (if (eq evil-visual-selection 'line)
+        (indent-region (region-beginning) (region-end))
+      (evil-jump-item)))
+
+  ;; borrow from http://steve.yegge.googlepages.com/my-dot-emacs-file
+  (defun gatsby:evil-rename-file-and-buffer (new-name)
+    "Renames both current buffer and file it's visiting to NEW-NAME."
+    (interactive "sNew name: ")
+    (let ((name (buffer-name))
+          (filename (buffer-file-name)))
+      (if (not filename)
+          (message "Buffer '%s' is not visiting a file!" name)
+        (if (get-buffer new-name)
+            (message "A buffer named '%s' already exists!" new-name)
+          (progn
+            (rename-file filename new-name 1)
+            (rename-buffer new-name)
+            (set-visited-file-name new-name)
+            (set-buffer-modified-p nil))))))
+
+  (defun gatsby:evil-move-buffer-file (new-location)
+    "Move `buffer-file-name' to NEW-LOCATION."
+    (interactive
+     (list
+      (ivy-read
+       "Move to: "
+       #'read-file-name-internal
+       :predicate
+       (lambda (x)
+         (string= x (file-name-as-directory x)))
+       :action 'identity)))
+    (let* ((file-name (buffer-file-name))
+           (cmd (concat "mv " file-name " " new-location (file-name-nondirectory file-name))))
+      (unless file-name
+        (user-error "Current buffer is not associated with any file"))
+      (start-process-shell-command
+       "move" nil cmd)))
 
   (defun gatsby:evil--center-cursor-line (&rest _)
     "Thin wrapper around `evil-scroll-line-to-center' for advice purpose."
@@ -166,14 +174,6 @@
           (goto-char 1)
           (while (search-forward from-string nil t)
             (replace-match to-string nil t))))))
-
-  :config
-  (evil-mode 1)
-
-  ;; set normal state as default start state
-  (setq evil-normal-state-modes
-        (append evil-emacs-state-modes
-                evil-normal-state-modes))
 
   :general
   (:keymaps '(motion normal visual)
