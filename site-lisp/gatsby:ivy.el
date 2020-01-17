@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(require 'gatsby:core)
+
 (use-package ivy
   :config
   (setq ivy-do-completion-in-region nil
