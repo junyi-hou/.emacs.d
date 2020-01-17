@@ -1,4 +1,4 @@
-;;; bc-python.el --- provide IDE features for editing python files -*- lexical-binding: t; -*-
+;;; gatsby:python.el --- provide IDE features for editing python files -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -12,11 +12,11 @@
 (use-package python
   :defer t
   :init
-  (defun bc-python--set-indent-width ()
+  (defun gatsby:python--set-indent-width ()
     (setq-local tab-width 4)
     (setq python-indent-offset 4))
 
-  (defun bc-python--get-python-version ()
+  (defun gatsby:python--get-python-version ()
     "Infer python versions from shebang.  If there is no shebang, promote the user for python's version."
     (interactive)
     (unless jupyter-current-client
@@ -29,33 +29,33 @@
                                :action 'identity))))))
 
   :hook
-  (python-mode . bc-python--set-indent-width)
+  (python-mode . gatsby:python--set-indent-width)
 
   :config
-  (require 'bc-jupyter)
-  (defconst bc-python-remote '("junyi" "10.10.10.106" "9127"))
+  (require 'gatsby:jupyter)
+  (defconst gatsby:python-remote '("junyi" "10.10.10.106" "9127"))
 
   (set-face-attribute 'nobreak-space nil :underline nil)
 
-  (defalias 'bc-python-local-repl
+  (defalias 'gatsby:python-local-repl
     (lambda () (interactive)
-      (bc-jupyter-start-or-switch-to-repl (bc-python--get-python-version)))
+      (gatsby:jupyter-start-or-switch-to-repl (gatsby:python--get-python-version)))
     "Open a jupyter repl for python interpreter.")
 
-  (defalias 'bc-python-reconnect
+  (defalias 'gatsby:python-reconnect
     #'jupyter-repl-restart-kernel
     "Reconnect to the current REPL.")
 
-  (defalias 'bc-python-remote-repl
+  (defalias 'gatsby:python-remote-repl
     (lambda () (interactive)
-      (bc-jupyter-start-or-switch-to-repl "python" bc-python-remote))
+      (gatsby:jupyter-start-or-switch-to-repl "python" gatsby:python-remote))
     "Open a jupyter repl for python interpreter at remote/DIRECTORY.")
 
-  (defalias 'bc-python--send
-    (lambda (string) (bc-jupyter--send (bc-python--dedent string)))
-    "Send string using `bc-jupyter--send' with `bc-python--dedent' to processing STRING first.")
+  (defalias 'gatsby:python--send
+    (lambda (string) (gatsby:jupyter--send (gatsby:python--dedent string)))
+    "Send string using `gatsby:jupyter--send' with `gatsby:python--dedent' to processing STRING first.")
 
-  (defun bc-python-eval-class ()
+  (defun gatsby:python-eval-class ()
     "Eval the python class at `point'."
     (interactive)
     (let ((beg (save-excursion
@@ -73,14 +73,13 @@
    "rb" 'jupyter-eval-buffer
    "rf" 'jupyter-eval-defun
    "rr" 'jupyter-eval-line-or-region
-   "rc" 'bc-python-eval-class
+   "rc" 'gatsby:python-eval-class
 
-   "ro" 'bc-python-local-repl
-   "rO" 'bc-python-remote-repl
+   "ro" 'gatsby:python-local-repl
+   "rO" 'gatsby:python-remote-repl
 
    "rz" 'jupyter-repl-associate-buffer
-   "rZ" 'bc-python-reconnect))
+   "rZ" 'gatsby:python-reconnect))
 
-
-(provide 'bc-python)
-;;; bc-python ends here
+(provide 'gatsby:python)
+;;; gatsby:python ends here
