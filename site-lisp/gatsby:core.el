@@ -76,6 +76,12 @@
 ;; bs kill whole tab
 (setq-default backward-delete-char-untabify-method 'hungry)
 
+;; color log appropriately
+(defun gatsby:core--apply-ansi-color ()
+  "Color the whole buffer using ansi code."
+  (ansi-color-apply-on-region (point-min) (point-max)))
+(add-to-list 'auto-mode-alist '("\\.log\\'" . gatsby:core--apply-ansi-color))
+
 ;; disable menu tool and scroll bars
 (menu-bar-mode -1)
 (tool-bar-mode -1)
