@@ -10,6 +10,10 @@
   (unless (executable-find "jupyter")
     (user-error "Cannot find jupyter executable, please check jupyter is installed"))
 
+  (setq jupyter-repl-echo-eval-p t
+        jupyter-repl-maximum-size 12000
+        jupyter-repl-history-maximum-length 300)
+
   ;; hotfix https://github.com/dzop/emacs-jupyter/issues/172
   (jupyter-tramp-file-name-p "~/.bashrc")
 
@@ -86,10 +90,6 @@
     (setq ob-async-no-async-languages-alist
           `(,@(mapcar (lambda (kernel) (format "jupyter-%s" kernel))
                       gatsby:jupyter-available-kernels))))
-
-  (setq jupyter-repl-echo-eval-p t
-        jupyter-repl-maximum-size 12000
-        jupyter-repl-history-maximum-length 300)
 
 
   :general
