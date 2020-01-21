@@ -33,37 +33,72 @@
 
   :config
   (require 'gatsby:jupyter)
-  (defconst gatsby:python-remote '("junyi" "10.10.10.106" "9127"))
+  ;; (defconst gatsby:python-remote '("junyi" "10.10.10.106" "9127"))
 
   (set-face-attribute 'nobreak-space nil :underline nil)
 
-  (defalias 'gatsby:python-local-repl
-    (lambda () (interactive)
-      (gatsby:jupyter-start-or-switch-to-repl (gatsby:python--get-python-version)))
-    "Open a jupyter repl for python interpreter.")
+  (defun gatsby:python-local-repl ()
+    "Open a jupyter repl for python interpreter."
+    (interactive)
+    (gatsby:jupyter-start-or-switch-to-repl (gatsby:python--get-python-version)))
 
   (defalias 'gatsby:python-reconnect
     #'jupyter-repl-restart-kernel
     "Reconnect to the current REPL.")
 
-  (defalias 'gatsby:python-remote-repl
-    (lambda () (interactive)
-      (gatsby:jupyter-start-or-switch-to-repl "python" gatsby:python-remote))
-    "Open a jupyter repl for python interpreter at remote/DIRECTORY.")
+  (defun gatsby:python--dedent-string (string)
+    "Dedent STRING."
+    (let ((strings (split-string string "\n")))
+      (if (cdr strings)
+          ;; multiline, need dedent
+          (let ((indent (if (string-match "^[\t ]+" (car strings))
+                            (match-string 0 (car strings))
+                          "")))
+            (string-join (mapcar (lambda (s) (replace-regexp-in-string indent "" s))
+                                 strings)
+                         "\n"))
+        string)))
 
-  (defalias 'gatsby:python--send
-    (lambda (string) (gatsby:jupyter--send (gatsby:python--dedent string)))
-    "Send string using `gatsby:jupyter--send' with `gatsby:python--dedent' to processing STRING first.")
+  (defun gatsby:python-eval-region-or-line ()
+    "If region is active, eval current region, otherwise eval current line."
+    (interactive)
+    (let* ((region (if (use-region-p)
+                       (list (region-beginning) (region-end))
+                     (list (line-beginning-position) (line-end-position))))
+           (string (gatsby:python--dedent-string (apply
+                                                  #'buffer-substring-no-properties
+                                                  region))))
+      (jupyter-eval-string string)
+      (deactivate-mark)))
 
-  (defun gatsby:python-eval-class ()
-    "Eval the python class at `point'."
+  (defun gatsby:python--decorated-p ()
+    "Return position of \"@\" if line-at-point is part of a python decorator."
+    (cond ((string= "@" (buffer-substring (line-beginning-position)
+                                          (1+ (line-beginning-position))))
+           (line-beginning-position))
+          ((and (string= ")" (buffer-substring (1- (line-end-position))
+                                               (line-end-position)))
+                (progn (goto-char (line-end-position))
+                       (evil-jump-item)
+                       (string= "@" (buffer-substring (line-beginning-position)
+                                                      (1+ (line-beginning-position))))))
+           (line-beginning-position))
+          (t nil)))
+
+  (defun gatsby:python-eval-block ()
+    "Eval the python function or class containing `point'."
     (interactive)
     (let ((beg (save-excursion
-                 (re-search-backward "^class[[:blank:]]+")))
-          (end (condition-case nil
-                   (save-excursion
-                     (- (re-search-forward "^\\(class\\|def\\)") 5))
-                 (error (point-max)))))
+                 (when (re-search-backward "^\\(def\\|class\\)[[:blank:]]+" nil 'no-error)
+                   (line-move -1)
+                   (while (gatsby:python--decorated-p)
+                     (line-move -1))
+                   (point))))
+          (end (save-excursion
+                 (condition-case _
+                     (re-search-forward "^\\(\\(def\\|class\\)[[:blank:]]+\\|@\\)")
+                   (error (goto-char (point-max))))
+                 (point))))
       (jupyter-eval-region beg end)))
 
   :general
@@ -71,12 +106,9 @@
    :keymaps 'python-mode-map
    :prefix "SPC"
    "rb" 'jupyter-eval-buffer
-   "rf" 'jupyter-eval-defun
-   "rr" 'jupyter-eval-line-or-region
-   "rc" 'gatsby:python-eval-class
-
+   "rr" 'gatsby:python-eval-region-or-line
+   "rf" 'gatsby:python-eval-block
    "ro" 'gatsby:python-local-repl
-   "rO" 'gatsby:python-remote-repl
 
    "rz" 'jupyter-repl-associate-buffer
    "rZ" 'gatsby:python-reconnect))
