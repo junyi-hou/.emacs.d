@@ -59,25 +59,27 @@
 
 ;; display battery level
 (use-package battery
-  :config
+  :init
   (setq battery-mode-line-limit 100)
+  :config
   (display-battery-mode))
 
 ;; display time
 (use-package time
-  :config
+  :init
   (setq display-time-default-load-average nil
         display-time-24hr-format t)
+  :config
   (display-time-mode))
 
 (use-package doom-modeline
-  :config
+  :init
   (setq doom-modeline-project-detection 'project
         doom-modeline-buffer-file-name-style 'relative-to-project
         ;; if only I can disable all-the-icon dependency...
         doom-modeline-icon nil
         doom-modeline-vcs-max-length 20)
-
+  :config
   (doom-modeline-def-segment current-line
     (if-let ((line (format "%s(%d/%d)"
                            (doom-modeline-spc)
@@ -141,7 +143,7 @@
   :hook
   (prog-mode . highlight-indent-guides-mode)
   (LaTeX-mode . highlight-indent-guides-mode)
-  :config
+  :init
   (setq highlight-indent-guides-method 'character
         highlight-indent-guides-character ?\┆
         highlight-indent-guides-responsive 'stack))
@@ -150,10 +152,11 @@
 (use-package beacon
   ;; use chep's fork so it can grow backwards
   :straight (beacon :host github :repo "junyi/beacon")
-  :config
+  :init
   (setq beacon-blink-when-window-scrolls nil
         beacon-can-go-backwards t
         beacon-size 15)
+  :config
   (beacon-mode 1))
 
 ;; line numbers
@@ -162,21 +165,20 @@
   (prog-mode . display-line-numbers-mode)
   (org-mode . display-line-numbers-mode)
   (LaTeX-mode . display-line-numbers-mode)
-  :config
-
-  (set-face-attribute
-   'line-number
-   nil
-   :background (face-background 'default))
-
+  :init
   (setq display-line-numbers-type 'visual
         display-line-numbers-current-absolute t
         display-line-numbers-width 3
-        display-line-numbers-widen nil))
+        display-line-numbers-widen nil)
+  :config
+  (set-face-attribute
+   'line-number
+   nil
+   :background (face-background 'default)))
 
 ;; highlight keywords
 (use-package hl-todo
-  :config
+  :init
   (setq hl-todo-keyword-faces
         '(("TODO" . "#FB4934")
           ("FIXME"  . "#FB4934")
@@ -185,6 +187,7 @@
           ("NOTE"   . "#FABD2F")
           ("HACK"   . "#FABD2F")
           ("\\?\\?\\?+" . "#cc9393")))
+  :config
   (global-hl-todo-mode))
 
 (provide 'gatsby:theme)
