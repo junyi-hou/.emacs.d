@@ -70,7 +70,6 @@
 
   (advice-add #'jupyter-eval-region :after #'gatsby:jupyter--deactivate-mark)
 
-  :config
   (defconst gatsby:jupyter-default-header-args
     '((:async . "yes")
       (:session . "master")))
