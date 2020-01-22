@@ -57,8 +57,6 @@
      'completion-at-point-functions
      'pcomplete-completions-at-point nil t))
 
-  :config
-
   ;; general config
   (setq org-cycle-emulate-tab nil
         org-export-with-toc nil
