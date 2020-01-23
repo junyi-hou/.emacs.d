@@ -108,7 +108,8 @@
 
 ;; install use-package
 (straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
+(setq straight-use-package-by-default t
+      straight-vc-git-default-protocol 'ssh)
 
 (use-package no-littering
   ;; do not litter my .emacs.d
