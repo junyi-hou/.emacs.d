@@ -7,17 +7,40 @@
 (use-package jupyter
   :defer t
   :init
+  (defconst gatsby:jupyter-default-header-args
+    '((:async . "yes")
+      (:session . "master")))
+
+  (defconst gatsby:jupyter-available-kernels
+    (split-string
+     (shell-command-to-string "jupyter kernelspec list | grep -P -o '^\s+([a-z]+|python)'")
+     "\n" 'omit-nulls "[[:blank:]]+"))
+
+  (with-eval-after-load 'org
+    (mapc (lambda (kernel)
+            (set (intern (format "org-babel-default-header-args:jupyter-%s" kernel))
+                 (append gatsby:jupyter-default-header-args `((:kernel . ,kernel)))))
+          gatsby:jupyter-available-kernels))
+
+  (with-eval-after-load 'ob-async
+    (setq ob-async-no-async-languages-alist
+          `(,@(mapcar (lambda (kernel) (format "jupyter-%s" kernel))
+                      gatsby:jupyter-available-kernels))))
+
   (unless (executable-find "jupyter")
     (user-error "Cannot find jupyter executable, please check jupyter is installed"))
 
   (setq jupyter-repl-echo-eval-p t
         jupyter-repl-maximum-size 12000
-        jupyter-repl-history-maximum-length 300)
+        jupyter-repl-history-maximum-length 1000)
 
   ;; hotfix https://github.com/dzop/emacs-jupyter/issues/172
   (jupyter-tramp-file-name-p "~/.bashrc")
 
   ;; functions
+
+  ;; TODO: highlight indent breaks jupyter
+  ;; advice jupyter-send-input to remove all highlight-indent related stuff
 
   ;; there is good enough built-in support for remote-kernel
   ;; (i.e., when the file edited is a remote file, start repl in the remote directory)
@@ -69,27 +92,6 @@
     (deactivate-mark))
 
   (advice-add #'jupyter-eval-region :after #'gatsby:jupyter--deactivate-mark)
-
-  (defconst gatsby:jupyter-default-header-args
-    '((:async . "yes")
-      (:session . "master")))
-
-  (defconst gatsby:jupyter-available-kernels
-    (split-string
-     (shell-command-to-string "jupyter kernelspec list | awk 'NR>1 {print $1 }'")
-     "\n" 'omit-nulls))
-
-  (with-eval-after-load 'org
-    (mapc (lambda (kernel)
-            (set (intern (format "org-babel-default-header-args:jupyter-%s" kernel))
-                 (append gatsby:jupyter-default-header-args `((:kernel . ,kernel)))))
-          gatsby:jupyter-available-kernels))
-
-  (with-eval-after-load 'ob-async
-    (setq ob-async-no-async-languages-alist
-          `(,@(mapcar (lambda (kernel) (format "jupyter-%s" kernel))
-                      gatsby:jupyter-available-kernels))))
-
 
   :general
   (:keymaps 'jupyter-repl-mode-map
