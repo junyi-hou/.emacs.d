@@ -6,14 +6,23 @@
 
 (require 'gatsby:core)
 
+(use-package undo-tree
+  :config
+  (when (timerp undo-auto-current-boundary-timer)
+    (cancel-timer undo-auto-current-boundary-timer))
+  (fset 'undo-auto--boundaries
+        (lambda ()
+          (add-to-list 'undo-auto--undoably-changed-buffers (current-buffer))))
+  (fset 'undo-auto-amalgamate 'ignore))
+
 (use-package evil
   ;;  welcome to the dark side
   :init
   (evil-mode)
 
   ;; set normal state as default start state
-
-  (setq evil-normal-state-modes
+  (setq evil-search-module 'evil-search
+        evil-normal-state-modes
         (append evil-emacs-state-modes
                 evil-normal-state-modes))
 
