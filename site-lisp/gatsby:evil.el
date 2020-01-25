@@ -22,9 +22,8 @@
 
   ;; set normal state as default start state
   (setq evil-search-module 'evil-search
-        evil-normal-state-modes
-        (append evil-emacs-state-modes
-                evil-normal-state-modes))
+        evil-normal-state-modes (append evil-emacs-state-modes
+                                        evil-normal-state-modes))
 
   (evil-define-motion gatsby:evil-next-three-lines ()
     (interactive)
