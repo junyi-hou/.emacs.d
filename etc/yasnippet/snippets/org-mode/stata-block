@@ -2,7 +2,7 @@
 # name: stata-block
 # key: stata
 # --
-#+begin_src jupyter-stata ${1::results ${2:silent}}
+#+begin_src jupyter-stata${1: :results ${2:silent}}
 $0
 #+end_src
 
