@@ -23,10 +23,10 @@
       (let* ((shebang (save-excursion (goto-char 1) (thing-at-point 'line)))
              (py-exec (when (string-match "#!/usr/bin/env\s+\\(python.?\\)" shebang)
                         (match-string 1 shebang))))
-        (message (or py-exec
-                     (ivy-read "Cannot infer python interpreter, please select: "
-                               '("python2" "python3")
-                               :action 'identity))))))
+        (or py-exec
+            (ivy-read "Cannot infer python interpreter, please select: "
+                      '("python2" "python3")
+                      :action 'identity)))))
 
   :hook
   (python-mode . gatsby:python--set-indent-width)
@@ -52,11 +52,12 @@
       (if (cdr strings)
           ;; multiline, need dedent
           (let ((indent (if (string-match "^[\t ]+" (car strings))
-                            (match-string 0 (car strings))
-                          "")))
-            (string-join (mapcar (lambda (s) (replace-regexp-in-string indent "" s))
-                                 strings)
-                         "\n"))
+                            (length (match-string 0 (car strings)))
+                          0)))
+            (string-join (mapcar (lambda (s)
+                                   (condition-case _
+                                       (substring s indent)
+                                     (error ""))) strings) "\n"))
         string)))
 
   (defun gatsby:python-eval-region-or-line ()

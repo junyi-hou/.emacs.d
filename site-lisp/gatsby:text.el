@@ -52,7 +52,7 @@
         TeX-auto-save t
 
         ;; allow folding beamer slides
-        TeX-outline-extra '(("^\\\\begin{frame}" 2)))
+        TeX-outline-extra '(("^\\(% \\)?\\\\begin{frame}" 2)))
 
   ;; External pdf-viewer and exwm integration
   (when (and (featurep 'exwm)
@@ -62,14 +62,12 @@
     (defun gatsby:ide-latex-compile (compile-fn &rest args)
       "Open a new buffer to display complied pdf."
       (let* ((pdf-file (concat (file-name-sans-extension (buffer-file-name)) ".pdf"))
-             (window-list (window-list))
              (buffer-list (buffer-list)))
         (cond ((member pdf-file
                        (mapcar (lambda (wd) (buffer-name (window-buffer wd)))
-                               window-list))
+                               (apply #'append (mapcar #'window-list (frame-list)))))
                ;; pdf-file exists and visible
-               (apply compile-fn args)
-               (switch-to-buffer-other-window (get-buffer pdf-file)))
+               (apply compile-fn args))
               ((member pdf-file (mapcar 'buffer-name buffer-list))
                ;; pdf-file exists but not visible
                (apply compile-fn args)
