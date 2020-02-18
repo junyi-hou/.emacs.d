@@ -7,12 +7,9 @@
 (require 'gatsby:core)
 
 (use-package undo-tree
+  :init
+  (setq undo-tree-auto-save-history t)
   :config
-  (when (timerp undo-auto-current-boundary-timer)
-    (cancel-timer undo-auto-current-boundary-timer))
-  (fset 'undo-auto--boundaries
-        (lambda ()
-          (add-to-list 'undo-auto--undoably-changed-buffers (current-buffer))))
   (fset 'undo-auto-amalgamate 'ignore))
 
 (use-package evil
