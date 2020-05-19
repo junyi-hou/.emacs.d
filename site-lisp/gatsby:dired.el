@@ -13,16 +13,15 @@
   (setq dired-listing-switches "-alh")
 
   ;; functions
-  (defun gatsby:dired--mark-one (cmd)
-    "Run command CMD on the file under the cursor."
-    (let ((inhibit-read-only t)
-          (marked-files (mapcar (lambda (x) (cons x "*")) (dired-get-marked-files))))
-      (dired-unmark-all-marks)
-      (dired-mark 1)
-      (when (commandp cmd)
-        (funcall cmd))
-      (dired-unmark-all-marks)
-      (dired-mark-remembered marked-files)))
+  (defun gatsby:dired-toggle-hide ()
+    "Toggle whether to show hidden files."
+    (interactive)
+    (let* ((switches dired-actual-switches)
+           (new-switches (if (string-match "a" dired-actual-switches)
+                             (replace-regexp-in-string "a" "" dired-actual-switches)
+                           (concat dired-actual-switches "a"))))
+      (setq-local dired-actual-switches new-switches)
+      (revert-buffer)))
 
   :general
   (:keymaps '(motion normal visual emacs insert)
@@ -32,7 +31,7 @@
           (dired default-directory)))
 
   (:keymaps 'dired-mode-map
-   :states 'motion
+   :states '(motion visual normal)
 
    ;; sort
    "s" 'dired-sort-toggle-or-edit
@@ -53,16 +52,6 @@
    "F" 'dired-create-directory
    "t" 'dired-show-file-type
    "y" 'dired-copy-filename-as-kill
-   "c" (lambda () (interactive)
-         (gatsby:dired--mark-one 'dired-do-copy))
-   "r" (lambda () (interactive)
-         (gatsby:dired--mark-one 'dired-do-rename))
-   "d" (lambda () (interactive)
-         (gatsby:dired--mark-one 'dired-do-delete))
-   "o" (lambda () (interactive)
-         (gatsby:dired--mark-one 'dired-do-chown))
-   "m" (lambda () (interactive)
-         (gatsby:dired--mark-one 'dired-do-chmod))
 
    ;; marks
    "m" 'dired-mark
@@ -80,7 +69,8 @@
   (:keymaps 'dired-mode-map
    :states 'motion
    :prefix "SPC"
-   "r" 'revert-buffer))
+   "r" 'revert-buffer
+   "h" 'gatsby:dired-toggle-hide))
 
 (use-package dired-rainbow
   :after dired
