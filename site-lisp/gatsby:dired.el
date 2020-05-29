@@ -23,6 +23,13 @@
       (setq-local dired-actual-switches new-switches)
       (revert-buffer)))
 
+  (defun gatsby:dired--auto-goto-next-mark-file (&args _)
+    "After unmarked file, automatically goto the next marked file"
+    (dired-previous-line 1)
+    (call-interactively 'dired-next-marked-file))
+
+  (advice-add #'dired-unmark :after #'gatsby:dired--auto-goto-next-mark-file)
+
   :general
   (:keymaps '(motion normal visual emacs insert)
    :prefix "SPC"
