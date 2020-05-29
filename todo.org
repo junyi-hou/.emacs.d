@@ -1,0 +1,10 @@
+* Todo list
+- better code folding
+  - do not fold signature
+  - +unfold only 1 level+
+- mac compatibility
+- fix bug in modeline
+  - in png mode
+  - in top/htop
+- better terminal
+- fix bug in authinfo.gpg
