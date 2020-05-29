@@ -152,6 +152,28 @@
   :init
   ;; don't make me move to the beginning of line before expanding the block
   (advice-add #'hs-show-block :before #'beginning-of-visual-line)
+
+  ;; `hs-show-block' is recursively open,
+  ;; so implement open my self
+  (defun gatsby:core-hs-show-block ()
+    "Open only one level of hidden block."
+    (interactive)
+    (let ((inhibit-message t))
+      (hs-show-block)
+      (call-interactively 'hs-hide-level)))
+
+  ;; fix it in evil
+  (with-eval-after-load 'evil
+    (setq evil-fold-list
+          (add-to-list 'evil-fold-list
+                       `((hs-minor-mode)
+                         :open-all hs-show-all
+                         :close-all hs-hide-all
+                         :close hs-hide-block
+                         :toggle hs-toggle-hiding
+                         :open gatsby:core-hs-show-block
+                         :open-rec hs-show-block))))
+
   ;; don't fold comments
   (setq hs-hide-comments-when-hiding-all nil)
 
