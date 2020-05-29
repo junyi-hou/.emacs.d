@@ -194,7 +194,6 @@
   (defun gatsby:core--hs-move-point-to-block-begin (&rest _)
     "Move point according to `gatsby:core--hs-block-begin', to make sure I can open the block at point."
     (when (alist-get major-mode gatsby:core-hs-block-beginning-regexp-alist)
-      (hs-find-block-beginning)
       (goto-char (gatsby:core--hs-block-begin (point)))))
 
   (defun gatsby:core--hs-set-adjust-block-beginning ()
