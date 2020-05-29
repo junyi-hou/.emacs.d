@@ -1,10 +1,11 @@
 * Todo list
 - better code folding
-  - do not fold signature
+  - +do not fold signature+
   - +unfold only 1 level+
+  - replace outline-mode with hs-minor-mode in latex/man-page
 - mac compatibility
 - fix bug in modeline
   - in png mode
   - in top/htop
 - better terminal
-- fix bug in authinfo.gpg
+- fix bug of localhost in authinfo.gpg

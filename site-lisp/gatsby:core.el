@@ -150,11 +150,9 @@
   (recentf-mode 1))
 (use-package hideshow
   :init
-  ;; don't make me move to the beginning of line before expanding the block
-  (advice-add #'hs-show-block :before #'beginning-of-visual-line)
-
   ;; `hs-show-block' is recursively open,
   ;; so implement open my self
+  ;; FIXME if hs-show-block fails, it will instead close the whole block
   (defun gatsby:core-hs-show-block ()
     "Open only one level of hidden block."
     (interactive)
@@ -174,6 +172,38 @@
                          :open gatsby:core-hs-show-block
                          :open-rec hs-show-block))))
 
+  ;; hideshow mode enhancement
+  ;; by default, `hs-minor-mode' only keep the first line of the hidden block
+  ;; shown. This means function signature will be hidden if it spans over multiple
+  ;; lines. I find this sub-optimal. So I take advantage of
+  ;; `hs-adjust-block-beginning' and modify the beginning of the hiding point of each
+  ;; block.
+  (defcustom gatsby:core-hs-block-beginning-regexp-alist
+    '((python-mode . ":\n"))
+    "Alist of the regexp for the beginning of hiding point (or the end of the banner).")
+
+  (defun gatsby:core--hs-block-begin (block-beginning)
+    "Adjust the starting point of the hiding block to the end of function/class signature according to `gatsby:core-hs-block-beginning-regexp-alist'. If the current major-mode is not in the list, return BLOCK-BEGINNING."
+    (interactive)
+    (if-let* ((regexp (alist-get major-mode gatsby:core-hs-block-beginning-regexp-alist)))
+        (save-excursion
+          (re-search-forward regexp nil 'noerror)
+          (1- (point)))
+      block-beginning))
+
+  (defun gatsby:core--hs-move-point-to-block-begin (&rest _)
+    "Move point according to `gatsby:core--hs-block-begin', to make sure I can open the block at point."
+    (when (alist-get major-mode gatsby:core-hs-block-beginning-regexp-alist)
+      (hs-find-block-beginning)
+      (goto-char (gatsby:core--hs-block-begin (point)))))
+
+  (defun gatsby:core--hs-set-adjust-block-beginning ()
+    "`hs-adjust-block-beginning' is automatically bind locally to `nil'. Set it properly instead"
+    (setq hs-adjust-block-beginning #'gatsby:core--hs-block-begin))
+
+  ;; put them in effect
+  (advice-add #'hs-show-block :before #'gatsby:core--hs-move-point-to-block-begin)
+
   ;; don't fold comments
   (setq hs-hide-comments-when-hiding-all nil)
 
@@ -187,7 +217,8 @@
 
   :hook
   (prog-mode . hs-hide-all)
-  (prog-mode . hs-minor-mode))
+  (prog-mode . hs-minor-mode)
+  (hs-minor-mode . gatsby:core--hs-set-adjust-block-beginning))
 (use-package prescient
   :init
   (setq prescient-save-file (concat no-littering-var-directory "prescient-save.el"))
