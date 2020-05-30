@@ -13,8 +13,23 @@
   (defun gatsby:lisp--set-tab-width ()
     (setq-local tab-width 2))
 
+  (defconst gatsby:lisp-hs-block-start-keywords
+    (rx (* space) "(" (or
+                       ;; definitions should always get folded
+                       "defun" "defmacro" "defcustom" "defconst" "defvar" "defvar-local"
+                       ;; I also want to fold :keymaps in my use-pacakge definitions
+                       ":keymaps" "evil-define-motion"))
+    "Regexp of forms that should be folded by `hs-minor-mode'.
+All forms that start at the `beginning-of-line' will be folded. Other forms should be folded only when it matches these keywords.")
+
+  (defun gatsby:lisp--setup-hs-block-start-regexp ()
+    "Fold only definitions in elisp mode"
+    (setq hs-block-start-regexp
+          (concat "^\\((\\|" gatsby:lisp-hs-block-start-keywords "\\)")))
+
   :hook
-  (emacs-lisp-mode . gatsby:lisp--set-tab-width))
+  (emacs-lisp-mode . gatsby:lisp--set-tab-width)
+  (emacs-lisp-mode . gatsby:lisp--setup-hs-block-start-regexp))
 
 (use-package ielm
   :straight (:type built-in)
