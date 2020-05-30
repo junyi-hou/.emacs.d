@@ -17,8 +17,8 @@
     (rx (* space) "(" (or
                        ;; definitions should always get folded
                        "defun" "defmacro" "defcustom" "defconst" "defvar" "defvar-local"
-                       ;; I also want to fold :keymaps in my use-pacakge definitions
-                       ":keymaps" "evil-define-motion"))
+                       ;; I also want to fold the followings in my use-pacakge definitions
+                       ":keymaps" "evil-define-motion" "with-eval-after-load"))
     "Regexp of forms that should be folded by `hs-minor-mode'.
 All forms that start at the `beginning-of-line' will be folded. Other forms should be folded only when it matches these keywords.")
 

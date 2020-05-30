@@ -86,15 +86,14 @@
   (defun gatsby:comint-exit-repl ()
     "When quitting repl buffer, reset `gatsby:comint-repl-buffer' for all associated code buffers."
     (interactive)
-    (when-let ((_ (y-or-n-p "Really quit this REPL? "))
-               (repl-buffer (current-buffer)))
-      (mapc (lambda (bf)
-              (with-current-buffer bf
-                (setq-local gatsby:comint-repl-buffer nil)))
-            (seq-filter (lambda (bf)
-                          (with-current-buffer bf
-                            (eq gatsby:comint-repl-buffer repl-buffer)))
-                        (buffer-list)))
+    (-when-let* ((_ (y-or-n-p "Really quit this REPL? "))
+                 (repl-buffer (current-buffer)))
+      (-each (--filter (with-current-buffer it
+                         (eq gatsby:comint-repl-buffer repl-buffer))
+                       (buffer-list))
+        (lambda (bf)
+          (with-current-buffer bf
+            (setq-local gatsby:comint-repl-buffer nil))))
       (kill-buffer)
       (delete-window)))
 

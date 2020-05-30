@@ -53,19 +53,15 @@
 
   (defun gatsby:project--search-path ()
     "Search paths registered in `gatsby:project-search-path' and return a list of projects identified by git."
-    (apply #'append
-           (mapcar
-            (lambda (path)
-              (seq-filter
-               (lambda (dir) (gatsby:project-get-root dir))
-               (directory-files path 'full "[^\.]")))
-            gatsby:project-search-path)))
+    (--mapcat (--filter (gatsby:project-get-root it)
+                        (directory-files it 'full "[^\.]"))
+              gatsby:project-search-path))
 
   (defun gatsby:project-switch-project ()
     "Switch to project."
     (interactive)
     (let ((enable-recursive-minibuffers t)
-          (projs (append gatsby:project-saved-project (gatsby:project--search-path))))
+          (projs (-concat gatsby:project-saved-project (gatsby:project--search-path))))
       (ivy-read
        "Switch to:"
        projs

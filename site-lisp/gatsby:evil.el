@@ -123,8 +123,7 @@
 
   (defun gatsby:evil--recenter-after-goto-point-max (count)
     "Thin wrapper around `evil-scroll-line-to-center' so center the end-of-buffer after a G motion."
-    (unless count
-      (recenter nil)))
+    (unless count (recenter nil)))
 
   (advice-add #'evil-goto-line :after #'gatsby:evil--recenter-after-goto-point-max)
 
@@ -159,26 +158,6 @@
         (insert newline-string))))
 
   (advice-add 'newline :around #'gatsby:evil-better-newline)
-
-  (defun gatsby:evil-replace-word-at-point-all (&optional to-string)
-    "Replace the word at point with TO-STRING throughout the buffer.  If in visual state, replace the selection instead."
-    (interactive)
-    (let* ((from-string (if (evil-visual-state-p)
-                            (buffer-substring-no-properties
-                             (region-beginning)
-                             (region-end))
-                          (word-at-point))))
-      (unless from-string
-        (user-error "No word at point found"))
-      (save-excursion
-        (let ((to-string (or to-string
-                             (ivy-read
-                              (concat "replacing " from-string " with: ")
-                              '()
-                              :action 'identity))))
-          (goto-char 1)
-          (while (search-forward from-string nil t)
-            (replace-match to-string nil t))))))
 
   :general
   (:keymaps '(motion normal visual)
@@ -220,7 +199,6 @@
    "eL" (lambda () (interactive)
           (eval-buffer)
           (message "buffer %s evaluated!" (buffer-name)))
-   "er" 'gatsby:evil-replace-word-at-point-all
 
    ;; helps
    "hf" 'helpful-callable
