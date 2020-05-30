@@ -11,3 +11,6 @@
 - fix bug of localhost in authinfo.gpg
 - fix bugs in pair issues in TeX
   - allow evil-surround on $
+- replace seq- functions with dash.el
+- replace ivy with selectrum
+- check out gccemacs
