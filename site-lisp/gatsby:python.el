@@ -28,8 +28,15 @@
                       '("python2" "python3")
                       :action 'identity)))))
 
+  (defun gatsby:python--setup-outline-minor-mode ()
+    "Modify `outline-regexp' and `outline-heading-end-regexp' for my need."
+    (setq outline-regexp "\\(\\([[:space:]]*\\)\\<\\(?:class\\|def\\)\\>\\)\\|\\(\\([[:space:]]*\\)@\\)")
+    (setq outline-heading-end-regexp ":\n")
+    (gatsby:core-outline-fold-all))
+
   :hook
   (python-mode . gatsby:python--set-indent-width)
+  (python-mode . gatsby:python--setup-outline-minor-mode)
 
   :config
   (require 'gatsby:jupyter)

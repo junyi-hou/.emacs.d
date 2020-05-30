@@ -200,17 +200,6 @@
   :hook
   (LaTeX-mode . company-auctex-init))
 
-(use-package outline
-  ;; `hideshow' does not play well with some modes,
-  ;; use outline-minor-mode in those modes instead.
-  :hook
-  (LaTeX-mode . outline-hide-body)
-  (LaTeX-mode . outline-minor-mode)
-  (Man-mode . outline-hide-body)
-  (Man-mode . outline-minor-mode)
-  :init
-  (setq outline-blank-line t))
-
 ;; (use-package reftex
 ;;   ;; TODO: ivy-integrate this
 ;;   :after 'auctex
