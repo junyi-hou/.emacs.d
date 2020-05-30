@@ -35,7 +35,6 @@
 (require 'gatsby:gentoo)
 (require 'gatsby:python)
 (require 'gatsby:stata)
-(require 'gatsby:scheme)
 (require 'gatsby:text)
 
 ;;; init.el ends here
