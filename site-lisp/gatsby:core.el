@@ -148,20 +148,86 @@
   :config
   (add-to-list 'recentf-exclude no-littering-var-directory)
   (recentf-mode 1))
-;; replace hideshow with outline mode
-(use-package outline
-  :hook
-  (prog-mode . outline-minor-mode)
-  (text-mode . outline-minor-mode)
-  (outline-minor-mode . gatsby:core-outline-fold-all)
+(use-package hideshow
   :init
-  (setq outline-blank-line t)
+  ;; `hs-show-block' is recursively open,
+  ;; so implement open my self
+  ;; FIXME if hs-show-block fails, it will instead close the whole block
+  (defun gatsby:core-hs-show-block ()
+    "Open only one level of hidden block."
+    (interactive)
+    (let ((inhibit-message t))
+      (hs-show-block)
+      (call-interactively 'hs-hide-level)))
 
-  (defun gatsby:core-outline-fold-all ()
-    "Fold all foldable items, leave only the first level header."
-    ;; taken from `evil'
-    (with-no-warnings (outline-hide-sublevels 1)))
-  )
+  ;; fix it in evil
+  (with-eval-after-load 'evil
+    (setq evil-fold-list
+          (add-to-list 'evil-fold-list
+                       `((hs-minor-mode)
+                         :open-all hs-show-all
+                         :close-all hs-hide-all
+                         :close hs-hide-block
+                         :toggle hs-toggle-hiding
+                         :open gatsby:core-hs-show-block
+                         :open-rec hs-show-block))))
+
+  ;; hideshow mode enhancement
+  ;; by default, `hs-minor-mode' only keep the first line of the hidden block
+  ;; shown. This means function signature will be hidden if it spans over multiple
+  ;; lines. I find this sub-optimal. So I take advantage of
+  ;; `hs-adjust-block-beginning' and modify the beginning of the hiding point of each
+  ;; block.
+  (defcustom gatsby:core-hs-block-beginning-regexp-alist
+    '((python-mode . ":\n"))
+    "Alist of the regexp for the beginning of hiding point (or the end of the banner).")
+
+  (defun gatsby:core--hs-block-begin (block-beginning)
+    "Adjust the starting point of the hiding block to the end of function/class signature according to `gatsby:core-hs-block-beginning-regexp-alist'. If the current major-mode is not in the list, return BLOCK-BEGINNING."
+    (interactive)
+    (if-let* ((regexp (alist-get major-mode gatsby:core-hs-block-beginning-regexp-alist)))
+        (save-excursion
+          (re-search-forward regexp nil 'noerror)
+          (1- (point)))
+      block-beginning))
+
+  (defun gatsby:core--hs-move-point-to-block-begin (&rest _)
+    "Move point according to `gatsby:core--hs-block-begin', to make sure I can open the block at point."
+    (when (alist-get major-mode gatsby:core-hs-block-beginning-regexp-alist)
+      (goto-char (gatsby:core--hs-block-begin (point)))))
+
+  (defun gatsby:core--hs-set-adjust-block-beginning ()
+    "`hs-adjust-block-beginning' is automatically bind locally to `nil'. Set it properly instead"
+    (setq hs-adjust-block-beginning #'gatsby:core--hs-block-begin))
+
+  ;; put them in effect
+  (advice-add #'hs-show-block :before #'gatsby:core--hs-move-point-to-block-begin)
+
+  ;; Another improvement is to *not* fold the empty line after a block
+  (defun gatsby:core--hs-exclude-empty-line-block-end (fn b e kind &optional b-offset e-offset)
+    "Do not fold the empty line after a block in `python-mode'."
+    (let ((b-offset (or b-offset 0))
+          (e-offset (or e-offset 0))
+          (end (if (eq major-mode 'python-mode) (1- e) e)))
+      (funcall fn b end kind b-offset e-offset)))
+
+  (advice-add #'hs-make-overlay :around #'gatsby:core--hs-exclude-empty-line-block-end)
+
+  ;; don't fold comments
+  (setq hs-hide-comments-when-hiding-all nil)
+
+  ;; after revert-buffer, properly hide blocks
+  (defun gatsby:core--hs-fix (&rest _)
+    "Advising `revert-buffer' to properly show/hide blocks."
+    (hs-show-all)
+    (hs-hide-all))
+
+  (advice-add #'revert-buffer :after #'gatsby:core--hs-fix)
+
+  :hook
+  (prog-mode . hs-hide-all)
+  (prog-mode . hs-minor-mode)
+  (hs-minor-mode . gatsby:core--hs-set-adjust-block-beginning))
 (use-package prescient
   :init
   (setq prescient-save-file (concat no-littering-var-directory "prescient-save.el"))

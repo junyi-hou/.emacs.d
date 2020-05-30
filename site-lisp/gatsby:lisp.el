@@ -6,19 +6,6 @@
 (require 'gatsby:core)
 (require 'gatsby:comint)
 
-(use-package hideshow
-  :hook
-  (emacs-lisp-mode . gatsby:lisp--setup-code-folding)
-  (scheme-mode . gatsby:lisp--setup-code-folding)
-  :init
-  (setq hs-hide-comments-when-hiding-all nil)
-
-  (defun gatsby:lisp--setup-code-folding ()
-    "`outline-minor-mode' behave badly in lisp-like mode, use `hs-minor-mode' instead."
-    (outline-minor-mode -1)
-    (hs-minor-mode 1)
-    (hs-hide-all)))
-
 (use-package elisp-mode
   :straight (:type built-in)
   :init
@@ -27,8 +14,7 @@
     (setq-local tab-width 2))
 
   :hook
-  (emacs-lisp-mode . gatsby:lisp--set-tab-width)
-  (emacs-lisp-mode . gatsby:lisp--setup-code-folding))
+  (emacs-lisp-mode . gatsby:lisp--set-tab-width))
 
 (use-package ielm
   :straight (:type built-in)
@@ -95,7 +81,6 @@
   ;; provide code-completion and documentation
   :hook
   (scheme-mode . geiser-mode)
-  (scheme-mode . gatsby:lisp--setup-code-folding)
   :init
   (require 'gatsby:comint)
   ;; use guile
