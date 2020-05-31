@@ -44,10 +44,10 @@
            (collection (when proj? (gatsby:project-get-file-list proj?))))
       (if proj?
           ;; inside a project
-          (->> collection
-               (completing-read (concat "Find file in " proj? ": "))
-               (concat proj?)
-               find-file)
+          (thread-last collection
+            (completing-read (concat "Find file in " proj? ": "))
+            (concat proj?)
+            find-file)
         ;; outside of project
         (call-interactively #'find-file))))
 
