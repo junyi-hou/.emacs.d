@@ -88,7 +88,17 @@ All forms that start at the `beginning-of-line' will be folded. Other forms shou
 
 (use-package helpful
   :init
-  (evil-set-initial-state 'helpful-mode 'motion))
+  (evil-set-initial-state 'helpful-mode 'motion)
+  :general
+  (:keymaps '(motion normal visual emacs insert)
+   :prefix "SPC"
+   :non-normal-prefix "s-SPC"
+   ;; helps
+   "hf" 'helpful-callable
+   "hk" 'helpful-key
+   "hv" 'helpful-variable
+   "hm" 'describe-mode))
+
 
 (use-package easy-escape
   :hook ((emacs-lisp-mode lisp-mode ielm-mode) . easy-escape-minor-mode))
