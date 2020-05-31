@@ -6,11 +6,30 @@
 
 (require 'gatsby:core)
 
-(use-package undo-tree
+;; replace undo-tree with undo-fu
+(use-package undo-fu
+  :after evil
   :init
-  (setq undo-tree-auto-save-history t)
+  (setq undo-limit 400000
+        undo-strong-limit 3000000
+        undo-outer-limit 3000000)
+
+  (global-set-key [remap undo] #'undo-fu-only-undo)
+  (global-set-key [remap redo] #'undo-fu-only-redo)
+
+  (with-eval-after-load 'undo-tree
+    (global-set-key [remap undo-tree-undo] #'undo-fu-only-undo)
+    (global-set-key [remap undo-tree-redo] #'undo-fu-only-redo)
+    (global-undo-tree-mode -1)))
+
+(use-package undo-fu-session
+  :straight (undo-fu-session :repo "ideasman42/emacs-undo-fu-session" :host gitlab)
+  :after undo-fu
+  :init
+  (setq undo-fu-session-directory (concat no-littering-var-directory "undo-fu-session/")
+        undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
   :config
-  (fset 'undo-auto-amalgamate 'ignore))
+  (global-undo-fu-session-mode 1))
 
 (use-package evil
   ;;  welcome to the dark side
@@ -90,13 +109,10 @@
     "Move `buffer-file-name' to NEW-LOCATION."
     (interactive
      (list
-      (ivy-read
-       "Move to: "
-       #'read-file-name-internal
-       :predicate
-       (lambda (x)
-         (string= x (file-name-as-directory x)))
-       :action 'identity)))
+      (completing-read "Move to: "
+                       #'read-file-name-internal
+                       (lambda (x)
+                         (string= x (file-name-as-directory x))))))
     (let* ((file-name (buffer-file-name))
            (cmd (concat "mv " file-name " " new-location (file-name-nondirectory file-name))))
       (unless file-name
@@ -160,26 +176,6 @@
 
   (advice-add 'newline :around #'gatsby:evil-better-newline)
 
-  (defun gatsby:evil-replace-word-at-point-all (&optional to-string)
-    "Replace the word at point with TO-STRING throughout the buffer.  If in visual state, replace the selection instead."
-    (interactive)
-    (let* ((from-string (if (evil-visual-state-p)
-                            (buffer-substring-no-properties
-                             (region-beginning)
-                             (region-end))
-                          (word-at-point))))
-      (unless from-string
-        (user-error "No word at point found"))
-      (save-excursion
-        (let ((to-string (or to-string
-                             (ivy-read
-                              (concat "replacing " from-string " with: ")
-                              '()
-                              :action 'identity))))
-          (goto-char 1)
-          (while (search-forward from-string nil t)
-            (replace-match to-string nil t))))))
-
   :general
   (:keymaps '(motion normal visual)
    "j" 'evil-next-visual-line
@@ -220,13 +216,6 @@
    "eL" (lambda () (interactive)
           (eval-buffer)
           (message "buffer %s evaluated!" (buffer-name)))
-   "er" 'gatsby:evil-replace-word-at-point-all
-
-   ;; helps
-   "hf" 'helpful-callable
-   "hk" 'helpful-key
-   "hv" 'helpful-variable
-   "hm" 'describe-mode
 
    ;; basic function
    "w" 'evil-write
