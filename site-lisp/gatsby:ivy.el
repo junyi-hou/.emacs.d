@@ -60,5 +60,7 @@
         '(:not swiper ivy-switch-buffer counsel-recentf flyspell-correct-ivy))
   (ivy-prescient-mode))
 
+(use-package selectrum)
+
 (provide 'gatsby:ivy)
 ;;; gatsby:ivy.el ends here

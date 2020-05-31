@@ -44,12 +44,12 @@
            (collection (when proj? (gatsby:project-get-file-list proj?))))
       (if proj?
           ;; inside a project
-          (ivy-read
-           (concat "Find file in " proj? ": ")
-           collection
-           :action (lambda (file) (find-file (concat (gatsby:project-get-root) file))))
+          (->> collection
+               (completing-read (concat "Find file in " proj? ": "))
+               (concat proj?)
+               find-file)
         ;; outside of project
-        (call-interactively #'counsel-find-file))))
+        (call-interactively #'find-file))))
 
   (defun gatsby:project--search-path ()
     "Search paths registered in `gatsby:project-search-path' and return a list of projects identified by git."
@@ -62,11 +62,7 @@
     (interactive)
     (let ((enable-recursive-minibuffers t)
           (projs (-concat gatsby:project-saved-project (gatsby:project--search-path))))
-      (ivy-read
-       "Switch to:"
-       projs
-       :action
-       (lambda (project) (gatsby:project-find-file (file-name-as-directory project))))))
+      (gatsby:project-find-file (completing-read "Switch to: " projs))))
 
   :general
   (:keymaps '(normal motion visual emacs insert)
