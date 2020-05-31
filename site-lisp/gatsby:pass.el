@@ -43,9 +43,12 @@
 
   (defun gatsby:pass-qutebroswer ()
     "A qutebroswer userscript to retrieve secrets from gnu pass."
-    (let* ((candidates (--filter
-                        (not (string= "."
-                                      (substring-no-properties it 0 1)))
+    (let* ((candidates (seq-filter
+                        (lambda (folder-name)
+                          (not
+                           (string=
+                            "."
+                            (substring-no-properties folder-name 0 1))))
                         (directory-files "~/.password-store/")))
            (entry (ivy-read "account: " candidates :action 'identity)))
       (concat (gatsby:pass--get-entry entry "account")

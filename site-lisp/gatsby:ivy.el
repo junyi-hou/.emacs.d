@@ -46,6 +46,9 @@
    "om" (lambda () (interactive)
           (switch-to-buffer-other-window (get-buffer-create "*Messages*")))))
 
+;; for counsel-search
+(use-package request :defer t)
+
 ;; (use-package ivy-posframe
 ;;   :after ivy
 ;;   :config

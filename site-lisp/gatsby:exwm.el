@@ -70,8 +70,11 @@
 
   (defun gatsby:exwm--get-xwindow-buffer ()
     "Return a list of buffers containing currently opened Xwindows."
-    (--filter (with-current-buffer it (equal major-mode 'exwm-mode))
-              (buffer-list)))
+    (seq-filter
+     (lambda (buffer)
+       (with-current-buffer buffer
+         (equal major-mode 'exwm-mode)))
+     (buffer-list)))
 
   (defun gatsby:exwm-switch-to-xwindow ()
     "Choose a xwindow from `ivy-read' and display it in the current window or a new window in the current frame."
@@ -88,7 +91,6 @@
         (selected-frame)
         (exwm--buffer->id (get-buffer x))))))
 
-  ;; FIXME unusable
   (when (executable-find "zathura")
     (defun gatsby:exwm-open-pdf-in-zathura (ff &rest args)
       "If selected file is a pdf, open in `zathura'. Otherwise open using FF."
@@ -138,14 +140,19 @@
               (push (match-string 1) disconnected)
             (push (match-string 1) connected)))
         ;; return
-        `(,(--filter (not (string= it gatsby:exwm--default-monitor)) connected)
+        `(,(seq-filter
+            (lambda (mon)
+              (not (string= mon gatsby:exwm--default-monitor)))
+            connected)
           ,disconnected))))
 
   (defun gatsby:exwm--assign-workspaces (monitor)
     "Assigning workspaces 1 - 8 to MONITOR and 0 to `gatsby:exwm--default-monitor'."
     (setq exwm-randr-workspace-monitor-plist
-          (-concat `(0 ,gatsby:exwm--default-monitor)
-                   (--mapcat `(,it ,monitor) (number-sequence 1 8)))))
+          (seq-reduce
+           'append
+           (mapcar (lambda (i) `(,i ,monitor)) (number-sequence 1 8))
+           `(0 ,gatsby:exwm--default-monitor))))
 
   (defun gatsby:exwm--turn-on-external-monitor (monitor position)
     "Turn on external MONITOR.  POSITION determines the relative position of MONITOR to the builtin monitor `gatsby:exwm--default-monitor'."
@@ -165,9 +172,7 @@ HACK: only work in conjecture of `gatsby:exwm--assign-workspaces' and with 1 ext
                  (member index index-range))
         (setq gatsby:exwm--external-monitor-workspace-index index))))
 
-  (advice-add 'exwm-workspace-switch
-              :after
-              'gatsby:exwm--tracking-external-monitor-workspace-index)
+  (advice-add 'exwm-workspace-switch :after 'gatsby:exwm--tracking-external-monitor-workspace-index)
 
   (defun gatsby:exwm--xrandr-to-direction (xrandr-argument)
     "Translate XRANDR-ARGUMENT to direction"

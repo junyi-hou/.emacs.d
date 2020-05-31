@@ -111,9 +111,6 @@
 (setq straight-use-package-by-default t
       straight-vc-git-default-protocol 'ssh)
 
-;; library
-(use-package dash :demand t)
-
 (use-package no-littering
   ;; do not litter my .emacs.d
   :demand t

@@ -24,7 +24,8 @@
 
   (with-eval-after-load 'ob-async
     (setq ob-async-no-async-languages-alist
-          `(,@(--map (format "jupyter-%s" it) gatsby:jupyter-available-kernels))))
+          `(,@(mapcar (lambda (kernel) (format "jupyter-%s" kernel))
+                      gatsby:jupyter-available-kernels))))
 
   (unless (executable-find "jupyter")
     (user-error "Cannot find jupyter executable, please check jupyter is installed"))

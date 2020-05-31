@@ -53,9 +53,13 @@
 
   (defun gatsby:project--search-path ()
     "Search paths registered in `gatsby:project-search-path' and return a list of projects identified by git."
-    (--mapcat (--filter (gatsby:project-get-root it)
-                        (directory-files it 'full "[^\.]"))
-              gatsby:project-search-path))
+    (apply #'append
+           (mapcar
+            (lambda (path)
+              (seq-filter
+               (lambda (dir) (gatsby:project-get-root dir))
+               (directory-files path 'full "[^\.]")))
+            gatsby:project-search-path)))
 
   (defun gatsby:project-switch-project ()
     "Switch to project."

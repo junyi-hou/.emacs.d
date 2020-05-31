@@ -123,8 +123,8 @@
 
     (doom-modeline-def-segment exwm-title
       "exwm buffer title, truncated if too long."
-      (-if-let* ((title (buffer-name))
-                 ((> (length title) gatsby:theme-exwm-title-max-length)))
+      (if-let ((title (buffer-name))
+               ((> (length title) gatsby:theme-exwm-title-max-length)))
           (concat (substring title 0 gatsby:theme-exwm-title-max-length) "...")
         title))
 

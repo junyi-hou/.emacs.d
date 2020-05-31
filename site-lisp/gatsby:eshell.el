@@ -139,10 +139,11 @@
     (interactive)
     (let* ((dir (file-name-directory (or (buffer-file-name) default-directory)))
            ;; check whether there exists a eshell buffer for DIR
-           (exists (--filter (with-current-buffer it
-                               (and (string-equal major-mode "eshell-mode")
-                                    (equal dir default-directory)))
-                             (buffer-list)))
+           (exists (seq-filter (lambda (buf)
+                                 (with-current-buffer buf
+                                   (and (string-equal major-mode "eshell-mode")
+                                        (equal dir default-directory))))
+                               (buffer-list)))
            ;; check if the matched eshell buffer is visible
            (visible (when exists
                       (get-buffer-window (car exists)))))

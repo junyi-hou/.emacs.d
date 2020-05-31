@@ -61,8 +61,10 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
       ;; `company-minimum-prefix-length' to 0, which means that the snippets
       ;; will always get included. To fix this add a condition that if
       ;; all candidates are snippets, cancel auto completion and indent region.
-      (if (not (-all-p (lambda (candidate) (member candidate (yas-active-keys)))
-                       company-candidates))
+      (if (null (seq-every-p
+                 (lambda (candidate)
+                   (member candidate (yas-active-keys)))
+                 company-candidates))
           (if (or company-selection-changed
                   (memq last-command '(company-complete-common
                                        gatsby:lsp-unified-tab)))
