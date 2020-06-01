@@ -18,16 +18,23 @@
   (defun gatsby:selectrum-jump-to-hs-header ()
     "Provide a list of `hideshow' headers from which one can jump to."
     (interactive)
+    (unless hs-block-start-regexp
+      (user-error "cannot find `hs-block-start-regexp', enable `hs-minor-mode' first."))
     (let* ((selectrum-should-sort-p nil)
            (headings
             (cl-loop with buffer-text-lines = (split-string (buffer-string) "\n")
                      for txt in buffer-text-lines
                      for num from 1 to (1- (length buffer-text-lines))
-                     ;; Only get the heading lines.
+                     ;; HACK:
+                     ;; only include `hideshow' headers, identified using
+                     ;; `hs-block-start-regexp'
+                     ;; also exclude any line in comments or in docs or in string
                      when (and (string-match hs-block-start-regexp txt)
-                               (not (seq-some (lambda (p) (eq p font-lock-doc-face))
+                               (not (seq-some (lambda (p)
+                                                (or (eq p font-lock-doc-face)
+                                                    (eq p font-lock-comment-face)
+                                                    (eq p font-lock-string-face)))
                                               (text-properties-at (- (length txt) 2) txt))))
-                     ;; Heading text, Outline level, Line number
                      collect (propertize (concat (number-to-string num)
                                                  " "
                                                  txt
