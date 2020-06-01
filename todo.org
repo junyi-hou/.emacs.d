@@ -12,5 +12,6 @@
 - fix bugs in pair issues in TeX
   - allow evil-surround on $
 - replace seq- functions with dash.el
-- replace ivy with selectrum
+- +replace ivy with selectrum+
+  - integrate flycheck with selectrum
 - check out gccemacs

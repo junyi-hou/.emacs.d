@@ -7,18 +7,8 @@
 (require 'gatsby:core)
 
 ;; TODO: better SPC-sp
-(use-package flyspell-correct
-  :config
-  (setq flyspell-correct-interface #'flyspell-correct-ivy)
-
-  ;; functions
-  (defun gatsby:style-correct ()
-    "Advising `flyspell-correct-wrapper' to go to previous cursor position."
-    (interactive)
-    (save-excursion
-      (forward-char)
-      (flyspell-correct-wrapper)))
-
+;; TODO: integrate with selectrum
+;; (use-package flyspell-correct
   :hook
   (text-mode . flyspell-mode)
   (prog-mode . flyspell-prog-mode)
@@ -30,9 +20,6 @@
   (:keymaps 'insert
    :prefix "C-c"
    "s" 'gatsby:style-correct))
-
-(use-package flyspell-correct-ivy
-  :after flyspell-correct)
 
 (provide 'gatsby:style)
 ;;; gatsby:style.el ends here
