@@ -182,7 +182,7 @@
     '((python-mode . ":\n"))
     "Alist of the regexp for the beginning of hiding point (or the end of the banner).")
 
-  (defun gatsby:core--hs-block-begin (block-beginning)
+  (defun gatsby:core--hs-adjust-block-begin (block-beginning)
     "Adjust the starting point of the hiding block to the end of function/class signature according to `gatsby:core-hs-block-beginning-regexp-alist'. If the current major-mode is not in the list, return BLOCK-BEGINNING."
     (interactive)
     (if-let* ((regexp (alist-get major-mode gatsby:core-hs-block-beginning-regexp-alist)))
@@ -194,11 +194,11 @@
   (defun gatsby:core--hs-move-point-to-block-begin (&rest _)
     "Move point according to `gatsby:core--hs-block-begin', to make sure I can open the block at point."
     (when (alist-get major-mode gatsby:core-hs-block-beginning-regexp-alist)
-      (goto-char (gatsby:core--hs-block-begin (point)))))
+      (goto-char (gatsby:core--hs-adjust-block-begin (point)))))
 
   (defun gatsby:core--hs-set-adjust-block-beginning ()
     "`hs-adjust-block-beginning' is automatically bind locally to `nil'. Set it properly instead"
-    (setq hs-adjust-block-beginning #'gatsby:core--hs-block-begin))
+    (setq hs-adjust-block-beginning #'gatsby:core--hs-adjust-block-begin))
 
   ;; put them in effect
   (advice-add #'hs-show-block :before #'gatsby:core--hs-move-point-to-block-begin)
