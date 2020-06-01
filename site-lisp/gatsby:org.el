@@ -174,11 +174,9 @@
     "Create a temporary org capture entry pointing to FILENAME under HEADLINE, capture the current content there and then"
     (require 'org-capture)
     (let ((headline (or headline
-                        (ivy-read
-                         "Headline: "
-                         (org-babel-with-temp-filebuffer filename
-                                                         (gatsby:org--export-headline))
-                         :action 'identity)))
+                        (completing-read "Headline: "
+                                         (org-babel-with-temp-filebuffer filename
+                                           (gatsby:org--export-headline)))))
           (saved-templates org-capture-templates))
       (add-to-list
        'org-capture-templates

@@ -50,7 +50,7 @@
                             "."
                             (substring-no-properties folder-name 0 1))))
                         (directory-files "~/.password-store/")))
-           (entry (ivy-read "account: " candidates :action 'identity)))
+           (entry (completing-read "account: " candidates)))
       (concat (gatsby:pass--get-entry entry "account")
               " "
               (gatsby:pass--get-entry entry "passwd"))))

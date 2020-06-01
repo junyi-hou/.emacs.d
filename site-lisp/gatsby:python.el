@@ -24,9 +24,8 @@
              (py-exec (when (string-match "#!/usr/bin/env\s+\\(python.?\\)" shebang)
                         (match-string 1 shebang))))
         (or py-exec
-            (ivy-read "Cannot infer python interpreter, please select: "
-                      '("python2" "python3")
-                      :action 'identity)))))
+            (completing-read "Cannot infer python interpreter, please select: "
+                             '("python2" "python3"))))))
 
   :hook
   (python-mode . gatsby:python--set-indent-width)

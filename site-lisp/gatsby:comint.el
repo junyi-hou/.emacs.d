@@ -48,13 +48,12 @@
 
   (defun gatsby:comint-associate-repl (repl-mode)
     "Select a repl of mode REPL-MODE and associate the current buffer to that repl."
-    (let ((repl-buffer-name (ivy-read
-                             "Choose REPL to associate to: "
-                             #'internal-complete-buffer
-                             :predicate (lambda (bf)
-                                          (with-current-buffer (cdr bf)
-                                            (eq major-mode repl-mode)))
-                             :action 'identity)))
+    (let ((repl-buffer-name (completing-read "Choose REPL to associate to: "
+                                             #'internal-complete-buffer
+                                             (lambda (bf)
+                                               (with-current-buffer (cdr bf)
+                                                 (eq major-mode repl-mode)))
+                                             t)))
       (setq gatsby:comint-repl-buffer (get-buffer repl-buffer-name))))
 
   (defun gatsby:comint--send-code-to-repl (send-fn string)
