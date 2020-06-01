@@ -13,5 +13,5 @@
   - allow evil-surround on $
 - replace seq- functions with dash.el
 - +replace ivy with selectrum+
-  - integrate flycheck with selectrum
+  - +integrate flycheck with selectrum+
 - check out gccemacs
