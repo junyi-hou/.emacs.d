@@ -68,29 +68,6 @@
         (if (y-or-n-p (format "workspace %d doesn't exists, create?" index))
             (exwm-workspace-switch-create index)))))
 
-  (defun gatsby:exwm--get-xwindow-buffer ()
-    "Return a list of buffers containing currently opened Xwindows."
-    (seq-filter
-     (lambda (buffer)
-       (with-current-buffer buffer
-         (equal major-mode 'exwm-mode)))
-     (buffer-list)))
-
-  (defun gatsby:exwm-switch-to-xwindow ()
-    "Choose a xwindow from `ivy-read' and display it in the current window or a new window in the current frame."
-    (interactive)
-    (ivy-read
-     "swtich to: "
-     (mapcar 'buffer-name (gatsby:exwm--get-xwindow-buffer))
-     :action
-     (lambda (x)
-       (when ivy-current-prefix-arg
-         (gatsby:core--split-window)
-         (other-window 1))
-       (exwm-workspace-move-window
-        (selected-frame)
-        (exwm--buffer->id (get-buffer x))))))
-
   (when (executable-find "zathura")
     (defun gatsby:exwm-open-pdf-in-zathura (ff &rest args)
       "If selected file is a pdf, open in `zathura'. Otherwise open using FF."
@@ -406,23 +383,7 @@ This function first scan for video port status via `gatsby:exwm--monitor-status'
    :non-normal-prefix "s-SPC"
    "lb" (lambda ()
           (interactive)
-          (start-process-shell-command (getenv "BROWSER") nil (getenv "BROWSER")))
-   "lp" (lambda ()
-          "Open a pdf file, with `ivy-current-prefix-arg', open the file in zathura, otherwise open file in pdf-tools."
-          (interactive)
-          (ivy-read
-           "open pdf file: "
-           #'read-file-name-internal
-           ;; use predicate to filter out non-pdfs
-           :predicate
-           (lambda (x)
-             (or (string= "pdf" (file-name-extension x))
-                 (string= (substring x (1- (length x))) "/")))
-           :initial-input "~/downloads/"
-           :action (lambda (x)
-                     (start-process-shell-command "zathura"
-                                                  nil
-                                                  (format "zathura '%s'" x)))))))
+          (start-process-shell-command (getenv "BROWSER") nil (getenv "BROWSER")))))
 
 ;; TODO: improve this
 (use-package exwm-edit
