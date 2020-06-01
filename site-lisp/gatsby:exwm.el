@@ -245,10 +245,9 @@ This function first scan for video port status via `gatsby:exwm--monitor-status'
       (gatsby:exwm--windmove-advice-remove)
 
       (when connected
-        (let ((position (ivy-read
+        (let ((position (completing-read
                          "Relative position: "
-                         '("--right-of" "--left-of" "--above" "--below" "--same-as")
-                         :action 'identity)))
+                         '("--right-of" "--left-of" "--above" "--below" "--same-as"))))
           (setq gatsby:exwm--relative-layout position)
           (gatsby:exwm--turn-on-external-monitor connected position)
           (gatsby:exwm--windmove-advice-add position)
