@@ -2,68 +2,64 @@
 
 ;;; Commentary:
 
+
+
 ;;; Code:
 
 (require 'gatsby:core)
 
-(use-package ivy
-  :config
-  (setq ivy-do-completion-in-region nil
-        ivy-wrap t
-        ivy-count-format ""
-        ivy-initial-inputs-alist nil
-        ivy-re-builders-alist '((t . ivy--regex-ignore-order))
-        ivy-format-function #'ivy-format-function-line
-        ivy-magic-slash-non-match-action nil)
-
+(use-package selectrum
   :init
-  (ivy-mode 1)
-  :general
-  (:keymaps 'ivy-minibuffer-map
-   "M-j" 'ivy-next-line
-   "M-k" 'ivy-previous-line))
+  (selectrum-mode 1)
 
-(use-package counsel
-  :after ivy
-  :init
-  (defun gatsby:ivy-grep-at-point ()
-    "Call `counsel-ag' on the `symbol-at-point'."
+  (defvar-local gatsby:selectrum-jump-history nil
+    "History of `selectrum-jump-to-hs-header'.")
+
+  (defun gatsby:selectrum-jump-to-hs-header ()
+    "Provide a list of `hideshow' headers from which one can jump to."
     (interactive)
-    (counsel-rg (symbol-name (symbol-at-point))))
+    (let* ((selectrum-should-sort-p nil)
+           (headings
+            (cl-loop with buffer-text-lines = (split-string (buffer-string) "\n")
+                     for txt in buffer-text-lines
+                     for num from 1 to (1- (length buffer-text-lines))
+                     ;; Only get the heading lines.
+                     when (and (string-match hs-block-start-regexp txt)
+                               (not (seq-some (lambda (p) (eq p font-lock-doc-face))
+                                              (text-properties-at (- (length txt) 2) txt))))
+                     ;; Heading text, Outline level, Line number
+                     collect (propertize (concat (number-to-string num)
+                                                 " "
+                                                 txt
+                                                 " ...")
+                                         'line-num num)))
+           (chosen-heading (completing-read "Jump to: "
+                                            headings nil t nil
+                                            'gatsby:selectrum-jump-history))
+           (jump-position (get-text-property 0 'line-num chosen-heading)))
+      (goto-char (point-min))
+      (forward-line jump-position)))
 
+  :config
+  (setq selectrum-minibuffer-bindings
+        (append selectrum-minibuffer-bindings
+                '(("M-j" . selectrum-next-candidate)
+                  ("M-k" . selectrum-previous-candidate))))
   :general
-  (:keymaps '(normal visual motion)
-   :prefix "SPC"
-   "rs" 'gatsby:ivy-grep-at-point
-   "rS" 'counsel-rg)
-
   (:keymaps '(motion normal visual emacs insert)
    :prefix "SPC"
    :non-normal-prefix "s-SPC"
-   "oo" 'counsel-find-file
-   "or" 'counsel-recentf
+   "oo" 'find-file
+   "or" (lambda () (interactive)
+          (find-file (completing-read "Recent file: "
+                                      (mapcar #'abbreviate-file-name recentf-list)
+                                      nil t)))
    "ob" 'switch-to-buffer
    "om" (lambda () (interactive)
-          (switch-to-buffer-other-window (get-buffer-create "*Messages*")))))
+          (switch-to-buffer-other-window (get-buffer-create "*Messages*")))
+   "oj" 'gatsby:selectrum-jump-to-hs-header))
 
-;; for counsel-search
-(use-package request :defer t)
-
-;; (use-package ivy-posframe
-;;   :after ivy
-;;   :config
-;;   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point))
-;;         ivy-posframe-parameters '((parent-frame nil)))
-;;   (ivy-posframe-mode 1))
-
-(use-package ivy-prescient
-  :after ivy
-  :config
-  (setq ivy-prescient-sort-commands
-        '(:not swiper ivy-switch-buffer counsel-recentf flyspell-correct-ivy))
-  (ivy-prescient-mode))
-
-(use-package selectrum)
+;; (use-package selectrum-prescient)
 
 (provide 'gatsby:ivy)
 ;;; gatsby:ivy.el ends here
