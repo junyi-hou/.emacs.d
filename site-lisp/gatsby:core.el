@@ -7,7 +7,6 @@
 ;; GC
 (setq gc-cons-threshold 402653184
       gc-cons-percentage 0.6)
-
 (add-hook 'after-init-hook
           (defun gatsby:core--reset-gc ()
             (setq gc-cons-threshold 16777216
@@ -202,16 +201,6 @@
 
   ;; put them in effect
   (advice-add #'hs-show-block :before #'gatsby:core--hs-move-point-to-block-begin)
-
-  ;; Another improvement is to *not* fold the empty line after a block
-  (defun gatsby:core--hs-exclude-empty-line-block-end (fn b e kind &optional b-offset e-offset)
-    "Do not fold the empty line after a block in `python-mode'."
-    (let ((b-offset (or b-offset 0))
-          (e-offset (or e-offset 0))
-          (end (if (eq major-mode 'python-mode) (1- e) e)))
-      (funcall fn b end kind b-offset e-offset)))
-
-  (advice-add #'hs-make-overlay :around #'gatsby:core--hs-exclude-empty-line-block-end)
 
   ;; don't fold comments
   (setq hs-hide-comments-when-hiding-all nil)
