@@ -1,4 +1,4 @@
-;;; gatsby:ivy.el --- config for ivy -*- lexical-binding: t; -*-
+;;; gatsby:selectrum.el --- config for selecturm -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -68,5 +68,5 @@
 
 ;; (use-package selectrum-prescient)
 
-(provide 'gatsby:ivy)
-;;; gatsby:ivy.el ends here
+(provide 'gatsby:selectrum)
+;;; gatsby:selectrum.el ends here
