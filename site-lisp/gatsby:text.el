@@ -173,6 +173,53 @@
             (call-interactively #'backward-delete-char-untabify)))
       (call-interactively #'backward-delete-char-untabify)))
 
+  ;; add hideshow mode support
+
+  (when (featurep 'hideshow)
+
+    (defconst gatsby:text-latex-env-should-hide
+      '("frame")
+      "A list of latex env that should be folded.")
+
+    (defconst gatsby:text-latex-hs-block-start-regexp
+      (let ((env-list (append '(or) gatsby:text-latex-env-should-hide)))
+        (eval
+         `(rx (zero-or-one "%") (* blank)
+              (or (group "\\end{" ,env-list) (group "\\" (or (group (* "sub") "section")
+                                                           "appendix"
+                                                           "bibliography"))))))
+      "Regexp for when `hs-minor-mode' should fold codes.")
+
+    (defconst gatsby:text-latex-hs-block-end-regexp
+      (replace-regexp-in-string "begin" "end"
+                                gatsby:text-latex-hs-block-start-regexp)
+      "The end of a block. Based on `gatsby:text-latex-hs-block-start-regexp', modify so that the \"begin\" in the original block becomes the \"end\"")
+
+    (defun gatsby:text-latex-end-of-block (_)
+      "Move point to the end of a latex block and return the position of the block end.
+
+A block is defined between `gatsby:text-latex-hs-block-start-regexp' and `gatsby:text-latex-hs-block-end-regexp'.
+
+This function is modified after `python-hideshow-forward-sexp-function', and should serve as `forward-sexp' for `hs-minor-mode' for LaTeX buffers."
+      (if (re-search-forward gatsby:text-latex-hs-block-end-regexp
+                             nil 'noerror)
+          (when (match-string 2)
+            (progn (line-move -1) (beginning-of-line)))
+        ;; if cannot find next matching, means we are at the end of buffer
+        ;; move back to just above \end{document}
+        (search-backward "\\end{document}")
+        (progn (line-move -1) (beginning-of-line)))
+      (point))
+
+    (setq hs-special-modes-alist
+          (add-to-list 'hs-special-modes-alist
+                       '(LaTeX-mode
+                         gatsby:text-latex-hs-block-start-regexp
+                         ""
+                         "%"
+                         gatsby:text-latex-end-of-block
+                         nil))))
+
   :hook
   (LaTeX-mode . TeX-PDF-mode)
   (LaTeX-mode . TeX-source-correlate-mode)
