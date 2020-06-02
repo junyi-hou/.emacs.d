@@ -14,7 +14,7 @@
     (setq-local tab-width 2))
 
   (defconst gatsby:lisp-hs-block-start-keywords
-    (rx (* space) "(" (or
+    (rx (* blank) "(" (or
                        ;; definitions should always get folded
                        "defun" "defmacro" "defcustom" "defconst" "defvar" "defvar-local"
                        ;; I also want to fold the followings in my use-pacakge definitions
