@@ -2,6 +2,6 @@
 # name: ssection
 # key: ssection
 # --
-\subsection{${1:title}}
+\subsection{${1:title}}${2:\label{$3}}
 
 $0

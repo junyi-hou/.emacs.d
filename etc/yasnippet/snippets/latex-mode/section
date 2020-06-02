@@ -2,6 +2,6 @@
 # name: section
 # key: section
 # --
-\section{${1:title}}
+\section{${1:title}}${2:\label{$3}}
 
 $0
