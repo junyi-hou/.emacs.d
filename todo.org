@@ -15,3 +15,4 @@
 - +replace ivy with selectrum+
   - +integrate flycheck with selectrum+
 - check out gccemacs
+- +fix yasnippet <- bug when in a field+

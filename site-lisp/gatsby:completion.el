@@ -15,7 +15,8 @@
    "<tab>" nil
    "TAB" nil
    "M-n" 'yas-next-field
-   "M-p" 'yas-prev-field)
+   "M-p" 'yas-prev-field
+   "<M-backspace>" 'yas-clear-field)
 
   ;; kill M-j/M-k so they won't show up when snippets are active
   (:keymaps 'global-map
