@@ -178,7 +178,7 @@
   (when (featurep 'hideshow)
 
     (defconst gatsby:text-latex-env-should-hide
-      '("frame")
+      '("frame" "lemma" "proposition" "proof")
       "A list of latex env that should be folded.")
 
     (defconst gatsby:text-latex-hs-block-start-regexp
