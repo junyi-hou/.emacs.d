@@ -10,13 +10,21 @@
   :hook
   (company-mode . yas-reload-all)
   (company-mode . yas-minor-mode)
+  :init
+  (defun gatsby:completion-better-yas-backspace ()
+    "If `point' is at the beginning of an unmodified yas-field, delete the field, otherwise backwards delete char."
+    (interactive)
+    (cond ((yas--maybe-clear-field-filter t)
+           (yas--skip-and-clear (yas-current-field)))
+          (t (call-interactively #'backward-delete-char-untabify))))
+
   :general
   (:keymaps 'yas-keymap
    "<tab>" nil
    "TAB" nil
    "M-n" 'yas-next-field
    "M-p" 'yas-prev-field
-   "<M-backspace>" 'yas-clear-field)
+   "<backspace>" 'gatsby:completion-better-yas-backspace)
 
   ;; kill M-j/M-k so they won't show up when snippets are active
   (:keymaps 'global-map
