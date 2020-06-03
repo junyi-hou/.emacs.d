@@ -43,7 +43,7 @@ List of CANDIDATES is given by flyspell for the WORD."
   :general
   (:keymaps '(motion normal visual)
    :prefix "SPC"
-   "sp" 'gatsby:style-correct)
+   "sp" 'flyspell-correct-wrapper)
   (:keymaps 'insert
    :prefix "C-c"
    "s" 'flyspell-correct-wrapper))
