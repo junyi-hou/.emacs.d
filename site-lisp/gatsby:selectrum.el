@@ -47,26 +47,36 @@
       (goto-char (point-min))
       (forward-line jump-position)))
 
+  (defun gatsby:selectrum-better-backspace ()
+    "If `point' is at \"/\", delete till the last \"/\"."
+    (interactive)
+    (if (thing-at-point-looking-at "/")
+        (let* ((delete-untill (save-excursion
+                                (1+ (re-search-backward "/" nil 'noerror 2)))))
+          (delete-region delete-untill (point)))
+      (call-interactively #'backward-delete-char)))
+
   :config
   (setq selectrum-minibuffer-bindings
         (append selectrum-minibuffer-bindings
                 '(("M-j" . selectrum-next-candidate)
-                  ("M-k" . selectrum-previous-candidate))))
+                  ("M-k" . selectrum-previous-candidate)
+                  ("<backspace>" . gatsby:selectrum-better-backspace))))
+
   :general
   (:keymaps '(motion normal visual emacs insert)
    :prefix "SPC"
    :non-normal-prefix "s-SPC"
    "oo" 'find-file
    "or" (lambda () (interactive)
-          (find-file (completing-read "Recent file: "
-                                      (mapcar #'abbreviate-file-name recentf-list)
-                                      nil t)))
+          (let ((selectrum-should-sort-p nil))
+            (find-file (completing-read "Recent file: "
+                                        (mapcar #'abbreviate-file-name recentf-list)
+                                        nil t))))
    "ob" 'switch-to-buffer
    "om" (lambda () (interactive)
           (switch-to-buffer-other-window (get-buffer-create "*Messages*")))
    "oj" 'gatsby:selectrum-jump-to-hs-header))
-
-;; (use-package selectrum-prescient)
 
 (provide 'gatsby:selectrum)
 ;;; gatsby:selectrum.el ends here
