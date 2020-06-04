@@ -78,5 +78,10 @@
           (switch-to-buffer-other-window (get-buffer-create "*Messages*")))
    "oj" 'gatsby:selectrum-jump-to-hs-header))
 
+(use-package selectrum-prescient
+  :after selectrum
+  :config
+  (selectrum-prescient-mode))
+
 (provide 'gatsby:selectrum)
 ;;; gatsby:selectrum.el ends here
