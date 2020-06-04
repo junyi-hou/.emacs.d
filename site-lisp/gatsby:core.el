@@ -15,6 +15,9 @@
 ;; fix potential credential issues
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
+;; extend max message length
+(setq message-log-max 10000)
+
 ;; turn off bell
 (setq-default visible-bell t
               ring-bell-function 'ignore)
