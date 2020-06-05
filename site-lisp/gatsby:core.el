@@ -108,10 +108,31 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;; regularly refresh package repos
+;; today: 737580
+(let* ((update-record (expand-file-name "var/straight-last-repo-update"
+                                        user-emacs-directory))
+       (last-update (if (file-exists-p update-record)
+                        (with-temp-buffer
+                          (insert-file-contents update-record)
+                          (string-to-number (buffer-string)))
+                      1))
+       (today (time-to-days (current-time))))
+  (when (> (- today last-update) 7)
+    (straight-pull-package "melpa")
+    (straight-pull-package "gnu-elpa-mirror")
+    (straight-pull-package "emacsmirror-mirror")
+
+    ;; update update-time
+    (with-temp-buffer
+      (insert (int-to-string today))
+      (write-region (point-min) (point-max) update-record))))
+
 ;; install use-package
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t
       straight-vc-git-default-protocol 'ssh)
+
 
 (use-package no-littering
   ;; do not litter my .emacs.d
