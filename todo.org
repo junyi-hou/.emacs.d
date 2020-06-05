@@ -5,7 +5,7 @@
   - replace outline-mode with hs-minor-mode in latex/man-page
 - mac compatibility
 - fix bug in modeline
-  - in png mode
+  - +in png mode+
   - in top/htop
 - better terminal
 - fix bug of localhost in authinfo.gpg

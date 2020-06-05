@@ -118,6 +118,18 @@
     '(modals buffer-info current-line)
     '(input-method process time-battery))
 
+  (doom-modeline-def-modeline 'info
+    '(modals buffer-info info-nodes buffer-position selection-info)
+    '(misc-info time-battery))
+
+  (doom-modeline-def-modeline 'media
+    '(modals buffer-info-simple media-info)
+    '(major-mode time-battery))
+
+  (doom-modeline-def-modeline 'pdf
+    '(modals vcs buffer-info)
+    '(pdf-pages time-battery))
+
   (with-eval-after-load 'exwm
     (defvar gatsby:theme-exwm-title-max-length 60)
 
