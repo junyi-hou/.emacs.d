@@ -20,7 +20,12 @@
   (with-eval-after-load 'undo-tree
     (global-set-key [remap undo-tree-undo] #'undo-fu-only-undo)
     (global-set-key [remap undo-tree-redo] #'undo-fu-only-redo)
-    (global-undo-tree-mode -1)))
+    (global-undo-tree-mode -1))
+
+  (with-eval-after-load 'aggressive-indent
+    (setq aggressive-indent-protected-commands
+          (add-to-list 'aggressive-indent-protected-commands 'undo-fu-only-undo)))
+  )
 
 (use-package undo-fu-session
   :straight (undo-fu-session :repo "ideasman42/emacs-undo-fu-session" :host gitlab)

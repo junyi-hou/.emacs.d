@@ -119,6 +119,7 @@
                       1))
        (today (time-to-days (current-time))))
   (when (> (- today last-update) 7)
+    (message "updating straight repo...")
     (straight-pull-package "melpa")
     (straight-pull-package "gnu-elpa-mirror")
     (straight-pull-package "emacsmirror-mirror")
