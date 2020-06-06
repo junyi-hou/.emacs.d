@@ -119,7 +119,7 @@
     '(input-method process time-battery))
 
   (doom-modeline-def-modeline 'info
-    '(modals buffer-info info-nodes buffer-position selection-info)
+    '(modals buffer-info)
     '(misc-info time-battery))
 
   (doom-modeline-def-modeline 'media
