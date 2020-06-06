@@ -8,11 +8,15 @@
   - +in png mode+
   - in top/htop
 - better terminal
-- fix bug of localhost in authinfo.gpg
+- +fix bug of localhost in authinfo.gpg+
 - fix bugs in pair issues in TeX
   - allow evil-surround on $
-- replace seq- functions with dash.el
+- +replace seq- functions with dash.el+
 - +replace ivy with selectrum+
   - +integrate flycheck with selectrum+
 - check out gccemacs
 - +fix yasnippet <- bug when in a field+
+- check out tree-sitter
+  - improvement selectrum-jump-to-header
+  - new code folding lib
+- selectrum: dynamic collection?
