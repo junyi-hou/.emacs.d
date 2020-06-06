@@ -7,7 +7,6 @@
 
 (use-package org
   :defer t
-  :straight (:type built-in)
   :hook
   (org-mode . org-indent-mode)
   (org-mode . gatsby:org--fix-indent)
