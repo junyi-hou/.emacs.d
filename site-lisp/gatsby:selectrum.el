@@ -19,7 +19,7 @@
     "Provide a list of `hideshow' headers from which one can jump to."
     (interactive)
     (unless hs-block-start-regexp
-      (user-error "cannot find `hs-block-start-regexp', enable `hs-minor-mode' first."))
+      (user-error "Cannot find `hs-block-start-regexp', enable `hs-minor-mode' first"))
     (let* ((selectrum-should-sort-p nil)
            (headings
             (cl-loop with buffer-text-lines = (split-string (buffer-string) "\n")
@@ -51,8 +51,16 @@
     "If `point' is at \"/\", delete till the last \"/\"."
     (interactive)
     (if (thing-at-point-looking-at "/")
-        (let* ((delete-untill (save-excursion
-                                (1+ (re-search-backward "/" nil 'noerror 2)))))
+        (let* ((last-slash-pos (or (save-excursion
+                                     (1+ (re-search-backward "/" nil 'noerror 2)))
+                                   (point-min)))
+               ;; last-slash-pos could be inside prompt
+               ;; if so, move back
+               (delete-untill (save-excursion
+                                (goto-char last-slash-pos)
+                                (while (get-text-property (point) 'read-only)
+                                  (goto-char (next-property-change (point))))
+                                (point))))
           (delete-region delete-untill (point)))
       (call-interactively #'backward-delete-char)))
 
