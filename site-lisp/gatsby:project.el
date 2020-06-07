@@ -11,6 +11,12 @@
   (with-eval-after-load 'vc-hooks
     (setq vc-follow-symlinks t))
 
+  ;; FIXME
+  ;; dirty work-around for bug at
+  ;; https://github.com/hlissner/doom-emacs/issues/3269
+  (defun project-root (project)
+    (car (project-roots project)))
+
   ;; variables
   (defconst gatsby:project-saved-project
     '("~/.emacs.d/")

@@ -14,13 +14,6 @@
   (python-mode . gatsby:lsp--reformat-buffer)
 
   :init
-
-  ;; FIXME
-  ;; dirty work-around for bug at
-  ;; https://github.com/hlissner/doom-emacs/issues/3269
-  (defun project-root (project)
-    (car (project-roots project)))
-
   (defun gatsby:lsp--reformat-buffer ()
     "Run `eglot-format' before save in the eglot powered buffer."
     (add-hook 'before-save-hook 'eglot-format nil t))
