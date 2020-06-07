@@ -8,7 +8,6 @@
 
 (use-package project
   :init
-
   (with-eval-after-load 'vc-hooks
     (setq vc-follow-symlinks t))
 
