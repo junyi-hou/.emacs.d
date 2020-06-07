@@ -9,3 +9,9 @@
 !config/
 !config/**
 etc/custom.el
+config/qutebrowser/quickmarks
+config/qutebrowser/autoconfig.yml
+config/qutebrowser/qsettings
+config/qutebrowser/qsettings/**
+config/qutebrowser/bookmarks
+config/qutebrowser/bookmarks/**
