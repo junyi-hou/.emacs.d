@@ -8,7 +8,7 @@ c.fonts.web.family.sans_serif = 'Sans'
 c.fonts.web.family.serif = 'Serif'
 c.fonts.web.family.standard = 'Sans'
 c.fonts.web.family.fixed = 'Monospace'
-c.fonts.monospace = "Monospace"
+c.fonts.default_family = "Monospace"
 
 c.fonts.web.size.default = 16
 c.fonts.web.size.default_fixed = 15
