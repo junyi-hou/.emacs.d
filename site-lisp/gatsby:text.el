@@ -174,55 +174,26 @@
       (call-interactively #'backward-delete-char-untabify)))
 
   ;; add hideshow mode support
+  ;; WONT FIX: replace hideshow with other code-folding mode based on tree-sitter
+  ;; right now just set `hs-block-start-regexp' to work with `gatsby:selectrum-jump-to-hs-header'.
+  (defconst gatsby:text-latex-env-should-hide
+    '("frame" "lemma" "proposition" "proof")
+    "A list of latex env that should be folded.")
 
-  (when (featurep 'hideshow)
-
-    (defconst gatsby:text-latex-env-should-hide
-      '("frame" "lemma" "proposition" "proof")
-      "A list of latex env that should be folded.")
-
-    (defconst gatsby:text-latex-hs-block-start-regexp
-      (let ((env-list (append '(or) gatsby:text-latex-env-should-hide)))
-        (eval
-         `(rx (zero-or-one "%") (* blank)
-              (or (group "\\end{" ,env-list) (group "\\" (or (group (* "sub") "section")
-                                                           "appendix"
-                                                           "bibliography"))))))
-      "Regexp for when `hs-minor-mode' should fold codes.")
-
-    (defconst gatsby:text-latex-hs-block-end-regexp
-      (replace-regexp-in-string "begin" "end"
-                                gatsby:text-latex-hs-block-start-regexp)
-      "The end of a block. Based on `gatsby:text-latex-hs-block-start-regexp', modify so that the \"begin\" in the original block becomes the \"end\"")
-
-    (defun gatsby:text-latex-end-of-block (_)
-      "Move point to the end of a latex block and return the position of the block end.
-
-A block is defined between `gatsby:text-latex-hs-block-start-regexp' and `gatsby:text-latex-hs-block-end-regexp'.
-
-This function is modified after `python-hideshow-forward-sexp-function', and should serve as `forward-sexp' for `hs-minor-mode' for LaTeX buffers."
-      (if (re-search-forward gatsby:text-latex-hs-block-end-regexp
-                             nil 'noerror)
-          (when (match-string 2)
-            (progn (line-move -1) (beginning-of-line)))
-        ;; if cannot find next matching, means we are at the end of buffer
-        ;; move back to just above \end{document}
-        (search-backward "\\end{document}")
-        (progn (line-move -1) (beginning-of-line)))
-      (point))
-
-    (setq hs-special-modes-alist
-          (add-to-list 'hs-special-modes-alist
-                       '(LaTeX-mode
-                         gatsby:text-latex-hs-block-start-regexp
-                         ""
-                         "%"
-                         gatsby:text-latex-end-of-block
-                         nil))))
+  (defun gatsby:latex--setup-hs-block-start ()
+    (let ((env-list (append '(or) gatsby:text-latex-env-should-hide)))
+      (setq hs-block-start-regexp
+            (eval
+             `(rx line-start (* blank)
+                  (or (group "\\begin{" ,env-list)
+                      (group "\\" (or (group (* "sub") "section")
+                                     "appendix"
+                                     "bibliography"))))))))
 
   :hook
   (LaTeX-mode . TeX-PDF-mode)
   (LaTeX-mode . TeX-source-correlate-mode)
+  (LaTeX-mode . gatsby:latex--setup-hs-block-start)
   (LaTeX-mode . gatsby:ide-latex--set-tab-width)
   (LaTeX-mode . gatsby:ide-latex--fix-indent)
 
@@ -258,65 +229,6 @@ This function is modified after `python-hideshow-forward-sexp-function', and sho
   :init
   (setq outline-blank-line t))
 
-;; (use-package reftex
-;;   ;; TODO: ivy-integrate this
-;;   :after 'auctex
-;;   :defer t
-;;   :hook (LaTeX-mode . reftex-mode)
-;;   :config
-;;   (setq reftex-cite-prompt-optional-args t)
-
-;;   :general
-;;   (:keymaps 'reftex-mode-map
-;;    :states '(motion normal visual)
-;;    :prefix "SPC"
-;;    "rl" 'reftex-label
-;;    "ri" 'reftex-reference)
-
-;;   (:keymaps 'reftex-mode-map
-;;    :states 'insert
-;;    :prefix "C-c"
-;;    "l" 'reftex-label
-;;    "i" 'reftex-reference))
-
-;; (use-package ivy-bibtex
-;;   :after auctex
-;;   :defer t
-;;   :init
-;;   (defun gatsby:ide-latex--get-project-bib-file (proj_root)
-;;     "Scan PROJ_ROOT/reference directory and return a list of .bib files.  If PROJ_ROOT is not given, use the current project root returned by `project-current'."
-;;     (let ((proj_root (or proj_root (cdr (project-current)))))
-;;       (directory-files (concat proj_root "reference") nil ".*\\.bib")))
-
-;;   (defun gatsby:ide-latex-load-bib-file ()
-;;     "Add bibtex file to `ivy-bibtex' library for the current .tex file.  This function scans both the directory of the current .tex file and the PROJ_ROOT/reference/ directory for .bib file."
-;;     (let* ((proj? (cdr (project-current)))
-;;            (local-bib (concat
-;;                       (expand-file-name (file-name-base (buffer-file-name))) ".bib")))
-;;       (make-local-variable bibtex-completion-bibliography)
-;;       (when (file-exists-p local-bib)
-;;         (add-to-list 'bibtex-completion-bibliography local-bib))
-;;       (when proj?
-;;         (append
-;;          'bibtex-completion-bibliography
-;;          (gatsby:ide-latex--get-project-bib-file proj?)))))
-
-;;   :config
-;;   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation
-;;         bibtex-completion-cite-commands '("citep" "citet" "citep*" "citet*")
-;;         bibtex-completion-cite-default-command "citep"
-;;         bibtex-completion-cite-prompt-for-optional-arguments nil)
-;;   :general
-;;   (:keymaps 'LaTeX-mode-map
-;;    :states '(normal visual motion insert)
-;;    :prefix "SPC"
-;;    :non-normal-prefix "s-SPC"
-;;    "rc" 'ivy-bibtex)
-
-;;   (:keymaps 'LaTeX-mode-map
-;;    :states 'insert
-;;    :prefix "C-c"
-;;    "c" 'ivy-bibtex))
 
 (provide 'gatsby:text)
 ;;; gatsby:text.el ends here

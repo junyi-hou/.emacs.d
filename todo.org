@@ -11,6 +11,7 @@
 - +fix bug of localhost in authinfo.gpg+
 - fix bugs in pair issues in TeX
   - allow evil-surround on $
+  - use latex lsp
 - +replace seq- functions with dash.el+
 - +replace ivy with selectrum+
   - +integrate flycheck with selectrum+
