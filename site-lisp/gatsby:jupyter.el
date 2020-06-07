@@ -34,9 +34,6 @@
         jupyter-repl-maximum-size 12000
         jupyter-repl-history-maximum-length 1000)
 
-  ;; hotfix https://github.com/dzop/emacs-jupyter/issues/172
-  (jupyter-tramp-file-name-p "~/.bashrc")
-
   ;; functions
 
   ;; TODO: highlight indent breaks jupyter
