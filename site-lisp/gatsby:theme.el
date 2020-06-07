@@ -156,8 +156,7 @@
   (prog-mode . highlight-indent-guides-mode)
   (LaTeX-mode . highlight-indent-guides-mode)
   :init
-  (setq highlight-indent-guides-method 'character
-        highlight-indent-guides-character ?\┆
+  (setq highlight-indent-guides-method 'bitmap
         highlight-indent-guides-responsive 'stack))
 
 ;; visual cue of the cursor position
