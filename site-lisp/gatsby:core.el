@@ -259,7 +259,8 @@
            (x (window-pixel-left window)))
       (cons x y)))
 
-  (setq eldoc-box-position-function #'gatsby:eldoc--box-position))
+  (setq eldoc-box-position-function #'gatsby:eldoc--box-position
+        eldoc-box-cleanup-interval 0.5))
 (use-package general
   ;; for key binding
   :demand t
