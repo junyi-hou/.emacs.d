@@ -152,7 +152,9 @@
   (defun gatsby:evil-normal-state-if-not-motion ()
     "Switch to evil normal state if the current state is not motion state."
     (interactive)
-    (unless (evil-motion-state-p)
+    (unless (or (evil-motion-state-p)
+                (evil-normal-state-p)
+                (minibufferp (current-buffer)))
       (evil-normal-state)))
 
   ;; bind esc to normal state in all cases
