@@ -132,7 +132,7 @@
 ;; install use-package
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t
-      straight-vc-git-default-protocol 'ssh)
+      straight-vc-git-default-protocol 'https)
 
 
 (use-package no-littering
