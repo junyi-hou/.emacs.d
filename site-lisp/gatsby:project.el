@@ -20,7 +20,7 @@
   ;; variables
   (defconst gatsby:project-saved-project
     '("~/.emacs.d/")
-    "A list of project roots.")
+    "A list of project roots outside of `gatsby:project-search-path'.")
 
   (defconst gatsby:project-search-path
     '("~/research/" "~/projects/")
