@@ -109,6 +109,7 @@
    "rr" 'gatsby:python-eval-region-or-line
    "rf" 'gatsby:python-eval-block
    "ro" 'gatsby:python-local-repl
+   "rh" 'gatsby:lsp-help-at-point
 
    "rz" 'jupyter-repl-associate-buffer
    "rZ" 'gatsby:python-reconnect))
