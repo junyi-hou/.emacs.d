@@ -29,6 +29,7 @@
 
   :hook
   (python-mode . gatsby:python--set-indent-width)
+  (python-mode . tree-sitter-hl-mode)
 
   :config
   (require 'gatsby:jupyter)

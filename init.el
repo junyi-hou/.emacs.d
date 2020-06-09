@@ -9,6 +9,7 @@
 
 (require 'gatsby:core)
 
+(require 'gatsby:tree-sitter)
 (require 'gatsby:theme)
 (require 'gatsby:evil)
 (require 'gatsby:pass)
