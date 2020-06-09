@@ -110,8 +110,8 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   :general
   (:keymaps 'company-active-map
    "M-n" 'company-posframe-quickhelp-toggle
-   "C-j" 'company-posframe-quickhelp-scroll-up
-   "C-k" 'company-posframe-quickhelp-scroll-down))
+   "M-," 'company-posframe-quickhelp-scroll-up
+   "M-." 'company-posframe-quickhelp-scroll-down))
 
 (provide 'gatsby:completion)
 ;;; gatsby:completion.el ends here
