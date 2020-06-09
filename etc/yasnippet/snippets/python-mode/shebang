@@ -3,4 +3,4 @@
 # key: shebang
 # --
 
-#!/usr/bin/env ${1:python}
+#!/usr/bin/env python${1:3}
