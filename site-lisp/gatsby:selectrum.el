@@ -45,7 +45,11 @@
                                             'gatsby:selectrum-jump-history))
            (jump-position (get-text-property 0 'line-num chosen-heading)))
       (goto-char (point-min))
-      (forward-line jump-position)))
+      (forward-line jump-position)
+      (when (memq 'hs-minor-mode minor-mode-list)
+        (save-excursion
+          (hs-show-block)))
+      (call-interactively #'recenter)))
 
   (defun gatsby:selectrum-better-backspace ()
     "If `point' is at \"/\", delete till the last \"/\"."
