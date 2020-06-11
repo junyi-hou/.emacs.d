@@ -7,10 +7,20 @@
 (require 'gatsby:core)
 
 ;; theme
-(use-package gruvbox-theme
+(use-package vscode-dark-plus-theme
+  :straight
+  (vscode-dark-plus-theme :repo "ianpan870102/vscode-dark-plus-emacs-theme" :host github)
   :init
   (setq custom-safe-themes t)
   (setq-default left-fringe-width 8)
+
+  (load-theme 'vscode-dark-plus t)
+
+  ;; increase active/inactive mode-line contrast
+  (set-face-foreground 'mode-line "#fafafa")
+  (set-face-background 'mode-line "#00538a" )
+  (set-face-foreground 'mode-line-inactive "#555555")
+  (set-face-background 'mode-line-inactive "#002c4a")
 
   (defun gatsby:theme-fontsize-up (&optional size)
     "Increase the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
@@ -35,8 +45,6 @@
     (interactive)
     (set-face-attribute
      'default (selected-frame) :height 150))
-
-  (load-theme 'gruvbox-dark-hard t)
 
   (set-face-attribute
    'default
