@@ -75,8 +75,8 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
                    (member candidate (yas-active-keys)))
                  company-candidates))
           (if (or company-selection-changed
-                  (memq last-command '(company-complete-common
-                                       gatsby:lsp-unified-tab)))
+                  (memq last-command `(company-complete-common
+                                       ,this-command)))
               (call-interactively 'company-complete-selection)
             (call-interactively 'company-complete-common)
             (when company-candidates
