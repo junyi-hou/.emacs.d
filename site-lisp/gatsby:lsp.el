@@ -12,6 +12,8 @@
   :hook
   (python-mode . eglot-ensure)
   (python-mode . gatsby:lsp--reformat-buffer)
+  (rust-mode . eglot-ensure)
+  (rust-mode . gatsby:lsp--reformat-buffer)
 
   :init
   (defun gatsby:lsp--reformat-buffer ()
@@ -27,6 +29,8 @@
           (suppress-keymap map t)
           (define-key map (kbd "J") #'gatsby:lsp-help-scroll-down)
           (define-key map (kbd "K") #'gatsby:lsp-help-scroll-up)
+          (define-key map (kbd "C-u") #'gatsby:lsp-help-C-u)
+          (define-key map (kbd "C-d") #'gatsby:lsp-help-C-d)
           (define-key map (kbd "C-g") #'gatsby:lsp-quit-help-frame)
           map)
         "Keymap in `gatsby:lsp-help-at-point'")
@@ -61,6 +65,22 @@
           (when gatsby:lsp-control-deactivate-fn
             (with-selected-frame eldoc-box--frame
               (scroll-up 3)))))
+
+      (defun gatsby:lsp-help-C-d ()
+        "C-d (`evil-scroll-down') for eldoc-box"
+        (interactive)
+        (with-current-buffer eldoc-box--buffer
+          (when gatsby:lsp-control-deactivate-fn
+            (with-selected-frame eldoc-box--frame
+              (scroll-up (max 1 (/ (1- (window-height (selected-window))) 2)))))))
+
+      (defun gatsby:lsp-help-C-u ()
+        "C-u (`evil-scroll-up') for eldoc-box"
+        (interactive)
+        (with-current-buffer eldoc-box--buffer
+          (when gatsby:lsp-control-deactivate-fn
+            (with-selected-frame eldoc-box--frame
+              (scroll-down (max 1 (/ (1- (window-height (selected-window))) 2)))))))
 
       (defun gatsby:lsp-help-at-point ()
         "display help in a childframe at point"
