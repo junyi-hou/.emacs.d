@@ -260,7 +260,8 @@
       (cons x y)))
 
   (setq eldoc-box-position-function #'gatsby:eldoc--box-position
-        eldoc-box-cleanup-interval 0.5))
+        eldoc-box-cleanup-interval 0.5)
+  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 3))
 (use-package general
   ;; for key binding
   :demand t
