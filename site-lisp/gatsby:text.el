@@ -27,6 +27,7 @@
   :custom-face
   (font-latex-italic-face ((t (:underline nil :inherit 'italic))))
   (font-latex-slide-title-face ((t (:height 1.0 :inherit 'font-lock-function-name-face))))
+  (font-latex-sectioning-5-face ((t (:inherit 'default))))
 
   :init
   (setq TeX-view-program-selection '((output-pdf "Zathura"))

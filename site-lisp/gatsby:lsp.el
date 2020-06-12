@@ -14,14 +14,18 @@
   (python-mode . gatsby:lsp--reformat-buffer)
   (rust-mode . eglot-ensure)
   (rust-mode . gatsby:lsp--reformat-buffer)
+  (eglot-managed-mode . gatsby:lsp--turn-off-doc-at-point)
 
   :init
   (defun gatsby:lsp--reformat-buffer ()
     "Run `eglot-format' before save in the eglot powered buffer."
     (add-hook 'before-save-hook 'eglot-format nil t))
 
-  ;; integration with eldoc
-  ;; adding keymap to scroll up and down
+  (defun gatsby:lsp--turn-off-doc-at-point ()
+    "Do not show documentation of symbol-at-point."
+    (eldoc-mode -1))
+
+  ;; integration with eldoc-box
   (with-eval-after-load 'eldoc-box
     (progn
       (defconst gatsby:lsp-help-buffer-keymap

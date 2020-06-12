@@ -124,7 +124,9 @@
 
 (use-package magit-delta
   :after magit
-  :hook (magit-mode . magit-delta-mode))
+  :hook (magit-mode . magit-delta-mode)
+  :init
+  (setq magit-delta-default-dark-theme "zenburn"))
 
 (use-package forge
   :after magit
