@@ -122,6 +122,10 @@
    "M-j" 'git-rebase-move-line-down
    "M-k" 'git-rebase-move-line-up))
 
+(use-package magit-delta
+  :after magit
+  :hook (magit-mode . magit-delta-mode))
+
 (use-package forge
   :after magit
   :init
