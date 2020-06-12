@@ -270,13 +270,33 @@
    "os" 'gatsby:eshell-open-here
    "oS" 'gatsby:eshell-open-home))
 
-;; TODO use vterm to replace ansi-term
+(use-package vterm
+  :after eshell)
+
 (use-package em-term
   :straight (em-term :type built-in)
-  :after eshell
+  :after (eshell vterm)
+  :init
+  (defun gatsby:eshell-exec-visual (&rest args)
+    "Use `vterm' to execute `eshell-visual-commands'."
+    (let* (eshell-interpreter-alist
+	         (interp (eshell-find-interpreter (car args) (cdr args)))
+	         (program (car interp))
+	         (args (flatten-tree
+		              (eshell-stringify-list (append (cdr interp)
+					                                       (cdr args)))))
+	         (term-buf (concat "*" (file-name-nondirectory program) "*")))
+      (vterm term-buf)
+      (vterm-send-string
+       (concat program " " (string-join args " ")))
+      (vterm-send-return))
+    nil)
+
+  (advice-add #'eshell-exec-visual :override #'gatsby:eshell-exec-visual)
+
   :config
-  (dolist (p '("alsamixer" "htop" "ssh" "top"))
-    (add-to-list 'eshell-visual-commands p)))
+  (setq eshell-visual-commands (append eshell-visual-commands
+                                       '("alsamixer" "htop" "ssh" "top"))))
 
 (use-package em-tramp
   :straight (:type built-in)

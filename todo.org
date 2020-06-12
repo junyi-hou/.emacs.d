@@ -6,8 +6,8 @@
 - mac compatibility
 - fix bug in modeline
   - +in png mode+
-  - in top/htop
-- better terminal
+  - +in top/htop+
+- +better terminal+
 - +fix bug of localhost in authinfo.gpg+
 - fix bugs in pair issues in TeX
   - allow evil-surround on $
