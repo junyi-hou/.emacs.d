@@ -124,12 +124,7 @@
 
 (use-package magit-delta
   :after magit
-  :hook (magit-mode . magit-delta-mode)
-  :init
-  (setq magit-delta-default-dark-theme "zenburn"
-        magit-delta-delta-args `("--max-line-distance" "0.6"
-                                 "--24-bit-color" "never"
-                                 "--color-only")))
+  :hook (magit-mode . magit-delta-mode))
 
 (use-package forge
   :after magit
