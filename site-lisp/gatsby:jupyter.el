@@ -90,6 +90,9 @@
 
   (advice-add #'jupyter-eval-region :after #'gatsby:jupyter--deactivate-mark)
 
+  :config
+  (set-face-extend 'jupyter-repl-traceback t)
+
   :general
   (:keymaps 'jupyter-repl-mode-map
    :states 'insert
