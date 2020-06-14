@@ -109,7 +109,6 @@
   (load bootstrap-file nil 'nomessage))
 
 ;; regularly refresh package repos
-;; today: 737580
 (let* ((update-record (expand-file-name "var/straight-last-repo-update"
                                         user-emacs-directory))
        (last-update (if (file-exists-p update-record)
@@ -119,7 +118,6 @@
                       1))
        (today (time-to-days (current-time))))
   (when (> (- today last-update) 7)
-    (message "updating straight repo...")
     (straight-pull-package "melpa")
     (straight-pull-package "gnu-elpa-mirror")
     (straight-pull-package "emacsmirror-mirror")
@@ -261,7 +259,7 @@
 
   (setq eldoc-box-position-function #'gatsby:eldoc--box-position
         eldoc-box-cleanup-interval 0.5)
-  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 3))
+  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2))
 (use-package general
   ;; for key binding
   :demand t
