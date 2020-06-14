@@ -250,11 +250,11 @@
 (use-package eldoc-box
   :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
   :config
-  (defun gatsby:eldoc--box-position (_ height)
-    "Display `eldoc-box' in the bottom left corner of the `selected-window'."
-    (let* ((window (selected-window))
-           (y (- (nth 3 (window-inside-pixel-edges window)) 5  height))
-           (x (window-pixel-left window)))
+  (defun gatsby:eldoc--box-position (width height)
+    "Display `eldoc-box' in the bottom right corner of the `selected-window'."
+    (let* ((edge (window-inside-pixel-edges))
+           (y (- (nth 3 edge) 5 height))
+           (x (- (nth 2 edge) 2 width)))
       (cons x y)))
 
   (setq eldoc-box-position-function #'gatsby:eldoc--box-position
