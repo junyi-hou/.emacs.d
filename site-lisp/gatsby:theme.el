@@ -195,8 +195,7 @@
   :init
   (setq display-line-numbers-type 'visual
         display-line-numbers-current-absolute t
-        display-line-numbers-width 3
-        display-line-numbers-widen nil)
+        display-line-numbers-width-start t)
   :config
   (set-face-attribute
    'line-number
