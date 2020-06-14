@@ -20,14 +20,14 @@
     (setq magit-delta-delta-args `("--max-line-distance" "0.6"
                                    "--24-bit-color" "always"
                                    "--minus-color=#420000"
-                                   "--plus-color=#4a5200"
+                                   "--plus-color=#006910"
                                    "--plus-emph-color=#00b300"
                                    "--color-only")))
 
   ;; increase active/inactive mode-line contrast
   (set-face-foreground 'mode-line "#fafafa")
   (set-face-background 'mode-line "#00538a" )
-  (set-face-foreground 'mode-line-inactive "#444444")
+  (set-face-foreground 'mode-line-inactive "#666666")
   (set-face-background 'mode-line-inactive "#002c4a")
 
   (defun gatsby:theme-fontsize-up (&optional size)
