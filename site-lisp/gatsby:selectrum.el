@@ -68,11 +68,31 @@
           (delete-region delete-untill (point)))
       (call-interactively #'backward-delete-char)))
 
+  (defun gatsby:selectrum-next-candidate-cycle ()
+    "Move selection to next candidate, if at the end, go to the top."
+    (interactive)
+    (when selectrum--current-candidate-index
+      (setq selectrum--current-candidate-index
+            (if (= selectrum--current-candidate-index
+                   (1- (length selectrum--refined-candidates)))
+                (if selectrum--match-required-p 0 -1)
+              (1+ selectrum--current-candidate-index)))))
+
+  (defun gatsby:selectrum-previous-candidate-cycle ()
+    "Move selection to previous candidate, if at the beginning, go to the end."
+    (interactive)
+    (when selectrum--current-candidate-index
+      (setq selectrum--current-candidate-index
+            (if (= selectrum--current-candidate-index
+                   (if selectrum--match-required-p 0 -1))
+                (1- (length selectrum--refined-candidates))
+              (1- selectrum--current-candidate-index)))))
+
   :config
   (setq selectrum-minibuffer-bindings
         (append selectrum-minibuffer-bindings
-                '(("M-j" . selectrum-next-candidate)
-                  ("M-k" . selectrum-previous-candidate)
+                '(("M-j" . gatsby:selectrum-next-candidate-cycle)
+                  ("M-k" . gatsby:selectrum-previous-candidate-cycle)
                   ("<backspace>" . gatsby:selectrum-better-backspace))))
 
   :general
