@@ -73,98 +73,64 @@
    "C--" 'gatsby:theme-fontsize-down
    "C-=" 'gatsby:theme-fontsize-reset))
 
-;; display battery level
-(use-package battery
-  :init
-  (setq battery-mode-line-limit 100)
+(use-package simple-modeline
+  :hook (after-init . simple-modeline-mode)
   :config
-  (display-battery-mode))
+  (require 'battery)
+  (require 'time)
 
-;; display time
-(use-package time
-  :init
-  (setq display-time-default-load-average nil
-        display-time-24hr-format t)
-  :config
-  (display-time-mode))
+  (simple-modeline-create-segment
+   "modified-p"
+   "Displays a color-coded buffer modification/read-only indicator in the mode-line."
+   (if (not (string-match-p "\\*.*\\*" (buffer-name)))
+       (let ((read-only (and buffer-read-only (buffer-file-name)))
+             (modified (buffer-modified-p)))
+         (propertize (cond (read-only " %")
+                           (modified  " ●")
+                           (t         " ○"))
+                     'face `(:inherit
+                             ,(cond (read-only 'simple-modeline-status-modified)
+                                    (modified 'simple-modeline-unimportant)))))))
 
-(use-package doom-modeline
-  :init
-  (setq doom-modeline-project-detection 'project
-        doom-modeline-buffer-file-name-style 'relative-to-project
-        ;; if only I can disable all-the-icon dependency...
-        doom-modeline-icon nil
-        doom-modeline-vcs-max-length 20)
-  :config
-  (doom-modeline-def-segment current-line
-    (if-let ((line (format "%s(%d/%d)"
-                           (doom-modeline-spc)
-                           (line-number-at-pos (point))
-                           (line-number-at-pos (point-max))))
-             ((doom-modeline--active)))
-        line
-      (propertize line 'face 'mode-line-inactive)))
+  (simple-modeline-create-segment
+   "evil"
+   "Indicator for evil state."
+   (cond ((evil-insert-state-p)
+          (propertize " <I>"
+                      'face `(:inherit 'simple-modeline-unimportant
+                              :foreground "#E06C75")))
+         ((evil-normal-state-p)
+          (propertize " <N>"
+                      'face `(:inherit 'simple-modeline-unimportant
+                              :foreground "#79d177")))
+         ((evil-visual-state-p)
+          (propertize " <V>"
+                      'face `(:inherit 'simple-modeline-unimportant
+                              :foreground "#DCDCAA")))
+         ((evil-motion-state-p)
+          (propertize " <M>"
+                      'face `(:inherit 'simple-modeline-unimportant
+                              :foreground "#61AFEF")))
+         ((evil-operator-state-p)
+          (propertize " <O>"
+                      'face `(:inherit 'simple-modeline-unimportant
+                              :foreground "#61AFEF")))
+         ((evil-emacs-state-p)
+          (propertize " <E>"
+                      'face `(:inherit 'simple-modeline-unimportant
+                              :foreground "#C678DD")))))
 
-  (doom-modeline-def-segment time-battery
-    "Display time and battery"
-    (if-let ((time (if (bound-and-true-p display-time-mode)
-                       display-time-string ""))
-             (battery (if (bound-and-true-p display-battery-mode)
-                          (format "(%s)%s"
-                                  (car doom-modeline--battery-status)
-                                  (cdr doom-modeline--battery-status)) ""))
-             ((doom-modeline--active)))
-        (concat time (doom-modeline-spc) battery (doom-modeline-spc))
-      (propertize (concat time (doom-modeline-spc) battery (doom-modeline-spc))
-                  'face 'mode-line-inactive)))
+  (setq simple-modeline--mode-line
+        '((:eval
+           (simple-modeline--format
+            '(simple-modeline-segment-evil
+              simple-modeline-segment-modified-p
+              simple-modeline-segment-buffer-name)
+            '(simple-modeline-segment-vc
+              simple-modeline-segment-major-mode)))))
+  )
 
-  (doom-modeline-def-modeline 'main
-    '(modals vcs remote-host buffer-info current-line)
-    '(input-method major-mode time-battery))
-
-  (doom-modeline-def-modeline 'project
-    '(modals vcs buffer-default-directory)
-    '(input-method major-mode time-battery))
-
-  (doom-modeline-def-modeline 'message
-    '(modals buffer-info-simple)
-    '(input-method major-mode time-battery))
-
-  (doom-modeline-def-modeline 'vcs
-    '(modals buffer-info current-line)
-    '(input-method process time-battery))
-
-  (doom-modeline-def-modeline 'info
-    '(modals buffer-info)
-    '(misc-info time-battery))
-
-  (doom-modeline-def-modeline 'media
-    '(modals buffer-info-simple media-info)
-    '(major-mode time-battery))
-
-  (doom-modeline-def-modeline 'pdf
-    '(modals vcs buffer-info)
-    '(pdf-pages time-battery))
-
-  (with-eval-after-load 'exwm
-    (defvar gatsby:theme-exwm-title-max-length 60)
-
-    (doom-modeline-def-segment exwm-title
-      "exwm buffer title, truncated if too long."
-      (if-let ((title (buffer-name))
-               ((> (length title) gatsby:theme-exwm-title-max-length)))
-          (concat (substring title 0 gatsby:theme-exwm-title-max-length) "...")
-        title))
-
-    (doom-modeline-def-modeline 'exwm
-      '(modals exwm-title) '(major-mode time-battery))
-
-    (defun gatsby:theme-set-exwm-modeline ()
-      (doom-modeline-set-modeline 'exwm))
-
-    (add-hook 'exwm-manage-finish-hook #'gatsby:theme-set-exwm-modeline))
-
-  (doom-modeline-mode 1))
+(battery-format "%L" (funcall battery-status-function))
 
 ;; indentation guide
 (use-package highlight-indent-guides
