@@ -254,14 +254,54 @@
 (use-package eldoc-box
   :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
   :config
-  (defun gatsby:eldoc--box-position (width height)
+  (defun gatsby:eldoc-box--get-frame (buffer)
+    "Overriding `eldoc-box--get-frame'.
+
+The original function creates a visible frame at the bottom right corner of the screen, which is super annoying. This function fix that."
+    (if eldoc-box--inhibit-childframe
+        ;; if inhibit display, do nothing
+        eldoc-box--frame
+      (let* ((after-make-frame-functions nil)
+             (before-make-frame-hook nil)
+             (parameter (append eldoc-box-frame-parameters
+                                `((default-minibuffer-frame . ,(selected-frame))
+                                  (minibuffer . ,(minibuffer-window))
+                                  (left-fringe . ,(frame-char-width)))))
+             window frame
+             (main-frame (selected-frame)))
+        (if (and eldoc-box--frame (frame-live-p eldoc-box--frame))
+            (progn (setq frame eldoc-box--frame)
+                   (setq window (frame-selected-window frame))
+                   ;; in case the main frame changed
+                   (set-frame-parameter frame 'parent-frame main-frame))
+          (setq window (display-buffer-in-child-frame
+                        buffer
+                        `((child-frame-parameters . ,parameter))))
+          (setq frame (make-frame parameter))
+          (with-selected-frame frame
+            (delete-other-windows)
+            (switch-to-buffer buffer)
+            (setq window (get-buffer-window))))
+
+        (set-face-attribute 'fringe frame :background nil :inherit 'eldoc-box-body)
+        (set-window-dedicated-p window t)
+        (redirect-frame-focus frame (frame-parent frame))
+        (set-face-attribute 'internal-border frame :inherit 'eldoc-box-border)
+        ;; set size
+        (eldoc-box--update-childframe-geometry frame window)
+        (setq eldoc-box--frame frame)
+        (run-hook-with-args 'eldoc-box-frame-hook main-frame)
+        (make-frame-visible frame))))
+  (advice-add #'eldoc-box--get-frame :override #'gatsby:eldoc-box--get-frame)
+
+  (defun gatsby:eldoc-box--position (width height)
     "Display `eldoc-box' in the bottom right corner of the `selected-window'."
     (let* ((edge (window-inside-pixel-edges))
            (y (- (nth 3 edge) 5 height))
            (x (- (nth 2 edge) 2 width)))
       (cons x y)))
 
-  (setq eldoc-box-position-function #'gatsby:eldoc--box-position
+  (setq eldoc-box-position-function #'gatsby:eldoc-box--position
         eldoc-box-cleanup-interval 0.5)
   (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2))
 (use-package general
