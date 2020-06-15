@@ -33,7 +33,7 @@
 
 ;;; language
 (require 'gatsby:lisp)
-(require 'gatsby:gentoo)
+(require 'gatsby:rust)
 (require 'gatsby:python)
 (require 'gatsby:stata)
 (require 'gatsby:text)
