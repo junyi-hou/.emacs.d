@@ -30,6 +30,10 @@
               scroll-conservatively 10000
               auto-window-vscroll nil)
 
+;; coding system
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
+
 (defun gatsby:core--split-vertical (window)
   "Return t if should split WINDOW vertically, otherwise return nil."
   (let* ((h (window-height window))
