@@ -88,12 +88,26 @@
                 (1- (length selectrum--refined-candidates))
               (1- selectrum--current-candidate-index)))))
 
+  (defun gatsby:selectrum-double-tab=enter (&optional arg)
+    "Insert current candidate into user input area. If the text in the user input area is the same as current candidate, exit minibuffer with the candidate as selection."
+    (interactive "P")
+    (when selectrum--current-candidate-index
+      (let* ((candidate (selectrum--get-full (nth selectrum--current-candidate-index
+                                                  selectrum--refined-candidates)))
+             (user-input (buffer-substring-no-properties
+                          selectrum--start-of-input-marker
+                          selectrum--end-of-input-marker)))
+        (if (string= user-input candidate)
+            (selectrum-select-current-candidate arg)
+          (selectrum-insert-current-candidate)))))
+
   :config
   (setq selectrum-minibuffer-bindings
         (append selectrum-minibuffer-bindings
                 '(("M-j" . gatsby:selectrum-next-candidate-cycle)
                   ("M-k" . gatsby:selectrum-previous-candidate-cycle)
-                  ("<backspace>" . gatsby:selectrum-better-backspace))))
+                  ("<backspace>" . gatsby:selectrum-better-backspace)
+                  ("TAB" . gatsby:selectrum-double-tab=enter))))
 
   :general
   (:keymaps '(motion normal visual emacs insert)
