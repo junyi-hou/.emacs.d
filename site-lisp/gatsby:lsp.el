@@ -33,8 +33,6 @@
           (suppress-keymap map t)
           (define-key map (kbd "J") #'gatsby:lsp-help-scroll-down)
           (define-key map (kbd "K") #'gatsby:lsp-help-scroll-up)
-          (define-key map (kbd "C-u") #'gatsby:lsp-help-C-u)
-          (define-key map (kbd "C-d") #'gatsby:lsp-help-C-d)
           (define-key map (kbd "C-g") #'gatsby:lsp-quit-help-frame)
           map)
         "Keymap in `gatsby:lsp-help-at-point'")
@@ -60,7 +58,7 @@
         (with-current-buffer eldoc-box--buffer
           (when gatsby:lsp-control-deactivate-fn
             (with-selected-frame eldoc-box--frame
-              (scroll-down 3)))))
+              (scroll-down 5)))))
 
       (defun gatsby:lsp-help-scroll-down ()
         "Scroll down in `eldoc-box--frame'"
@@ -68,23 +66,7 @@
         (with-current-buffer eldoc-box--buffer
           (when gatsby:lsp-control-deactivate-fn
             (with-selected-frame eldoc-box--frame
-              (scroll-up 3)))))
-
-      (defun gatsby:lsp-help-C-d ()
-        "C-d (`evil-scroll-down') for eldoc-box"
-        (interactive)
-        (with-current-buffer eldoc-box--buffer
-          (when gatsby:lsp-control-deactivate-fn
-            (with-selected-frame eldoc-box--frame
-              (scroll-up (max 1 (/ (1- (window-height (selected-window))) 2)))))))
-
-      (defun gatsby:lsp-help-C-u ()
-        "C-u (`evil-scroll-up') for eldoc-box"
-        (interactive)
-        (with-current-buffer eldoc-box--buffer
-          (when gatsby:lsp-control-deactivate-fn
-            (with-selected-frame eldoc-box--frame
-              (scroll-down (max 1 (/ (1- (window-height (selected-window))) 2)))))))
+              (scroll-up 5)))))
 
       (defun gatsby:lsp-help-at-point ()
         "display help in a childframe at point"
@@ -111,7 +93,8 @@
         (with-current-buffer eldoc-box--buffer
           (setq-local gatsby:lsp-control-deactivate-fn
                       (set-transient-map gatsby:lsp-help-buffer-keymap
-                                         t #'gatsby:lsp-quit-help-frame))))))
+                                         t #'gatsby:lsp-quit-help-frame)))))
+    )
 
   :config
   (setq eglot-autoreconnect t
