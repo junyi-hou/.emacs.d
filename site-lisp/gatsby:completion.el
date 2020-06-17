@@ -22,8 +22,8 @@
   (:keymaps 'yas-keymap
    "<tab>" nil
    "TAB" nil
-   "M-n" 'yas-next-field
-   "M-p" 'yas-prev-field
+   "C-n" 'yas-next-field
+   "C-p" 'yas-prev-field
    "<backspace>" 'gatsby:completion-better-yas-backspace)
 
   ;; kill M-j/M-k so they won't show up when snippets are active

@@ -25,10 +25,15 @@
                                    "--color-only")))
 
   ;; increase active/inactive mode-line contrast
-  (set-face-foreground 'mode-line "#fafafa")
-  (set-face-background 'mode-line "#00538a" )
-  (set-face-foreground 'mode-line-inactive "#666666")
-  (set-face-background 'mode-line-inactive "#002c4a")
+  (defvar gatsby:modeline-fg "#fafafa")
+  (defvar gatsby:modeline-bg "#00538a")
+  (defvar gatsby:modeline-fg-inactive "#666666")
+  (defvar gatsby:modeline-bg-inactive "#002c4a")
+
+  (set-face-foreground 'mode-line gatsby:modeline-fg)
+  (set-face-background 'mode-line gatsby:modeline-bg)
+  (set-face-foreground 'mode-line-inactive gatsby:modeline-fg-inactive)
+  (set-face-background 'mode-line-inactive gatsby:modeline-bg-inactive)
 
   (defun gatsby:theme-fontsize-up (&optional size)
     "Increase the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
