@@ -6,6 +6,15 @@
 
 (use-package jupyter
   :defer t
+
+  :custom-face
+  (jupyter-repl-traceback ((t (:extend t))))
+
+  :custom
+  (jupyter-repl-echo-eval-p t)
+  (jupyter-repl-maximum-size 12000)
+  (jupyter-repl-history-maximum-length 1000)
+
   :init
   (defconst gatsby:jupyter-default-header-args
     '((:async . "yes")
@@ -30,12 +39,7 @@
   (unless (executable-find "jupyter")
     (user-error "Cannot find jupyter executable, please check jupyter is installed"))
 
-  (setq jupyter-repl-echo-eval-p t
-        jupyter-repl-maximum-size 12000
-        jupyter-repl-history-maximum-length 1000)
-
-  ;; functions
-
+  ;;functions
   ;; TODO: highlight indent breaks jupyter
   ;; advice jupyter-send-input to remove all highlight-indent related stuff
 
@@ -89,9 +93,6 @@
     (deactivate-mark))
 
   (advice-add #'jupyter-eval-region :after #'gatsby:jupyter--deactivate-mark)
-
-  :config
-  (set-face-extend 'jupyter-repl-traceback t)
 
   :general
   (:keymaps 'jupyter-repl-mode-map

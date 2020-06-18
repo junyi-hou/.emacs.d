@@ -39,24 +39,24 @@
   (eshell-mode . company-mode)
   (org-mode . company-mode)
 
-  :config
-  (setq company-idle-delay nil
-        company-require-match 'never
-        company-dabbrev-downcase nil
-        company-dabbrev-ignore-case nil
-        company-dabbrev-code-other-buffers t
-        company-show-numbers t
-        company-tooltip-limit 10
-        company-tooltip-align-annotations t
-        company-selection-wrap-around t
-        company-backends '((company-capf
-                            company-yasnippet
-                            company-files)
-                           (company-dabbrev-code
-                            company-dabbrev
-                            company-abbrev)))
+  :custom
+  (company-idle-delay nil)
+  (company-require-match 'never)
+  (company-dabbrev-downcase nil)
+  (company-dabbrev-ignore-case nil)
+  (company-dabbrev-code-other-buffers t)
+  (company-show-numbers t)
+  (company-tooltip-limit 10)
+  (company-tooltip-align-annotations t)
+  (company-selection-wrap-around t)
+  (company-backends '((company-capf)
+                      company-yasnippet
+                      company-files)
+                    (company-dabbrev-code
+                     company-dabbrev
+                     company-abbrev))
 
-  ;; function
+  :init
   (defun gatsby:completion-unified-tab ()
     "Use tab for both company and indentation.
 
@@ -102,10 +102,10 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
 (use-package company-posframe
   :after company
   :hook (company-mode . company-posframe-mode)
-  :init
-  (setq company-posframe-show-metadata nil
-        company-posframe-show-indicator nil
-        company-posframe-quickhelp-delay 2)
+  :custom
+  (company-posframe-show-metadata nil)
+  (company-posframe-show-indicator nil)
+  (company-posframe-quickhelp-delay 2)
 
   :general
   (:keymaps 'company-active-map
