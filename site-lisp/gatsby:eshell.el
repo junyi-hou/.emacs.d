@@ -281,6 +281,7 @@
     "Use `vterm' to execute `eshell-visual-commands'."
     (let* (eshell-interpreter-alist
 	         (interp (eshell-find-interpreter (car args) (cdr args)))
+           (eshell-buf (current-buffer))
 	         (program (car interp))
 	         (args (flatten-tree
 		              (eshell-stringify-list (append (cdr interp)
@@ -289,7 +290,9 @@
       (vterm term-buf)
       (vterm-send-string
        (concat program " " (string-join args " ")))
-      (vterm-send-return))
+      (vterm-send-return)
+      (with-current-buffer eshell-buf
+        (kill-buffer)))
     nil)
 
   (advice-add #'eshell-exec-visual :override #'gatsby:eshell-exec-visual)
