@@ -12,9 +12,6 @@
   :init
   (selectrum-mode 1)
 
-  (defvar-local gatsby:selectrum-jump-history nil
-    "History of `selectrum-jump-to-hs-header'.")
-
   (defun gatsby:selectrum-jump-to-hs-header ()
     "Provide a list of `hideshow' headers from which one can jump to."
     (interactive)
@@ -54,19 +51,16 @@
   (defun gatsby:selectrum-better-backspace ()
     "If `point' is at \"/\", delete till the last \"/\"."
     (interactive)
-    (if (thing-at-point-looking-at "/")
-        (let* ((last-slash-pos (or (save-excursion
-                                     (1+ (re-search-backward "/" nil 'noerror 2)))
-                                   (point-min)))
-               ;; last-slash-pos could be inside prompt
-               ;; if so, move back
-               (delete-untill (save-excursion
-                                (goto-char last-slash-pos)
-                                (while (get-text-property (point) 'read-only)
-                                  (goto-char (next-property-change (point))))
-                                (point))))
-          (delete-region delete-untill (point)))
-      (call-interactively #'backward-delete-char)))
+    (cond ((thing-at-point-looking-at "~/")
+           (progn
+             (delete-region (minibuffer-prompt-end) (point))
+             (insert "/home/")))
+          ((thing-at-point-looking-at "/")
+           (let* ((last-slash-pos (or (save-excursion
+                                        (1+ (re-search-backward "/" nil 'noerror 2)))
+                                      (minibuffer-prompt-end))))
+             (delete-region last-slash-pos (point))))
+          (t (call-interactively #'backward-delete-char))))
 
   (defun gatsby:selectrum-next-candidate-cycle ()
     "Move selection to next candidate, if at the end, go to the top."
