@@ -7,19 +7,20 @@
 (require 'gatsby:core)
 
 (use-package eshell
-  :init
-  (setq eshell-scroll-to-bottom-on-input 'all
-        eshell-buffer-maximum-lines 12000
-        eshell-error-if-no-glob t
-        eshell-glob-case-insensitive t
-        eshell-hist-ignoredups t
-        eshell-history-size 5000
-        eshell-save-history-on-exit t
-        eshell-prefer-lisp-functions nil
-        eshell-list-files-after-cd t
-        eshell-destroy-buffer-when-process-dies t
-        tramp-histfile-override "/dev/null")
+  :custom
+  (eshell-scroll-to-bottom-on-input 'all)
+  (eshell-buffer-maximum-lines 12000)
+  (eshell-error-if-no-glob t)
+  (eshell-glob-case-insensitive t)
+  (eshell-hist-ignoredups t)
+  (eshell-history-size 5000)
+  (eshell-save-history-on-exit t)
+  (eshell-prefer-lisp-functions nil)
+  (eshell-list-files-after-cd t)
+  (eshell-destroy-buffer-when-process-dies t)
+  (tramp-histfile-override "/dev/null")
 
+  :init
   (setenv "PAGER" "cat")
 
   (defun gatsby:eshell--setkey ()
@@ -297,9 +298,9 @@
 
   (advice-add #'eshell-exec-visual :override #'gatsby:eshell-exec-visual)
 
-  :config
-  (setq eshell-visual-commands (append eshell-visual-commands
-                                       '("alsamixer" "htop" "ssh" "top"))))
+  :custom
+  (eshell-visual-commands (append eshell-visual-commands
+                                  '("alsamixer" "htop" "ssh" "top"))))
 
 (use-package em-tramp
   :straight (:type built-in)

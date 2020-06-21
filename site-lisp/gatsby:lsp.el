@@ -96,10 +96,10 @@
                                          t #'gatsby:lsp-quit-help-frame)))))
     )
 
-  :config
-  (setq eglot-autoreconnect t
-        eglot-put-doc-in-help-buffer t
-        eglot-stay-out-of '(company)))
+  :custom
+  (eglot-autoreconnect t)
+  (eglot-put-doc-in-help-buffer t)
+  (eglot-stay-out-of '(company)))
 
 (provide 'gatsby:lsp)
 ;;; gatsby:lsp.el ends here

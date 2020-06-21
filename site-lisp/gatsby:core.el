@@ -31,9 +31,6 @@
               auto-window-vscroll nil)
 
 ;; coding system
-(set-language-environment "UTF-8")
-(set-default-coding-systems 'utf-8)
-
 (defun gatsby:core--split-vertical (window)
   "Return t if should split WINDOW vertically, otherwise return nil."
   (let* ((h (window-height window))
@@ -140,14 +137,13 @@
 (use-package no-littering
   ;; do not litter my .emacs.d
   :demand t
-  :config
-  (setq-default
-   no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
-   no-littering-var-directory (expand-file-name "var/" user-emacs-directory)
-   auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
-   backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
-   custom-file (no-littering-expand-etc-file-name "custom.el"))
-
+  :custom
+  (no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory))
+  (no-littering-var-directory (expand-file-name "var/" user-emacs-directory))
+  (auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  (backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
+  (custom-file (no-littering-expand-etc-file-name "custom.el"))
+  :init
   (load custom-file 'noerror))
 (use-package paren
   ;; highlight matching paren
@@ -167,12 +163,11 @@
   :config
   (global-auto-revert-mode 1))
 (use-package recentf
-  :init (setq
-         recentf-save-file       "~/.emacs.d/var/recentf"
-         recentf-max-saved-items 100
-         recentf-exclude         '("/tmp/" "/ssh:"))
+  :custom
+  (recentf-save-file       "~/.emacs.d/var/recentf")
+  (recentf-max-saved-items 100)
+  (recentf-exclude         `("/tmp/" "/ssh:" ,no-littering-var-directory))
   :config
-  (add-to-list 'recentf-exclude no-littering-var-directory)
   (recentf-mode 1))
 (use-package hideshow
   :init

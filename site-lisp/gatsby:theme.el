@@ -142,18 +142,18 @@
   :hook
   (prog-mode . highlight-indent-guides-mode)
   (LaTeX-mode . highlight-indent-guides-mode)
-  :init
-  (setq highlight-indent-guides-method 'bitmap
-        highlight-indent-guides-responsive 'stack))
+  :custom
+  (highlight-indent-guides-method 'bitmap)
+  (highlight-indent-guides-responsive 'stack))
 
 ;; visual cue of the cursor position
 (use-package beacon
   ;; use chep's fork so it can grow backwards
   :straight (beacon :host github :repo "junyi-hou/beacon")
-  :init
-  (setq beacon-blink-when-window-scrolls nil
-        beacon-can-go-backwards t
-        beacon-size 15)
+  :custom
+  (beacon-blink-when-window-scrolls nil)
+  (beacon-can-go-backwards t)
+  (beacon-size 15)
   :config
   (beacon-mode 1))
 
@@ -163,10 +163,10 @@
   (prog-mode . display-line-numbers-mode)
   (org-mode . display-line-numbers-mode)
   (LaTeX-mode . display-line-numbers-mode)
-  :init
-  (setq display-line-numbers-type 'visual
-        display-line-numbers-current-absolute t
-        display-line-numbers-width-start t)
+  :custom
+  (display-line-numbers-type 'visual)
+  (display-line-numbers-current-absolute t)
+  (display-line-numbers-width-start t)
   :config
   (set-face-attribute
    'line-number
@@ -175,17 +175,17 @@
 
 ;; highlight keywords
 (use-package hl-todo
-  :init
-  (setq hl-todo-keyword-faces
-        '(("TODO" . "#FB4934")
-          ("FIXME"  . "#FB4934")
-          ("WONT FIX" . "#FB4934")
-          ("REVIEW"   . "#FABD2F")
-          ("NOTE"   . "#FABD2F")
-          ("HACK"   . "#FABD2F")
-          ("\\?\\?\\?+" . "#cc9393")))
+  :custom
+  (hl-todo-keyword-faces
+   '(("TODO" . "#FB4934")
+     ("FIXME"  . "#FB4934")
+     ("WONT FIX" . "#FB4934")
+     ("REVIEW"   . "#FABD2F")
+     ("NOTE"   . "#FABD2F")
+     ("HACK"   . "#FABD2F")
+     ("\\?\\?\\?+" . "#cc9393")))
   :config
-  (global-hl-todo-mode))
+  (global-hl-todo-mode 1))
 
 (provide 'gatsby:theme)
 ;;; gatsby:theme.el ends here

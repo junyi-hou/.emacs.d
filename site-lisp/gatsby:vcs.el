@@ -128,8 +128,8 @@
 
 (use-package forge
   :after magit
-  :init
-  (setq ghub-use-workaround-for-emacs-bug 'force)
+  :custom
+  (ghub-use-workaround-for-emacs-bug 'force)
   :general
   (:keymaps 'magit-status-mode-map
    "@" 'forge-dispatch)

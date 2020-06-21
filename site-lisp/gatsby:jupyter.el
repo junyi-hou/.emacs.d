@@ -8,7 +8,7 @@
   :defer t
 
   :custom-face
-  (jupyter-repl-traceback ((t (:extend t))))
+  (jupyter-repl-traceback ((t (:extend t :background "firebrick"))))
 
   :custom
   (jupyter-repl-echo-eval-p t)
