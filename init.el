@@ -34,6 +34,7 @@
 ;;; language
 (require 'gatsby:lisp)
 (require 'gatsby:rust)
+(require 'gatsby:julia)
 (require 'gatsby:python)
 (require 'gatsby:stata)
 (require 'gatsby:text)
