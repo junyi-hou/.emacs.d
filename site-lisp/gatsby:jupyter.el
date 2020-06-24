@@ -22,7 +22,7 @@
 
   (defconst gatsby:jupyter-available-kernels
     (split-string
-     (shell-command-to-string "jupyter kernelspec list | grep -P -o '^\s+([a-z]+|python)'")
+     (shell-command-to-string "jupyter kernelspec list | grep -P -o '^\s+([a-z1-9-.]+)'")
      "\n" 'omit-nulls "[[:blank:]]+"))
 
   (with-eval-after-load 'org
