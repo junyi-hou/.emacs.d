@@ -95,14 +95,16 @@
             (selectrum-select-current-candidate arg)
           (selectrum-insert-current-candidate)))))
 
+  :config
+  (setq selectrum-minibuffer-bindings
+        (append selectrum-minibuffer-bindings
+                '(("M-j" . gatsby:selectrum-next-candidate-cycle)
+                  ("M-k" . gatsby:selectrum-previous-candidate-cycle)
+                  ("<backspace>" . gatsby:selectrum-better-backspace)
+                  ("TAB" . gatsby:selectrum-double-tab=enter))))
+
   :custom
   (selectrum-fix-minibuffer-height t)
-  (selectrum-minibuffer-bindings
-   (append selectrum-minibuffer-bindings
-           '(("M-j" . gatsby:selectrum-next-candidate-cycle)
-             ("M-k" . gatsby:selectrum-previous-candidate-cycle)
-             ("<backspace>" . gatsby:selectrum-better-backspace)
-             ("TAB" . gatsby:selectrum-double-tab=enter))))
 
   :general
   (:keymaps '(motion normal visual emacs insert)

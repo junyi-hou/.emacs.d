@@ -137,13 +137,13 @@
 (use-package no-littering
   ;; do not litter my .emacs.d
   :demand t
-  :custom
-  (no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory))
-  (no-littering-var-directory (expand-file-name "var/" user-emacs-directory))
-  (auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-  (backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
-  (custom-file (no-littering-expand-etc-file-name "custom.el"))
-  :init
+  :config
+  (setq no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
+        no-littering-var-directory (expand-file-name "var/" user-emacs-directory)
+        auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+        backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
+        custom-file (no-littering-expand-etc-file-name "custom.el"))
+
   (load custom-file 'noerror))
 (use-package paren
   ;; highlight matching paren
