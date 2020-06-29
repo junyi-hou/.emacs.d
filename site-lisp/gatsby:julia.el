@@ -27,7 +27,7 @@
 
   :general
   (:states '(motion normal visual)
-   :keymaps 'rust-mode-map
+   :keymaps 'julia-mode-map
    :prefix "SPC"
    "ro" 'gatsby:julia-repl
    "rr" 'gatsby:julia-eval-region-or-line
@@ -39,9 +39,7 @@
   :after (julia-mode eglot)
   :hook
   (julia-mode . eglot-ensure)
-  (julia-mode . gatsby:lsp--reformat-buffer)
-  :init
-  (eglot-jl-init))
+  (julia-mode . eglot-jl-init))
 
 (provide 'gatsby:julia)
 ;;; gatsby:julia.el ends here

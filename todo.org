@@ -17,7 +17,7 @@
   - +integrate flycheck with selectrum+
 - check out gccemacs
 - +fix yasnippet <- bug when in a field+
-- check out tree-sitter
+- +check out tree-sitter+
   - improvement selectrum-jump-to-header
   - new code folding lib
 - selectrum: dynamic collection?

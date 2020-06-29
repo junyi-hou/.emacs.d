@@ -298,9 +298,9 @@
 
   (advice-add #'eshell-exec-visual :override #'gatsby:eshell-exec-visual)
 
-  :custom
-  (eshell-visual-commands (append eshell-visual-commands
-                                  '("alsamixer" "htop" "ssh" "top"))))
+  :config
+  (setq eshell-visual-commands (append eshell-visual-commands
+                                       '("alsamixer" "htop" "ssh" "top"))))
 
 (use-package em-tramp
   :straight (:type built-in)

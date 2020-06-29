@@ -10,11 +10,8 @@
 
 (use-package eglot
   :hook
-  (python-mode . eglot-ensure)
-  (python-mode . gatsby:lsp--reformat-buffer)
-  (rust-mode . eglot-ensure)
-  (rust-mode . gatsby:lsp--reformat-buffer)
   (eglot-managed-mode . gatsby:lsp--turn-off-doc-at-point)
+  (eglot-managed-mode . gatsby:lsp--reformat-buffer)
 
   :init
   (defun gatsby:lsp--reformat-buffer ()
@@ -84,12 +81,12 @@
                     40))))
           (eldoc-box--display
            (eglot--dbind ((Hover) contents range)
-               (jsonrpc-request
-                (eglot--current-server-or-lose)
-                :textDocument/hover
-                (eglot--TextDocumentPositionParams))
-             (when (seq-empty-p contents) (eglot--error "No hover info here"))
-             (eglot--hover-info contents range))))
+                         (jsonrpc-request
+                          (eglot--current-server-or-lose)
+                          :textDocument/hover
+                          (eglot--TextDocumentPositionParams))
+                         (when (seq-empty-p contents) (eglot--error "No hover info here"))
+                         (eglot--hover-info contents range))))
         (with-current-buffer eldoc-box--buffer
           (setq-local gatsby:lsp-control-deactivate-fn
                       (set-transient-map gatsby:lsp-help-buffer-keymap

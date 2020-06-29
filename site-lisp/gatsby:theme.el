@@ -72,70 +72,15 @@
    nil
    :weight 'normal)
 
+  :config
+  ;; custom mode-line
+  ;; TODO
+
   :general
   (:keymaps '(motion normal visual emacs insert)
    "C-+" 'gatsby:theme-fontsize-up
    "C--" 'gatsby:theme-fontsize-down
    "C-=" 'gatsby:theme-fontsize-reset))
-
-(use-package simple-modeline
-  :hook (after-init . simple-modeline-mode)
-  :config
-  (require 'battery)
-  (require 'time)
-
-  (simple-modeline-create-segment
-   "modified-p"
-   "Displays a color-coded buffer modification/read-only indicator in the mode-line."
-   (if (not (string-match-p "\\*.*\\*" (buffer-name)))
-       (let ((read-only (and buffer-read-only (buffer-file-name)))
-             (modified (buffer-modified-p)))
-         (propertize (cond (read-only " %")
-                           (modified  " ●")
-                           (t         " ○"))
-                     'face `(:inherit
-                             ,(cond (read-only 'simple-modeline-status-modified)
-                                    (modified 'simple-modeline-unimportant)))))))
-
-  (simple-modeline-create-segment
-   "evil"
-   "Indicator for evil state."
-   (cond ((evil-insert-state-p)
-          (propertize " <I>"
-                      'face `(:inherit 'simple-modeline-unimportant
-                              :foreground "#E06C75")))
-         ((evil-normal-state-p)
-          (propertize " <N>"
-                      'face `(:inherit 'simple-modeline-unimportant
-                              :foreground "#79d177")))
-         ((evil-visual-state-p)
-          (propertize " <V>"
-                      'face `(:inherit 'simple-modeline-unimportant
-                              :foreground "#DCDCAA")))
-         ((evil-motion-state-p)
-          (propertize " <M>"
-                      'face `(:inherit 'simple-modeline-unimportant
-                              :foreground "#61AFEF")))
-         ((evil-operator-state-p)
-          (propertize " <O>"
-                      'face `(:inherit 'simple-modeline-unimportant
-                              :foreground "#61AFEF")))
-         ((evil-emacs-state-p)
-          (propertize " <E>"
-                      'face `(:inherit 'simple-modeline-unimportant
-                              :foreground "#C678DD")))))
-
-  (setq simple-modeline--mode-line
-        '((:eval
-           (simple-modeline--format
-            '(simple-modeline-segment-evil
-              simple-modeline-segment-modified-p
-              simple-modeline-segment-buffer-name)
-            '(simple-modeline-segment-vc
-              simple-modeline-segment-major-mode)))))
-  )
-
-(battery-format "%L" (funcall battery-status-function))
 
 ;; indentation guide
 (use-package highlight-indent-guides

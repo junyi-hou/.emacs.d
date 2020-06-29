@@ -6,7 +6,6 @@
 
 (use-package jupyter
   :defer t
-
   :custom-face
   (jupyter-repl-traceback ((t (:extend t :background "firebrick"))))
 
@@ -16,6 +15,14 @@
   (jupyter-repl-history-maximum-length 1000)
 
   :init
+  ;; fix https://github.com/dzop/emacs-jupyter/issues/219
+  (defun jupyter-repl-font-lock-override (_ignore beg end &optional verbose)
+    `(jit-lock-bounds ,beg . ,end))
+
+  (advice-add #'jupyter-repl-font-lock-fontify-region :override #'jupyter-repl-font-lock-override)
+  ;; (advice-remove #'jupyter-repl-font-lock-fontify-region #'jupyter-repl-font-lock-override)
+
+
   (defconst gatsby:jupyter-default-header-args
     '((:async . "yes")
       (:session . "master")))
