@@ -9,6 +9,7 @@
 (require 'gatsby:core)
 
 (use-package selectrum
+  :defines (selectrum-minibuffer-bindings selectrum-should-sort-p)
   :init
   (selectrum-mode 1)
 
@@ -56,9 +57,11 @@
              (delete-region (minibuffer-prompt-end) (point))
              (insert "/home/")))
           ((thing-at-point-looking-at "/")
-           (let* ((last-slash-pos (or (save-excursion
-                                        (1+ (re-search-backward "/" nil 'noerror 2)))
-                                      (minibuffer-prompt-end))))
+           (let* ((last-slash-pos (max
+                                   (or (save-excursion
+                                         (1+ (re-search-backward "/" nil 'noerror 2)))
+                                       0)
+                                   selectrum--start-of-input-marker)))
              (delete-region last-slash-pos (point))))
           (t (call-interactively #'backward-delete-char))))
 
@@ -82,8 +85,11 @@
                 (1- (length selectrum--refined-candidates))
               (1- selectrum--current-candidate-index)))))
 
-  (defun gatsby:selectrum-double-tab=enter (&optional arg)
-    "Insert current candidate into user input area. If the text in the user input area is the same as current candidate, exit minibuffer with the candidate as selection."
+  (defun gatsby:selectrum-unified-tab (&optional arg)
+    "Tab now does the following things:
+1. if the minibuffer input perfectly matches the selected candidate, select the candidate and exit (i.e., <tab> works like <enter> in this case.)
+2. if not, tab tries to complete the common prefix of all candidates. Do nothing if there is no common prefix.
+3. if there is no common prefix, double tab puts the selected candidate to the minibuffer input."
     (interactive "P")
     (when selectrum--current-candidate-index
       (let* ((candidate (selectrum--get-full (nth selectrum--current-candidate-index
@@ -93,7 +99,13 @@
                           selectrum--end-of-input-marker)))
         (if (string= user-input candidate)
             (selectrum-select-current-candidate arg)
-          (selectrum-insert-current-candidate)))))
+          (let ((common (try-completion "" selectrum--refined-candidates)))
+            (if (and (string= common "")
+                     (eq last-command this-command))
+                (selectrum-insert-current-candidate)
+              (delete-region selectrum--start-of-input-marker
+                             selectrum--end-of-input-marker)
+              (insert common)))))))
 
   :config
   (setq selectrum-minibuffer-bindings
@@ -101,7 +113,7 @@
                 '(("M-j" . gatsby:selectrum-next-candidate-cycle)
                   ("M-k" . gatsby:selectrum-previous-candidate-cycle)
                   ("<backspace>" . gatsby:selectrum-better-backspace)
-                  ("TAB" . gatsby:selectrum-double-tab=enter))))
+                  ("TAB" . gatsby:selectrum-unified-tab))))
 
   :custom
   (selectrum-fix-minibuffer-height t)

@@ -136,6 +136,9 @@
 
 (use-package no-littering
   ;; do not litter my .emacs.d
+  :defines
+  (no-littering-etc-directory
+   no-littering-var-directory)
   :demand t
   :config
   (setq no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
@@ -298,7 +301,8 @@ The original function creates a visible frame at the bottom right corner of the 
 
   (setq eldoc-box-position-function #'gatsby:eldoc-box--position
         eldoc-box-cleanup-interval 0.5)
-  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2))
+  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2)
+  (setf (alist-get 'parent-frame eldoc-box-frame-parameters) (selected-frame)))
 (use-package general
   ;; for key binding
   :demand t
