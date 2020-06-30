@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: new-module
-# condition: (string= "" (buffer-string))
+# condition: (string= "new" (buffer-string))
 # key: new
 # --
 ;;; `(buffer-name)` --- ${1:description} -*- lexical-binding: t; -*-
