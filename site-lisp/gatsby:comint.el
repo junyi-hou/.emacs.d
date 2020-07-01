@@ -44,7 +44,9 @@
   (defun gatsby:comint--pop-to-repl ()
     "Switch to `gatsby:comint-repl-buffer' associated with the current buffer."
     (if gatsby:comint-repl-buffer
-        (pop-to-buffer gatsby:comint-repl-buffer)
+        (progn
+          (pop-to-buffer gatsby:comint-repl-buffer)
+          (select-window (window-left (selected-window))))
       (user-error "Buffer not associated with a REPL")))
 
   (defun gatsby:comint-associate-repl (repl-mode)

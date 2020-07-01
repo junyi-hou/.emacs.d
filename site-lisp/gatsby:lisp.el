@@ -127,12 +127,71 @@ All forms that start at the `beginning-of-line' will be folded. Other forms shou
   ;;  REPL settings
   ;;; ===============================
 
+  (defun gatsby:scheme--to-repl-buffer (impl)
+    "Same as `geiser-repl--to-repl-buffer', but instead of pop/switch to the REPL buffer, return the REPL buffer."
+    (unless (and (eq major-mode 'geiser-repl-mode)
+                 (eq geiser-impl--implementation impl)
+                 (not (get-buffer-process (current-buffer))))
+      (let* ((old (geiser-repl--repl/impl impl geiser-repl--closed-repls))
+             (old (and (buffer-live-p old)
+                       (not (get-buffer-process old))
+                       old))
+             (buf (or old (generate-new-buffer (geiser-repl--buffer-name impl)))))
+        (unless old
+          (with-current-buffer buf
+            (geiser-repl-mode)
+            (geiser-impl--set-buffer-implementation impl)
+            (geiser-syntax--add-kws t)))
+        buf)))
+
+  (defun gatsby:scheme--start-repl (impl address)
+    "Same as `geiser-repl--start-repl', but return the REPL buffer instead."
+    (message "Starting Geiser REPL ...")
+    (when (not address) (geiser-repl--check-version impl))
+    (let ((buffer (current-buffer))
+          (repl-buffer (geiser-repl--to-repl-buffer impl)))
+      (setq geiser-repl--last-scm-buffer buffer)
+      (with-current-buffer repl-buffer
+        (goto-char (point-max))
+        (geiser-repl--autodoc-mode -1)
+        (let* ((prompt-rx (geiser-repl--prompt-regexp impl))
+               (deb-prompt-rx (geiser-repl--debugger-prompt-regexp impl))
+               (prompt (geiser-con--combined-prompt prompt-rx deb-prompt-rx)))
+          (unless prompt-rx
+            (error "Sorry, I don't know how to start a REPL for %s" impl))
+          (geiser-repl--save-remote-data address)
+          (geiser-repl--start-scheme impl address prompt)
+          (geiser-repl--quit-setup)
+          (geiser-repl--history-setup)
+          (add-to-list 'geiser-repl--repls (current-buffer))
+          (geiser-repl--set-this-buffer-repl (current-buffer))
+          (setq geiser-repl--connection
+                (geiser-con--make-connection (get-buffer-process (current-buffer))
+                                             prompt-rx
+                                             deb-prompt-rx))
+          (geiser-repl--startup impl address)
+          (geiser-repl--autodoc-mode 1)
+          (geiser-company--setup geiser-repl-company-p)
+          (add-hook 'comint-output-filter-functions
+                    'geiser-repl--output-filter
+                    nil
+                    t)
+          (set-process-query-on-exit-flag (get-buffer-process (current-buffer))
+                                          geiser-repl-query-on-kill-p)
+          (message "%s up and running!" (geiser-repl--repl-name impl))))
+      repl-buffer))
+
+  (advice-add #'geiser-repl--to-repl-buffer :override
+              #'gatsby:scheme--to-repl-buffer)
+  (advice-add #'geiser-repl--start-repl :override
+              #'gatsby:scheme--start-repl)
+
   (defun gatsby:scheme-start-or-pop-to-repl ()
     "Pop to `gatsby:scheme-repl-buffer'.  If `gatsby:scheme-repl-buffer' is nil, start a new repl."
     (interactive)
-    (if gatsby:comint-repl-buffer
-        (gatsby:comint--pop-to-repl)
-      (gatsby:comint--start-repl 'run-geiser geiser-default-implementation)))
+    (unless gatsby:comint-repl-buffer
+      (gatsby:comint--start-repl 'run-geiser geiser-default-implementation))
+    (gatsby:comint--pop-to-repl))
 
   (defun gatsby:scheme-associate-repl ()
     "Associate current buffer to a REPL"
