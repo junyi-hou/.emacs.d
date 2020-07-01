@@ -34,17 +34,18 @@
     "The repl associated to the current buffer.")
 
   (defun gatsby:comint--start-repl (repl-fn &rest args)
-    "Start a REPL buffer using REPL-FN with ARGS."
-    (let ((code-buffer (current-buffer)))
-      (apply repl-fn args)
-      (let ((repl-buffer (current-buffer)))
+    "Start a REPL in the background using REPL-FN with ARGS."
+    (let ((code-buffer (current-buffer))
+          (display-buffer-alist `(,(cons "*" (cons #'display-buffer-no-window nil)))))
+      (let ((repl-buffer (apply repl-fn args)))
         (with-current-buffer code-buffer
-          (setq-local gatsby:comint-repl-buffer repl-buffer)))
-      (switch-to-buffer-other-window code-buffer)))
+          (setq-local gatsby:comint-repl-buffer repl-buffer)))))
 
   (defun gatsby:comint--pop-to-repl ()
     "Switch to `gatsby:comint-repl-buffer' associated with the current buffer."
-    (pop-to-buffer gatsby:comint-repl-buffer))
+    (if gatsby:comint-repl-buffer
+        (pop-to-buffer gatsby:comint-repl-buffer)
+      (user-error "Buffer not associated with a REPL")))
 
   (defun gatsby:comint-associate-repl (repl-mode)
     "Select a repl of mode REPL-MODE and associate the current buffer to that repl."

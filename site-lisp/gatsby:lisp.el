@@ -35,18 +35,30 @@ All forms that start at the `beginning-of-line' will be folded. Other forms shou
 (use-package ielm
   :straight (:type built-in)
   :hook (ielm-mode . company-mode)
-  :commands (gatsby:lisp-start-or-pop-to-repl)
   :init
+
+  (defun gatsby:ielm-repl (&optional buf-name)
+    "Start an ielm REPL."
+    (interactive)
+    (let* (old-point
+           (buf-name (or buf-name "*ielm*"))
+           (buf (get-buffer-create buf-name)))
+      (unless (comint-check-proc buf-name)
+        (with-current-buffer buf
+          (unless (zerop (buffer-size)) (setq old-point (point)))
+          (inferior-emacs-lisp-mode)))
+      (when old-point (push-mark old-point))
+      buf))
+
+  (advice-add #'ielm :override #'gatsby:ielm-repl)
 
   (defun gatsby:lisp-start-or-pop-to-repl ()
     "Pop to the associated REPL, if such REPL does not exist, start one."
     (interactive)
-    (if gatsby:comint-repl-buffer
-        (gatsby:comint--pop-to-repl)
-      (gatsby:core-split-window)
-      (other-window 1)
-      (gatsby:comint--start-repl 'ielm)))
-
+    (unless gatsby:comint-repl-buffer
+      (gatsby:comint--start-repl 'ielm))
+    (gatsby:comint--pop-to-repl))
+  
   (defun gatsby:lisp-associate-repl ()
     "Associate current buffer to a REPL"
     (interactive)
@@ -99,7 +111,6 @@ All forms that start at the `beginning-of-line' will be folded. Other forms shou
    "hv" 'helpful-variable
    "hm" 'describe-mode))
 
-
 (use-package easy-escape
   :hook ((emacs-lisp-mode lisp-mode ielm-mode) . easy-escape-minor-mode))
 
@@ -107,15 +118,11 @@ All forms that start at the `beginning-of-line' will be folded. Other forms shou
   ;; provide code-completion and documentation
   :hook
   (scheme-mode . geiser-mode)
+  :custom
+  (scheme-program-name "guile")
+  (geiser-default-implementation 'guile)
+  (geiser-repl-mode-map (make-sparse-keymap))
   :init
-  (require 'gatsby:comint)
-  ;; use guile
-  (setq scheme-program-name "guile"
-        geiser-default-implementation 'guile
-        geiser-repl-mode-map (make-sparse-keymap))
-
-  (setq-local tab-width 2)
-
   ;;; ===============================
   ;;  REPL settings
   ;;; ===============================
@@ -139,7 +146,6 @@ All forms that start at the `beginning-of-line' will be folded. Other forms shou
       (gatsby:comint--eval-last-sexp 'geiser-repl--maybe-send)))
 
   :general
-
   (:keymaps 'geiser-repl-mode-map
    :states '(normal motion visual)
    "SPC" 'nil)

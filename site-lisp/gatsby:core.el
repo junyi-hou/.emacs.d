@@ -30,7 +30,7 @@
               scroll-conservatively 10000
               auto-window-vscroll nil)
 
-;; coding system
+;; split windows
 (defun gatsby:core--split-vertical (window)
   "Return t if should split WINDOW vertically, otherwise return nil."
   (let* ((h (window-height window))
@@ -40,6 +40,14 @@
      ((< ratio 0.15) t)
      ((< (/ (float w) 2) 80) nil)
      (t t))))
+
+(defun gatsby:core--go-to-new-split (fn &rest size)
+  (apply fn size)
+  ;; select next window
+  (select-window (window-right (selected-window))))
+
+(advice-add #'split-window-below :around #'gatsby:core--go-to-new-split)
+(advice-add #'split-window-right :around #'gatsby:core--go-to-new-split)
 
 (defun gatsby:core-split-window (&optional window)
   "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down.  If SWITCH is non-nil, switch to the newly splitted window."
@@ -250,7 +258,7 @@
 (use-package page-break-lines
   :config (global-page-break-lines-mode))
 (use-package eldoc-box
-  :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
+  ;; :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
   :config
   (defun gatsby:eldoc-box--get-frame (buffer)
     "Overriding `eldoc-box--get-frame'.
@@ -299,10 +307,15 @@ The original function creates a visible frame at the bottom right corner of the 
            (x (- (nth 2 edge) 2 width)))
       (cons x y)))
 
+  (defun gatsby:eldoc-box--update-parent-frame (frame)
+    "Update frame parameters of `eldoc-box--frame' when it is called.  Run with `eldoc-box-frame-hook'."
+    (set-frame-parameter eldoc-box--frame 'parent-frame frame))
+
+  (add-hook 'eldoc-box-frame-hook #'gatsby:eldoc-box--update-parent-frame)
+
   (setq eldoc-box-position-function #'gatsby:eldoc-box--position
         eldoc-box-cleanup-interval 0.5)
-  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2)
-  (setf (alist-get 'parent-frame eldoc-box-frame-parameters) (selected-frame)))
+  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2))
 (use-package general
   ;; for key binding
   :demand t
