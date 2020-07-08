@@ -13,7 +13,6 @@
 (require 'gatsby:theme)
 (require 'gatsby:evil)
 (require 'gatsby:pass)
-(require 'gatsby:exwm)
 
 (require 'gatsby:eshell)
 (require 'gatsby:vcs)
@@ -22,7 +21,6 @@
 (require 'gatsby:style)
 (require 'gatsby:org)
 (require 'gatsby:dired)
-;; (require 'gatsby:mail)
 
 ;; ide features
 (require 'gatsby:flymake)
@@ -38,5 +36,7 @@
 (require 'gatsby:python)
 (require 'gatsby:stata)
 (require 'gatsby:text)
+
+(require 'gatsby:os)
 
 ;;; init.el ends here
