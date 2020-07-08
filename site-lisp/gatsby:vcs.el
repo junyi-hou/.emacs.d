@@ -48,15 +48,7 @@
   (defun gatsby:vcs-visit-thing-at-point ()
     "Get file at point in magit buffers."
     (interactive)
-    (cond ((magit-section-match [todos-item])
-           ;; for `magit-todos' block. visit corresponding files
-           (let ((file (magit-todos-item-filename
-                        (oref (magit-current-section) :value))))
-             (unless file
-               (error "No file at point"))
-             (other-window -1)
-             (find-file (expand-file-name file (magit-toplevel)))))
-          ((magit-section-match [file])
+    (cond ((magit-section-match [file])
            ;; file, visit the corresponding files
            (let ((file (magit-file-at-point t)))
              (unless file

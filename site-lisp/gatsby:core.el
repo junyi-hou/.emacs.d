@@ -41,14 +41,6 @@
      ((< (/ (float w) 2) 80) nil)
      (t t))))
 
-(defun gatsby:core--go-to-new-split (fn &rest size)
-  (apply fn size)
-  ;; select next window
-  (select-window (window-right (selected-window))))
-
-(advice-add #'split-window-below :around #'gatsby:core--go-to-new-split)
-(advice-add #'split-window-right :around #'gatsby:core--go-to-new-split)
-
 (defun gatsby:core-split-window (&optional window)
   "Split WINDOW side-by-side, if WINDOW width < 90, split it top-and-down.  If SWITCH is non-nil, switch to the newly splitted window."
   (let ((window (or window (selected-window))))
@@ -258,7 +250,7 @@
 (use-package page-break-lines
   :config (global-page-break-lines-mode))
 (use-package eldoc-box
-  ;; :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
+  :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
   :config
   (defun gatsby:eldoc-box--get-frame (buffer)
     "Overriding `eldoc-box--get-frame'.

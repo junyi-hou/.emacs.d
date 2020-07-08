@@ -105,7 +105,7 @@ In insert mode, first try `company-manual-begin'.  If there is no completion ava
   :custom
   (company-posframe-show-metadata nil)
   (company-posframe-show-indicator nil)
-  (company-posframe-quickhelp-delay 2)
+  (company-posframe-quickhelp-delay nil)
 
   :general
   (:keymaps 'company-active-map

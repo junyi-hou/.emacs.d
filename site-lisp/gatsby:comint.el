@@ -46,7 +46,7 @@
     (if gatsby:comint-repl-buffer
         (progn
           (pop-to-buffer gatsby:comint-repl-buffer)
-          (select-window (window-left (selected-window))))
+          (select-window (get-buffer-window gatsby:comint-repl-buffer)))
       (user-error "Buffer not associated with a REPL")))
 
   (defun gatsby:comint-associate-repl (repl-mode)
