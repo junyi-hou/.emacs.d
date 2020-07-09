@@ -4,13 +4,11 @@
 
 ;;; Code:
 
-(use-package i3
+(use-package i3-mode
   :straight (i3-mode :repo "junyi-hou/i3-mode" :host github
                      :files ("i3.el" "i3-call"))
-  :config
+  :init
   (i3-mode 1))
-
-
 
 (provide 'gatsby:os)
 ;;; gatsby:os.el ends here
