@@ -6,7 +6,7 @@
 
 (use-package i3-mode
   :straight (i3-mode :repo "junyi-hou/i3-mode" :host github
-                     :files ("i3.el" "i3-call"))
+                     :files ("i3-mode.el" "i3-call"))
   :init
   (i3-mode 1))
 
