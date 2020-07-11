@@ -188,9 +188,8 @@
   (highlight-indent-guides-responsive 'stack))
 
 ;; highlight color codes
-(use-package rainbow-mode
-  :defer t
-  :hook (prog-mode . rainbow-mode))
+;; manually call when needed
+(use-package rainbow-mode :defer t)
 
 ;; visual cue of the cursor position
 (use-package beacon
