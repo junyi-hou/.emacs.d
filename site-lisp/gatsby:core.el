@@ -242,11 +242,6 @@
   (prog-mode . hs-hide-all)
   (prog-mode . hs-minor-mode)
   (hs-minor-mode . gatsby:core--hs-set-adjust-block-beginning))
-(use-package prescient
-  :init
-  (setq prescient-save-file (concat no-littering-var-directory "prescient-save.el"))
-  :config
-  (prescient-persist-mode))
 (use-package page-break-lines
   :config (global-page-break-lines-mode))
 (use-package eldoc-box

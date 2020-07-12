@@ -16,7 +16,6 @@
 
 (require 'gatsby:eshell)
 (require 'gatsby:vcs)
-(require 'gatsby:selectrum)
 (require 'gatsby:project)
 (require 'gatsby:style)
 (require 'gatsby:org)
