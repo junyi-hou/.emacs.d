@@ -9,7 +9,9 @@
 ;; theme
 (use-package vscode-dark-plus-theme
   :straight
-  (vscode-dark-plus-theme :repo "ianpan870102/vscode-dark-plus-emacs-theme" :host github)
+  (vscode-dark-plus-theme
+   :repo "ianpan870102/vscode-dark-plus-emacs-theme"
+   :host github)
   :init
   (setq custom-safe-themes t)
   (setq-default left-fringe-width 8)
@@ -25,6 +27,7 @@
                                    "--color-only")))
 
   ;; increase active/inactive mode-line contrast
+  (defvar gatsby:theme-default-background "#1e1e1e")
   (defvar gatsby:modeline-fg "#fafafa")
   (defvar gatsby:modeline-bg "#00538a")
   (defvar gatsby:modeline-fg-inactive "#666666")
@@ -65,7 +68,8 @@
    :family "Monospace"
    :height 150
    :weight 'Light
-   :width 'normal)
+   :width 'normal
+   :background gatsby:theme-default-background)
 
   (set-face-attribute
    'minibuffer-prompt
@@ -107,19 +111,42 @@
 
   (add-hook 'focus-in-hook #'mode-line-focus-in)
   (add-hook 'focus-out-hook #'mode-line-focus-out)
+
+  font-lock-doc-face
+
   ;; segments
+
+  (defface mode-line-evil-normal-face
+    '((t :inherit mode-line :foreground "#98C379"))
+    "Face for normal and motion state")
+
+  (defface mode-line-evil-modifying-face
+    '((t :inherit mode-line :foreground "#d16969"))
+    "Face for insert, replace and operator state")
+
+  (defface mode-line-evil-visual-face
+    '((t :inherit mode-line :foreground "#E5C07B"))
+    "Face for visual and visual line state")
+
+  (defface mode-line-evil-emacs-face
+    '((t :inherit mode-line :foreground "#C586C0"))
+    "Face for emacs state")
+
+  (defconst mode-line-evil-faces
+    '((normal . mode-line-evil-normal-face)
+      (motion . mode-line-evil-normal-face)
+      (insert . mode-line-evil-modifying-face)
+      (replace . mode-line-evil-modifying-face)
+      (operator . mode-line-evil-modifying-face)
+      (visual . mode-line-evil-visual-face)
+      (emacs . mode-line-evil-emacs-face))
+    "Mapping between `evil-state' and the mode-line faces.")
+
   (defun mode-line-evil-face ()
     "Return the appropriate color foreground for `evil-mode-line-tag'"
-    `(:weight bold
-      :foreground
-      ,(cond ((not (mode-line-current-window-active-p))
-              (face-attribute 'mode-line-inactive :foreground))
-             ((or (evil-normal-state-p) (evil-motion-state-p)) "#98C379")
-             ((or (evil-insert-state-p)
-                  (evil-replace-state-p)
-                  (evil-operator-state-p)) "#d16969")
-             ((evil-visual-state-p) "#E5C07B")
-             ((evil-emacs-state-p) "#C586C0"))))
+    (if (not (mode-line-current-window-active-p))
+        'mode-line-inactive
+      (alist-get evil-state mode-line-evil-faces)))
 
   (defun mode-line-git-info ()
     "Return the repo name and current branch."
@@ -153,23 +180,23 @@
      (if (file-remote-p default-directory) "[R]" "")
      'face (if (mode-line-current-window-active-p) 'mode-line 'mode-line-inactive)))
 
-  (setq-default mode-line-format
-                (list
-                 '(:eval (propertize evil-mode-line-tag
-                                     'face (mode-line-evil-face)))
-                 '(:eval (mode-line-git-info))
-                 " "
-                 '(:eval (mode-line-remote-p))
-                 '(:eval (mode-line-buf-name))
-                 ;; align to the right
-                 '(:eval (propertize " " 'display
-                                     `((space :align-to (- (+ right
-                                                              right-fringe
-                                                              right-margin-width)
-                                                           ,(+ 3 (string-width
-                                                                  mode-name)))))))
-                 ;; major mode
-                 " %m"))
+  (setq mode-line-format
+        (list
+         '(:eval (propertize evil-mode-line-tag
+                             'face (mode-line-evil-face)))
+         '(:eval (mode-line-git-info))
+         " "
+         '(:eval (mode-line-remote-p))
+         '(:eval (mode-line-buf-name))
+         ;; align to the right
+         '(:eval (propertize " " 'display
+                             `((space :align-to (- (+ right
+                                                      right-fringe
+                                                      right-margin-width)
+                                                   ,(+ 3 (string-width
+                                                          mode-name)))))))
+         ;; major mode
+         " %m"))
 
 
   :general
