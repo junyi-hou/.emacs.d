@@ -112,8 +112,6 @@
   (add-hook 'focus-in-hook #'mode-line-focus-in)
   (add-hook 'focus-out-hook #'mode-line-focus-out)
 
-  font-lock-doc-face
-
   ;; segments
 
   (defface mode-line-evil-normal-face
@@ -180,23 +178,23 @@
      (if (file-remote-p default-directory) "[R]" "")
      'face (if (mode-line-current-window-active-p) 'mode-line 'mode-line-inactive)))
 
-  (setq mode-line-format
-        (list
-         '(:eval (propertize evil-mode-line-tag
-                             'face (mode-line-evil-face)))
-         '(:eval (mode-line-git-info))
-         " "
-         '(:eval (mode-line-remote-p))
-         '(:eval (mode-line-buf-name))
-         ;; align to the right
-         '(:eval (propertize " " 'display
-                             `((space :align-to (- (+ right
-                                                      right-fringe
-                                                      right-margin-width)
-                                                   ,(+ 3 (string-width
-                                                          mode-name)))))))
-         ;; major mode
-         " %m"))
+  (setq-default mode-line-format
+                (list
+                 '(:eval (propertize evil-mode-line-tag
+                                     'face (mode-line-evil-face)))
+                 '(:eval (mode-line-git-info))
+                 " "
+                 '(:eval (mode-line-remote-p))
+                 '(:eval (mode-line-buf-name))
+                 ;; align to the right
+                 '(:eval (propertize " " 'display
+                                     `((space :align-to (- (+ right
+                                                              right-fringe
+                                                              right-margin-width)
+                                                           ,(+ 3 (string-width
+                                                                  mode-name)))))))
+                 ;; major mode
+                 " %m"))
 
 
   :general
