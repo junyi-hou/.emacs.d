@@ -49,6 +49,14 @@
           (hs-show-block)))
       (call-interactively #'recenter)))
 
+  (defun gatsby:selectrum--remove-until-slash (bound n)
+    "Return the position of the backwards Nth slash until BOUND.
+If no slash was found, return BOUND."
+    (save-excursion
+      (if-let ((found (search-backward "/" bound 'noerror n)))
+          (1+ found)
+        bound)))
+
   (defun gatsby:selectrum-better-backspace ()
     "If `point' is at \"/\", delete till the last \"/\"."
     (interactive)
@@ -56,13 +64,12 @@
            (progn
              (delete-region (minibuffer-prompt-end) (point))
              (insert "/home/")))
+          ((string= (buffer-substring (minibuffer-prompt-end) (point)) "/")
+           (call-interactively #'backward-delete-char))
           ((thing-at-point-looking-at "/")
-           (let* ((last-slash-pos (max
-                                   (or (save-excursion
-                                         (1+ (re-search-backward "/" nil 'noerror 2)))
-                                       0)
-                                   selectrum--start-of-input-marker)))
-             (delete-region last-slash-pos (point))))
+           (delete-region (gatsby:selectrum--remove-until-slash
+                           selectrum--start-of-input-marker 2)
+                          (point)))
           (t (call-interactively #'backward-delete-char))))
 
   (defun gatsby:selectrum-next-candidate-cycle ()
@@ -85,28 +92,45 @@
                 (1- (length selectrum--refined-candidates))
               (1- selectrum--current-candidate-index)))))
 
-  (defun gatsby:selectrum-unified-tab (&optional arg)
-    "Tab now does the following things:
-1. if the minibuffer input perfectly matches the selected candidate, select the candidate and exit (i.e., <tab> works like <enter> in this case.)
-2. if not, tab tries to complete the common prefix of all candidates. Do nothing if there is no common prefix.
-3. if there is no common prefix, double tab puts the selected candidate to the minibuffer input."
-    (interactive "P")
+  (defun gatsby:selectrum--combine (input common)
+    "Combine INPUT with COMMON that are prescient regexp conscious.
+Example: input = \"/home/gat sel\"
+        common = \"gatsby:selectrum.el\"
+        output = \"/home/gatsby:selectrum.el\"
+This function takes advantage of `selectrum-prescient--highlight' which highlights the matching part of COMMON in INPUT. To combine those two, I can \"fill the blanks\" in INPUT by getting un-highlighted parts of COMMON"
+    (let* ((input "/home/gat sel")
+           (common (buffer-name))
+           ;; COMMON does not have highlight information, so get it from the first
+           ;; candidate
+           (common (s-shared-start
+                    (buffer-substring (line-beginning-position 2)
+                                      (line-end-position 2))
+                    common)))
+      (let (out
+            (in (split-string input " " 'omit-nulls)))
+        in))
+    ;; now fill in the blanks
+    )
+
+  (defun gatsby:selectrum-unified-tab ()
+    "TODO: incorporate `gatsby:selectrum--combine'."
+    (interactive)
     (when selectrum--current-candidate-index
       (let* ((candidate (selectrum--get-full (nth selectrum--current-candidate-index
                                                   selectrum--refined-candidates)))
-             (user-input (buffer-substring-no-properties
-                          selectrum--start-of-input-marker
-                          selectrum--end-of-input-marker)))
-        (if (string= user-input candidate)
-            (selectrum-select-current-candidate arg)
-          (let ((common (try-completion "" selectrum--refined-candidates)))
-            (if (and (string= common "")
-                     (eq last-command this-command))
-                (selectrum-insert-current-candidate)
-              (delete-region selectrum--start-of-input-marker
-                             selectrum--end-of-input-marker)
-              (insert common)))))))
-
+             (input (buffer-substring-no-properties
+                     selectrum--start-of-input-marker
+                     selectrum--end-of-input-marker)))
+        (if (string= input candidate)
+            (selectrum-select-current-candidate)
+          (when-let* ((common (try-completion "" selectrum--refined-candidates))
+                      (common (or (and (not (string= "" common)) common)
+                                  (and (eq this-command last-command) candidate))))
+            (delete-region (gatsby:selectrum--remove-until-slash
+                            selectrum--start-of-input-marker 1)
+                           (point))
+            (insert common))))))
+  
   :config
   (setq selectrum-minibuffer-bindings
         (append selectrum-minibuffer-bindings
@@ -136,7 +160,9 @@
 (use-package selectrum-prescient
   :after selectrum
   :config
-  (selectrum-prescient-mode))
+  (selectrum-prescient-mode 1)
+
+  )
 
 (provide 'gatsby:selectrum)
 ;;; gatsby:selectrum.el ends here
