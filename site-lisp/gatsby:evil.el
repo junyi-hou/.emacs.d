@@ -134,14 +134,6 @@
   (advice-add #'gatsby:evil-search-visually-forward :after #'gatsby:evil--center-cursor-line)
   (advice-add #'gatsby:evil-search-visually-backward :after #'gatsby:evil--center-cursor-line)
 
-  (defun gatsby:evil--move-up-after-jump (&rest _)
-    "Move up 1 line after `evil-jump-item' so the last line is not covered by eldoc-box."
-    (when (and (not (= (window-end) (point-max)))
-               (<= (- (line-number-at-pos (window-end)) (line-number-at-pos)) 2))
-      (evil-scroll-line-down 2)))
-
-  (advice-add #'evil-jump-item :after #'gatsby:evil--move-up-after-jump)
-
   (defun gatsby:evil--recenter-after-goto-point-max (count)
     "Thin wrapper around `evil-scroll-line-to-center' so center the end-of-buffer after a G motion."
     (unless count
@@ -156,9 +148,8 @@
                 (evil-normal-state-p)
                 (minibufferp (current-buffer)))
       (evil-normal-state)))
-
   ;; bind esc to normal state in all cases
-  (global-set-key (kbd "<escape>") 'gatsby:evil-normal-state-if-not-motion)
+  (global-set-key (kbd "<escape>") #'gatsby:evil-normal-state-if-not-motion)
 
   (defun gatsby:evil-better-newline (newline-fun &rest args)
     "When calling `newline', check whether current line is a comment line (i.e., start with 0 or more spaces followed by `comment-start-skip')  If so, automatically indent and insert `comment-start-skip' after calling `newline' for the first call.  Delete the auto-inserted comment for the second call.  Otherwise call `newline' as default."
@@ -198,10 +189,10 @@
 
   ;; combination key that should be active in all states
   (:keymaps '(motion normal visual emacs insert)
-   "C-h" 'evil-window-left
-   "C-j" 'evil-window-down
-   "C-k" 'evil-window-up
-   "C-l" 'evil-window-right
+   "C-h" 'windmove-left
+   "C-j" 'windmove-down
+   "C-k" 'windmove-up
+   "C-l" 'windmove-right
 
    "C-u" 'evil-scroll-up
    "C-d" 'evil-scroll-down
@@ -226,7 +217,6 @@
    "k" 'delete-window
    "K" 'delete-frame
    "q" 'kill-current-buffer
-   "b" 'balance-windows
 
    ;; split
    "\\"  (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1))

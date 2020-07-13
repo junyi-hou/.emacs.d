@@ -115,19 +115,19 @@
   ;; segments
 
   (defface mode-line-evil-normal-face
-    '((t :inherit mode-line :foreground "#98C379"))
+    '((t :inherit mode-line :foreground "#98C379" :weight bold))
     "Face for normal and motion state")
 
   (defface mode-line-evil-modifying-face
-    '((t :inherit mode-line :foreground "#d16969"))
+    '((t :inherit mode-line :foreground "#d16969" :weight bold))
     "Face for insert, replace and operator state")
 
   (defface mode-line-evil-visual-face
-    '((t :inherit mode-line :foreground "#E5C07B"))
+    '((t :inherit mode-line :foreground "#E5C07B" :weight bold))
     "Face for visual and visual line state")
 
   (defface mode-line-evil-emacs-face
-    '((t :inherit mode-line :foreground "#C586C0"))
+    '((t :inherit mode-line :foreground "#C586C0" :weight bold))
     "Face for emacs state")
 
   (defconst mode-line-evil-faces
@@ -152,11 +152,9 @@
         (let* ((repo (file-name-nondirectory (directory-file-name vc-p)))
                (branch (substring-no-properties vc-mode 5)))
           (propertize (concat "[" repo "::" branch "]") 'face
-                      `(:foreground
-                        ,(face-attribute (if (mode-line-current-window-active-p)
-                                             'mode-line
-                                           'mode-line-inactive)
-                                         :foreground))))
+                      (if (mode-line-current-window-active-p)
+                          'mode-line
+                        'mode-line-inactive)))
       ""))
 
   (defun mode-line-buf-name ()
@@ -175,7 +173,7 @@
 
   (defun mode-line-remote-p ()
     (propertize
-     (if (file-remote-p default-directory) "[R]" "")
+     (if (file-remote-p default-directory) "[R] " "")
      'face (if (mode-line-current-window-active-p) 'mode-line 'mode-line-inactive)))
 
   (setq-default mode-line-format
