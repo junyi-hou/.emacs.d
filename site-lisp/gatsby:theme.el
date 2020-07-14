@@ -146,17 +146,6 @@
         'mode-line-inactive
       (alist-get evil-state mode-line-evil-faces)))
 
-  (defun mode-line-git-info ()
-    "Return the repo name and current branch."
-    (if-let ((vc-p (cdr (project-current))))
-        (let* ((repo (file-name-nondirectory (directory-file-name vc-p)))
-               (branch (substring-no-properties vc-mode 5)))
-          (propertize (concat "[" repo "::" branch "]") 'face
-                      (if (mode-line-current-window-active-p)
-                          'mode-line
-                        'mode-line-inactive)))
-      ""))
-
   (defun mode-line-buf-name ()
     "Patch mode-line-buf-name to have different text property."
     (propertize (buffer-name)
@@ -180,7 +169,12 @@
                 (list
                  '(:eval (propertize evil-mode-line-tag
                                      'face (mode-line-evil-face)))
-                 '(:eval (mode-line-git-info))
+                 '(:eval (if-let* ((proj (cdr (project-current)))
+                                   (repo (file-name-nondirectory
+                                          (directory-file-name proj)))
+                                   (branch (substring-no-properties vc-mode 5)))
+                             (concat "[" repo "::" branch "]")
+                           ""))
                  " "
                  '(:eval (mode-line-remote-p))
                  '(:eval (mode-line-buf-name))
@@ -251,6 +245,7 @@
      ("REVIEW"   . "#FABD2F")
      ("NOTE"   . "#FABD2F")
      ("HACK"   . "#FABD2F")
+     ("DONE" . "#98C379")
      ("\\?\\?\\?+" . "#cc9393")))
   :config
   (global-hl-todo-mode 1))

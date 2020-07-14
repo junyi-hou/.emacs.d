@@ -147,7 +147,7 @@
                                (buffer-list)))
            ;; check if the matched eshell buffer is visible
            (visible (when exists
-                      (get-buffer-window (car exists)))))
+                      (get-buffer-window (car exists) t))))
       (if visible
           (select-window visible)
         (split-window-below (- (/ (window-total-height) 3)))

@@ -8,7 +8,8 @@
 (use-package prescient
   :init
   (setq prescient-save-file (concat no-littering-var-directory "prescient-save.el"))
-  (prescient-persist-mode))
+  :config
+  (prescient-persist-mode 1))
 
 (use-package yasnippet
   :commands (yas-minor-mode yas-reload-all)
