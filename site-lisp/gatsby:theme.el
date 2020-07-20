@@ -162,20 +162,27 @@
 
   (defun mode-line-remote-p ()
     (propertize
-     (if (file-remote-p default-directory) "[R] " "")
+     (if (and (file-remote-p default-directory)
+              (thread-first default-directory
+                tramp-dissect-file-name
+                (not (string= "localhost")))) "[R] " "")
      'face (if (mode-line-current-window-active-p) 'mode-line 'mode-line-inactive)))
 
   (setq-default mode-line-format
                 (list
                  '(:eval (propertize evil-mode-line-tag
                                      'face (mode-line-evil-face)))
-                 '(:eval (if-let* ((proj (cdr (project-current)))
-                                   (repo (file-name-nondirectory
-                                          (directory-file-name proj)))
-                                   (branch (substring-no-properties vc-mode 5)))
-                             (concat "[" repo "::" branch "]")
-                           ""))
-                 " "
+                 '(:eval (if-let ((proj (project-current))
+                                  vc-mode)
+                             (concat "["
+                                     (thread-first proj
+                                       cdr
+                                       directory-file-name
+                                       file-name-nondirectory)
+                                     "::"
+                                     (substring-no-properties vc-mode 5)
+                                     "] ")
+                           " "))
                  '(:eval (mode-line-remote-p))
                  '(:eval (mode-line-buf-name))
                  ;; align to the right
