@@ -93,9 +93,7 @@
 (tooltip-mode -1)
 (blink-cursor-mode -1)
 
-
-;;; essential packages
-
+;;; package managements
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -109,30 +107,10 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; regularly refresh package repos
-(let* ((update-record (expand-file-name "var/straight-last-repo-update"
-                                        user-emacs-directory))
-       (last-update (if (file-exists-p update-record)
-                        (with-temp-buffer
-                          (insert-file-contents update-record)
-                          (string-to-number (buffer-string)))
-                      1))
-       (today (time-to-days (current-time))))
-  (when (> (- today last-update) 7)
-    (straight-pull-package "melpa")
-    (straight-pull-package "gnu-elpa-mirror")
-    (straight-pull-package "emacsmirror-mirror")
-
-    ;; update update-time
-    (with-temp-buffer
-      (insert (int-to-string today))
-      (write-region (point-min) (point-max) update-record))))
-
 ;; install use-package
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t
       straight-vc-git-default-protocol 'https)
-
 
 (use-package no-littering
   ;; do not litter my .emacs.d
@@ -148,30 +126,36 @@
         custom-file (no-littering-expand-etc-file-name "custom.el"))
 
   (load custom-file 'noerror))
+
 (use-package paren
   ;; highlight matching paren
   :config
   (show-paren-mode 1))
+
 (use-package subword
   ;; better camelCase support
   :config
   (global-subword-mode 1))
+
 (use-package simple
   ;; word wrapping
   :straight (:type built-in)
   :config
   (global-visual-line-mode 1))
+
 (use-package autorevert
   ;; automatically refresh file when it changes
   :config
   (global-auto-revert-mode 1))
+
 (use-package recentf
   :custom
-  (recentf-save-file       "~/.emacs.d/var/recentf")
+  (recentf-save-file "~/.emacs.d/var/recentf")
   (recentf-max-saved-items 100)
-  (recentf-exclude         `("/tmp/" "/ssh:" ,no-littering-var-directory))
+  (recentf-exclude `("/tmp/" "/ssh:" ,no-littering-var-directory))
   :config
   (recentf-mode 1))
+
 (use-package hideshow
   :init
   ;; `hs-show-block' is recursively open,
@@ -242,8 +226,7 @@
   (prog-mode . hs-hide-all)
   (prog-mode . hs-minor-mode)
   (hs-minor-mode . gatsby:core--hs-set-adjust-block-beginning))
-(use-package page-break-lines
-  :config (global-page-break-lines-mode))
+
 (use-package eldoc-box
   :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
   :config
@@ -303,6 +286,7 @@ The original function creates a visible frame at the bottom right corner of the 
   (setq eldoc-box-position-function #'gatsby:eldoc-box--position
         eldoc-box-cleanup-interval 0.5)
   (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2))
+
 (use-package general
   ;; for key binding
   :demand t
@@ -389,13 +373,6 @@ Lisp function does not specify a special indentation."
                                        indent-point normal-indent))
                 (method
                  (funcall method indent-point state)))))))))
-(use-package so-long
-  :straight
-  (emacs-so-long
-   :repo "hlissner/emacs-so-long"
-   :host github)
-  :config
-  (global-so-long-mode))
 
 (provide 'gatsby:core)
 ;;; gatsby:core.el ends here

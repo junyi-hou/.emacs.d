@@ -13,6 +13,7 @@
 (require 'gatsby:theme)
 (require 'gatsby:evil)
 (require 'gatsby:pass)
+(require 'gatsby:minibuffer)
 
 (require 'gatsby:eshell)
 (require 'gatsby:vcs)
@@ -36,6 +37,6 @@
 (require 'gatsby:stata)
 (require 'gatsby:text)
 
-(require 'gatsby:os)
+;; (require 'gatsby:os)
 
 ;;; init.el ends here

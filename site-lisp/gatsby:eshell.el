@@ -7,19 +7,10 @@
 (require 'gatsby:core)
 
 (use-package eshell
-  :custom
-  (eshell-scroll-to-bottom-on-input 'all)
-  (eshell-buffer-maximum-lines 12000)
-  (eshell-error-if-no-glob t)
-  (eshell-glob-case-insensitive t)
-  (eshell-hist-ignoredups t)
-  (eshell-history-size 5000)
-  (eshell-save-history-on-exit t)
-  (eshell-prefer-lisp-functions nil)
-  (eshell-list-files-after-cd t)
-  (eshell-destroy-buffer-when-process-dies t)
-  (tramp-histfile-override "/dev/null")
-
+  :hook
+  (eshell-first-time-mode . gatsby:eshell--setkey)
+  (eshell-first-time-mode . gatsby:eshell--setup)
+  
   :init
   (setenv "PAGER" "cat")
 
@@ -39,6 +30,7 @@
 
     (general-define-key
      :states '(normal visual motion emacs insert)
+     "C-r" 'gatsby:eshell-history
      :keymaps 'eshell-mode-map
      :prefix "C-c"
      "C-l" 'gatsby:eshell-clear-buffer)
@@ -49,7 +41,25 @@
      :prefix "SPC"
      "q" 'kill-buffer-and-window))
 
-  (add-hook 'eshell-mode-hook #'gatsby:eshell--setkey)
+  (defun gatsby:eshell--setup ()
+    "Further setup eshell mode."
+    (interactive)
+    ;; Save command history when commands are entered
+    (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+    ;; Truncate buffer for performance
+    (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+    (setq eshell-scroll-to-bottom-on-input 'all
+          eshell-buffer-maximum-lines 12000
+          eshell-error-if-no-glob t
+          eshell-glob-case-insensitive t
+          eshell-hist-ignoredups t
+          eshell-history-size 10000
+          eshell-save-history-on-exit t
+          eshell-prefer-lisp-functions nil
+          eshell-list-files-after-cd t
+          eshell-destroy-buffer-when-process-dies t
+          tramp-histfile-override "/dev/null"))
 
   (unless (file-exists-p (no-littering-expand-var-file-name "eshell/alias"))
     (require 'em-alias)
@@ -60,6 +70,18 @@
     (eshell/alias "ll" "ls -Aloh --color=always"))
 
   ;; functions
+  (defun gatsby:eshell-history ()
+    "Search history"
+    (interactive)
+    (let* ((eshell-bol (save-excursion (eshell-bol) (point)))
+           (command (selectrum-read
+                     "History: "
+                     (if eshell-history-ring
+                         (-distinct (ring-elements eshell-history-ring))
+                       '())
+                     :initial-input (buffer-substring eshell-bol (point)))))
+      (delete-region eshell-bol (point))
+      (insert command)))
 
   (defun gatsby:eshell-goto-last-prompt ()
     "Goto current prompt and continue editting."
@@ -72,7 +94,7 @@
     (interactive)
     (if (file-directory-p path)
         (progn
-          (gatsby:comint-goto-last-prompt)
+          (gatsby:eshell-goto-last-prompt)
           (insert (concat "cd " path))
           (eshell-send-input)
           (evil-normal-state))
@@ -181,7 +203,6 @@
       (erase-buffer)
       (eshell-send-input)))
 
-  ;; zathura integration
   (defun eshell/ff (&rest files)
     "Open FILES in emacs."
     (setq files (eshell-flatten-list files))
@@ -193,44 +214,6 @@
     (gatsby:core-split-window)
     (other-window 1)
     (mapc 'find-file files))
-
-  (with-eval-after-load 'exwm
-    (when (executable-find "zathura")
-      (defun gatsby:eshell--separate-pdf (files)
-        "Separate pdf from other types of files in FILES. Return a cons cell of all pdf files and other files."
-        (let ((out (cons '() '())))
-          (mapc (lambda (file)
-                  (if (string= (file-name-extension file) "pdf")
-                      (push file (car out))
-                    (push file (cdr out))))
-                files)
-          out))
-
-      (defun gatsby:eshell--use-zathura (ff &rest files)
-        "Open FILES in emacs, for pdf files in FILES, use zathura to open them."
-        (setq files (eshell-flatten-list files))
-        (let* ((separated-files (gatsby:eshell--separate-pdf files))
-               (pdfs (car separated-files))
-               (others (cdr separated-files)))
-          (cond ((and pdfs others)
-                 (start-process-shell-command "zathura"
-                                              nil
-                                              (format "tabbed -c zathura %s -e"
-                                                      (string-join pdfs " ")))
-                 (gatsby:core-split-window)
-                 (other-window 1)
-                 (apply ff others))
-                (pdfs (start-process-shell-command "zathura"
-                                                   nil
-                                                   (format "tabbed -c zathura %s -e"
-                                                           (string-join pdfs " "))))
-                (others (when (eq ff 'eshell/FF)
-                          (gatsby:core-split-window)
-                          (other-window 1))
-                        (apply ff others)))))
-
-      (advice-add #'eshell/ff :around #'gatsby:eshell--use-zathura)
-      (advice-add #'eshell/FF :around #'gatsby:eshell--use-zathura)))
 
   ;; taken from doom-emacs at https://github.com/hlissner/doom-emacs/blob/develop/modules/term/eshell/autoload/evil.el
   (evil-define-operator eshell/evil-change (beg end type register yank-handler delete-func)
@@ -272,7 +255,7 @@
    "oS" 'gatsby:eshell-open-home))
 
 (use-package vterm
-  :after eshell)
+  :straight (vterm :host github :repo "akermu/emacs-libvterm"))
 
 (use-package em-term
   :straight (em-term :type built-in)
