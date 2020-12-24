@@ -11,6 +11,7 @@
   (prescient-persist-mode 1))
 
 (use-package selectrum
+  :straight (selectrum :host github :repo "raxod502/selectrum")
   :defines (selectrum-minibuffer-bindings selectrum-should-sort-p)
   :init
   (selectrum-mode 1)
@@ -34,7 +35,7 @@ If no slash was found, return BOUND."
            (call-interactively #'backward-delete-char))
           ((thing-at-point-looking-at "/")
            (delete-region (gatsby:selectrum--remove-until-slash
-                           selectrum--start-of-input-marker 2)
+                           (minibuffer-prompt-end) 2)
                           (point)))
           (t (call-interactively #'backward-delete-char))))
 
@@ -66,8 +67,8 @@ If no slash was found, return BOUND."
     (interactive)
     (when selectrum--current-candidate-index
       (let* ((input (buffer-substring-no-properties
-                     selectrum--start-of-input-marker
-                     selectrum--end-of-input-marker))
+                     (minibuffer-prompt-end)
+                     (point-max)))
              (common (try-completion "" selectrum--refined-candidates)))
         (cond
          ;; case 2/3
@@ -80,22 +81,20 @@ If no slash was found, return BOUND."
          ((not (string= common ""))
           (progn
             (delete-region (gatsby:selectrum--remove-until-slash
-                            selectrum--start-of-input-marker 1)
-                           selectrum--end-of-input-marker)
+                            (minibuffer-prompt-end) 1)
+                           (point-max))
             (insert common)))))))
-
-  :config
-  (setq selectrum-minibuffer-bindings
-        (append selectrum-minibuffer-bindings
-                '(("M-j" . gatsby:selectrum-next-candidate-cycle)
-                  ("M-k" . gatsby:selectrum-previous-candidate-cycle)
-                  ("<backspace>" . gatsby:selectrum-better-backspace)
-                  ("<tab>" . gatsby:selectrum-unified-tab))))
 
   :custom
   (selectrum-fix-minibuffer-height t)
 
   :general
+  (:keymaps 'selectrum-minibuffer-map
+   "M-j" 'gatsby:selectrum-next-candidate-cycle
+   "M-k" 'gatsby:selectrum-previous-candidate-cycle
+   "<backspace>" 'gatsby:selectrum-better-backspace
+   "<tab>" 'gatsby:selectrum-unified-tab)
+
   (:keymaps '(motion normal visual emacs insert)
    :prefix "SPC"
    :non-normal-prefix "s-SPC"
@@ -113,6 +112,36 @@ If no slash was found, return BOUND."
   :after selectrum
   :config
   (selectrum-prescient-mode 1))
+
+;; (use-package embark
+;;   :config
+;;   (defun embark-selectrum-candidates+ ()
+;;     (when selectrum-active-p
+;;       (selectrum-get-current-candidates
+;;        ;; Pass relative file names for dired.
+;;        minibuffer-completing-file-name)))
+
+;;   (defun embark-selectrum-input-getter+ ()
+;;     (when selectrum-active-p
+;;       (let ((input (selectrum-get-current-input)))
+;;         (if minibuffer-completing-file-name
+;;             ;; Only get the input used for matching.
+;;             (file-name-nondirectory input)
+;;           input))))
+
+;;   (add-hook 'embark-target-finders 'selectrum-get-current-candidate)
+;;   (add-hook 'embark-candidate-collectors 'embark-selectrum-candidates+)
+
+;;   ;; No unnecessary computation delay after injection.
+;;   (add-hook 'embark-setup-hook 'selectrum-set-selected-candidate)
+;;   (add-hook 'embark-input-getters 'embark-selectrum-input-getter+)
+
+;;   :general
+;;   (:keymaps '(insert emacs visual normal motion)
+;;    "<C-return>" 'embark-act-noexit)
+
+;;   (:keymaps 'minibuffer-local-map
+;;    "<C-return>" 'embark-act))
 
 (provide 'gatsby:minibuffer)
 ;;; gatsby:minibuffer.el ends here
