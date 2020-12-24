@@ -71,12 +71,21 @@ If no slash was found, return BOUND."
                      (point-max)))
              (common (try-completion "" selectrum--refined-candidates)))
         (cond
-         ;; case 2/3
-         ((or (memq last-command '(gatsby:selectrum-unified-tab
-                                   gatsby:selectrum-next-candidate-cycle
-                                   gatsby:selectrum-previous-candidate-cycle))
-              (= 1 (length selectrum--refined-candidates)))
+         ;; case 3
+         ((memq last-command '(gatsby:selectrum-unified-tab
+                               gatsby:selectrum-next-candidate-cycle
+                               gatsby:selectrum-previous-candidate-cycle))
           (selectrum-select-current-candidate))
+         ;; case 2
+         ((= 1 (length selectrum--refined-candidates))
+          ;; do not use dired to open folder
+          (if (directory-name-p (car selectrum--refined-candidates))
+              (progn
+                (delete-region (gatsby:selectrum--remove-until-slash
+                                (minibuffer-prompt-end) 1)
+                               (point-max))
+                (insert (car selectrum--refined-candidates)))
+            (selectrum-select-current-candidate)))
          ;; case 1
          ((not (string= common ""))
           (progn
