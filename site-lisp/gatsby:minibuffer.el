@@ -94,6 +94,13 @@ If no slash was found, return BOUND."
                            (point-max))
             (insert common)))))))
 
+  (defun gatsby:open-recent-file ()
+    "Do not sort my recent file list."
+    (interactive)
+    (find-file (completing-read "Recent file: "
+                                (mapcar #'abbreviate-file-name recentf-list)
+                                nil t)))
+
   :custom
   (selectrum-fix-minibuffer-height t)
 
@@ -108,11 +115,7 @@ If no slash was found, return BOUND."
    :prefix "SPC"
    :non-normal-prefix "s-SPC"
    "oo" 'find-file
-   "or" (lambda () (interactive)
-          (let ((selectrum-should-sort-p nil))
-            (find-file (completing-read "Recent file: "
-                                        (mapcar #'abbreviate-file-name recentf-list)
-                                        nil t))))
+   "or" 'gatsby:open-recent-file
    "ob" 'switch-to-buffer
    "om" (lambda () (interactive)
           (switch-to-buffer-other-window (get-buffer-create "*Messages*")))))
@@ -122,35 +125,94 @@ If no slash was found, return BOUND."
   :config
   (selectrum-prescient-mode 1))
 
-;; (use-package embark
-;;   :config
-;;   (defun embark-selectrum-candidates+ ()
-;;     (when selectrum-active-p
-;;       (selectrum-get-current-candidates
-;;        ;; Pass relative file names for dired.
-;;        minibuffer-completing-file-name)))
+(use-package eldoc-box
+  :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
+  :config
+  (defun gatsby:eldoc-box--get-frame (buffer)
+    "Overriding `eldoc-box--get-frame'.
 
-;;   (defun embark-selectrum-input-getter+ ()
-;;     (when selectrum-active-p
-;;       (let ((input (selectrum-get-current-input)))
-;;         (if minibuffer-completing-file-name
-;;             ;; Only get the input used for matching.
-;;             (file-name-nondirectory input)
-;;           input))))
+The original function creates a visible frame at the bottom right corner of the screen, which is super annoying. This function fix that."
+    (if eldoc-box--inhibit-childframe
+        ;; if inhibit display, do nothing
+        eldoc-box--frame
+      (let* ((after-make-frame-functions nil)
+             (before-make-frame-hook nil)
+             (parameter (append eldoc-box-frame-parameters
+                                `((default-minibuffer-frame . ,(selected-frame))
+                                  (minibuffer . ,(minibuffer-window))
+                                  (left-fringe . ,(frame-char-width)))))
+             window frame
+             (main-frame (selected-frame)))
+        (if (and eldoc-box--frame (frame-live-p eldoc-box--frame))
+            (progn (setq frame eldoc-box--frame)
+                   (setq window (frame-selected-window frame))
+                   ;; in case the main frame changed
+                   (set-frame-parameter frame 'parent-frame main-frame))
+          (setq window (display-buffer-in-child-frame
+                        buffer
+                        `((child-frame-parameters . ,parameter))))
+          (setq frame (make-frame parameter))
+          (with-selected-frame frame
+            (delete-other-windows)
+            (switch-to-buffer buffer)
+            (setq window (get-buffer-window))))
 
-;;   (add-hook 'embark-target-finders 'selectrum-get-current-candidate)
-;;   (add-hook 'embark-candidate-collectors 'embark-selectrum-candidates+)
+        (set-face-attribute 'fringe frame :background nil :inherit 'eldoc-box-body)
+        (set-window-dedicated-p window t)
+        (redirect-frame-focus frame (frame-parent frame))
+        (set-face-attribute 'internal-border frame :inherit 'eldoc-box-border)
+        ;; set size
+        (eldoc-box--update-childframe-geometry frame window)
+        (setq eldoc-box--frame frame)
+        (run-hook-with-args 'eldoc-box-frame-hook main-frame)
+        (make-frame-visible frame))))
+  (advice-add #'eldoc-box--get-frame :override #'gatsby:eldoc-box--get-frame)
 
-;;   ;; No unnecessary computation delay after injection.
-;;   (add-hook 'embark-setup-hook 'selectrum-set-selected-candidate)
-;;   (add-hook 'embark-input-getters 'embark-selectrum-input-getter+)
+  (defun gatsby:eldoc-box--position (width height)
+    "Display `eldoc-box' in the bottom right corner of the `selected-window'."
+    (let* ((edge (window-inside-pixel-edges))
+           (y (- (nth 3 edge) 5 height))
+           (x (- (nth 2 edge) 2 width)))
+      (cons x y)))
 
-;;   :general
-;;   (:keymaps '(insert emacs visual normal motion)
-;;    "<C-return>" 'embark-act-noexit)
+  (defun gatsby:eldoc-box--update-parent-frame (frame)
+    "Update frame parameters of `eldoc-box--frame' when it is called.  Run with `eldoc-box-frame-hook'."
+    (set-frame-parameter eldoc-box--frame 'parent-frame frame))
+  (add-hook 'eldoc-box-frame-hook #'gatsby:eldoc-box--update-parent-frame)
 
-;;   (:keymaps 'minibuffer-local-map
-;;    "<C-return>" 'embark-act))
+  (setq eldoc-box-position-function #'gatsby:eldoc-box--position
+        eldoc-box-cleanup-interval 0.5)
+  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2))
+
+(use-package embark
+  :config
+  (defun embark-selectrum-candidates+ ()
+    (when selectrum-active-p
+      (selectrum-get-current-candidates
+       ;; Pass relative file names for dired.
+       minibuffer-completing-file-name)))
+
+  (defun embark-selectrum-input-getter+ ()
+    (when selectrum-active-p
+      (let ((input (selectrum-get-current-input)))
+        (if minibuffer-completing-file-name
+            ;; Only get the input used for matching.
+            (file-name-nondirectory input)
+          input))))
+
+  (add-hook 'embark-target-finders 'selectrum-get-current-candidate)
+  (add-hook 'embark-candidate-collectors 'embark-selectrum-candidates+)
+
+  ;; No unnecessary computation delay after injection.
+  (add-hook 'embark-setup-hook 'selectrum-set-selected-candidate)
+  (add-hook 'embark-input-getters 'embark-selectrum-input-getter+)
+
+  :general
+  (:keymaps '(insert emacs visual normal motion)
+   "<C-return>" 'embark-act-noexit)
+
+  (:keymaps 'minibuffer-local-map
+   "<C-return>" 'embark-act))
 
 (provide 'gatsby:minibuffer)
 ;;; gatsby:minibuffer.el ends here

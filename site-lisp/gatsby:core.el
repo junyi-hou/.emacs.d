@@ -23,12 +23,12 @@
               ring-bell-function 'ignore)
 
 ;; mini window should be mini
-(setq-default max-mini-window-height 1)
+(setq max-mini-window-height 1)
 
 ;; smooth scroll
-(setq-default scroll-step 1
-              scroll-conservatively 10000
-              auto-window-vscroll nil)
+(setq scroll-step 1
+      scroll-conservatively 10000
+      auto-window-vscroll nil)
 
 ;; split windows
 (defun gatsby:core--split-vertical (window)
@@ -48,14 +48,14 @@
         (split-window-right)
       (split-window-below))))
 
-(setq-default split-window-preferred-function 'gatsby:core-split-window)
+(setq split-window-preferred-function 'gatsby:core-split-window)
 
 ;; always use y-or-n-p
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq-default inhibit-splash-screen t
-              inhibit-startup-message t
-              inhibit-startup-echo-area-message t)
+(setq inhibit-splash-screen t
+      inhibit-startup-message t
+      inhibit-startup-echo-area-message t)
 
 ;; cannot delete *scratch* buffer
 (defun gatsby:core--unkillable-scratch ()
@@ -70,14 +70,13 @@
           #'gatsby:core--unkillable-scratch)
 
 ;; indentation settings
-(setq-default indent-tabs-mode nil
-              tab-width 4
-              python-indent-offset 4
-              electric-indent-inhibit t  ; don't change indentation for me
-              indicate-empty-lines nil)
+(setq indent-tabs-mode nil
+      tab-width 4
+      electric-indent-inhibit t  ; don't change indentation for me
+      indicate-empty-lines nil)
 
 ;; bs kill whole tab
-(setq-default backward-delete-char-untabify-method 'hungry)
+(setq backward-delete-char-untabify-method 'hungry)
 
 ;; color log appropriately
 (defun gatsby:core--apply-ansi-color ()
@@ -124,7 +123,6 @@
         auto-save-file-name-transforms  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
         backup-directory-alist `((".*" . ,(no-littering-expand-var-file-name "backup/")))
         custom-file (no-littering-expand-etc-file-name "custom.el"))
-
   (load custom-file 'noerror))
 
 (use-package paren
@@ -227,77 +225,15 @@
   (prog-mode . hs-minor-mode)
   (hs-minor-mode . gatsby:core--hs-set-adjust-block-beginning))
 
-(use-package eldoc-box
-  :hook ((text-mode prog-mode) . eldoc-box-hover-mode)
-  :config
-  (defun gatsby:eldoc-box--get-frame (buffer)
-    "Overriding `eldoc-box--get-frame'.
-
-The original function creates a visible frame at the bottom right corner of the screen, which is super annoying. This function fix that."
-    (if eldoc-box--inhibit-childframe
-        ;; if inhibit display, do nothing
-        eldoc-box--frame
-      (let* ((after-make-frame-functions nil)
-             (before-make-frame-hook nil)
-             (parameter (append eldoc-box-frame-parameters
-                                `((default-minibuffer-frame . ,(selected-frame))
-                                  (minibuffer . ,(minibuffer-window))
-                                  (left-fringe . ,(frame-char-width)))))
-             window frame
-             (main-frame (selected-frame)))
-        (if (and eldoc-box--frame (frame-live-p eldoc-box--frame))
-            (progn (setq frame eldoc-box--frame)
-                   (setq window (frame-selected-window frame))
-                   ;; in case the main frame changed
-                   (set-frame-parameter frame 'parent-frame main-frame))
-          (setq window (display-buffer-in-child-frame
-                        buffer
-                        `((child-frame-parameters . ,parameter))))
-          (setq frame (make-frame parameter))
-          (with-selected-frame frame
-            (delete-other-windows)
-            (switch-to-buffer buffer)
-            (setq window (get-buffer-window))))
-
-        (set-face-attribute 'fringe frame :background nil :inherit 'eldoc-box-body)
-        (set-window-dedicated-p window t)
-        (redirect-frame-focus frame (frame-parent frame))
-        (set-face-attribute 'internal-border frame :inherit 'eldoc-box-border)
-        ;; set size
-        (eldoc-box--update-childframe-geometry frame window)
-        (setq eldoc-box--frame frame)
-        (run-hook-with-args 'eldoc-box-frame-hook main-frame)
-        (make-frame-visible frame))))
-  (advice-add #'eldoc-box--get-frame :override #'gatsby:eldoc-box--get-frame)
-
-  (defun gatsby:eldoc-box--position (width height)
-    "Display `eldoc-box' in the bottom right corner of the `selected-window'."
-    (let* ((edge (window-inside-pixel-edges))
-           (y (- (nth 3 edge) 5 height))
-           (x (- (nth 2 edge) 2 width)))
-      (cons x y)))
-
-  (defun gatsby:eldoc-box--update-parent-frame (frame)
-    "Update frame parameters of `eldoc-box--frame' when it is called.  Run with `eldoc-box-frame-hook'."
-    (set-frame-parameter eldoc-box--frame 'parent-frame frame))
-
-  (add-hook 'eldoc-box-frame-hook #'gatsby:eldoc-box--update-parent-frame)
-
-  (setq eldoc-box-position-function #'gatsby:eldoc-box--position
-        eldoc-box-cleanup-interval 0.5)
-  (setf (alist-get 'internal-border-width eldoc-box-frame-parameters) 2))
-
 (use-package general
   ;; for key binding
   :demand t
   :hook (emacs-lisp-mode . gatsby:lisp--fix-indent)
   :init
-
   (defun gatsby:lisp--fix-indent ()
-    "Fix https://emacs.stackexchange.com/questions/10230/how-to-indent-keywords-aligned"
+    "https://emacs.stackexchange.com/questions/10230/how-to-indent-keywords-aligned"
     (setq-local lisp-indent-function #'gatsby:lisp-indent-function))
 
-  ;; https://github.com/Fuco1/.emacs.d/blob/af82072196564fa57726bdbabf97f1d35c43b7f7/site-lisp/redef.el#L20-L94
   (defun gatsby:lisp-indent-function (indent-point state)
     "This function is the normal value of the variable `lisp-indent-function'.
 The function `calculate-lisp-indent' calls this to determine
