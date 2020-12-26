@@ -8,6 +8,7 @@
 (use-package dired
   :straight (:type built-in)
   :defer t
+  :hook (dired-mode . gatsby:dired--show-full-line)
   :config
   (evil-set-initial-state 'dired-mode 'motion)
   (setq dired-listing-switches "-alh")
@@ -22,6 +23,10 @@
                            (concat dired-actual-switches "a"))))
       (setq-local dired-actual-switches new-switches)
       (revert-buffer)))
+
+  (defun gatsby:dired--show-full-line ()
+    "Do not wrap lines in dired-mode."
+    (setq truncate-lines t))
 
   (defun gatsby:dired--auto-goto-next-mark-file (&args _)
     "After unmarked file, automatically goto the next marked file"
@@ -48,8 +53,6 @@
    "k" 'dired-previous-line
    "J" (lambda () (interactive) (dired-next-line 3))
    "K" (lambda () (interactive) (dired-previous-line 3))
-   ">" 'dired-next-subdir
-   "<" 'dired-prev-subdir
    "<backspace>" 'dired-up-directory
 
    ;; files
@@ -58,26 +61,13 @@
    "f" 'find-file
    "F" 'dired-create-directory
    "t" 'dired-show-file-type
-   "y" 'dired-copy-filename-as-kill
-
-   ;; marks
-   "m" 'dired-mark
-   "u" 'dired-unmark
-   "U" 'dired-unmark-all-marks
-   "C" 'dired-do-copy
-   "D" 'dired-do-delete
-   "R" 'dired-do-rename
-   "M" 'dired-do-chmod
-   "O" 'dired-do-chown
-   "Z" 'dired-compress
-   "M-j" 'dired-next-marked-file
-   "M-k" 'dired-prev-marked-file)
+   "y" 'dired-copy-filename-as-kill)
 
   (:keymaps 'dired-mode-map
    :states 'motion
    :prefix "SPC"
-   "r" 'revert-buffer
-   "h" 'gatsby:dired-toggle-hide))
+   "dr" 'revert-buffer
+   "dh" 'gatsby:dired-toggle-hide))
 
 (use-package dired-rainbow
   :after dired

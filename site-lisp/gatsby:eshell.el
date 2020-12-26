@@ -26,11 +26,17 @@
      "C" 'eshell/evil-change-line
      "d" 'eshell/evil-delete
      "D" 'eshell/evil-delete-line
-     "RET" 'gatsby:eshell-open-file-at-point)
+     "RET" 'gatsby:eshell-open-file-at-point
+     "[" 'eshell-previous-prompt
+     "]" 'eshell-next-prompt)
+
+    (general-define-key
+     :states 'insert
+     :keymaps 'eshell-mode-map
+     "C-r" 'gatsby:eshell-history)
 
     (general-define-key
      :states '(normal visual motion emacs insert)
-     "C-r" 'gatsby:eshell-history
      :keymaps 'eshell-mode-map
      :prefix "C-c"
      "C-l" 'gatsby:eshell-clear-buffer)
@@ -73,7 +79,8 @@
   (defun gatsby:eshell-history ()
     "Search history"
     (interactive)
-    (let* ((eshell-bol (save-excursion (eshell-bol) (point)))
+    (let* ((selectrum-should-sort-p nil)
+           (eshell-bol (save-excursion (eshell-bol) (point)))
            (command (selectrum-read
                      "History: "
                      (if eshell-history-ring
