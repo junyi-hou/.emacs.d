@@ -26,18 +26,6 @@
                                    "--plus-emph-color=#00b300"
                                    "--color-only")))
 
-  ;; increase active/inactive mode-line contrast
-  (defvar gatsby:theme-default-background "#1e1e1e")
-  (defvar gatsby:modeline-fg "#fafafa")
-  (defvar gatsby:modeline-bg "#00538a")
-  (defvar gatsby:modeline-fg-inactive "#666666")
-  (defvar gatsby:modeline-bg-inactive "#002c4a")
-
-  (set-face-foreground 'mode-line gatsby:modeline-fg)
-  (set-face-background 'mode-line gatsby:modeline-bg)
-  (set-face-foreground 'mode-line-inactive gatsby:modeline-fg-inactive)
-  (set-face-background 'mode-line-inactive gatsby:modeline-bg-inactive)
-
   (defun gatsby:theme-fontsize-up (&optional size)
     "Increase the font size in the current frame by SIZE.  If SIZE is nil, default to 5."
     (interactive)
@@ -69,132 +57,12 @@
    :height 150
    :weight 'Light
    :width 'normal
-   :background gatsby:theme-default-background)
+   :background "#1e1e1e")
 
   (set-face-attribute
    'minibuffer-prompt
    nil
    :weight 'normal)
-
-  :config
-  ;; custom mode-line
-
-  (defvar mode-line-current-window (frame-selected-window))
-
-  (defun mode-line-set-current-window (&rest _)
-    (when (and (not (minibuffer-window-active-p (frame-selected-window))) ;1
-               (not (frame-parameter (selected-frame) 'parent-frame)) ; 2
-               ;; 1: not minibufer window
-               ;; 2: not child frame
-               )
-      (setq mode-line-current-window (frame-selected-window))
-      (force-mode-line-update)))
-
-  (defun mode-line-unset-current-window ()
-    (setq mode-line-current-window nil)
-    (force-mode-line-update))
-
-  (defun mode-line-current-window-active-p ()
-    (eq mode-line-current-window (selected-window)))
-
-  (add-hook 'window-configuration-change-hook #'mode-line-set-current-window)
-  (add-hook 'focus-in-hook #'mode-line-set-current-window)
-  (add-hook 'focus-out-hook #'mode-line-unset-current-window)
-  (advice-add 'handle-switch-frame :after #'mode-line-set-current-window)
-
-  ;; allow mode line to be inactive when lose focus
-  (copy-face 'mode-line 'mode-line-active-face)
-  (defun mode-line-focus-out ()
-    (copy-face 'mode-line-inactive 'mode-line))
-  (defun mode-line-focus-in ()
-    (copy-face 'mode-line-active-face 'mode-line))
-
-  (add-hook 'focus-in-hook #'mode-line-focus-in)
-  (add-hook 'focus-out-hook #'mode-line-focus-out)
-
-  ;; segments
-
-  (defface mode-line-evil-normal-face
-    '((t :inherit mode-line :foreground "#98C379" :weight bold))
-    "Face for normal and motion state")
-
-  (defface mode-line-evil-modifying-face
-    '((t :inherit mode-line :foreground "#d16969" :weight bold))
-    "Face for insert, replace and operator state")
-
-  (defface mode-line-evil-visual-face
-    '((t :inherit mode-line :foreground "#E5C07B" :weight bold))
-    "Face for visual and visual line state")
-
-  (defface mode-line-evil-emacs-face
-    '((t :inherit mode-line :foreground "#C586C0" :weight bold))
-    "Face for emacs state")
-
-  (defconst mode-line-evil-faces
-    '((normal . mode-line-evil-normal-face)
-      (motion . mode-line-evil-normal-face)
-      (insert . mode-line-evil-modifying-face)
-      (replace . mode-line-evil-modifying-face)
-      (operator . mode-line-evil-modifying-face)
-      (visual . mode-line-evil-visual-face)
-      (emacs . mode-line-evil-emacs-face))
-    "Mapping between `evil-state' and the mode-line faces.")
-
-  (defun mode-line-evil-face ()
-    "Return the appropriate color foreground for `evil-mode-line-tag'"
-    (if (not (mode-line-current-window-active-p))
-        'mode-line-inactive
-      (alist-get evil-state mode-line-evil-faces)))
-
-  (defun mode-line-buf-name ()
-    "Patch mode-line-buf-name to have different text property."
-    (propertize (buffer-name)
-                'face `(:foreground
-                        ,(cond
-                          ((not (mode-line-current-window-active-p))  ;; not focused
-                           (face-attribute 'mode-line-inactive :foreground))
-                          ((or (buffer-modified-p)
-                               (not (buffer-file-name)))  ;; modified or non-file
-                           (face-attribute 'font-lock-warning-face :foreground))
-                          (buffer-read-only
-                           (face-attribute 'minibuffer-prompt :foreground))
-                          (t (face-attribute 'mode-line :foreground))))))
-
-  (defun mode-line-remote-p ()
-    (propertize
-     (if (and (file-remote-p default-directory)
-              (thread-first default-directory
-                tramp-dissect-file-name
-                (not (string= "localhost")))) "[R] " "")
-     'face (if (mode-line-current-window-active-p) 'mode-line 'mode-line-inactive)))
-
-  (setq-default mode-line-format
-                (list
-                 '(:eval (propertize evil-mode-line-tag
-                                     'face (mode-line-evil-face)))
-                 '(:eval (if-let ((proj (project-current))
-                                  vc-mode)
-                             (concat "["
-                                     (thread-first proj
-                                       cdr
-                                       directory-file-name
-                                       file-name-nondirectory)
-                                     "::"
-                                     (substring-no-properties vc-mode 5)
-                                     "] ")
-                           " "))
-                 '(:eval (mode-line-remote-p))
-                 '(:eval (mode-line-buf-name))
-                 ;; align to the right
-                 '(:eval (propertize " " 'display
-                                     `((space :align-to (- (+ right
-                                                              right-fringe
-                                                              right-margin-width)
-                                                           ,(+ 3 (string-width
-                                                                  mode-name)))))))
-                 ;; major mode
-                 " %m"))
-
 
   :general
   (:keymaps '(motion normal visual emacs insert)
@@ -256,6 +124,87 @@
      ("\\?\\?\\?+" . "#cc9393")))
   :config
   (global-hl-todo-mode 1))
+
+(use-package battery)
+
+(use-package mini-modeline
+	:straight (mini-modeline :repo "kiennq/emacs-mini-modeline" :host github)
+	:custom
+	(mini-modeline-face-attr `(:background ,(face-attribute 'default :background)))
+	(mini-modeline-echo-duration 1)
+	(mini-modeline-l-format
+	 '((:eval (propertize evil-mode-line-tag 'face (mode-line-evil-face)))
+		 (:eval (if (file-remote-p default-directory) "[R] " " "))
+		 (:eval (if-let ((proj (project-current))
+                     vc-mode)
+                (concat "["
+                        (file-name-nondirectory (directory-file-name (cdr proj)))
+                        "::"
+                        (substring-no-properties vc-mode 5)
+                        "] ")))
+		 (:eval (mode-line-buf-name))))
+	(mini-modeline-r-format
+	 '((:eval (mode-line-battery))
+		 (:eval (format-time-string "%b %d%l:%M %p"))))
+	:config
+
+	(defface mode-line-evil-normal-face
+		'((t :inherit default :foreground "#98C379" :weight bold))
+		"Face for normal and motion state")
+
+	(defface mode-line-evil-modifying-face
+		'((t :inherit default :foreground "#d16969" :weight bold))
+		"Face for insert, replace and operator state")
+
+	(defface mode-line-evil-visual-face
+		'((t :inherit default :foreground "#E5C07B" :weight bold))
+		"Face for visual and visual line state")
+
+	(defface mode-line-evil-emacs-face
+		'((t :inherit default :foreground "#C586C0" :weight bold))
+		"Face for emacs state")
+
+	(defconst mode-line-evil-faces
+		'((normal . mode-line-evil-normal-face)
+			(motion . mode-line-evil-normal-face)
+			(insert . mode-line-evil-modifying-face)
+			(replace . mode-line-evil-modifying-face)
+			(operator . mode-line-evil-modifying-face)
+			(visual . mode-line-evil-visual-face)
+			(emacs . mode-line-evil-emacs-face))
+		"Mapping between `evil-state' and the mode-line faces.")
+
+	(defun mode-line-evil-face ()
+		"Return the appropriate color foreground for `evil-mode-line-tag'"
+		(alist-get evil-state mode-line-evil-faces))
+
+	(defun mode-line-buf-name ()
+		"Patch mode-line-buf-name to have different text property."
+		(propertize (buffer-name)
+								'face `(:foreground
+												,(cond ((or (buffer-modified-p)
+																		(not (buffer-file-name)))  ;; modified or non-file
+																(face-attribute 'font-lock-warning-face :foreground))
+															 (buffer-read-only
+																(face-attribute 'minibuffer-prompt :foreground))
+															 (t (face-attribute 'mode-line :foreground))))))
+
+	(defun mode-line-battery ()
+		(let* ((bat (funcall battery-status-function))
+					 (percent (battery-format "%p" bat))
+					 (status (battery-format "%L" bat)))
+			(propertize (format "%s%% (%s) " percent status)
+									'face
+									(if (or (string= status "AC")
+													(> (string-to-number percent) 15))
+											'default 'font-lock-warning-face))))
+
+	(set-face-attribute 'mini-modeline-mode-line nil
+											:background "#00538a")
+	(set-face-attribute 'mini-modeline-mode-line-inactive nil
+											:background "#002c4a")
+	
+	(mini-modeline-mode 1))
 
 (provide 'gatsby:theme)
 ;;; gatsby:theme.el ends here
